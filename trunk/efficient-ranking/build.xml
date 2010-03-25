@@ -2,7 +2,7 @@
 <project name="ranking-benchmark" default="benchmark" basedir=".">
 	<!-- index related -->
 	<property name="collection" value="ohsumed" />
-	<property name="task.mem" value="256M" />
+	<property name="task.mem" value="512M" />
 
 	<!-- ranking benchmark related -->
 	<!-- TODO: extend to use algos as in index -->
@@ -23,6 +23,7 @@
 	</target>
 
 	<target name="benchmark">
+		<mkdir dir="benchmark/results/${collection}"/>
 		<java classname="org.apache.lucene.benchmark.quality.trec.QueryDriver" maxmemory="${task.mem}" fork="true">
 			<classpath refid="prj.classpath">
 			</classpath>

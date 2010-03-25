@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="ranking-benchmark" default="benchmark" basedir=".">
+	<!-- index related -->
+	<property name="collection" value="ohsumed" />
+	<property name="task.mem" value="256M" />
+
+	<!-- ranking benchmark related -->
+	<!-- TODO: extend to use algos as in index -->
+	<property name="topic.num" value="1" />
+
+	<path id="prj.classpath">
+		<pathelement location="benchmark/code/classes" />
+		<fileset dir="jars" includes="*.jar">
+		</fileset>
+	</path>
+
+	<target name="index">
+		<java classname="org.apache.lucene.benchmark.byTask.Benchmark" maxmemory="${task.mem}" fork="true">
+			<classpath refid="prj.classpath">
+			</classpath>
+			<arg file="benchmark/algos/${collection}.alg" />
+		</java>
+	</target>
+
+	<target name="benchmark">
+		<java classname="org.apache.lucene.benchmark.quality.trec.QueryDriver" maxmemory="${task.mem}" fork="true">
+			<classpath refid="prj.classpath">
+			</classpath>
+			<arg file="collections/${collection}/queries${topic.num}.txt" />
+			<arg file="collections/${collection}/judgements${topic.num}.txt" />
+			<arg file="benchmark/results/${collection}/submission.txt" />
+			<arg file="collections/${collection}/index" />
+		</java>
+	</target>
+</project>

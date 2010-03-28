@@ -3,6 +3,7 @@
 	<!-- index related -->
 	<property name="collection" value="ohsumed" />
 	<property name="task.mem" value="512M" />
+	<property name="default.query.driver" value="org.apache.lucene.benchmark.quality.trec.QueryDriver"></property>
 
 	<!-- ranking benchmark related -->
 	<!-- TODO: extend to use algos as in index -->
@@ -24,7 +25,7 @@
 
 	<target name="benchmark">
 		<mkdir dir="benchmark/results/${collection}"/>
-		<java classname="org.apache.lucene.benchmark.quality.trec.QueryDriver" maxmemory="${task.mem}" fork="true">
+		<java classname="${default.query.driver}" maxmemory="${task.mem}" fork="true">
 			<classpath refid="prj.classpath">
 			</classpath>
 			<arg file="collections/${collection}/queries${topic.num}.txt" />

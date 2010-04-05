@@ -3,6 +3,7 @@ package ro.calin.clusterpruning;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -40,39 +41,10 @@ import org.apache.lucene.util.Version;
  * @author calin
  */
 public class ClusterIndexProcessing {
-
-//	private static Document getDoc(int id, IndexSearcher s) throws IOException {
-//		TopDocs docs = s.search(new TermQuery(new Term("docid", "doc" + id)), 1);
-//		
-//		if(docs.scoreDocs.length == 0)
-//			return null;
-//		
-//		return s.doc(docs.scoreDocs[0].doc);
-//	}
 	
 	private static Query leaderQuery = new TermQuery(new Term("label", "L"));
 	private static Term idTermTpl = new Term("docid");
-	
-//	private static String getLeader(String id, MoreLikeThis mlt,
-//			IndexSearcher s) throws IOException {
-//		TopDocs docs = s
-//				.search(new TermQuery(new Term("docid", id)), 1);
-//
-//		if (docs.scoreDocs.length == 0)
-//			return null;
-//
-//		Query simq = mlt.like(docs.scoreDocs[0].doc);
-//		BooleanQuery leadq = new BooleanQuery();
-//		leadq.add(simq, Occur.MUST);
-//		leadq.add(leaderQuery, Occur.MUST);
-//
-//		docs = s.search(leadq, 1);
-//		
-//		if(docs.scoreDocs.length == 0)
-//			return null;
-//		
-//		return s.doc(docs.scoreDocs[0].doc).get("docid");
-//	}
+
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -133,10 +105,11 @@ public class ClusterIndexProcessing {
 		mlt.setFieldNames(new String[]{"body"});
 		mlt.setAnalyzer(stdAnalyzer);
 		
+		Set<Integer> notClust = new HashSet<Integer>();
+		
 		for (int docId = 0; docId < numDocs; docId++) {
 			if(!leaderIds.contains(docId)) {//not a leader
-				System.out.print(docId + " ");
-				if(docId % 30 == 0) System.out.println();
+				if(docId % 500 == 0) System.out.println(docId);
 				
 				Document follower = irSrc.document(docId);
 				
@@ -155,10 +128,15 @@ public class ClusterIndexProcessing {
 					String leaderId = Integer.toString(td.scoreDocs[0].doc);
 					follower.add(new Field("label", leaderId, Store.YES, Index.NOT_ANALYZED));
 					iwDest.addDocument(follower);
+				} else {
+					notClust.add(docId);
 				}
 			}
 		}		
 		System.out.println("End copy and mark each follower.");
+		
+		System.out.println(notClust.size() + " docs could not be clustered.");
+		System.out.println(notClust);
 
 		sDest.close();
 		irDest.clone();

@@ -17,7 +17,7 @@ import org.apache.lucene.util.Version;
 public class AXQQParser implements QualityQueryParser {
 	private String qqNames[];
 	private String indexField;
-	ThreadLocal<AXQueryParse> queryParser = new ThreadLocal<AXQueryParse>();
+	ThreadLocal<AXQueryParser> queryParser = new ThreadLocal<AXQueryParser>();
 
 	private float avdl;
 
@@ -27,9 +27,9 @@ public class AXQQParser implements QualityQueryParser {
 		this.avdl = avdl;
 	}
 	
-	static class AXQueryParse extends QueryParser {
+	static class AXQueryParser extends QueryParser {
 		private float avdl;
-		public AXQueryParse(Version matchVersion, String f, Analyzer a, float avdl) {
+		public AXQueryParser(Version matchVersion, String f, Analyzer a, float avdl) {
 			super(matchVersion, f, a);
 			this.avdl = avdl;
 		}
@@ -67,9 +67,9 @@ public class AXQQParser implements QualityQueryParser {
 	 * .lucene.benchmark.quality.QualityQuery)
 	 */
 	public Query parse(QualityQuery qq) throws ParseException {
-		AXQueryParse qp = queryParser.get();
+		AXQueryParser qp = queryParser.get();
 		if (qp == null) {
-			qp = new AXQueryParse(Version.LUCENE_CURRENT, indexField,
+			qp = new AXQueryParser(Version.LUCENE_CURRENT, indexField,
 					new StandardAnalyzer(Version.LUCENE_CURRENT), avdl);
 			queryParser.set(qp);
 		}

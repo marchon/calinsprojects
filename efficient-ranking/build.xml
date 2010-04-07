@@ -3,7 +3,7 @@
 	<!-- index related -->
 	<property name="collection" value="ohsumed" />
 	<property name="task.mem" value="512M" />
-	<property name="default.query.driver" value="org.apache.lucene.benchmark.quality.trec.QueryDriver"></property>
+	<property name="default.query.driver" value="ro.calin.benchmark.QueryDriver" />
 
 	<!-- ranking benchmark related -->
 	<!-- TODO: extend to use algos as in index -->
@@ -31,7 +31,7 @@
 			<arg file="collections/${collection}/queries${topic.num}.txt" />
 			<arg file="collections/${collection}/judgements${topic.num}.txt" />
 			<arg file="benchmark/results/${collection}/submission.txt" />
-			<arg file="collections/${collection}/index" />
+			<arg file="collections/${collection}/index_clust" />
 		</java>
 	</target>
 </project>

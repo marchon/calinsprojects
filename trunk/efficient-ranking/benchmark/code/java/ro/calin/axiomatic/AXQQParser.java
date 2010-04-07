@@ -1,4 +1,4 @@
-package ro.calin.ranking;
+package ro.calin.axiomatic;
 
 import java.util.List;
 

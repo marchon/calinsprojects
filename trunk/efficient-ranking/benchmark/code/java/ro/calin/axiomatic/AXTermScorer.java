@@ -1,4 +1,4 @@
-package ro.calin.ranking;
+package ro.calin.axiomatic;
 /*******************************************
  * Modified based on TermScorer.java by: Hui Fang (hfang@ece.udel.edu)
  * Last updated: 08/16/2009

@@ -5,20 +5,57 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.Weight;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-public class QueryCluster /*extends Query*/{
-
+/**
+ * @author Calin
+ *
+ * Moved to this package because BooleanWeight is fucking protected.
+ */
+public class ClusterQuery extends BooleanQuery {
+	
+	private boolean gotCluster = false;
+	
+	@Override
+	public Weight createWeight(Searcher searcher) throws IOException {
+		//do some lucene magic here :D
+		//first query documents marked with L using a boolean query equivalent to this
+		//then query for documents marked with that cluster
+		
+		if(!gotCluster) {
+			gotCluster = true;
+			BooleanQuery bq = new BooleanQuery();
+			bq.add(new TermQuery(new Term("label", "L")), Occur.MUST);
+			//add current query clauses
+			//or do bq.add(this, MUST)???
+			for(BooleanClause bc : this) {
+				bq.add(bc);
+			}
+			TopDocs td = searcher.search(bq, 1);
+			
+			if(td.scoreDocs.length > 0) {
+				Document leader = searcher.doc(td.scoreDocs[0].doc);
+				this.add(new TermQuery(new Term("cluster", leader.get("cluster"))), Occur.MUST);
+			}
+		}
+		
+		return super.createWeight(searcher);
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -43,27 +80,24 @@ public class QueryCluster /*extends Query*/{
 		
 		TopDocs td = is.search(firstWrapper, 1);
 		if(td.scoreDocs.length > 0) {
-			//TODO: do not rely on lucene internal ids, use labels
-			//TODO: when doing second query, take into cosideration the leader also(by docid), should be:
-			// (label: id or docid: id) AND qu
-			String id = Integer.toString(td.scoreDocs[0].doc);
+			Document leader = is.doc(td.scoreDocs[0].doc);
 			
+			System.out.println(leader.get("cluster"));
 			BooleanQuery secondWrapper = new BooleanQuery();
-			secondWrapper.add(new TermQuery(new Term("label", id)), Occur.MUST);
 			secondWrapper.add(qu, Occur.MUST);
+			secondWrapper.add(new TermQuery(new Term("cluster", leader.get("cluster"))), Occur.MUST);
 			
 			td = is.search(secondWrapper, 200);
 			System.out.println(Arrays.asList(td.scoreDocs));
 		}
 		
 		System.out.println("Cluster query took: " + ((System.currentTimeMillis() - start)) + " ms.");
-
+		
 		start = System.currentTimeMillis();
 		td = is.search(qu, 200);
 		System.out.println(Arrays.asList(td.scoreDocs));
 		System.out.println("Normal query took: " + ((System.currentTimeMillis() - start)) + " ms.");
 		
-		//TODO: when creating query for benchmark do first query in constructor...or something
 		is.close();
 		dir.close();
 	}

@@ -32,18 +32,17 @@ import org.apache.lucene.util.Version;
  * Process an existing index to cluster documents.
  * The clustering will be done in the following way:
  * 		1. choose sqrt(n) doc as leaders in list LD
- * 		2. for each doc in LD mark the field 'type' to L
- * 		3. while unmarked documents exist do:
- * 			3.1. for each doc dl in LD
- * 				3.1.1. retrieve a list FD of m similar unmarked docs using MoreLikeThis
- * 				3.1.2. for each doc df in FD mark the field 'leader' with id(dl)
+ * 		2. mark each doc in LD with 'L'
+ * 		3. for each doc in index that is not in LD
+ * 			3.1. find most similar leader L
+ * 			3.2. mark doc with the id of L
+ * 
+ * NOTE that another lucene index is created
  * 
  * @author calin
  */
 public class ClusterIndexProcessing {
 	
-	private static Query leaderQuery = new TermQuery(new Term("label", "L"));
-	private static Term idTermTpl = new Term("docid");
 
 	/**
 	 * @param args
@@ -73,7 +72,7 @@ public class ClusterIndexProcessing {
 		
 		int numDocs = irSrc.numDocs();
 		int numLeaders = (int) Math.sqrt(numDocs);
-		Set<Integer> leaderIds = new TreeSet<Integer>();
+		Set<Integer> leaderIds = new HashSet<Integer>();
 		
 		System.out.println("Gen random leaders: " + numLeaders);
 		for (int i = 0; i < numLeaders; i++) {
@@ -91,6 +90,7 @@ public class ClusterIndexProcessing {
 		for (int docId : leaderIds) {
 			Document d = irSrc.document(docId);
 			d.add(new Field("label", "L", Store.YES, Index.NOT_ANALYZED));
+			d.add(new Field("cluster", d.get("docid"), Store.YES, Index.NOT_ANALYZED));
 			iwDest.addDocument(d);
 		}
 		System.out.println("End copy and mark leaders.");
@@ -104,29 +104,33 @@ public class ClusterIndexProcessing {
 		MoreLikeThis mlt = new MoreLikeThis(irDest);
 		mlt.setFieldNames(new String[]{"body"});
 		mlt.setAnalyzer(stdAnalyzer);
+		mlt.setMinDocFreq(2);
+		mlt.setMinTermFreq(0); // 0 means not to check, same effect as 1
+		mlt.setMinWordLen(3);
 		
 		Set<Integer> notClust = new HashSet<Integer>();
 		
+		Query leaderQuery = new TermQuery(new Term("label", "L"));
+		
 		for (int docId = 0; docId < numDocs; docId++) {
 			if(!leaderIds.contains(docId)) {//not a leader
-				if(docId % 500 == 0) System.out.println(docId);
+				if(docId % 1000 == 0) System.out.println(docId);
 				
 				Document follower = irSrc.document(docId);
 				
 				//build sim query
-				//TODO: check for another way...eventually with term vectors
+				//TODO: index with term vectors
 				Query simq = mlt.like(new StringReader(follower.get("body")));
 				BooleanQuery bq = new BooleanQuery();
 				bq.add(leaderQuery, Occur.MUST);
 				bq.add(simq, Occur.MUST);
 				
 				TopDocs td = sDest.search(bq, 1);
-				//TODO: what to do when no doc is returned; investigate more like this
 				
 				if(td.scoreDocs.length > 0) {
-					//TODO: use the score in some way??
-					String leaderId = Integer.toString(td.scoreDocs[0].doc);
-					follower.add(new Field("label", leaderId, Store.YES, Index.NOT_ANALYZED));
+					Document leader = sDest.doc(td.scoreDocs[0].doc);
+					
+					follower.add(new Field("cluster", leader.get("docid"), Store.YES, Index.NOT_ANALYZED));
 					iwDest.addDocument(follower);
 				} else {
 					notClust.add(docId);

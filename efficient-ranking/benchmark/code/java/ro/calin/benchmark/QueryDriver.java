@@ -1,4 +1,4 @@
-package ro.calin.ranking;
+package ro.calin.benchmark;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,10 +26,16 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.FSDirectory;
 
-public class AXQueryDriver {
+import ro.calin.axiomatic.AXQQParser;
+import ro.calin.clusterpruning.ClusterQQParser;
+
+public class QueryDriver {
 
 	/**
 	 * @param args
+	 * 
+	 * 
+	 * TODO: make the QualityQueryParser a parameter and load it dynamically
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length < 4 || args.length > 5) {
@@ -84,51 +90,55 @@ public class AXQueryDriver {
 		if (fieldSpec.indexOf('N') >= 0)
 			fieldSet.add("narrative");
 
-		float avdl = 0;
-		float sumT = 0.0f; 
-	    float numT = 0.0f;
+//		float avdl = 0;
+//		float sumT = 0.0f; 
+//	    float numT = 0.0f;
 		
 		//load index, calc avdl
-		SegmentInfos segInfo = new SegmentInfos();
-		segInfo.read(dir);
-		int numSegments = segInfo.size();
-	
-		for (int i = 0; i < numSegments; i++) {
-			SegmentInfo info = segInfo.info(i);
-			SegmentReader reader = null;
-			reader = SegmentReader.get(false, info, 1);
-			Collection fieldNames = reader
-					.getFieldNames(IndexReader.FieldOption.ALL);
-			Iterator it = fieldNames.iterator();
-			byte[] b = new byte[reader.maxDoc()];
-			while (it.hasNext()) {
-				String fieldName = (String) it.next();
-				reader.norms(fieldName, b, 0);
-				float sum = 0.0f;
-				for (int j = 0; j < b.length; j++) {
-					float dl = 1.0f / Similarity.decodeNorm(b[j])
-							/ Similarity.decodeNorm(b[j]);
-					sum += dl;
-				}
-				
-				sumT += sum;
-				numT += b.length;
-			}
-			reader.close();
-		}
+//		SegmentInfos segInfo = new SegmentInfos();
+//		segInfo.read(dir);
+//		int numSegments = segInfo.size();
+//	
+//		for (int i = 0; i < numSegments; i++) {
+//			SegmentInfo info = segInfo.info(i);
+//			SegmentReader reader = null;
+//			reader = SegmentReader.get(false, info, 1);
+//			Collection fieldNames = reader
+//					.getFieldNames(IndexReader.FieldOption.ALL);
+//			Iterator it = fieldNames.iterator();
+//			byte[] b = new byte[reader.maxDoc()];
+//			while (it.hasNext()) {
+//				String fieldName = (String) it.next();
+//				reader.norms(fieldName, b, 0);
+//				float sum = 0.0f;
+//				for (int j = 0; j < b.length; j++) {
+//					float dl = 1.0f / Similarity.decodeNorm(b[j])
+//							/ Similarity.decodeNorm(b[j]);
+//					sum += dl;
+//				}
+//				
+//				sumT += sum;
+//				numT += b.length;
+//			}
+//			reader.close();
+//		}
 
 		
-		if(sumT == 0 || numT == 0) {
-			System.err.println("Error calculating average document lenght!!!");
-			System.exit(1);
-		}
-		
-		avdl = sumT / numT; 
+//		if(sumT == 0 || numT == 0) {
+//			System.err.println("Error calculating average document lenght!!!");
+//			System.exit(1);
+//		}
+//		
+//		avdl = sumT / numT; 
 		
 		// set the parsing of quality queries into Lucene queries.
-		QualityQueryParser qqParser = new AXQQParser(fieldSet
-				.toArray(new String[0]), "body", avdl);
+//		QualityQueryParser qqParser = new AXQQParser(fieldSet
+//				.toArray(new String[0]), "body", avdl);
 
+		
+		QualityQueryParser qqParser = new ClusterQQParser(fieldSet
+				.toArray(new String[0]), "body");
+		
 		// run the benchmark
 		QualityBenchmark qrun = new QualityBenchmark(qqs, qqParser, searcher,
 				docNameField);

@@ -28,22 +28,8 @@ public class ClusterQQParser implements QualityQueryParser {
 		
 		@Override
 		protected BooleanQuery newBooleanQuery(boolean disableCoord) {
-
-			System.out.println("CLUSTER");
 			return new ClusterQuery();
 		}
-	}
-
-	/**
-	 * Constructor of a simple qq parser.
-	 * 
-	 * @param qqName
-	 *            name-value pair of quality query to use for creating the query
-	 * @param indexField
-	 *            corresponding index field
-	 */
-	public ClusterQQParser(String qqName, String indexField) {
-		this(new String[] { qqName }, indexField);
 	}
 
 	/*

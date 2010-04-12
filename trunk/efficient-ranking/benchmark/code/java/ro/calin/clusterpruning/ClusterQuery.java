@@ -1,30 +1,20 @@
 package ro.calin.clusterpruning;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 
 /**
  * @author Calin
  *
- * Moved to this package because BooleanWeight is fucking protected.
  */
 public class ClusterQuery extends BooleanQuery {
 	
@@ -56,50 +46,44 @@ public class ClusterQuery extends BooleanQuery {
 		return super.createWeight(searcher);
 	}
 	
-	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws ParseException 
-	 */
-	public static void main(String[] args) throws IOException, ParseException {
-		FSDirectory dir = FSDirectory.open(new File("collections/ohsumed/index_clust"));
-		IndexSearcher is = new IndexSearcher(dir);
-		
-		String query = "60 year old menopausal woman without hormone replacement therapy";
-		
-		
-		QueryParser qp = new QueryParser(Version.LUCENE_31, "body", new StandardAnalyzer(Version.LUCENE_31));
-		
-		Query qu = qp.parse(query);
-		
-		long start = System.currentTimeMillis();
-		
-		BooleanQuery firstWrapper = new BooleanQuery();
-		firstWrapper.add(new TermQuery(new Term("label", "L")), Occur.MUST);
-		firstWrapper.add(qu, Occur.MUST);
-		
-		TopDocs td = is.search(firstWrapper, 1);
-		if(td.scoreDocs.length > 0) {
-			Document leader = is.doc(td.scoreDocs[0].doc);
-			
-			System.out.println(leader.get("cluster"));
-			BooleanQuery secondWrapper = new BooleanQuery();
-			secondWrapper.add(qu, Occur.MUST);
-			secondWrapper.add(new TermQuery(new Term("cluster", leader.get("cluster"))), Occur.MUST);
-			
-			td = is.search(secondWrapper, 200);
-			System.out.println(Arrays.asList(td.scoreDocs));
-		}
-		
-		System.out.println("Cluster query took: " + ((System.currentTimeMillis() - start)) + " ms.");
-		
-		start = System.currentTimeMillis();
-		td = is.search(qu, 200);
-		System.out.println(Arrays.asList(td.scoreDocs));
-		System.out.println("Normal query took: " + ((System.currentTimeMillis() - start)) + " ms.");
-		
-		is.close();
-		dir.close();
-	}
-
+//	public static void main(String[] args) throws IOException, ParseException {
+//		FSDirectory dir = FSDirectory.open(new File("collections/ohsumed/index_clust"));
+//		IndexSearcher is = new IndexSearcher(dir);
+//		
+//		String query = "60 year old menopausal woman without hormone replacement therapy";
+//		
+//		
+//		QueryParser qp = new QueryParser(Version.LUCENE_31, "body", new StandardAnalyzer(Version.LUCENE_31));
+//		
+//		Query qu = qp.parse(query);
+//		
+//		long start = System.currentTimeMillis();
+//		
+//		BooleanQuery firstWrapper = new BooleanQuery();
+//		firstWrapper.add(new TermQuery(new Term("label", "L")), Occur.MUST);
+//		firstWrapper.add(qu, Occur.MUST);
+//		
+//		TopDocs td = is.search(firstWrapper, 1);
+//		if(td.scoreDocs.length > 0) {
+//			Document leader = is.doc(td.scoreDocs[0].doc);
+//			
+//			System.out.println(leader.get("cluster"));
+//			BooleanQuery secondWrapper = new BooleanQuery();
+//			secondWrapper.add(qu, Occur.MUST);
+//			secondWrapper.add(new TermQuery(new Term("cluster", leader.get("cluster"))), Occur.MUST);
+//			
+//			td = is.search(secondWrapper, 200);
+//			System.out.println(Arrays.asList(td.scoreDocs));
+//		}
+//		
+//		System.out.println("Cluster query took: " + ((System.currentTimeMillis() - start)) + " ms.");
+//		
+//		start = System.currentTimeMillis();
+//		td = is.search(qu, 200);
+//		System.out.println(Arrays.asList(td.scoreDocs));
+//		System.out.println("Normal query took: " + ((System.currentTimeMillis() - start)) + " ms.");
+//		
+//		is.close();
+//		dir.close();
+//	}
 }

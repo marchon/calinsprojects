@@ -1,12 +1,6 @@
 <?xml version="1.0"?>
-<project name="ranking-benchmark" default="benchmark" basedir=".">
-	<!-- index related -->
-	<property name="collection" value="ohsumed" />
-	<property name="task.mem" value="512M" />
-	<property name="default.query.driver" value="ro.calin.benchmark.QueryDriver" />
-
-	<!-- ranking benchmark related -->
-	<!-- TODO: extend to use algos as in index -->
+<project name="ranking-benchmark" default="lucene-default" basedir=".">
+	<property name="corpus" value="ohsumed" />
 	<property name="topic.num" value="1" />
 
 	<path id="prj.classpath">
@@ -15,23 +9,51 @@
 		</fileset>
 	</path>
 
+	<!-- TODO: for more topics/qrels -->
+	<!-- TODO: make a lucene benchmark task for cluster index processing and use algo, somehow -->
 	<target name="index">
 		<java classname="org.apache.lucene.benchmark.byTask.Benchmark" maxmemory="${task.mem}" fork="true">
-			<classpath refid="prj.classpath">
-			</classpath>
+			<classpath refid="prj.classpath" />
 			<arg file="benchmark/algos/${collection}.alg" />
 		</java>
 	</target>
 
 	<target name="benchmark">
-		<mkdir dir="benchmark/results/${collection}"/>
-		<java classname="${default.query.driver}" maxmemory="${task.mem}" fork="true">
-			<classpath refid="prj.classpath">
-			</classpath>
+		<mkdir dir="benchmark/results/${ranking.type}/${collection}" />
+		<java classname="ro.calin.benchmark.QueryDriver" maxmemory="512M" fork="true">
+			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}/queries${topic.num}.txt" />
 			<arg file="collections/${collection}/judgements${topic.num}.txt" />
-			<arg file="benchmark/results/${collection}/submission.txt" />
-			<arg file="collections/${collection}/index_clust" />
+			<arg file="benchmark/results/${ranking.type}/${collection}/submission.txt" />
+			<arg file="collections/${collection}/${index.name}" />
+			<arg value="${quality.parser.impl}" />
 		</java>
+	</target>
+
+	<target name="lucene-default">
+		<antcall target="benchmark">
+			<param name="ranking.type" value="lucene-tfidf" />
+			<param name="collection" value="${corpus}" />
+			<param name="index.name" value="index" />
+			<param name="quality.parser.impl" value="org.apache.lucene.benchmark.quality.utils.SimpleQQParser" />
+		</antcall>
+	</target>
+
+	<target name="axiomatic">
+		<antcall target="benchmark">
+			<param name="ranking.type" value="axiomatic" />
+			<param name="collection" value="${corpus}" />
+			<param name="index.name" value="index" />
+			<param name="quality.parser.impl" value="ro.calin.axiomatic.AXQQParser" />
+		</antcall>
+	</target>
+
+	<target name="cluster-pruning">
+		<antcall target="benchmark">
+			<param name="ranking.type" value="cluster-pruning" />
+			<param name="collection" value="${corpus}" />
+			<param name="index.name" value="index_clust" />
+			<param name="quality.parser.impl" value="ro.calin.clusterpruning.ClusterQQParser" />
+		</antcall>
 	</target>
 </project>

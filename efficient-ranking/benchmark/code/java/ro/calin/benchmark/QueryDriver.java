@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -81,8 +82,7 @@ public class QueryDriver {
 //		if (fieldSpec.indexOf('N') >= 0)
 //			fieldSet.add("narrative");
 
-		
-		Constructor<?> qqpConstr = ((Class<? extends QualityQueryParser>)Class.forName(qqpImpl)).getConstructors()[0];
+		Constructor<?> qqpConstr = ((Class<? extends QualityQueryParser>)Class.forName(qqpImpl)).getConstructor(String[].class, String.class);
 		QualityQueryParser qqParser;
 		if(qqpConstr.getParameterTypes().length == 3) {
 			qqParser = (QualityQueryParser) qqpConstr.newInstance(fieldSet.toArray(new String[0]), "body", dir);

@@ -24,7 +24,7 @@
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}/queries${topic.num}.txt" />
 			<arg file="collections/${collection}/judgements${topic.num}.txt" />
-			<arg file="benchmark/results/${ranking.type}/${collection}/submission.txt" />
+			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-submission.txt" />
 			<arg file="collections/${collection}/${index.name}" />
 			<arg value="${quality.parser.impl}" />
 		</java>

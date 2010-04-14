@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="ranking-benchmark" default="lucene-default" basedir=".">
-	<property name="corpus" value="ohsumed" />
+	<property name="corpus" value="ohsumed-small" />
 	<property name="topic.num" value="1" />
 
 	<path id="prj.classpath">
@@ -12,19 +12,20 @@
 	<!-- TODO: for more topics/qrels -->
 	<!-- TODO: make a lucene benchmark task for cluster index processing and use algo, somehow -->
 	<target name="index">
-		<java classname="org.apache.lucene.benchmark.byTask.Benchmark" maxmemory="${task.mem}" fork="true">
+		<java classname="org.apache.lucene.benchmark.byTask.Benchmark" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
-			<arg file="benchmark/algos/${collection}.alg" />
+			<arg file="benchmark/algos/${corpus}.alg" />
 		</java>
 	</target>
 
 	<target name="benchmark">
-		<mkdir dir="benchmark/results/${ranking.type}/${collection}" />
+		<mkdir dir="benchmark/results/${ranking.type}" />
 		<java classname="ro.calin.benchmark.QueryDriver" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}/queries${topic.num}.txt" />
 			<arg file="collections/${collection}/judgements${topic.num}.txt" />
-			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-submission.txt" />
+			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-trec-eval-submission.txt" />
+			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-benchmark-average.txt" />
 			<arg file="collections/${collection}/${index.name}" />
 			<arg value="${quality.parser.impl}" />
 		</java>

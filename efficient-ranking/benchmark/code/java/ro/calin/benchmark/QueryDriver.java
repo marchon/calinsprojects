@@ -2,10 +2,10 @@ package ro.calin.benchmark;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,22 +27,23 @@ public class QueryDriver {
 	 * @param args
 	 * 
 	 * 
-	 * TODO: make the QualityQueryParser a parameter and load it dynamically
+	 *            TODO: make the QualityQueryParser a parameter and load it
+	 *            dynamically
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length != 5) {
+		if (args.length != 6) {
 			System.err
-					.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> <indexDir> <qqpImpl>");
+					.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> <avgResFile> <indexDir> <qqpImpl>");
 			System.err.println("topicsFile: input file containing queries");
 			System.err
 					.println("qrelsFile: input file containing relevance judgements");
 			System.err
 					.println("submissionFile: output submission file for trec_eval");
-			System.err.println("indexDir: index directory");
 			System.err
-					.println("qqpImpl: quality query parser implementation");
-//			System.err
-//			.println("querySpec: string composed of fields to use in query consisting of T=title,D=description,N=narrative:");
+					.println("avgResFile: output benchmark measures(average)");
+			System.err.println("indexDir: index directory");
+			System.err.println("qqpImpl: quality query parser implementation");
+
 			System.exit(1);
 		}
 
@@ -50,10 +51,9 @@ public class QueryDriver {
 		File qrelsFile = new File(args[1]);
 		SubmissionReport submitLog = new SubmissionReport(new PrintWriter(
 				args[2]), "lucene");
-		FSDirectory dir = FSDirectory.open(new File(args[3]));
-//		String fieldSpec = args.length == 5 ? args[4] : "T"; 
-		String qqpImpl = args[4];
-		
+		FSDirectory dir = FSDirectory.open(new File(args[4]));
+		String qqpImpl = args[5];
+
 		Searcher searcher = new IndexSearcher(dir, true);
 
 		int maxResults = 1000;
@@ -73,23 +73,31 @@ public class QueryDriver {
 		// validate topics & judgments match each other
 		judge.validateData(qqs, logger);
 
-		//default to title & desc
-		Set<String> fieldSet = new HashSet<String>();
-		//if (fieldSpec.indexOf('T') >= 0)
-			fieldSet.add("title");
-		//if (fieldSpec.indexOf('D') >= 0)
-			fieldSet.add("description");
-//		if (fieldSpec.indexOf('N') >= 0)
-//			fieldSet.add("narrative");
+		// default to title & desc
+		String[] flds = {"title", "description"};
 
-		Constructor<?> qqpConstr = ((Class<? extends QualityQueryParser>)Class.forName(qqpImpl)).getConstructor(String[].class, String.class);
-		QualityQueryParser qqParser;
-		if(qqpConstr.getParameterTypes().length == 3) {
-			qqParser = (QualityQueryParser) qqpConstr.newInstance(fieldSet.toArray(new String[0]), "body", dir);
-		} else {
-			qqParser = (QualityQueryParser) qqpConstr.newInstance(fieldSet.toArray(new String[0]), "body");
+		Constructor<?> qqpConstr = null;
+		try {
+			qqpConstr = ((Class<? extends QualityQueryParser>) Class
+					.forName(qqpImpl)).getConstructor(String[].class,
+					String.class);
+		} catch (NoSuchMethodException e) {
+			try {
+				qqpConstr = ((Class<? extends QualityQueryParser>) Class
+						.forName(qqpImpl)).getConstructor(String[].class,
+						String.class, FSDirectory.class);
+			} catch (NoSuchMethodException e2) {
+				System.err.println("No appropriate constructor!");
+				System.exit(1);
+			}
 		}
-		
+		QualityQueryParser qqParser;
+		if (qqpConstr.getParameterTypes().length == 3) {
+			qqParser = (QualityQueryParser) qqpConstr.newInstance(flds, "body", dir);
+		} else {
+			qqParser = (QualityQueryParser) qqpConstr.newInstance(flds, "body");
+		}
+
 		// run the benchmark
 		QualityBenchmark qrun = new QualityBenchmark(qqs, qqParser, searcher,
 				docNameField);
@@ -99,6 +107,11 @@ public class QueryDriver {
 		// print an avarage sum of the results
 		QualityStats avg = QualityStats.average(stats);
 		avg.log("SUMMARY", 2, logger, "  ");
+		
+		//write summary to file
+		PrintWriter fileLogger = new PrintWriter(new FileOutputStream(args[3]), true);
+		avg.log("SUMMARY", 2,fileLogger , "  ");
+		fileLogger.close();
 	}
 
 }

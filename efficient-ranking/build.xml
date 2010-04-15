@@ -8,15 +8,30 @@
 		<fileset dir="jars" includes="*.jar">
 		</fileset>
 	</path>
+	
+	<target name="clean">
+		<delete dir="collections/${corpus}/index"/>
+	</target>
 
-	<!-- TODO: for more topics/qrels -->
-	<!-- TODO: make a lucene benchmark task for cluster index processing and use algo, somehow -->
 	<target name="index">
-		<java classname="org.apache.lucene.benchmark.byTask.Benchmark" maxmemory="512M" fork="true">
+		<java classname="ro.calin.benchmark.IndexCorpus" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
-			<arg file="benchmark/algos/${corpus}.alg" />
+			<arg file="collections/${collection}" />
 		</java>
 	</target>
+	
+	<!--
+	<target name="doBar" depends="dir.check" unless="dir.exists">
+    <echo>${directory} missing"</echo>
+  </target>
+
+  <target name="dir.check">
+    <condition property="dir.exists">
+      <available file="${directory}" type="dir"/>
+    </condition>
+  </target>
+	
+	-->
 
 	<target name="benchmark">
 		<mkdir dir="benchmark/results/${ranking.type}" />

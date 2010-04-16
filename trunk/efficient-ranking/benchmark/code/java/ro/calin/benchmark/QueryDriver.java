@@ -91,6 +91,7 @@ public class QueryDriver {
 				System.exit(1);
 			}
 		}
+
 		QualityQueryParser qqParser;
 		if (qqpConstr.getParameterTypes().length == 3) {
 			qqParser = (QualityQueryParser) qqpConstr.newInstance(flds, "body", dir);

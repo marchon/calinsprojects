@@ -1,5 +1,8 @@
 package ro.calin.wsd;
 
+import java.util.Arrays;
+
+
 public class Sentence {
 	private Word[] words;
 	private Word headWord;
@@ -7,10 +10,10 @@ public class Sentence {
 
 	private int left;
 	private int right;
-
+	
 	public Sentence(Word[] words, Word headWord, String headWordSense) {
-		this(words, headWord, headWordSense, Integer.MAX_VALUE,
-				Integer.MAX_VALUE);
+		this(words, headWord, headWordSense, words.length,
+				words.length);
 	}
 
 	public Sentence(Word[] words, Word headWord, String headWordSense,
@@ -63,14 +66,41 @@ public class Sentence {
 	}
 	
 	public Word[] getWordContext(Word word) {
-		//TODO: implement this
-		return getWords();
+		int i;
+		for (i = 0; i < words.length; i++) {
+			if(words[i].equals(word)) break;
+		}
+		
+		if(i == words.length)
+			return null;
+		
+		int len = words.length - 1;
+		int a = i - left;
+		int b = i + right;
+		
+		if(a < 0) {
+			b += (-a);
+			a = 0;
+		}
+		
+		if(b > len) {
+			a += (len - b);
+			b = len;
+		}
+		
+		a = a < 0? 0 : a;
+		
+		Word[] res = new Word[Math.min(left + right, len)];
+		System.arraycopy(words, a, res, 0, i - a);
+		System.arraycopy(words, i + 1, res, i - a, b - i);
+		
+		return res;
 	}
 	
 	public Word[] getHeadWordCotext() {
 		return getWordContext(headWord);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

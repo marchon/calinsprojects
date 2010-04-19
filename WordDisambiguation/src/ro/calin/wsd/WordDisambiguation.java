@@ -7,8 +7,11 @@ import java.util.Set;
 public class WordDisambiguation {
 	/**
 	 * c(word, sense) = weight
+	 * 		
+	 * 		maps	maps
+	 * sense -> word -> weight
 	 */
-	private Map<String, Map<String, DoubleAcummulator>> learnedWordSenseWeights;
+	private Map<String, Map<String, DoubleAcummulator>> learnedSenseWordWeights;
 	private Map<String, DoubleAcummulator> learedSenseWeights;
 	
 	private static class DoubleAcummulator {
@@ -31,7 +34,7 @@ public class WordDisambiguation {
 	}
 	
 	public WordDisambiguation() {
-		learnedWordSenseWeights = new HashMap<String, Map<String,DoubleAcummulator>>();
+		learnedSenseWordWeights = new HashMap<String, Map<String,DoubleAcummulator>>();
 		learedSenseWeights = new HashMap<String, DoubleAcummulator>();
 	}
 	
@@ -45,7 +48,7 @@ public class WordDisambiguation {
 		return da;
 	}
 	
-	public void learn(SentenceFactory sentenceFactory) {
+	public void train(SentenceFactory sentenceFactory) {
 		Sentence sentence;
 		int occurences = 0;
 		Map<String, DoubleAcummulator> wordSenseNorms = new HashMap<String, DoubleAcummulator>();
@@ -58,19 +61,18 @@ public class WordDisambiguation {
 			DoubleAcummulator senseWeight = getOrCreate(learedSenseWeights, sentence.getHeadWordSense());
 			senseWeight.add(1);
 			
-			for (Word word : contextWords) {
-				Map<String, DoubleAcummulator> senseWeights = learnedWordSenseWeights.get(word);
-				if(senseWeights == null) {
-					senseWeights = new HashMap<String, DoubleAcummulator>();
-					learnedWordSenseWeights.put(word.getValue(), senseWeights);
-				}
-				
-				DoubleAcummulator weight = getOrCreate(senseWeights, sentence.getHeadWordSense());
-				weight.add(1);
-				
-				DoubleAcummulator norm = getOrCreate(wordSenseNorms, sentence.getHeadWordSense());
-				norm.add(1);
+			Map<String, DoubleAcummulator> wordWeights = learnedSenseWordWeights.get(sentence.getHeadWordSense());
+			if(wordWeights == null) {
+				wordWeights = new HashMap<String, DoubleAcummulator>();
+				learnedSenseWordWeights.put(sentence.getHeadWordSense(), wordWeights);
 			}
+			for (Word word : contextWords) {
+				DoubleAcummulator weight = getOrCreate(wordWeights, word.getValue());
+				weight.add(1);
+			}
+			
+			DoubleAcummulator norm = getOrCreate(wordSenseNorms, sentence.getHeadWordSense());
+			norm.add(contextWords.length);
 		}
 		
 		//normalize stuff
@@ -80,13 +82,14 @@ public class WordDisambiguation {
 			accum.normalize(occurences);
 		}
 		
-		System.out.println(wordSenseNorms);
 		//second, context<->sense mapping by the sum of all
-		for (Map<String, DoubleAcummulator> senseWeights : learnedWordSenseWeights.values()) {
-			Set<String> senses = senseWeights.keySet();
+		for (String sense : learnedSenseWordWeights.keySet()) {
+			Map<String, DoubleAcummulator> senseMap = learnedSenseWordWeights.get(sense);
 			
-			for (String sense : senses) {
-				senseWeights.get(sense).normalize(wordSenseNorms.get(sense).value);
+			double senseNorm = wordSenseNorms.get(sense).value;
+			
+			for (DoubleAcummulator weight : senseMap.values()) {
+				weight.normalize(senseNorm);
 			}
 		}
 	}
@@ -110,18 +113,22 @@ public class WordDisambiguation {
 			for (String sense : senses) {
 				double bayesProb = learedSenseWeights.get(sense).value;
 				
-				for (Word word : words) {
-					Map<String, DoubleAcummulator> tmp = learnedWordSenseWeights.get(word);
-					if(tmp != null) {
-						DoubleAcummulator da = tmp.get(sense);
-						if(da != null)
-							bayesProb += da.value;
-					}
-				}
+				Map<String, DoubleAcummulator> wordWeights = learnedSenseWordWeights.get(sense);
 				
-				if(bayesProb > argmax) {
-					argmax = bayesProb;
-					currentSense = sense;
+				if (wordWeights != null) {
+					for (Word word : words) {
+						if (wordWeights != null) {
+							DoubleAcummulator da = wordWeights.get(word.getValue());
+							if (da != null)
+								bayesProb += da.value;
+						}
+					}
+
+					//log makes it negative
+					if (bayesProb < argmax) {
+						argmax = bayesProb;
+						currentSense = sense;
+					}
 				}
 			}
 			
@@ -138,6 +145,6 @@ public class WordDisambiguation {
 	
 	@Override
 	public String toString() {
-		return learnedWordSenseWeights.toString();
+		return learnedSenseWordWeights.toString() + "\n" + learedSenseWeights.toString();
 	}
 }

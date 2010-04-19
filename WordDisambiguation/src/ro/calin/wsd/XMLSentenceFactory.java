@@ -19,8 +19,16 @@ public class XMLSentenceFactory implements SentenceFactory {
 
 	private int sentenceId = 0;
 
+	private int ctxLeft;
+	private int ctxRight;
+
 	public XMLSentenceFactory(Reader xmlReader, SentenceFactoryFilter filter)
 			throws XMLStreamException {
+		this(xmlReader, filter, 5, 5);
+	}
+
+	public XMLSentenceFactory(Reader xmlReader, SentenceFactoryFilter filter,
+			int ctxLeft, int ctxRight) throws XMLStreamException {
 		this.xmlStreamReader = (XMLStreamReader) xmlInputFactory
 				.createXMLStreamReader(xmlReader);
 		this.filter = filter;
@@ -28,6 +36,9 @@ public class XMLSentenceFactory implements SentenceFactory {
 		if (!readUntilNextInstance()) {
 			close();
 		}
+
+		this.ctxLeft = ctxLeft;
+		this.ctxRight = ctxRight;
 
 	}
 
@@ -141,7 +152,9 @@ public class XMLSentenceFactory implements SentenceFactory {
 				Word word = new Word();
 				int res;
 				while ((res = getNextWord(word)) != -1) {
-					words.add(word);
+					if(filter.approveWord(word)) {
+						words.add(word);
+					}
 
 					if (res == 1) {
 						headWord = word;
@@ -155,7 +168,7 @@ public class XMLSentenceFactory implements SentenceFactory {
 				}
 
 				sentence = new Sentence(words.toArray(new Word[words.size()]),
-						headWord, headWordSense);
+						headWord, headWordSense, ctxLeft, ctxRight);
 			} while (!filter.approveSentence(sentence));
 			return sentence;
 		} catch (XMLStreamException e) {

@@ -31,7 +31,13 @@ public class Word {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return value.equals(obj);
+		if(obj == this)
+			return true;
+		if(!(obj instanceof Word))
+			return false;
+		
+		Word w = (Word)obj;
+		return value.equals(w.getValue());
 	}
 	
 	@Override

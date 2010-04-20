@@ -109,7 +109,7 @@ public class XMLSentenceFactory implements SentenceFactory {
 		word.setValue(new Stemmer(xmlStreamReader.getText().trim()).stem()
 				.toString());
 		readUntilTypeAndNode("p", XMLStreamConstants.START_ELEMENT);
-		word.setRole(xmlStreamReader.getAttributeValue(null, "s"));
+		word.setRole(xmlStreamReader.getAttributeValue(null, "s").trim());
 		readUntilTypeAndNode("p", XMLStreamConstants.END_ELEMENT);
 		// xmlStreamReader.next(); // end p
 

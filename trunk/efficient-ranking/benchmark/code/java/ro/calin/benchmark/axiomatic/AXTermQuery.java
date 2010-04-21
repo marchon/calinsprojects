@@ -5,7 +5,7 @@
  * Implementaiton of Axiomatic retrieval functions: F2-EXP 
  * References: H. Fang and C. Zhai. "An Exploration of Axiomatic Approaches to Information Retrieval", SIGIR'05.
  ******************************************/
-package ro.calin.axiomatic;
+package ro.calin.benchmark.axiomatic;
 
 import java.io.IOException;
 

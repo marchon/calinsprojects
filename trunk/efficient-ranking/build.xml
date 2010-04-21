@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<project name="ranking-benchmark" default="lucene-default" basedir=".">
-	<property name="corpus" value="ohsumed-small" />
-	<property name="topic.num" value="1" />
+<project name="ranking-benchmark" default="benchmark" basedir=".">
+	<property name="technique" value="lucene" />
+	<property name="collection" value="ohsumed-small" />
+	<property name="collection.num" value="1" />
 
 	<path id="prj.classpath">
 		<pathelement location="benchmark/code/classes" />
@@ -10,66 +11,32 @@
 	</path>
 	
 	<target name="clean">
-		<delete dir="collections/${corpus}/index"/>
+		<delete dir="collections/${collection}/index"/>
+		<delete dir="benchmark/results/${technique}" />
+	</target>
+	
+	<target name="check-index">
+	    <available file="collections/${collection}/index" type="dir" property="index.exist"/>
 	</target>
 
-	<target name="index">
-		<java classname="ro.calin.benchmark.IndexCorpus" maxmemory="512M" fork="true">
+	<target name="index" depends="check-index" unless="index.exist" >
+		<java classname="ro.calin.benchmark.Indexer" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}" />
 		</java>
 	</target>
-	
-	<!--
-	<target name="doBar" depends="dir.check" unless="dir.exists">
-    <echo>${directory} missing"</echo>
-  </target>
 
-  <target name="dir.check">
-    <condition property="dir.exists">
-      <available file="${directory}" type="dir"/>
-    </condition>
-  </target>
-	
-	-->
-
-	<target name="benchmark">
-		<mkdir dir="benchmark/results/${ranking.type}" />
+	<target name="benchmark" depends="index">
+		<mkdir dir="benchmark/results/${technique}" />
 		<java classname="ro.calin.benchmark.QueryDriver" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
-			<arg file="collections/${collection}/queries${topic.num}.txt" />
-			<arg file="collections/${collection}/judgements${topic.num}.txt" />
-			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-trec-eval-submission.txt" />
-			<arg file="benchmark/results/${ranking.type}/${collection}-${topic.num}-benchmark-average.txt" />
-			<arg file="collections/${collection}/${index.name}" />
-			<arg value="${quality.parser.impl}" />
+			<arg file="collections/${collection}/queries${collection.num}.txt" />
+			<arg file="collections/${collection}/judgements${collection.num}.txt" />
+			<arg file="benchmark/results/${technique}/${collection}-${collection.num}-submission.txt" />
+			<arg file="benchmark/results/${technique}/${collection}-${collection.num}-average.txt" />
+			<arg file="collections/${collection}/index" />
+			<arg value="${technique}" />
 		</java>
 	</target>
 
-	<target name="lucene-default">
-		<antcall target="benchmark">
-			<param name="ranking.type" value="lucene-tfidf" />
-			<param name="collection" value="${corpus}" />
-			<param name="index.name" value="index" />
-			<param name="quality.parser.impl" value="org.apache.lucene.benchmark.quality.utils.SimpleQQParser" />
-		</antcall>
-	</target>
-
-	<target name="axiomatic">
-		<antcall target="benchmark">
-			<param name="ranking.type" value="axiomatic" />
-			<param name="collection" value="${corpus}" />
-			<param name="index.name" value="index" />
-			<param name="quality.parser.impl" value="ro.calin.axiomatic.AXQQParser" />
-		</antcall>
-	</target>
-
-	<target name="cluster-pruning">
-		<antcall target="benchmark">
-			<param name="ranking.type" value="cluster-pruning" />
-			<param name="collection" value="${corpus}" />
-			<param name="index.name" value="index_clust" />
-			<param name="quality.parser.impl" value="ro.calin.clusterpruning.ClusterQQParser" />
-		</antcall>
-	</target>
 </project>

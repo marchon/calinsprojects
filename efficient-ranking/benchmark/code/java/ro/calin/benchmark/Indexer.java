@@ -11,7 +11,7 @@ import org.apache.lucene.benchmark.byTask.tasks.ResetSystemEraseTask;
 import org.apache.lucene.benchmark.byTask.tasks.TaskSequence;
 import org.apache.lucene.benchmark.byTask.utils.Config;
 
-public class IndexCorpus {
+public class Indexer {
 	public static void main(String[] args) throws Exception {
 		if(args.length != 1) {
 			System.err.println("Usage: IndexCorpus <workDir>");

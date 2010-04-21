@@ -1,4 +1,4 @@
-package ro.calin.clusterpruning;
+package ro.calin.benchmark.clusterpruning;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -11,12 +11,12 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
-public class ClusterQQParser implements QualityQueryParser {
+public class QualityQueryParserImpl implements QualityQueryParser {
 	private String qqNames[];
 	private String indexField;
 	ThreadLocal<ClusterQueryParser> queryParser = new ThreadLocal<ClusterQueryParser>();
 
-	public ClusterQQParser(String[] qqNames, String indexField) {
+	public QualityQueryParserImpl(String[] qqNames, String indexField) {
 		this.qqNames = qqNames;
 		this.indexField = indexField;
 	}

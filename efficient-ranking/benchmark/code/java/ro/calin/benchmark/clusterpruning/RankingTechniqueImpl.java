@@ -9,7 +9,6 @@ import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.benchmark.quality.QualityQueryParser;
-import org.apache.lucene.benchmark.quality.utils.SimpleQQParser;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
@@ -43,7 +42,7 @@ public class RankingTechniqueImpl implements RankingTechnique {
 
 	@Override
 	public QualityQueryParser getQualityQueryParser() {
-		return new SimpleQQParser(qqNames, indexField);
+		return new QualityQueryParserImpl(qqNames, indexField);
 	}
 
 	@Override
@@ -60,14 +59,13 @@ public class RankingTechniqueImpl implements RankingTechnique {
 			String clustIndName = f.getName() + "_clust";
 			
 			File newIndexFile = new File(f.getParent(), clustIndName);
-			
+
 			if(newIndexFile.exists()) {
 				buildCluster = false;
 				System.out.println("Cluster already exists, skipping build...");
-				this.dir = dir;
-			} else {
-				this.dir = FSDirectory.open(newIndexFile.getAbsoluteFile());
-			}
+			} 
+			
+			this.dir = FSDirectory.open(newIndexFile.getAbsoluteFile());
 		} else if(dir instanceof RAMDirectory) {
 			this.dir = new RAMDirectory();
 		} else {

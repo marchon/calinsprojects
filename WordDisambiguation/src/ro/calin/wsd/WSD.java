@@ -48,10 +48,14 @@ public class WSD {
 
 	private static Object[][] tests = new Object[][] {
 	/* {name, corpus, nb_itr, filter, window_len} */
-		{ "hard", "corpus/hard.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 5 },
-		{ "line", "corpus/line.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 5 },
-		{ "interest", "corpus/interest.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 5 },
-		{ "serve", "corpus/serve.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 5 }
+		{ "hard", "corpus/hard.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 8 },
+		{ "line", "corpus/line.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 8 },
+		{ "interest", "corpus/interest.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 8 },
+		{ "serve", "corpus/serve.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 8 },
+		{ "hard", "corpus/hard.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 12 },
+		{ "line", "corpus/line.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 12 },
+		{ "interest", "corpus/interest.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 12 },
+		{ "serve", "corpus/serve.xml", 10, "ro.calin.wsd.WSD$SentenceFactoryFilterImpl", 12 }
 	};
 	
 	
@@ -64,8 +68,9 @@ public class WSD {
 
 		for (int i = 0; i < tests.length; i++) {
 			Object[] test = tests[i];
-			System.out.println("Performing test: " + test[0] + " using corpus "
-					+ test[1]);
+			System.out.println("-----------------------------------------------------------------");
+			System.out.println("TEST (name: " + test[0] + ", corpus: " 
+					+ test[1] + ", iterations: " + test[2] + ", context window: " + test[4]);
 			int itrs = (Integer) test[2];
 			int wlen = (Integer) test[4] / 2;
 
@@ -85,11 +90,16 @@ public class WSD {
 				WordDisambiguation wd = new WordDisambiguation();
 				wd.train(trainFactory);
 				double fairness = wd.disambiguate(testFactory);
-				System.out.println("Fairness at " + (itr + 1) + ": " + fairness);
+				
+				if(itr % 5 == 0)
+					System.out.println();
+				System.out.print((itr + 1) + ": " + fairness + " | ");
+				 
 				avgFairness += fairness;
 			}
 			
-			System.out.println("Average farirness: " + avgFairness / itrs);
+			System.out.println("\nAverage farirness: " + avgFairness / itrs);
+			System.out.println("-----------------------------------------------------------------");
 		}
 	}
 }

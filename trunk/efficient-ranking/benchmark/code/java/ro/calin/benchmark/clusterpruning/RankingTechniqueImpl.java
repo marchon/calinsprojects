@@ -165,7 +165,6 @@ public class RankingTechniqueImpl implements RankingTechnique {
 				Document follower = irSrc.document(docId);
 
 				// build sim query
-				// TODO: index with term vectors
 				Query simq = mlt.like(new StringReader(follower.get("body")));
 				BooleanQuery bq = new BooleanQuery();
 				bq.add(leaderQuery, Occur.MUST);
@@ -193,7 +192,5 @@ public class RankingTechniqueImpl implements RankingTechnique {
 		irDest.clone();
 		irSrc.close();
 		iwDest.close();
-		destDir.close();
-		srcDir.close();
 	}
 }

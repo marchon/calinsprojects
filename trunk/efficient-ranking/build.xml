@@ -3,30 +3,45 @@
 	<property name="technique" value="lucene" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
+	<property name="export.dir" value="../exported"/>
 
 	<path id="prj.classpath">
 		<pathelement location="benchmark/code/classes" />
 		<fileset dir="jars" includes="*.jar">
 		</fileset>
 	</path>
-	
-	<target name="clean">
-		<delete dir="collections/${collection}/index"/>
-		<delete dir="benchmark/results/${technique}" />
-	</target>
-	
-	<target name="check-index">
-	    <available file="collections/${collection}/index" type="dir" property="index.exist"/>
+
+	<target name="compile">
+		<mkdir dir="benchmark/code/classes" />
+		<javac srcdir="benchmark/code/java" destdir="benchmark/code/classes" source="1.6">
+			<classpath refid="prj.classpath" />
+		</javac>
 	</target>
 
-	<target name="index" depends="check-index" unless="index.exist" >
+	<target name="clean">
+		<delete dir="benchmark/code/classes" />
+	</target>
+
+	<target name="clean-index">
+		<delete dir="collections/${collection}/index" />
+	</target>
+
+	<target name="clean-results">
+		<delete dir="benchmark/results/${technique}" />
+	</target>
+
+	<target name="check-index">
+		<available file="collections/${collection}/index" type="dir" property="index.exist" />
+	</target>
+
+	<target name="index" depends="check-index,compile" unless="index.exist">
 		<java classname="ro.calin.benchmark.Indexer" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}" />
 		</java>
 	</target>
 
-	<target name="benchmark" depends="index">
+	<target name="benchmark" depends="index,compile">
 		<mkdir dir="benchmark/results/${technique}" />
 		<java classname="ro.calin.benchmark.QueryDriver" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
@@ -37,6 +52,13 @@
 			<arg file="collections/${collection}/index" />
 			<arg value="${technique}" />
 		</java>
+	</target>
+	
+	<target name="export">
+		<mkdir dir="${export.dir}"/>
+		<copyfile dest="${export.dir}/build.xml" src="./build.xml"/>
+		<copydir dest="${export.dir}/jars" src="./jars"></copydir>
+		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java"></copydir>
 	</target>
 
 </project>

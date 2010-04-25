@@ -22,7 +22,6 @@ public class ClusterQuery extends BooleanQuery {
 	
 	@Override
 	public Weight createWeight(Searcher searcher) throws IOException {
-		//do some lucene magic here :D
 		//first query documents marked with L using a boolean query equivalent to this
 		//then query for documents marked with that cluster
 		

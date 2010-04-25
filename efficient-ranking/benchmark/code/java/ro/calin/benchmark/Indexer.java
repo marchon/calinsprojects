@@ -6,6 +6,7 @@ import org.apache.lucene.benchmark.byTask.PerfRunData;
 import org.apache.lucene.benchmark.byTask.tasks.AddDocTask;
 import org.apache.lucene.benchmark.byTask.tasks.CloseIndexTask;
 import org.apache.lucene.benchmark.byTask.tasks.CreateIndexTask;
+import org.apache.lucene.benchmark.byTask.tasks.PerfTask;
 import org.apache.lucene.benchmark.byTask.tasks.RepSumByNameTask;
 import org.apache.lucene.benchmark.byTask.tasks.ResetSystemEraseTask;
 import org.apache.lucene.benchmark.byTask.tasks.TaskSequence;
@@ -37,7 +38,8 @@ public class Indexer {
 	    TaskSequence seq1 = new TaskSequence(runData,"Seq",top,false);
 	    seq1.setRepetitions(TaskSequence.REPEAT_EXHAUST);
 	    seq1.setNoChildReport();
-	    seq1.addTask(new AddDocTask(runData));
+	    PerfTask addDoc = new AddDocTask(runData);
+	    seq1.addTask(addDoc);
 	    top.addTask(seq1);
 	    
 	    // 5. task to close the index
@@ -52,10 +54,9 @@ public class Indexer {
 	    System.out.println(top.toString());
 	    
 	    // execute
-	    top.doLogic();
+		top.doLogic();
 	  }
 
-	  // Sample programmatic settings. Could also read from file.
 	  private static Properties initProps(String workingDir) {
 	    Properties p = new Properties();
 	    p.setProperty ( "work.dir"  				, workingDir );
@@ -64,11 +65,12 @@ public class Indexer {
 	    p.setProperty ( "analyzer"            		, "org.apache.lucene.analysis.standard.StandardAnalyzer" );
 	    p.setProperty ( "directory"           		, "FSDirectory" );
 	    p.setProperty ( "doc.tokenized"       		, "true" );
-	    p.setProperty ( "doc.stored"          		, "true" );  //try not to store, store just the term vectors
-	    p.setProperty ( "doc.term.vector"        	, "false" ); //try true
+	    p.setProperty ( "doc.stored"          		, "true" );
+	    //p.setProperty ( "doc.body.stored"			, "false");
+	    p.setProperty ( "doc.term.vector"        	, "false" );
 	    p.setProperty ( "content.source.forever"	, "false" );
 	    p.setProperty ( "content.source.encoding"	, "UTF-8" );
-	    p.setProperty ( "content.source.excludeIteration", "false" );
+	    p.setProperty ( "content.source.excludeIteration", "true" );
 	    return p;
 	  }
 }

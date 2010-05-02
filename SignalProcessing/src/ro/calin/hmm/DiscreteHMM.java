@@ -11,14 +11,14 @@ import java.util.Scanner;
  * n
  * s1, ...., sn
  * 
- * {@link #symbols}
- * m
- * o1, ...., om
- * 
  * {@link #A}
  * a11, ...., a1n
  * ..............
  * an1, ...., ann
+ * 
+ * {@link #symbols}
+ * m
+ * o1, ...., om
  * 
  * {@link #B}
  * b11, ...., b1m
@@ -30,32 +30,43 @@ import java.util.Scanner;
  */
 public class DiscreteHMM extends AbstractHMM {
 	
+	protected String[] symbols;
 	private double[][] B; //output probability matrix
 	
 	@Override
-	protected void loadSymbolStateDistribution(Scanner source) 
+	protected void loadSymbolDistribution(Scanner source) 
 		throws IllegalProbabilityDistributionException {
 		
 		int n = states.length;
-		int m = symbols.length;
 		
-		B = new double[n][m];
-		for (int i = 0; i < n; i++) {
-			double sum = 0.0;
-			for (int j = 0; j < m; j++) {
-				double p = source.nextDouble();
-				sum += p;
-				B[i][j] = p;
-			}
-			
-			if(Math.abs(sum - 1.0) > 0.01)
-				throw new IllegalProbabilityDistributionException("Must add up to 1.");
+		int m = source.nextInt();
+		symbols = new String[m];
+		for (int i = 0; i < symbols.length; i++) {
+			symbols[i] = source.next();
 		}
 		
+		B = new double[n][m];
+		readProbDistrMatrix(B, source);
 	}
 
 	@Override
-	protected double[] getSymbDistrForState(int state) {
-		return B[state];
+	protected double getStateSymbProbab(int state, double symb) {
+		return B[state][(int)symb];
+	}
+	
+	@Override
+	public double generateNextObservation(int state) {
+		return genIndFromProbDistr(B[state]);
+	}
+
+	@Override
+	public String[] getSymbolSequence(double[] seq) {
+		String[] strSeq = new String[seq.length];
+		
+		for (int i = 0; i < strSeq.length; i++) {
+			strSeq[i] = symbols[(int)seq[i]];
+		}
+		
+		return strSeq;
 	}
 }

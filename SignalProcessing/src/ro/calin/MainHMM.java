@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
+import ro.calin.hmm.ContinuousHMM;
 import ro.calin.hmm.DiscreteHMM;
 import ro.calin.hmm.HMM;
 import ro.calin.hmm.IllegalProbabilityDistributionException;
@@ -27,12 +28,11 @@ public class MainHMM {
 
 		// pick a random hmm to generate sequence from
 		int rhmm = (int) Math.round(Math.random() * (hmmNum - 1));
-		int[] seq = dhmms[rhmm].generateObservations(15);
+		double[] seq = dhmms[rhmm].generateObservations(15);
 
-		System.out.println("Generated observation sequence from HMM " + (rhmm + 1) + " is: "
-				+ Arrays.asList(dhmms[rhmm].getSymbolSequence(seq)));
+		System.out.println("Generated observation sequence from HMM " + (rhmm + 1) + " is:");
+		System.out.println(Arrays.asList(dhmms[rhmm].getSymbolSequence(seq)));
 		System.out.println("------------------------------------------------");
-		System.out.println();
 
 		// calculate forward probability for each hmm
 		for (int i = 0; i < dhmms.length; i++) {
@@ -61,7 +61,14 @@ public class MainHMM {
 		// force parse doubles in format dd.dd not dd,dd
 		Locale.setDefault(Locale.ENGLISH);
 
+		System.out.println("Testing Discrete HMM...");
+		System.out.println("------------------------------------------------");
 		testHMM(DiscreteHMM.class, MainHMM.class.getResourceAsStream("/res/dhmm.txt"));
+		
+		System.out.println();
+		System.out.println("Testing Continuous HMM...");
+		System.out.println("------------------------------------------------");
+		testHMM(ContinuousHMM.class, MainHMM.class.getResourceAsStream("/res/chmm.txt"));
 	}
 
 }

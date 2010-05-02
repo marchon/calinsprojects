@@ -4,14 +4,34 @@ import java.util.Scanner;
 
 public abstract class AbstractHMM implements HMM {
 	protected String[] states;
-	protected String[] symbols;
 
 	protected double[][] A; // transition probability matrix
 	protected double[] PI; // initial state distribution vector
 
-	protected abstract void loadSymbolStateDistribution(Scanner source)
+	protected abstract void loadSymbolDistribution(Scanner source)
 			throws IllegalProbabilityDistributionException;
-	protected abstract double[] getSymbDistrForState(int state);
+	protected abstract double getStateSymbProbab(int state, double symb);
+	
+	protected void readProbDistrVector(double[] distr, Scanner source) 
+		throws IllegalProbabilityDistributionException {
+		double sum = 0.0;
+		for (int j = 0; j < distr.length; j++) {
+			double p = source.nextDouble();
+			sum += p;
+			distr[j] = p;
+		}
+
+		if (Math.abs(sum - 1.0) > 0.01)
+			throw new IllegalProbabilityDistributionException(
+					"Must add up to 1.");
+	}
+	
+	protected void readProbDistrMatrix(double[][] distr, Scanner source)
+		throws IllegalProbabilityDistributionException {
+		for (int i = 0; i < distr.length; i++) {
+			readProbDistrVector(distr[i], source);
+		}
+	}
 	
 	@Override
 	public HMM load(Scanner source)
@@ -22,45 +42,19 @@ public abstract class AbstractHMM implements HMM {
 			states[i] = source.next();
 		}
 
-		int m = source.nextInt();
-		symbols = new String[m];
-		for (int i = 0; i < symbols.length; i++) {
-			symbols[i] = source.next();
-		}
-
 		A = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			double sum = 0.0;
-			for (int j = 0; j < n; j++) {
-				double p = source.nextDouble();
-				sum += p;
-				A[i][j] = p;
-			}
-
-			if (Math.abs(sum - 1.0) > 0.01)
-				throw new IllegalProbabilityDistributionException(
-						"Must add up to 1.");
-		}
+		readProbDistrMatrix(A, source);
 
 		// load prob distrib for symbols
-		loadSymbolStateDistribution(source);
+		loadSymbolDistribution(source);
 
 		PI = new double[n];
-		double sum = 0.0;
-		for (int i = 0; i < n; i++) {
-			double p = source.nextDouble();
-			sum += p;
-			PI[i] = p;
-		}
-
-		if (Math.abs(sum - 1.0) > 0.01)
-			throw new IllegalProbabilityDistributionException(
-					"Must add up to 1.");
+		readProbDistrVector(PI, source);
 
 		return this;
 	}
 	
-	private int genIndFromProbDistr(double[] distr) {
+	protected int genIndFromProbDistr(double[] distr) {
 		double rand = Math.random();
 	
 		double from = 0;
@@ -76,50 +70,43 @@ public abstract class AbstractHMM implements HMM {
 		
 		return -1;
 	}
+	
+	public abstract double generateNextObservation(int state);
 
 	@Override
-	public int[] generateObservations(int seqLen) {
+	public double[] generateObservations(int seqLen) {
 		int currentState = genIndFromProbDistr(PI); //generate init state
 		
-		int[] seq = new int[seqLen];
+		double[] seq = new double[seqLen];
 		
 		for (int i = 0; i < seqLen; i++) {
-			seq[i] = genIndFromProbDistr(getSymbDistrForState(currentState)); //generate obs for current state
+			seq[i] = generateNextObservation(currentState); //generate obs for current state
 			currentState = genIndFromProbDistr(A[currentState]); //generate next state
 		}
 		
 		return seq;
 	}
 	
-	private String[] seq(int[] seq, String[] seqNames) {
+	@Override
+	public String[] getStateSequence(int[] seq) {
 		String[] strSeq = new String[seq.length];
 		
 		for (int i = 0; i < strSeq.length; i++) {
-			strSeq[i] = seqNames[seq[i]];
+			strSeq[i] = states[seq[i]];
 		}
 		
 		return strSeq;
 	}
-	
-	@Override
-	public String[] getSymbolSequence(int[] seq) {
-		return seq(seq, symbols);
-	}
-	
-	@Override
-	public String[] getStateSequence(int[] seq) {
-		return seq(seq, states);
-	}
 
 	@Override
-	public double getForwordProbability(int[] observations) {
+	public double getForwordProbability(double[] observations) {
 		//after iteration t alpha[i] represents the probability that
 		//HMM is in state i and the generated sequence is o[0]o[1]...o[t]
 		double[] alpha = new double[states.length];
 		
 		//init alpha
 		for (int i = 0; i < alpha.length; i++) {
-			alpha[i] = PI[i] * getSymbDistrForState(i)[observations[0]];
+			alpha[i] = PI[i] * getStateSymbProbab(i, observations[0]);
 		}
 		
 		for (int t = 1; t < observations.length; t++) { // time/iteration t
@@ -129,7 +116,7 @@ public abstract class AbstractHMM implements HMM {
 					sum += (alpha[i] * A[i][j]);		 // A[i][j] represents the 
 				}										 // probability to get from i to j
 				
-				alpha[j] = sum * getSymbDistrForState(j)[observations[t]];
+				alpha[j] = sum * getStateSymbProbab(j, observations[t]);
 			}
 		}
 		
@@ -142,7 +129,7 @@ public abstract class AbstractHMM implements HMM {
 	}
 
 	@Override
-	public int[] getViterbiStateSequence(int[] observations) {
+	public int[] getViterbiStateSequence(double[] observations) {
 		int T = observations.length;
 		int N = states.length;
 		
@@ -151,7 +138,7 @@ public abstract class AbstractHMM implements HMM {
 		
 		//init
 		for (int i = 0; i < N; i++) {
-			vt[0][i] = PI[i] * getSymbDistrForState(i)[observations[0]];
+			vt[0][i] = PI[i] * getStateSymbProbab(i, observations[0]);
 			bt[0][i] = 0;
 		}
 		
@@ -170,7 +157,7 @@ public abstract class AbstractHMM implements HMM {
 					}
 				}
 				
-				vt[t][j] = max * getSymbDistrForState(j)[observations[t]];
+				vt[t][j] = max * getStateSymbProbab(j, observations[t]);
 				bt[t][j] = argmax;
 			}
 		}

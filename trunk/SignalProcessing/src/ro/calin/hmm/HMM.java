@@ -8,9 +8,9 @@ import java.util.Scanner;
  */
 public interface HMM {
 	HMM load(Scanner source) throws IllegalProbabilityDistributionException;
-	String[] getSymbolSequence(int[] seq);
+	String[] getSymbolSequence(double[] seq);
 	String[] getStateSequence(int[] seq);
-	int[] generateObservations(int seqLen);
-	double getForwordProbability(int[] observations);
-	int[] getViterbiStateSequence(int[] observations);
+	double[] generateObservations(int seqLen);
+	double getForwordProbability(double[] observations);
+	int[] getViterbiStateSequence(double[] observations);
 }

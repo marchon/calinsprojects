@@ -1,32 +1,23 @@
 package ro.calin.hmm;
 
+import java.util.Scanner;
+
 /**
  * @author Calin
  *
  */
-public class ContinuousHMM implements HMM {
+public class ContinuousHMM extends AbstractHMM {
+
 	@Override
-	public String[] getSymbolSequence(int[] seq) {
+	protected double[] getSymbDistrForState(int state) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int[] generateObservations(int seqLen) {
+	protected void loadSymbolStateDistribution(Scanner source)
+			throws IllegalProbabilityDistributionException {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
-
-	@Override
-	public double getForwordProbability(int[] observations) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int[] getViterbiStateSequence(int[] observations) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

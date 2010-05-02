@@ -2,7 +2,7 @@
 
 
 3
-s1 s2 s3
+sa1 sa2 sa3
 2
 o1 o2
 
@@ -18,7 +18,7 @@ o1 o2
 
 
 3
-s1 s2 s3
+sb1 sb2 sb3
 2
 o1 o2
 
@@ -34,7 +34,7 @@ o1 o2
 
 
 3
-s1 s2 s3
+sc1 sc2 sc3
 2
 o1 o2
 

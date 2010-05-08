@@ -33,6 +33,7 @@ public class FighterHandler extends InputHandler {
 		keyboard.set("left", KeyInput.KEY_A);
 		keyboard.set("inc", KeyInput.KEY_PGUP);
 		keyboard.set("dec", KeyInput.KEY_PGDN);
+		keyboard.set("fire", KeyInput.KEY_SPACE);
 	}
 
 	private void setActions() {
@@ -77,5 +78,12 @@ public class FighterHandler extends InputHandler {
 				fighter.decreaseSpeed(evt.getTime());
 			}
 		}, "dec", true);
+		
+		addAction(new KeyInputAction() {
+			@Override
+			public void performAction(InputActionEvent evt) {
+				fighter.fire(evt.getTime());
+			}
+		}, "fire", true);
 	}
 }

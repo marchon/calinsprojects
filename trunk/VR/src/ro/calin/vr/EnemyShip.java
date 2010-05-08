@@ -1,10 +1,65 @@
 package ro.calin.vr;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera.FrustumIntersect;
 import com.jme.scene.Spatial;
+import com.jme.util.CloneImportExport;
 
 public class EnemyShip extends Model {
-	public EnemyShip(String id, Spatial model) {
-		super(id, model);
+	private static final Logger logger = Logger.getLogger(EnemyShip.class
+			.getName());
+	
+	public static final float SPEED = 20f;
+	
+	private static ArrayList<CloneImportExport> enemyModels = new ArrayList<CloneImportExport>();
+	public static void addModel(Spatial model) {
+		CloneImportExport clone = new CloneImportExport();
+		if(clone.saveClone(model))
+			enemyModels.add(clone);
+		else {
+			logger.log(Level.WARNING, "Unable to clone spatial.");
+		}
 	}
 	
+	public static int id = 0;
+	public static EnemyShip createRandomEnemy(Fighter target) {
+		if(enemyModels.size() == 0)
+			return null;
+		
+		int index = (int)(Math.random() * enemyModels.size());
+		return new EnemyShip("enemy" + id++, (Spatial)enemyModels.get(index).loadClone(), target);
+	}
+	
+	
+	private Fighter target;
+	private Vector3f pos;
+	private float speed = SPEED;
+	
+	public EnemyShip(String id, Spatial model, Fighter target) {
+		super(id, model);
+		this.target = target;
+
+		pos = new Vector3f(target.getPos().x, target.getPos().y, target.getPos().z - 450f);
+	}
+	
+	public Vector3f getPos() {
+		return pos;
+	}
+	
+	public boolean isInCameraRange() {
+		return pos.z < target.getCam().getLocation().z;
+		
+		//TODO: why not working?
+		//return target.getCam().contains(this.getWorldBound()) != FrustumIntersect.Outside;
+	}
+	
+	public void update(float time){
+		pos.z += time * (speed + target.getSpeed());
+		
+		this.setLocalTranslation(pos);
+	}
 }

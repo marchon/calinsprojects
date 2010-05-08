@@ -47,34 +47,49 @@ public class ModelLoader {
 	public static Spatial loadModel(String modelPath, ModelProcessor processor) throws IOException {
 		return loadModel(modelPath, null, null, processor);
 	}
+	
+	public static Spatial loadModel(URL modelURL, ModelProcessor processor) throws IOException {
+		return loadModel(modelURL, null, null, processor);
+	}
 
 	public static Spatial loadModel(String modelPath, String texPath,
 			DisplaySystem display, ModelProcessor processor) throws IOException {
 		Spatial model;
 
-		URL modelUrl = ModelLoader.class.getClassLoader()
+		URL modelURL = ModelLoader.class.getClassLoader()
 				.getResource(modelPath);
-		if(modelUrl == null)
-			modelUrl = new File(modelPath).toURI().toURL();
+		if(modelURL == null)
+			modelURL = new File(modelPath).toURI().toURL();
 
-		if(modelUrl == null)
+		if(modelURL == null)
 			throw new IOException("Could not find model path.");
 		
-		model = (Node) BinaryImporter.getInstance().load(
-				getLocalFormatInput(modelUrl));
+		//if texpath not null find url
+		URL texURL = null;
+		if(texPath != null) {
+			texURL = ModelLoader.class.getClassLoader().getResource(modelPath);
+			if(texURL == null)
+				texURL = new File(texPath).toURI().toURL();
+		}
 		
-		//TODO: externalize this
+		return loadModel(modelURL, texURL, display, processor);
+	}
+	
+	public static Spatial loadModel(URL modelURL, URL texURL,
+			DisplaySystem display, ModelProcessor processor) throws IOException {
+		Spatial model;
+
+		model = (Node) BinaryImporter.getInstance().load(
+				getLocalFormatInput(modelURL));
 		
 		if(processor != null)
 			processor.process(model);
 		
 		// load texture
 		//TODO: figure out how to apply texture to complex model
-		if (texPath != null && display != null) {
-			URL texUrl = ModelLoader.class.getClassLoader()
-					.getResource(texPath);
+		if (texURL != null && display != null) {
 			TextureState ts = display.getRenderer().createTextureState();
-			Texture t = TextureManager.loadTexture(texUrl,
+			Texture t = TextureManager.loadTexture(texURL,
 					Texture.MinificationFilter.BilinearNearestMipMap,
 					Texture.MagnificationFilter.Bilinear);
 			ts.setTexture(t);

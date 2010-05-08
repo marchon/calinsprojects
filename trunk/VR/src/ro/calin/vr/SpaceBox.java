@@ -35,24 +35,24 @@ public class SpaceBox extends Skybox {
 			e.printStackTrace();
 		}
 
-		this.setTexture(Skybox.Face.North, TextureManager.loadTexture(
-				"north.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
-		this.setTexture(Skybox.Face.West, TextureManager.loadTexture(
-				"west.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
+//		this.setTexture(Skybox.Face.North, TextureManager.loadTexture(
+//				"north.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+//				Texture.MagnificationFilter.Bilinear));
+//		this.setTexture(Skybox.Face.West, TextureManager.loadTexture(
+//				"west.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+//				Texture.MagnificationFilter.Bilinear));
 		this.setTexture(Skybox.Face.South, TextureManager.loadTexture(
 				"south.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
 				Texture.MagnificationFilter.Bilinear));
-		this.setTexture(Skybox.Face.East, TextureManager.loadTexture(
-				"east.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
-		this.setTexture(Skybox.Face.Up, TextureManager.loadTexture("up.jpg",
-				Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
-		this.setTexture(Skybox.Face.Down, TextureManager.loadTexture(
-				"down.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
+//		this.setTexture(Skybox.Face.East, TextureManager.loadTexture(
+//				"east.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+//				Texture.MagnificationFilter.Bilinear));
+//		this.setTexture(Skybox.Face.Up, TextureManager.loadTexture("up.jpg",
+//				Texture.MinificationFilter.BilinearNearestMipMap,
+//				Texture.MagnificationFilter.Bilinear));
+//		this.setTexture(Skybox.Face.Down, TextureManager.loadTexture(
+//				"down.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+//				Texture.MagnificationFilter.Bilinear));
 		this.preloadTextures();
 
 		CullState cullState = display.getRenderer().createCullState();

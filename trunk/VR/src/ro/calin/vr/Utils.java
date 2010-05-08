@@ -30,7 +30,7 @@ public class Utils {
 	 	File[] files = location.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.matches(pattern);
+				return pattern == null? true : name.matches(pattern);
 			}
 		});
 	 	

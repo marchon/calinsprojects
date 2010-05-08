@@ -21,9 +21,10 @@ public class EnemyHandler extends InputHandler {
 	
 	private void addAnEnemy() {
 		EnemyShip enemyShip = EnemyShip.createRandomEnemy(target);
-		enemyShip.setModelBound(new BoundingBox());
-		enemyShip.updateModelBound();
+		
 		scene.attachChild(enemyShip);
+		//for the textures, uh
+		scene.updateRenderState();
 		
 		enemyShips.add(enemyShip);
 	}
@@ -50,7 +51,5 @@ public class EnemyHandler extends InputHandler {
 				enemyShip.update(time);
 			}
 		}
-		
-		System.out.println(enemyShips.size());
 	}
 }

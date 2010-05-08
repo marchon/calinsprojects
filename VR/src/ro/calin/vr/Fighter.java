@@ -4,7 +4,9 @@ import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
+import com.jmex.effects.particles.ParticleMesh;
 
 public class Fighter extends Model {
 	private static final float MOVE_ACCEL = 2f;
@@ -15,8 +17,8 @@ public class Fighter extends Model {
 	private static final float MAX_RIGHT = 8f;
 	private static final float MIN_VEL = 1f;
 	private static final float MAX_VEL = 3f;
-	private static final float MIN_SPEED = 8f;
-	private static final float MAX_SPEED = 30f;
+	private static final float MIN_SPEED = 15f;
+	private static final float MAX_SPEED = 55f;
 	private static final float MIN_SPEED_REPR = 0f;
 	private static final float MAX_SPEED_REPR = 4f;
 	private static final float SPEED_FACTOR = (MAX_SPEED - MIN_SPEED) / 6;
@@ -24,116 +26,141 @@ public class Fighter extends Model {
 	private static final float ROT_ANGLE_INC = FastMath.PI / 8;
 
 	private Vector3f pos = new Vector3f(0, 0, 0);
-	
+
 	private float rotXAngle = 0;
 	private float rotYAngle = 0;
-	private Matrix3f rotX= new Matrix3f(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	private Matrix3f rotX = new Matrix3f(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	private Matrix3f rotY = new Matrix3f(1, 0, 0, 0, 1, 0, 0, 0, 1);
-	
+
 	private boolean moveIssued = false;
+	private boolean speedChanged = false;
 	private Camera cam;
 
 	private float velocityX;
 	private float velocityY;
-	
+
 	private float speed = MIN_SPEED;
-	
+
 	private Vector3f camLeft;
 	private Vector3f camUp;
 
-	public Fighter(String id, Spatial model, Camera cam) {
+	private ParticleMesh leftEngine;
+	private ParticleMesh rightEngine;
+
+	public Fighter(String id, Spatial model, Camera cam, ParticleMesh leftEngine, ParticleMesh rightEngine) {
 		super(id, model);
 		this.cam = cam;
 		camLeft = cam.getLeft();
 		camUp = cam.getUp();
+
+		this.updateGeometricState( 0, true );
+		if (leftEngine != null && rightEngine != null) {
+			this.leftEngine = leftEngine;
+			this.rightEngine = rightEngine;
+			
+			leftEngine.setLocalTranslation(-1.67f, -0.26f, 3.35f);
+			this.attachChild(leftEngine);
+
+			rightEngine.setLocalTranslation(1.67f, -0.26f, 3.35f);
+			this.attachChild(rightEngine);
+		}
 	}
-	
+
 	public Vector3f getPos() {
 		return pos;
 	}
-	
+
 	public float getSpeed() {
 		return speed;
 	}
-	
+
 	public Camera getCam() {
 		return cam;
+	}
+	
+	private float getSpeedInInterval(float a, float b) {
+		float p = (b - a) / (MAX_SPEED - MIN_SPEED);
+		return p * speed + (a - p * MIN_SPEED);
 	}
 
 	public void increaseSpeed(float time) {
 		speed += SPEED_FACTOR * time;
-		if(speed > MAX_SPEED)
+		if (speed > MAX_SPEED)
 			speed = MAX_SPEED;
+		
+		speedChanged = true;
 	}
-	
+
 	public void decreaseSpeed(float time) {
 		speed -= SPEED_FACTOR * time;
-		if(speed < MIN_SPEED)
+		if (speed < MIN_SPEED)
 			speed = MIN_SPEED;
+		
+		speedChanged = true;
 	}
 
 	public void moveUp(float time) {
-		if(velocityY < MIN_VEL) {
+		if (velocityY < MIN_VEL) {
 			velocityY = MIN_VEL;
 		} else {
 			velocityY += time * MOVE_ACCEL;
-			if(velocityY > MAX_VEL)
+			if (velocityY > MAX_VEL)
 				velocityY = MAX_VEL;
 		}
-		
-		if(rotXAngle < MAX_ROT_ANGLE)
-			rotXAngle += time * ROT_ANGLE_INC; 
-		
+
+		if (rotXAngle < MAX_ROT_ANGLE)
+			rotXAngle += time * ROT_ANGLE_INC;
+
 		moveIssued = true;
 	}
 
 	public void moveDown(float time) {
-		if(velocityY > -MIN_VEL) {
+		if (velocityY > -MIN_VEL) {
 			velocityY = -MIN_VEL;
 		} else {
 			velocityY -= time * MOVE_ACCEL;
-			if(velocityY < -MAX_VEL)
+			if (velocityY < -MAX_VEL)
 				velocityY = -MAX_VEL;
 		}
-		
-		if(rotXAngle > -MAX_ROT_ANGLE)
+
+		if (rotXAngle > -MAX_ROT_ANGLE)
 			rotXAngle -= time * ROT_ANGLE_INC;
-		
+
 		moveIssued = true;
 	}
 
 	public void moveLeft(float time) {
-		if(velocityX > -MIN_VEL) {
+		if (velocityX > -MIN_VEL) {
 			velocityX = -MIN_VEL;
 		} else {
 			velocityX -= time * MOVE_ACCEL;
-			if(velocityX < -MAX_VEL)
+			if (velocityX < -MAX_VEL)
 				velocityX = -MAX_VEL;
 		}
-		
-		if(rotYAngle < MAX_ROT_ANGLE)
-			rotYAngle += time * ROT_ANGLE_INC; 
-		
+
+		if (rotYAngle < MAX_ROT_ANGLE)
+			rotYAngle += time * ROT_ANGLE_INC;
+
 		moveIssued = true;
 	}
 
 	public void moveRight(float time) {
-		if(velocityX < MIN_VEL) {
+		if (velocityX < MIN_VEL) {
 			velocityX = MIN_VEL;
 		} else {
 			velocityX += time * MOVE_ACCEL;
-			if(velocityX > MAX_VEL)
+			if (velocityX > MAX_VEL)
 				velocityX = MAX_VEL;
 		}
-		
-		if(rotYAngle > -MAX_ROT_ANGLE)
+
+		if (rotYAngle > -MAX_ROT_ANGLE)
 			rotYAngle -= time * ROT_ANGLE_INC;
-		
+
 		moveIssued = true;
 	}
-	
+
 	public void fire(float time) {
-		
+
 	}
 
 	public void update(float time) {
@@ -149,37 +176,50 @@ public class Fighter extends Model {
 			} else {
 				velocityY = 0;
 			}
-			
-			if(FastMath.abs(rotYAngle) > .01f)
-				rotYAngle -= FastMath.sign(rotYAngle) * time * ROT_ANGLE_INC * 2;
+
+			if (FastMath.abs(rotYAngle) > .01f)
+				rotYAngle -= FastMath.sign(rotYAngle) * time * ROT_ANGLE_INC
+						* 2;
 			else
 				rotYAngle = 0;
-			
-			if(FastMath.abs(rotXAngle) > .01f)
-				rotXAngle -= FastMath.sign(rotXAngle) * time * ROT_ANGLE_INC * 2;
+
+			if (FastMath.abs(rotXAngle) > .01f)
+				rotXAngle -= FastMath.sign(rotXAngle) * time * ROT_ANGLE_INC
+						* 2;
 			else
 				rotXAngle = 0;
-		} 
-		//calc position
+		}
+		
+		if(speedChanged) {
+			if (leftEngine != null && rightEngine != null) {
+				float spd = getSpeedInInterval(.01f, .035f);
+				leftEngine.setInitialVelocity(spd);
+				rightEngine.setInitialVelocity(spd);
+				
+				float col = getSpeedInInterval(.0f, 0.7f);
+				leftEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f, 1));
+				rightEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f, 1));
+			}
+		}
+		// calc position
 		pos.x += (time * velocityX);
 		pos.y += (time * velocityY);
-		
-		//move speed in interval MIN_SPEED_REPR, MAX_SPEED_REPR
-		float p = (MAX_SPEED_REPR - MIN_SPEED_REPR) / (MAX_SPEED - MIN_SPEED);
-		pos.z = -(p * speed + (MIN_SPEED_REPR - p * MIN_SPEED)) * 3;
-		
-		//calc rotation on y
+
+		// move speed in interval MIN_SPEED_REPR, MAX_SPEED_REPR
+		pos.z = -getSpeedInInterval(MIN_SPEED_REPR, MAX_SPEED_REPR) * 3;
+
+		// calc rotation on y
 		rotY.m00 = FastMath.cos(rotYAngle);
 		rotY.m02 = -FastMath.sin(rotYAngle);
 		rotY.m20 = FastMath.sin(rotYAngle);
 		rotY.m22 = FastMath.cos(rotYAngle);
 
-		//calc rotation on x
+		// calc rotation on x
 		rotX.m11 = FastMath.cos(rotXAngle);
 		rotX.m12 = FastMath.sin(rotXAngle);
 		rotX.m21 = -FastMath.sin(rotXAngle);
 		rotX.m22 = FastMath.cos(rotXAngle);
-		
+
 		if (pos.y > MAX_UP)
 			pos.y = MAX_UP;
 		if (pos.y < MAX_DOWN)
@@ -189,24 +229,23 @@ public class Fighter extends Model {
 		if (pos.x > MAX_RIGHT)
 			pos.x = MAX_RIGHT;
 
-		
-		//update location/rotation
+		// update location/rotation
 		this.setLocalTranslation(pos);
 		this.setLocalRotation(rotY.mult(rotX));
-		
-		
-		//camera special effect :d
+
+		// camera special effect :d
 		float alfpha = (FastMath.PI * pos.x) / (30 * MAX_RIGHT);
 		camLeft.x = -FastMath.cos(alfpha);
 		camLeft.z = -FastMath.sin(alfpha);
-		
+
 		float beta = (FastMath.PI * pos.y) / (30 * MAX_UP);
 		camUp.y = FastMath.cos(beta);
 		camUp.z = FastMath.sin(beta);
 
 		cam.setLeft(camLeft);
 		cam.setUp(camUp);
-		
+
 		moveIssued = false;
+		speedChanged = false;
 	}
 }

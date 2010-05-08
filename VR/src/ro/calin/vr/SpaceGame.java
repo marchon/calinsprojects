@@ -1,6 +1,10 @@
 package ro.calin.vr;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,9 +44,16 @@ public class SpaceGame extends BaseGame {
 	private SpaceBox spaceBox;
 	// fighter
 	private Fighter fighter;
+	
+	// enemies - make a sync list: you never know
+	private List<EnemyShip> enemyShips = Collections
+			.synchronizedList(new ArrayList<EnemyShip>());
 
 	// user input
-	private InputHandler input;
+	private InputHandler userInput;
+	
+	// enemy input
+	private InputHandler enemyInput;
 
 	@Override
 	protected void cleanup() {
@@ -52,12 +63,13 @@ public class SpaceGame extends BaseGame {
 
 	@Override
 	protected void initGame() {
-		 spaceBox = new SpaceBox("space", 200, 200, 200, display,
-		 "/res/env/");
-		 scene.attachChild(spaceBox);
-		 scene.setCullHint(Spatial.CullHint.Never);
+//		 spaceBox = new SpaceBox("space", 200, 200, 200, display,
+//		 "/res/env/");
+//		 scene.attachChild(spaceBox);
+//		 scene.setCullHint(Spatial.CullHint.Never);
 
 		try {
+			//load player model
 			Spatial fighterModel = ModelLoader.loadModel("res/fighter.3ds",
 					new ModelProcessor() {
 						@Override
@@ -70,18 +82,22 @@ public class SpaceGame extends BaseGame {
 					});
 			fighter = new Fighter("fighter", fighterModel, cam);
 			
-//			Spatial enemyModel = ModelLoader.loadModel("res/enemy2.3ds", new ModelProcessor() {
-//				
-//				@Override
-//				public void process(Spatial model) {
-//					model.setLocalScale(.01f);
-//				}
-//			});
-//			EnemyShip enemyShip = new EnemyShip("ship", enemyModel);
-//			enemyShip.setLocalTranslation(new Vector3f(0, 0, -20));
-//			enemyShip.setModelBound(new BoundingBox());
-//			enemyShip.updateModelBound();
-//			scene.attachChild(enemyModel);
+			//load enemy models
+			URL[] enemyModelUrls = Utils.getResInPackage("res.enemies", ".*\\.3ds");
+			
+			for (URL url : enemyModelUrls) {
+				EnemyShip.addModel(ModelLoader.loadModel(url, new ModelProcessor() {
+					@Override
+					public void process(Spatial model) {
+						//those have a large scale
+						model.setLocalScale(.01f);
+						model.setLocalRotation(new Matrix3f(0, 0, -1, 0, 1,
+								0, 1, 0, 0).multLocal(new Matrix3f(1, 0, 0,
+								0, 0, 1, 0, -1, 0)));
+					}
+				}));
+			}
+			
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Error loading model: " + e);
 			System.exit(1);
@@ -94,7 +110,8 @@ public class SpaceGame extends BaseGame {
 		scene.updateGeometricState(0.0f, true);
 		scene.updateRenderState();
 
-		input = new FighterHandler(fighter, settings.getRenderer());
+		userInput = new FighterHandler(fighter, settings.getRenderer());
+		enemyInput = new EnemyHandler(enemyShips, scene, fighter, settings.getRenderer());
 	}
 
 	@Override
@@ -189,7 +206,8 @@ public class SpaceGame extends BaseGame {
 
 		tpf = timer.getTimePerFrame();
 
-		input.update(tpf);
+		userInput.update(tpf);
+		enemyInput.update(tpf);
 
 		// handle keys
 		if (KeyBindingManager.getKeyBindingManager().isValidCommand("exit")) {

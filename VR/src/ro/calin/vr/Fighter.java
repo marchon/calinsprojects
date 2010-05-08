@@ -15,9 +15,11 @@ public class Fighter extends Model {
 	private static final float MAX_RIGHT = 8f;
 	private static final float MIN_VEL = 1f;
 	private static final float MAX_VEL = 3f;
-	private static final float MIN_SPEED = 1f;
-	private static final float MAX_SPEED = 5f;
-	private static final float SPEED_FACTOR = 1.0f;
+	private static final float MIN_SPEED = 8f;
+	private static final float MAX_SPEED = 30f;
+	private static final float MIN_SPEED_REPR = 0f;
+	private static final float MAX_SPEED_REPR = 4f;
+	private static final float SPEED_FACTOR = (MAX_SPEED - MIN_SPEED) / 6;
 	private static final float MAX_ROT_ANGLE = FastMath.PI / 16;
 	private static final float ROT_ANGLE_INC = FastMath.PI / 8;
 
@@ -46,6 +48,18 @@ public class Fighter extends Model {
 		camUp = cam.getUp();
 	}
 	
+	public Vector3f getPos() {
+		return pos;
+	}
+	
+	public float getSpeed() {
+		return speed;
+	}
+	
+	public Camera getCam() {
+		return cam;
+	}
+
 	public void increaseSpeed(float time) {
 		speed += SPEED_FACTOR * time;
 		if(speed > MAX_SPEED)
@@ -117,6 +131,10 @@ public class Fighter extends Model {
 		
 		moveIssued = true;
 	}
+	
+	public void fire(float time) {
+		
+	}
 
 	public void update(float time) {
 		if (!moveIssued) {
@@ -145,7 +163,10 @@ public class Fighter extends Model {
 		//calc position
 		pos.x += (time * velocityX);
 		pos.y += (time * velocityY);
-		pos.z = (MIN_SPEED - speed) * 3;
+		
+		//move speed in interval MIN_SPEED_REPR, MAX_SPEED_REPR
+		float p = (MAX_SPEED_REPR - MIN_SPEED_REPR) / (MAX_SPEED - MIN_SPEED);
+		pos.z = -(p * speed + (MIN_SPEED_REPR - p * MIN_SPEED)) * 3;
 		
 		//calc rotation on y
 		rotY.m00 = FastMath.cos(rotYAngle);

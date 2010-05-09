@@ -9,7 +9,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BaseGame game = new SpaceGame();
+		BaseGame game = SpaceGame.getGame();
 		//game.setConfigShowMode(ConfigShowMode.AlwaysShow);
 		game.start();
 	}

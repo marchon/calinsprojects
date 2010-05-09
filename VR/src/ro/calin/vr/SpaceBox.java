@@ -41,9 +41,6 @@ public class SpaceBox extends Skybox {
 //		this.setTexture(Skybox.Face.West, TextureManager.loadTexture(
 //				"west.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
 //				Texture.MagnificationFilter.Bilinear));
-		this.setTexture(Skybox.Face.South, TextureManager.loadTexture(
-				"south.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-				Texture.MagnificationFilter.Bilinear));
 //		this.setTexture(Skybox.Face.East, TextureManager.loadTexture(
 //				"east.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
 //				Texture.MagnificationFilter.Bilinear));
@@ -53,6 +50,12 @@ public class SpaceBox extends Skybox {
 //		this.setTexture(Skybox.Face.Down, TextureManager.loadTexture(
 //				"down.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
 //				Texture.MagnificationFilter.Bilinear));
+		
+		//this is the one visible
+		this.setTexture(Skybox.Face.South, TextureManager.loadTexture(
+				"south.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
+
 		this.preloadTextures();
 
 		CullState cullState = display.getRenderer().createCullState();

@@ -44,7 +44,7 @@ public class EnemyHandler extends InputHandler {
 		for (Iterator<EnemyShip> iterator = enemyShips.iterator(); iterator.hasNext();) {
 			EnemyShip enemyShip = iterator.next();
 
-			if(!enemyShip.isInCameraRange()) {
+			if(!enemyShip.isInCameraRange() || !enemyShip.isAlive()) {
 				scene.detachChild(enemyShip);
 				iterator.remove();
 			} else {

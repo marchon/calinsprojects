@@ -8,7 +8,7 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jmex.effects.particles.ParticleMesh;
 
-public class Fighter extends Model {
+public class Fighter extends ModelNode implements Destroyable {
 	private static final float MOVE_ACCEL = 2f;
 	private static final float AUTO_DECEL = 0.5f;
 	private static final float MAX_UP = 10f;
@@ -47,17 +47,18 @@ public class Fighter extends Model {
 	private ParticleMesh leftEngine;
 	private ParticleMesh rightEngine;
 
-	public Fighter(String id, Spatial model, Camera cam, ParticleMesh leftEngine, ParticleMesh rightEngine) {
+	public Fighter(String id, Spatial model, Camera cam,
+			ParticleMesh leftEngine, ParticleMesh rightEngine) {
 		super(id, model);
 		this.cam = cam;
 		camLeft = cam.getLeft();
 		camUp = cam.getUp();
 
-		this.updateGeometricState( 0, true );
+		this.updateGeometricState(0, true);
 		if (leftEngine != null && rightEngine != null) {
 			this.leftEngine = leftEngine;
 			this.rightEngine = rightEngine;
-			
+
 			leftEngine.setLocalTranslation(-1.67f, -0.26f, 3.35f);
 			this.attachChild(leftEngine);
 
@@ -77,7 +78,7 @@ public class Fighter extends Model {
 	public Camera getCam() {
 		return cam;
 	}
-	
+
 	private float getSpeedInInterval(float a, float b) {
 		float p = (b - a) / (MAX_SPEED - MIN_SPEED);
 		return p * speed + (a - p * MIN_SPEED);
@@ -87,7 +88,7 @@ public class Fighter extends Model {
 		speed += SPEED_FACTOR * time;
 		if (speed > MAX_SPEED)
 			speed = MAX_SPEED;
-		
+
 		speedChanged = true;
 	}
 
@@ -95,7 +96,7 @@ public class Fighter extends Model {
 		speed -= SPEED_FACTOR * time;
 		if (speed < MIN_SPEED)
 			speed = MIN_SPEED;
-		
+
 		speedChanged = true;
 	}
 
@@ -159,8 +160,24 @@ public class Fighter extends Model {
 		moveIssued = true;
 	}
 
-	public void fire(float time) {
+	private long lastFire = 0;
 
+	public void fire(float time) {
+		long now = System.currentTimeMillis();
+		if (now - lastFire > 500) {
+			lastFire = now;
+			Vector3f dir = rotY.mult(rotX).multLocal(new Vector3f(0, 0, -1));
+
+			Projectile laser = new Projectile(pos.add(-2.15f, -0.1f, -2.1f),
+					dir, ColorRGBA.blue.clone());
+			// TODO: this is not professional
+			SpaceGame.getGame().getScene().attachChild(laser);
+
+			laser = new Projectile(pos.add(2.15f, -0.1f, -2.1f), dir,
+					ColorRGBA.blue.clone());
+			// TODO: this is not professional
+			SpaceGame.getGame().getScene().attachChild(laser);
+		}
 	}
 
 	public void update(float time) {
@@ -189,16 +206,18 @@ public class Fighter extends Model {
 			else
 				rotXAngle = 0;
 		}
-		
-		if(speedChanged) {
+
+		if (speedChanged) {
 			if (leftEngine != null && rightEngine != null) {
 				float spd = getSpeedInInterval(.01f, .035f);
 				leftEngine.setInitialVelocity(spd);
 				rightEngine.setInitialVelocity(spd);
-				
+
 				float col = getSpeedInInterval(.0f, 0.7f);
-				leftEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f, 1));
-				rightEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f, 1));
+				leftEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f,
+						1));
+				rightEngine.setStartColor(new ColorRGBA(1f - col, 1f - col, 1f,
+						1));
 			}
 		}
 		// calc position
@@ -234,11 +253,11 @@ public class Fighter extends Model {
 		this.setLocalRotation(rotY.mult(rotX));
 
 		// camera special effect :d
-		float alfpha = (FastMath.PI * pos.x) / (30 * MAX_RIGHT);
+		float alfpha = (FastMath.PI * pos.x) / (20 * MAX_RIGHT);
 		camLeft.x = -FastMath.cos(alfpha);
 		camLeft.z = -FastMath.sin(alfpha);
 
-		float beta = (FastMath.PI * pos.y) / (30 * MAX_UP);
+		float beta = (FastMath.PI * pos.y) / (20 * MAX_UP);
 		camUp.y = FastMath.cos(beta);
 		camUp.z = FastMath.sin(beta);
 
@@ -247,5 +266,11 @@ public class Fighter extends Model {
 
 		moveIssued = false;
 		speedChanged = false;
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 }

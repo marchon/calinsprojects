@@ -9,7 +9,11 @@ import com.jme.scene.Node;
 import com.jme.scene.SharedNode;
 import com.jme.scene.Spatial;
 
-public class EnemyShip extends Model {
+/**
+ * @author Calin
+ *
+ */
+public class EnemyShip extends ModelNode implements Destroyable {
 	private static final Logger logger = Logger.getLogger(EnemyShip.class
 			.getName());
 
@@ -68,4 +72,14 @@ public class EnemyShip extends Model {
 
 		this.setLocalTranslation(pos);
 	}
+
+	private boolean alive = true;
+	@Override
+	public void destroy() {
+		alive = false;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}	
 }

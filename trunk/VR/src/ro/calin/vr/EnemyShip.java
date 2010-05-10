@@ -13,7 +13,7 @@ import com.jme.scene.Spatial;
  * @author Calin
  *
  */
-public class EnemyShip extends ModelNode implements Destroyable {
+public class EnemyShip extends Destroyable {
 	private static final Logger logger = Logger.getLogger(EnemyShip.class
 			.getName());
 
@@ -33,7 +33,7 @@ public class EnemyShip extends ModelNode implements Destroyable {
 
 		int index = (int) (Math.random() * enemyModels.size());
 		EnemyShip ship = new EnemyShip("enemy" + id, new SharedNode("shared" + id++,
-				(Node) enemyModels.get(index)), target);
+				(Node) enemyModels.get(index)), target, 200);
 		
 		ship.setModelBound(new BoundingBox());
 		ship.updateModelBound();
@@ -47,8 +47,8 @@ public class EnemyShip extends ModelNode implements Destroyable {
 	private Vector3f pos;
 	private float speed = SPEED;
 
-	public EnemyShip(String id, Spatial model, Fighter target) {
-		super(id, model);
+	public EnemyShip(String id, Spatial model, Fighter target, int life) {
+		super(id, model, life);
 		this.target = target;
 
 		pos = new Vector3f(target.getPos().x, target.getPos().y, target

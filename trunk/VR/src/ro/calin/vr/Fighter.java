@@ -8,7 +8,7 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jmex.effects.particles.ParticleMesh;
 
-public class Fighter extends ModelNode implements Destroyable {
+public class Fighter extends Destroyable {
 	private static final float MOVE_ACCEL = 2f;
 	private static final float AUTO_DECEL = 0.5f;
 	private static final float MAX_UP = 10f;
@@ -48,8 +48,8 @@ public class Fighter extends ModelNode implements Destroyable {
 	private ParticleMesh rightEngine;
 
 	public Fighter(String id, Spatial model, Camera cam,
-			ParticleMesh leftEngine, ParticleMesh rightEngine) {
-		super(id, model);
+			ParticleMesh leftEngine, ParticleMesh rightEngine, int life) {
+		super(id, model, life);
 		this.cam = cam;
 		camLeft = cam.getLeft();
 		camUp = cam.getUp();
@@ -169,12 +169,12 @@ public class Fighter extends ModelNode implements Destroyable {
 			Vector3f dir = rotY.mult(rotX).multLocal(new Vector3f(0, 0, -1));
 
 			Projectile laser = new Projectile(pos.add(-2.15f, -0.1f, -2.1f),
-					dir, ColorRGBA.blue.clone());
+					dir, ColorRGBA.blue.clone(), EnemyHandler.get().getEnemyShips(), 100);
 			// TODO: this is not professional
 			SpaceGame.getGame().getScene().attachChild(laser);
 
 			laser = new Projectile(pos.add(2.15f, -0.1f, -2.1f), dir,
-					ColorRGBA.blue.clone());
+					ColorRGBA.blue.clone(), EnemyHandler.get().getEnemyShips(), 100);
 			// TODO: this is not professional
 			SpaceGame.getGame().getScene().attachChild(laser);
 		}

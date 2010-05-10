@@ -264,7 +264,7 @@ public class SpaceGame extends BaseGame {
 						}
 					});
 			fighter = new Fighter("fighter", fighterModel, cam,
-					createParticles(), createParticles());
+					createParticles(), createParticles(), 500);
 
 			// load enemy models
 			URL[] enemyModelUrls = Utils.getResInPackage("res.models.enemies",
@@ -296,8 +296,8 @@ public class SpaceGame extends BaseGame {
 		scene.updateRenderState();
 
 		userInput = new FighterHandler(fighter, settings.getRenderer());
-		enemyInput = new EnemyHandler(enemyShips, scene, fighter, settings
-				.getRenderer());
+		enemyInput = EnemyHandler.createEnemyHandler(enemyShips, scene,
+				fighter, settings.getRenderer());
 
 		// prepare debug stuff
 		fps = Text.createDefaultTextLabel("FPS label", "");

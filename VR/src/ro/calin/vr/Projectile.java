@@ -1,5 +1,7 @@
 package ro.calin.vr;
 
+import java.util.List;
+
 import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -11,9 +13,11 @@ public class Projectile extends Sphere {
 
 	private Vector3f dir;
 	private Vector3f pos;
+	private List<? extends Destroyable> potentialTargets;
+	private int damage;
 
 	public Projectile(Vector3f position, Vector3f direction,
-			ColorRGBA color) {
+			ColorRGBA color, List<? extends Destroyable> potentialTargets, int damage) {
 		super("bullet" + numBullets, 8, 8, 0.01f);
 		
 		setModelBound(new BoundingSphere());
@@ -21,6 +25,8 @@ public class Projectile extends Sphere {
 
 		this.dir = direction;
 		this.pos = new Vector3f(position);
+		this.potentialTargets = potentialTargets;
+		this.damage = damage;
 		setLocalTranslation(pos);
 
 		updateGeometricState(0, true);
@@ -35,20 +41,34 @@ public class Projectile extends Sphere {
 
 		/** Seconds it will last before going away */
 		float lifeTime = 3;
+		
+		private void removeBullet() {
+			TrailManager.get().removeTrail(Projectile.this);
+			Projectile.this.removeFromParent();
+			Projectile.this.removeController(this);
+			
+			//TODO: make a little explosion
+		}
 
 		@Override
 		public void update(float time) {
 			lifeTime -= time;
 
 			if (lifeTime < 0) {
-				TrailManager.get().removeTrail(Projectile.this);
-				Projectile.this.removeFromParent();
-				Projectile.this.removeController(this);
+				removeBullet();
 				return;
 			}
 
 			Vector3f len = dir.mult(time * speed);
 			setLocalTranslation(pos.addLocal(len));
+			
+			for (Destroyable target : potentialTargets) {
+				if(Projectile.this.getWorldBound().intersects(target.getWorldBound())) {
+					target.hit(damage);
+					removeBullet();
+					return;
+				}
+			}
 		}
 	}
 }

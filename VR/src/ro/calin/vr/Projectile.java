@@ -7,6 +7,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Controller;
 import com.jme.scene.shape.Sphere;
+import com.jmex.effects.particles.ParticleMesh;
 
 public class Projectile extends Sphere {
 	private static int numBullets = 0;
@@ -46,8 +47,17 @@ public class Projectile extends Sphere {
 			TrailManager.get().removeTrail(Projectile.this);
 			Projectile.this.removeFromParent();
 			Projectile.this.removeController(this);
+		}
+		
+		private void explodeBullet() {
+			//explosion
+			ParticleMesh exp = ExplosionFactory.getSmallExplosion();
+			exp.setOriginOffset(pos);
+			exp.forceRespawn();
+			Projectile.this.getParent().attachChild(exp);
 			
-			//TODO: make a little explosion
+			
+			removeBullet();
 		}
 
 		@Override
@@ -65,7 +75,8 @@ public class Projectile extends Sphere {
 			for (Destroyable target : potentialTargets) {
 				if(Projectile.this.getWorldBound().intersects(target.getWorldBound())) {
 					target.hit(damage);
-					removeBullet();
+					explodeBullet();
+					SoundServer.get().playSound("hit", pos);
 					return;
 				}
 			}

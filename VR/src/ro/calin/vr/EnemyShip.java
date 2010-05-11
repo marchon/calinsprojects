@@ -8,6 +8,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.SharedNode;
 import com.jme.scene.Spatial;
+import com.jmex.effects.particles.ParticleMesh;
 
 /**
  * @author Calin
@@ -77,6 +78,13 @@ public class EnemyShip extends Destroyable {
 	@Override
 	public void destroy() {
 		alive = false;
+		
+		ParticleMesh exp = ExplosionFactory.getExplosion();
+		exp.setOriginOffset(pos);
+		exp.forceRespawn();
+		this.getParent().attachChild(exp);
+		
+		SoundServer.get().playSound("explosion", pos);
 	}
 
 	public boolean isAlive() {

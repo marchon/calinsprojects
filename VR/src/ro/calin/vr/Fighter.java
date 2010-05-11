@@ -88,6 +88,8 @@ public class Fighter extends Destroyable {
 		speed += SPEED_FACTOR * time;
 		if (speed > MAX_SPEED)
 			speed = MAX_SPEED;
+		
+		SoundServer.get().setPitch("jet", getSpeedInInterval(1.0f, 1.7f));
 
 		speedChanged = true;
 	}
@@ -97,6 +99,8 @@ public class Fighter extends Destroyable {
 		if (speed < MIN_SPEED)
 			speed = MIN_SPEED;
 
+		SoundServer.get().setPitch("jet", getSpeedInInterval(1.0f, 1.7f));
+		
 		speedChanged = true;
 	}
 
@@ -170,13 +174,14 @@ public class Fighter extends Destroyable {
 
 			Projectile laser = new Projectile(pos.add(-2.15f, -0.1f, -2.1f),
 					dir, ColorRGBA.blue.clone(), EnemyHandler.get().getEnemyShips(), 100);
-			// TODO: this is not professional
 			SpaceGame.getGame().getScene().attachChild(laser);
 
 			laser = new Projectile(pos.add(2.15f, -0.1f, -2.1f), dir,
 					ColorRGBA.blue.clone(), EnemyHandler.get().getEnemyShips(), 100);
-			// TODO: this is not professional
 			SpaceGame.getGame().getScene().attachChild(laser);
+			
+			//play sound
+			SoundServer.get().playSound("fire", pos);
 		}
 	}
 

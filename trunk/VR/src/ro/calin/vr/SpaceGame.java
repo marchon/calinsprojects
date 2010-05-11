@@ -40,6 +40,7 @@ import com.jme.system.JmeException;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
 import com.jme.util.geom.Debugger;
+import com.jmex.audio.AudioSystem;
 import com.jmex.effects.LensFlare;
 import com.jmex.effects.LensFlareFactory;
 import com.jmex.effects.particles.ParticleFactory;
@@ -251,6 +252,14 @@ public class SpaceGame extends BaseGame {
 		scene.attachChild(lightNode);
 
 		TrailManager.create(scene);
+		ExplosionFactory.warmup();
+		
+		SoundServer.get().initSound(cam);
+		SoundServer.get().loadSound("fire", getClass().getResource("/res/sound/laser.ogg"), false);
+		SoundServer.get().loadSound("hit", getClass().getResource("/res/sound/hit.ogg"), false);
+		SoundServer.get().loadSound("explosion", getClass().getResource("/res/sound/explosion.wav"), false);
+		SoundServer.get().loadSound("jet", getClass().getResource("/res/sound/jet.wav"), true);
+		
 		try {
 			// load player model
 			Spatial fighterModel = ModelLoader.loadModel("fighter.3ds",
@@ -290,6 +299,8 @@ public class SpaceGame extends BaseGame {
 
 		fighter.setModelBound(new BoundingBox());
 		fighter.updateModelBound();
+		//SoundServer.get().playSound("jet", fighter.getWorldTranslation(), 0.15f);
+		
 		scene.attachChild(fighter);
 
 		scene.updateGeometricState(0.0f, true);
@@ -459,10 +470,11 @@ public class SpaceGame extends BaseGame {
 
 		tpf = timer.getTimePerFrame();
 
-		if (!pause) {
+		if (!debug || !pause) {
 			userInput.update(tpf);
 			enemyInput.update(tpf);
 			TrailManager.get().update(tpf);
+			//AudioSystem.getSystem().update();
 		}
 
 		// handle keys

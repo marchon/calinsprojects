@@ -3,8 +3,10 @@ package ro.calin.vr;
 import java.util.logging.Logger;
 
 import com.jme.image.Texture;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Skybox;
 import com.jme.scene.state.CullState;
+import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
@@ -35,21 +37,21 @@ public class SpaceBox extends Skybox {
 			e.printStackTrace();
 		}
 
-//		this.setTexture(Skybox.Face.North, TextureManager.loadTexture(
-//				"north.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-//				Texture.MagnificationFilter.Bilinear));
-//		this.setTexture(Skybox.Face.West, TextureManager.loadTexture(
-//				"west.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-//				Texture.MagnificationFilter.Bilinear));
-//		this.setTexture(Skybox.Face.East, TextureManager.loadTexture(
-//				"east.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-//				Texture.MagnificationFilter.Bilinear));
-//		this.setTexture(Skybox.Face.Up, TextureManager.loadTexture("up.jpg",
-//				Texture.MinificationFilter.BilinearNearestMipMap,
-//				Texture.MagnificationFilter.Bilinear));
-//		this.setTexture(Skybox.Face.Down, TextureManager.loadTexture(
-//				"down.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
-//				Texture.MagnificationFilter.Bilinear));
+		this.setTexture(Skybox.Face.North, TextureManager.loadTexture(
+				"north.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
+		this.setTexture(Skybox.Face.West, TextureManager.loadTexture(
+				"west.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
+		this.setTexture(Skybox.Face.East, TextureManager.loadTexture(
+				"east.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
+		this.setTexture(Skybox.Face.Up, TextureManager.loadTexture("up.jpg",
+				Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
+		this.setTexture(Skybox.Face.Down, TextureManager.loadTexture(
+				"down.jpg", Texture.MinificationFilter.BilinearNearestMipMap,
+				Texture.MagnificationFilter.Bilinear));
 		
 		//this is the one visible
 		this.setTexture(Skybox.Face.South, TextureManager.loadTexture(

@@ -10,7 +10,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		BaseGame game = SpaceGame.getGame();
-		//game.setConfigShowMode(ConfigShowMode.AlwaysShow);
+		game.setConfigShowMode(ConfigShowMode.AlwaysShow);
 		game.start();
 	}
 

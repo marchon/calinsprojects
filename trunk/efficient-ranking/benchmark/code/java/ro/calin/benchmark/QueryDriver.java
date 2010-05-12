@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.lucene.benchmark.quality.Judge;
 import org.apache.lucene.benchmark.quality.QualityBenchmark;
@@ -18,6 +21,9 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
+import ro.calin.benchmark.aggregation.AggregatorQualityBenchmark;
+import ro.calin.benchmark.aggregation.SimpleAggregator;
 
 public class QueryDriver {
 
@@ -49,28 +55,42 @@ public class QueryDriver {
 				args[2]), "lucene");
 		PrintWriter fileLogger = new PrintWriter(new FileOutputStream(args[3]),
 				true);
-		Directory dir = FSDirectory.open(new File(args[4]));
-		String techniquePackage = "ro.calin.benchmark." + args[5];
+		
+		File defaultIndexDir = new File(args[4]);
+		
+		String[] techniques = args[5].split(",");
+		
+		//TODO: this is needed because just cluster pruning uses another index
+		//TODO: should make all use same index, somehow - this will simplify matters
+		//TODO: cluster pruning must be revised
+		Map<QualityQueryParser, Searcher> parserSearcherMap = new HashMap<QualityQueryParser, Searcher>();
 
-		RankingTechnique rankingTechnique = ((Class<? extends RankingTechnique>) Class
-				.forName(techniquePackage + ".RankingTechniqueImpl"))
-				.newInstance();
+		for (int i = 0; i < techniques.length; i++) {
+			RankingTechnique rankingTechnique = ((Class<? extends RankingTechnique>) Class
+					.forName("ro.calin.benchmark." + techniques[i] + ".RankingTechniqueImpl"))
+					.newInstance();
+			
+			// default to title & desc
+			Directory dir = FSDirectory.open(defaultIndexDir);
+			rankingTechnique.prepare(dir, new String[] { "title", "description" },
+					"body");
+			
+			// replace directory if needed(index is modified and stored in another place)
+			// like in cluster pruning
+			if (rankingTechnique.getTestDirectory() != dir) {
+				dir.close();
+				dir = rankingTechnique.getTestDirectory();
+			}
+			
+			// get the parser
+			QualityQueryParser qqParser = rankingTechnique.getQualityQueryParser();
 
-		// default to title & desc
-		rankingTechnique.prepare(dir, new String[] { "title", "description" },
-				"body");
-
-		// replace directory if needed
-		if (rankingTechnique.getTestDirectory() != dir) {
-			dir.close();
-			dir = rankingTechnique.getTestDirectory();
+			Searcher searcher = new IndexSearcher(dir, true);
+			
+			parserSearcherMap.put(qqParser, searcher);
 		}
-		// get the parser
-		QualityQueryParser qqParser = rankingTechnique.getQualityQueryParser();
 
-		Searcher searcher = new IndexSearcher(dir, true);
-
-		int maxResults = 1000;
+		int maxResults = 200;
 		String docNameField = "docname";
 
 		PrintWriter logger = new PrintWriter(System.out, true);
@@ -87,12 +107,23 @@ public class QueryDriver {
 		// validate topics & judgments match each other
 		judge.validateData(qqs, logger);
 
+		QualityStats[] stats;
 		// run the benchmark
-		QualityBenchmark qrun = new QualityBenchmark(qqs, qqParser, searcher,
-				docNameField);
-		qrun.setMaxResults(maxResults);
-		QualityStats stats[] = qrun.execute(judge, submitLog, logger);
-
+		if(parserSearcherMap.size() == 1) {
+			Entry<QualityQueryParser, Searcher> ps = parserSearcherMap.entrySet().iterator().next();
+			QualityBenchmark qrun = new QualityBenchmark(qqs, ps.getKey(), ps.getValue(),
+					docNameField);
+			qrun.setMaxResults(maxResults);
+			stats = qrun.execute(judge, submitLog, logger);
+		} else { 
+			//aggregate results from multiple ranking techniques
+			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(
+					qqs, parserSearcherMap, docNameField);
+			qrun.setMaxResults(maxResults);
+			//no submission report
+			stats = qrun.execute(judge, new SimpleAggregator(), logger);
+		}
+		
 		// print an avarage sum of the results
 		QualityStats avg = QualityStats.average(stats);
 		avg.log("SUMMARY", 2, logger, "  ");

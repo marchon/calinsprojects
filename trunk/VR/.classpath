@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="lib/jme-audio.jar"/>
+	<classpathentry kind="lib" path="lib/jme-audio.jar" sourcepath="E:/Projects/VR project/jME2_0_1-Stable/src"/>
 	<classpathentry kind="lib" path="lib/jme-awt.jar"/>
 	<classpathentry kind="lib" path="lib/jme-collada.jar"/>
 	<classpathentry kind="lib" path="lib/jme-colladabinding-src.jar"/>
 	<classpathentry kind="lib" path="lib/jme-colladabinding.jar"/>
 	<classpathentry kind="lib" path="lib/jme-editors.jar"/>
-	<classpathentry kind="lib" path="lib/jme-effects.jar"/>
+	<classpathentry kind="lib" path="lib/jme-effects.jar" sourcepath="E:/Projects/VR project/jME2_0_1-Stable/src"/>
 	<classpathentry kind="lib" path="lib/jme-font.jar"/>
 	<classpathentry kind="lib" path="lib/jme-gamestates.jar"/>
 	<classpathentry kind="lib" path="lib/jme-model.jar" sourcepath="E:/Projects/VR project/jME2_0_1-Stable/src"/>

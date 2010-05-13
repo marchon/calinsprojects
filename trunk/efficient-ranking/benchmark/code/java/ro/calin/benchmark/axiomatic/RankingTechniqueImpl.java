@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.lucene.benchmark.quality.QualityQueryParser;
-import org.apache.lucene.benchmark.quality.utils.SimpleQQParser;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.index.SegmentInfos;
@@ -45,9 +44,9 @@ public class RankingTechniqueImpl implements RankingTechnique {
 			SegmentInfo info = segInfo.info(i);
 			SegmentReader reader = null;
 			reader = SegmentReader.get(false, info, 1);
-			Collection fieldNames = reader
+			Collection<String> fieldNames = reader
 					.getFieldNames(IndexReader.FieldOption.ALL);
-			Iterator it = fieldNames.iterator();
+			Iterator<String> it = fieldNames.iterator();
 			byte[] b = new byte[reader.maxDoc()];
 			while (it.hasNext()) {
 				String fieldName = (String) it.next();

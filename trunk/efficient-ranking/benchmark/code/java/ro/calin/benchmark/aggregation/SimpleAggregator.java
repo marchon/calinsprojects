@@ -19,9 +19,7 @@ public class SimpleAggregator implements Aggregator {
 		Map<String, DoubleAccumulator> accumulatorMap = new HashMap<String, DoubleAccumulator>();
 		
 		for (int i = 0; i < rankings.length; i++) {
-			System.out.print("Ranking " + i + ": ");
 			for (int j = 0; j < rankings[i].length; j++) {
-				System.out.print(rankings[i][j] + " ");
 				DoubleAccumulator acc = accumulatorMap.get(rankings[i][j]);
 				if(acc == null) {
 					acc = new DoubleAccumulator();
@@ -33,7 +31,6 @@ public class SimpleAggregator implements Aggregator {
 				// pos n - 1/n
 				acc.val += 1.0 / (double)(j + 1);
 			}
-			System.out.println();
 		}
 		
 		List<Entry<String, DoubleAccumulator>> list = new LinkedList<Entry<String, DoubleAccumulator>>(
@@ -49,12 +46,9 @@ public class SimpleAggregator implements Aggregator {
 				});
 
 		String[] aggRank = new String[list.size()];
-		System.out.print("Aggregated: ");
 		for (int i = 0; i < aggRank.length; i++) {
 			aggRank[i] = list.get(i).getKey();
-			System.out.print(aggRank[i] + " ");
 		}
-		System.out.println();
 		return aggRank;
 	}
 	

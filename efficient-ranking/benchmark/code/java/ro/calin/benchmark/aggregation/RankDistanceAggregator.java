@@ -84,6 +84,7 @@ public class RankDistanceAggregator implements Aggregator {
 		int[][] sigmaRankings = buildSigmaRankings(rankings, universeMap);
 		
 		float[][] D = new float[n][n];
+		float[][] D1 = new float[n][n];
 		AssignmentAlgorithm resolver = new HungarianAlgorithm();
 		int minDelta = Integer.MAX_VALUE;
 		int[] aggreg = null;
@@ -96,31 +97,38 @@ public class RankDistanceAggregator implements Aggregator {
 					int sum = 0;
 					for (int i = 0; i < sigmaRankings.length; i++) {
 						int ord = ord(sigmaRankings[i], k);
-						sum += Math.abs((j <= t? j - ord: ord));						
+						if(j <= t) ord = j - ord;
+						sum += Math.abs(ord);						
 					}
 					D[k][j] = sum;
+					D1[k][j] = sum;
 				}
 			}
 			
-			for (int i = 0; i < D.length; i++) {
-				for (int j = 0; j < D[i].length; j++) {
-					System.out.print(D[i][j]+" ");
-				}
-				System.out.println();
-			}
-			
+//			for (int i = 0; i < D.length; i++) {
+//				for (int j = 0; j < D[i].length; j++) {
+//					System.out.print(D[i][j]+" ");
+//				}
+//				System.out.println();
+//			}
 			//i1, i2,..., it
 			//Arrays.copyOf(resolver.computeAssignments(D), t + 1);
 			int[] tAggregation = resolver.computeAssignments(D);
+			
+			int delta = 0;
 			for (int i = 0; i < tAggregation.length; i++) {
-				System.out.print(tAggregation[i] + " ");
+				delta += D1[tAggregation[i]][i];
 			}
-			System.out.println();
-			int delta = delta(tAggregation, sigmaRankings);
+			
 			System.out.println("delta=" + delta + ",min=" + minDelta);
 			if(delta < minDelta) {
 				minDelta = delta;
 				aggreg = Arrays.copyOf(tAggregation, t + 1);
+				
+				for (int i = 0; i < aggreg.length; i++) {
+					System.out.print(aggreg[i] + " ");
+				}
+				System.out.println();
 			}
 		}
 		

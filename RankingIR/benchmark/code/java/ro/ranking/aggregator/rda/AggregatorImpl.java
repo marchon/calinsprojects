@@ -119,15 +119,15 @@ public class AggregatorImpl implements Aggregator {
 				delta += D1[tAggregation[i]][i];
 			}
 			
-			System.out.println("delta=" + delta + ",min=" + minDelta);
+//			System.out.println("delta=" + delta + ",min=" + minDelta);
 			if(delta < minDelta) {
 				minDelta = delta;
 				aggreg = Arrays.copyOf(tAggregation, t + 1);
 				
-				for (int i = 0; i < aggreg.length; i++) {
-					System.out.print(aggreg[i] + " ");
-				}
-				System.out.println();
+//				for (int i = 0; i < aggreg.length; i++) {
+//					System.out.print(aggreg[i] + " ");
+//				}
+//				System.out.println();
 			}
 		}
 		

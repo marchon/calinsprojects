@@ -22,8 +22,6 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import ro.ranking.aggregator.simple.AggregatorImpl;
-
 public class QueryDriver {
 
 	/**
@@ -31,20 +29,17 @@ public class QueryDriver {
 	 * 
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length != 6) {
+		if (args.length < 6 || args.length > 7) {
 			System.err
-					.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> <avgResFile> <indexDir> <techiqueName>");
+					.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> " +
+							"<avgResFile> <indexDir> <techiqueList> [<aggregation>]");
 			System.err.println("topicsFile: input file containing queries");
-			System.err
-					.println("qrelsFile: input file containing relevance judgements");
-			System.err
-					.println("submissionFile: output submission file for trec_eval");
-			System.err
-					.println("avgResFile: output benchmark measures(average)");
+			System.err.println("qrelsFile: input file containing relevance judgements");
+			System.err.println("submissionFile: output submission file for trec_eval");
+			System.err.println("avgResFile: output benchmark measures(average)");
 			System.err.println("indexDir: index directory");
-			System.err
-					.println("techiqueName: the ranking technique to be tested");
-
+			System.err.println("techiqueList: the ranking technique(s) to be tested");
+			System.err.println("aggregation: aggregation method used for multiple ranking techniques");
 			System.exit(1);
 		}
 
@@ -58,6 +53,11 @@ public class QueryDriver {
 		File defaultIndexDir = new File(args[4]);
 		
 		String[] techniques = args[5].split(",");
+		
+		if(techniques.length > 1 && args.length != 7) {
+			System.err.println("Aggregator was not specified for multiple ranking methods.");
+			System.exit(1);
+		}
 		
 		//TODO: this is needed because just cluster pruning uses another index
 		//TODO: should make all use same index, somehow - this will simplify matters
@@ -120,7 +120,11 @@ public class QueryDriver {
 					qqs, parserSearcherMap, docNameField);
 			qrun.setMaxResults(maxResults);
 			//no submission report
-			stats = qrun.execute(judge, new AggregatorImpl(), logger);
+			
+			Aggregator aggregator = ((Class<? extends Aggregator>) Class
+					.forName("ro.ranking.aggregator." + args[6] + ".AggregatorImpl")).newInstance();
+			
+			stats = qrun.execute(judge, aggregator, logger);
 		}
 		
 		// print an avarage sum of the results

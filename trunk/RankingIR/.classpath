@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="benchmark/code/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jars/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="jars/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="jars/commons-compress-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="jars/demo.jar"/>
+	<classpathentry kind="lib" path="jars/lucene-benchmark-3.1-dev.jar"/>
+	<classpathentry kind="lib" path="jars/lucene-core-3.1-dev.jar"/>
+	<classpathentry kind="lib" path="jars/lucene-queries-3.1-dev.jar"/>
+	<classpathentry kind="lib" path="jars/xerces-2.9.1-patched-XERCESJ-1257.jar"/>
+	<classpathentry kind="lib" path="jars/xml-apis-2.9.0.jar"/>
+	<classpathentry kind="output" path="benchmark/code/classes"/>
+</classpath>

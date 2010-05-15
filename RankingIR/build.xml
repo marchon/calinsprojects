@@ -3,7 +3,7 @@
 	<property name="technique" value="lucene" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
-	<property name="export.dir" value="../exported"/>
+	<property name="export.dir" value="../exported" />
 
 	<path id="prj.classpath">
 		<pathelement location="benchmark/code/classes" />
@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="index" depends="check-index,compile" unless="index.exist">
-		<java classname="ro.calin.benchmark.Indexer" maxmemory="512M" fork="true">
+		<java classname="ro.ranking.benchmarking.Indexer" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}" />
 		</java>
@@ -53,12 +53,14 @@
 			<arg value="${technique}" />
 		</java>
 	</target>
-	
+
 	<target name="export">
-		<mkdir dir="${export.dir}"/>
-		<copyfile dest="${export.dir}/build.xml" src="./build.xml"/>
-		<copydir dest="${export.dir}/jars" src="./jars"></copydir>
-		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java"></copydir>
+		<mkdir dir="${export.dir}" />
+		<copyfile dest="${export.dir}/build.xml" src="./build.xml" />
+		<copydir dest="${export.dir}/jars" src="./jars">
+		</copydir>
+		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java">
+		</copydir>
 	</target>
 
 </project>

@@ -1,4 +1,4 @@
-package ro.ranking.aggregator.simple;
+package ro.ranking.aggregator.borda;
 
 import java.util.Arrays;
 import java.util.Collections;

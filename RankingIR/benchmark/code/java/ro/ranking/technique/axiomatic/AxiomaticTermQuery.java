@@ -21,9 +21,9 @@ import org.apache.lucene.search.Similarity;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
 
-public class AXTermQuery extends TermQuery {
+public class AxiomaticTermQuery extends TermQuery {
 
-	public AXTermQuery(Term t, float avgDL, float paramK, float paramS) {
+	public AxiomaticTermQuery(Term t, float avgDL, float paramK, float paramS) {
 		super(t);
 		term = t;
 		this.avgDL = avgDL;
@@ -60,11 +60,11 @@ public class AXTermQuery extends TermQuery {
 		private float queryWeight;
 
 		public String toString() {
-			return "weight(" + AXTermQuery.this + ")";
+			return "weight(" + AxiomaticTermQuery.this + ")";
 		}
 
 		public Query getQuery() {
-			return AXTermQuery.this;
+			return AxiomaticTermQuery.this;
 		}
 
 		public float getValue() {
@@ -112,7 +112,7 @@ public class AXTermQuery extends TermQuery {
 					+ reader.docFreq(term) + ", numDocs=" + reader.numDocs()
 					+ ")");
 			
-			AXTermScorer axSc = (AXTermScorer)scorer(reader, true, true);
+			AxiomaticTermScorer axSc = (AxiomaticTermScorer)scorer(reader, true, true);
 			Explanation tfExpl = axSc.explain(doc);
 			fieldExpl.addDetail(tfExpl);
 			fieldExpl.addDetail(idfExpl);
@@ -154,7 +154,7 @@ public class AXTermQuery extends TermQuery {
 			if (termDocs == null)
 				return null;
 
-			return new AXTermScorer(this, termDocs, similarity, reader
+			return new AxiomaticTermScorer(this, termDocs, similarity, reader
 					.norms(term.field()), avgDL, paramS);		}
 	}
 

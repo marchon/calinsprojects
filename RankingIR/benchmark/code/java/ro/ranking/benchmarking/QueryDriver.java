@@ -2,8 +2,10 @@ package ro.ranking.benchmarking;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +32,7 @@ public class QueryDriver {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length < 6 || args.length > 7) {
-			System.err
-					.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> " +
+			System.err.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> " +
 							"<avgResFile> <indexDir> <techiqueList> [<aggregation>]");
 			System.err.println("topicsFile: input file containing queries");
 			System.err.println("qrelsFile: input file containing relevance judgements");
@@ -45,8 +46,9 @@ public class QueryDriver {
 
 		File topicsFile = new File(args[0]);
 		File qrelsFile = new File(args[1]);
-		SubmissionReport submitLog = new SubmissionReport(new PrintWriter(
-				args[2]), "lucene");
+		
+		PrintWriter submissionPW = new PrintWriter(args[2]);
+		SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
 		PrintWriter fileLogger = new PrintWriter(new FileOutputStream(args[3]),
 				true);
 		
@@ -71,7 +73,7 @@ public class QueryDriver {
 			
 			// default to title & desc
 			Directory dir = FSDirectory.open(defaultIndexDir);
-			rankingTechnique.prepare(dir, new String[] { "title", "description" },
+			rankingTechnique.prepare(dir, new String[] { "title", "description", "narrative"},
 					"body");
 			
 			// replace directory if needed(index is modified and stored in another place)
@@ -96,12 +98,14 @@ public class QueryDriver {
 
 		// use trec utilities to read trec topics into quality queries
 		TrecTopicsReader qReader = new TrecTopicsReader();
-		QualityQuery qqs[] = qReader.readQueries(new BufferedReader(
-				new FileReader(topicsFile)));
+		BufferedReader topicsReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(topicsFile), "UTF-8"));
+		QualityQuery qqs[] = qReader.readQueries(topicsReader);
 
 		// prepare judge, with trec utilities that read from a QRels file
-		Judge judge = new TrecJudge(new BufferedReader(
-				new FileReader(qrelsFile)));
+		BufferedReader qrelsReader = new BufferedReader(
+				new FileReader(qrelsFile));
+		Judge judge = new TrecJudge(qrelsReader);
 
 		// validate topics & judgments match each other
 		judge.validateData(qqs, logger);
@@ -133,7 +137,12 @@ public class QueryDriver {
 
 		// write summary to file
 		avg.log("SUMMARY", 2, fileLogger, "  ");
+		
+		//close stuff
+		topicsReader.close();
+		qrelsReader.close();
 		fileLogger.close();
+		submissionPW.close();
 	}
 
 }

@@ -23,7 +23,7 @@ public class RankingTechniqueImpl implements RankingTechnique {
 	
 	@Override
 	public QualityQueryParser getQualityQueryParser() {
-		return new QualityQueryParserImpl(qqNames, indexField, avdl);
+		return new AxiomaticQualityQueryParser(qqNames, indexField, avdl);
 	}
 
 	@Override

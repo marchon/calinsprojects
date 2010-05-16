@@ -17,7 +17,7 @@ import org.apache.lucene.search.Similarity;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
 
-public class AXTermScorer extends Scorer {
+public class AxiomaticTermScorer extends Scorer {
 
 	private Weight weight;
 	private TermDocs termDocs;
@@ -35,7 +35,7 @@ public class AXTermScorer extends Scorer {
 	private static final int SCORE_CACHE_SIZE = 32;
 	private float[] scoreCache = new float[SCORE_CACHE_SIZE];
 
-	AXTermScorer(Weight weight, TermDocs td, Similarity similarity,
+	AxiomaticTermScorer(Weight weight, TermDocs td, Similarity similarity,
 			byte[] norms, float avgDL, float paramS) {
 		super(similarity);
 		this.weight = weight;

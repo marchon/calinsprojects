@@ -12,7 +12,7 @@ public class RankingTechniqueImpl implements RankingTechnique {
 	private Directory dir;
 	@Override
 	public QualityQueryParser getQualityQueryParser() {
-		return new SimpleQQParser(qqNames, indexField);
+		return new LuceneQualityQueryParser(qqNames, indexField);
 	}
 
 	@Override

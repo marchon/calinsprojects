@@ -2,6 +2,7 @@ package ro.genetic.algo.ipd;
 
 import ro.genetic.algo.Chromosome;
 import ro.genetic.algo.Individual;
+import static ro.genetic.algo.ipd.PDConstants.*;
 
 /**
  * @author Calin
@@ -10,14 +11,6 @@ import ro.genetic.algo.Individual;
  * are sequences of 0 and 1's
  */
 public class PDIndividual implements Individual {
-	private final static int[][] COST_MATRIX = {
-	    //d  c
-	/*d*/{1, 0},
-	/*c*/{4, 3}
-	//d = defect
-	//c = cooperate
-	};
-	
 	private Chromosome chromosome;
 	
 	/**
@@ -48,8 +41,8 @@ public class PDIndividual implements Individual {
 		byte[] pdSequence = chromosome.getInformation();
 
 		for (int i = 0; i < pdSequence.length; i += 2) {
-			s1 += COST_MATRIX[pdSequence[i]][pdSequence[i + 1]];
-			s2 += COST_MATRIX[pdSequence[i + 1]][pdSequence[i]];
+			s1 += IPD_COST_MATRIX[pdSequence[i]][pdSequence[i + 1]];
+			s2 += IPD_COST_MATRIX[pdSequence[i + 1]][pdSequence[i]];
 		}
 
 		return s1 + s2;

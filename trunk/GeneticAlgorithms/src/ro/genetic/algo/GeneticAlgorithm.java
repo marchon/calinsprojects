@@ -13,5 +13,5 @@ public interface GeneticAlgorithm {
 	
 	void mutate(Individual[] offsprings);
 	
-	void replace(Individual[] population, Individual[] offsprings);
+	Individual[] replace(Individual[] population, Individual[] offsprings);
 }

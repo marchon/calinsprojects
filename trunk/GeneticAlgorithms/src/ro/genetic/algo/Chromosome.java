@@ -1,5 +1,7 @@
 package ro.genetic.algo;
 
+import java.util.Arrays;
+
 
 public class Chromosome {
 	private byte[] information;
@@ -11,6 +13,11 @@ public class Chromosome {
 				bs[i] =  1;
 		}
 		information = bs;
+	}
+	
+	public Chromosome(Chromosome chromosome) {
+		information = Arrays.copyOf(chromosome.information,
+				chromosome.information.length);
 	}
 
 	public Chromosome(byte[] info) {

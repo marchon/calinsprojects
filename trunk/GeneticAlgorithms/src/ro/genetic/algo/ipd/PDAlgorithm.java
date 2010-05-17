@@ -6,41 +6,67 @@ import java.util.Comparator;
 import ro.genetic.algo.Chromosome;
 import ro.genetic.algo.GeneticAlgorithm;
 import ro.genetic.algo.Individual;
+import static ro.genetic.algo.ipd.PDConstants.*;
 
 public class PDAlgorithm implements GeneticAlgorithm {
-	private final static double MUTATION_PROBAB = 1.0 / 2000.0;
-	private final static int SELECT_NUM = 6;
+	private double mp = START_MUTATION_PROBAB;
 
 	@Override
 	public Individual[] crossover(Individual[] parents) {
-		// the parents are replaced
-		// TODO: use another replacement method
-		for (int i = 0; i < parents.length; i += 2) {
-			Chromosome m = parents[i].encode();
-			Chromosome f = parents[i + 1].encode();
+		//length must be even, so truncate one if needed
+		int len = parents.length - (parents.length % 2);
+		
+		Individual[] offsprings = new Individual[len];
+		
+		//for each to two adjacent individuals,
+		//duplicate genetic info, exchange,
+		//and create two new individuals
+		for (int i = 0; i < len; i += 2) {
+			Chromosome m = new Chromosome(parents[i].encode());
+			Chromosome f = new Chromosome(parents[i + 1].encode());
 
 			m.swapGenes(f);
 
-			parents[i].decode(m);
-			parents[i + 1].decode(f);
+			offsprings[i] = new PDIndividual();
+			offsprings[i].decode(m);
+			offsprings[i + 1] = new PDIndividual();
+			offsprings[i + 1].decode(f);
 		}
 
-		return parents;
+		return offsprings;
 	}
 
 	@Override
 	public void mutate(Individual[] offsprings) {
-		if (Math.random() < MUTATION_PROBAB) {
-			int n = (int) (Math.random() * offsprings.length);
-			offsprings[n].encode().mutate();
+		boolean dec = false;
+		for (int i = 0; i < offsprings.length; i++) {
+			if (Math.random() < mp) {
+				Chromosome oc = offsprings[i].encode();
+				oc.mutate();
+				offsprings[i].decode(oc);
+				dec = true;
+			}
 		}
+		
+		//decrese mutation probability as the algorithm advances
+		//tend to stability
+		if(dec)
+			mp -= MUTATION_PROBAB_DEC;
 	}
 
 	@Override
-	public void replace(Individual[] population, Individual[] offsprings) {
-		// population already contains offsprings because
-		// I overwritten parents values in crossover
-		// TODO: use another replacement method
+	public Individual[] replace(Individual[] population, Individual[] offsprings) {
+		//replace low scoring individuals from the population
+		//population is in descending score order(from select)
+		int ol = offsprings.length - 1;
+		int pl = population.length - 1;
+		
+		for (int i = 0; i < offsprings.length; i++) {
+			population[pl - i] = offsprings[ol - i];
+		}
+		
+		//just return the same pool of individuals(with some of them replaced)
+		return population;
 	}
 
 	@Override
@@ -52,10 +78,9 @@ public class PDAlgorithm implements GeneticAlgorithm {
 			}
 		});
 
-//		System.out.println(Arrays.deepToString(population));
 		return Arrays
 				.copyOf(population,
-						population.length < SELECT_NUM ? population.length
-								: SELECT_NUM);
+						population.length < SELECT_LEN ? population.length
+								: SELECT_LEN);
 	}
 }

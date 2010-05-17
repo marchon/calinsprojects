@@ -1,8 +1,7 @@
-package ro.genetic;
+package ro.genetic.algo.ipd;
 
 import ro.genetic.algo.World;
-import ro.genetic.algo.ipd.PDAlgorithm;
-import ro.genetic.algo.ipd.PDIndividualGenerator;
+import static ro.genetic.algo.ipd.PDConstants.*;
 
 public class Main {
 	public static void main(String[] args) {
@@ -10,7 +9,7 @@ public class Main {
 				false);
 
 		int i = 0;
-		while (i++ < 100000) {
+		while (i++ < IPD_ALGO_ITER) {
 			world.nextGeneration();
 			if(i == 1) {
 				System.out.println(world.getBest());

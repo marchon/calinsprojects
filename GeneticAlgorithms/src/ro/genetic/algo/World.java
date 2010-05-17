@@ -33,6 +33,6 @@ public class World {
 		
 		Individual[] offsprings = algo.crossover(parents);
 		algo.mutate(offsprings);
-		algo.replace(population, offsprings);
+		population = algo.replace(population, offsprings);
 	}
 }

@@ -12,10 +12,12 @@ public class Main {
 		while (i++ < IPD_ALGO_ITER) {
 			world.nextGeneration();
 			if(i == 1) {
+				System.out.println("FIRST:");
 				System.out.println(world.getBest());
 			}
 		}
 		
+		System.out.println("LAST:");
 		System.out.println(world.getBest());
 	}
 }

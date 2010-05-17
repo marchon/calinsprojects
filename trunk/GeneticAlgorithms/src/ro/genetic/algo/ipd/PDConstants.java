@@ -10,7 +10,7 @@ public final class PDConstants {
 	 * The Iterative Prisoner Dilemma game length.
 	 * 100 means each 50 iterations(2 players)
 	 */
-	public static final int IPD_GAME_LEN = 200;
+	public static final int IPD_GAME_LEN = 70;
 	
 	/**
 	 * The population length at the beginning of algo.
@@ -31,13 +31,18 @@ public final class PDConstants {
 	/**
 	 * Number of individuals selected for crossover by the selection
 	 * operator.
+	 * Must be even!
 	 */
-	public final static int SELECT_LEN = 10;
+	public final static int SELECT_LEN = 24;
 	
+	/**
+	 * T>R>P>S: 5>3>1>0
+	 * 2*R > S+T: 2*3 > 5+0
+	 */
 	public final static int[][] IPD_COST_MATRIX = {
 	    //d  c
-	/*d*/{1, 0},
-	/*c*/{4, 3}
+	/*d*/{1, 5},
+	/*c*/{0, 3}
 	//d = defect
 	//c = cooperate
 	};

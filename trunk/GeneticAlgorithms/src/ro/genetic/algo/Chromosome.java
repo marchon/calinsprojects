@@ -28,12 +28,19 @@ public class Chromosome {
 		return information;
 	}
 
-	public void mutate() {
-		int n = (int)(Math.random() * information.length);
-		information[n] = (byte) (1 - information[n]);
+	public boolean mutate(double Pm) {
+		boolean mutated = false;
+		for (int i = 0; i < information.length; i++) {
+			if(Math.random() < Pm) {
+				information[i] = (byte) (1 - information[i]);
+				mutated = true;
+			}
+		}
+		
+		return mutated;
 	}
 	
-	public void swapGenes(Chromosome mate) {
+	public void crossover(Chromosome mate) {
 		int crossover = (int)(Math.random() * information.length);
 		for (int i = crossover; i < information.length; i++) {
 			byte temp = information[i];

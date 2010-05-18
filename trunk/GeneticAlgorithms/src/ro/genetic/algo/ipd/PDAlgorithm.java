@@ -25,7 +25,7 @@ public class PDAlgorithm implements GeneticAlgorithm {
 			Chromosome m = new Chromosome(parents[i].encode());
 			Chromosome f = new Chromosome(parents[i + 1].encode());
 
-			m.swapGenes(f);
+			m.crossover(f);
 
 			offsprings[i] = new PDIndividual();
 			offsprings[i].decode(m);
@@ -40,12 +40,10 @@ public class PDAlgorithm implements GeneticAlgorithm {
 	public void mutate(Individual[] offsprings) {
 		boolean dec = false;
 		for (int i = 0; i < offsprings.length; i++) {
-			if (Math.random() < mp) {
-				Chromosome oc = offsprings[i].encode();
-				oc.mutate();
-				offsprings[i].decode(oc);
-				dec = true;
-			}
+			Chromosome oc = offsprings[i].encode();
+			dec = oc.mutate(mp);
+			offsprings[i].decode(oc);
+			dec = true;
 		}
 		
 		//decrese mutation probability as the algorithm advances

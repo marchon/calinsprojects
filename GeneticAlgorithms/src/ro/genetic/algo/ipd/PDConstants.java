@@ -4,13 +4,13 @@ public final class PDConstants {
 	/**
 	 * Genetic algorithm iterations.
 	 */
-	public static final int IPD_ALGO_ITER = 5000;
+	public static final int IPD_ALGO_ITER = 200;
 	
 	/**
 	 * The Iterative Prisoner Dilemma game length.
 	 * 100 means each 50 iterations(2 players)
 	 */
-	public static final int IPD_GAME_LEN = 70;
+	public static final int IPD_GAME_LEN = 80;
 	
 	/**
 	 * The population length at the beginning of algo.
@@ -20,13 +20,13 @@ public final class PDConstants {
 	/**
 	 * Start mutation probability in a generation for an individual.
 	 */
-	public final static double START_MUTATION_PROBAB = 1.0 / 300.0;
+	public final static double START_MUTATION_PROBAB = 1.0 / 100.0;
 	
 	/**
 	 * Decrease mutation probability with this amount as generations
 	 * advance.
 	 */
-	public final static double MUTATION_PROBAB_DEC = 1.0 / 10000.0;
+	public final static double MUTATION_PROBAB_DEC = 0;//1.0 / 1000.0;
 	
 	/**
 	 * Number of individuals selected for crossover by the selection

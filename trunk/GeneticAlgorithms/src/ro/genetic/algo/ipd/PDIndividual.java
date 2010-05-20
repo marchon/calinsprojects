@@ -41,8 +41,8 @@ public class PDIndividual implements Individual {
 		byte[] pdSequence = chromosome.getInformation();
 
 		for (int i = 0; i < pdSequence.length; i += 2) {
-			s1 += IPD_COST_MATRIX[pdSequence[i]][pdSequence[i + 1]];
-			s2 += IPD_COST_MATRIX[pdSequence[i + 1]][pdSequence[i]];
+			s1 += IPD_SCORE_MATRIX[pdSequence[i]][pdSequence[i + 1]];
+			s2 += IPD_SCORE_MATRIX[pdSequence[i + 1]][pdSequence[i]];
 		}
 
 		return s1 + s2;

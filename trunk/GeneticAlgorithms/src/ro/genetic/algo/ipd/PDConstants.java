@@ -39,7 +39,7 @@ public final class PDConstants {
 	 * T>R>P>S: 5>3>1>0
 	 * 2*R > S+T: 2*3 > 5+0
 	 */
-	public final static int[][] IPD_COST_MATRIX = {
+	public final static int[][] IPD_SCORE_MATRIX = {
 	    //d  c
 	/*d*/{1, 5},
 	/*c*/{0, 3}

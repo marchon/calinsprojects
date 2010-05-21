@@ -45,27 +45,63 @@
 
 \tableofcontents
 
-
-
 \chapter{Introducere}
-\chapter{Regasirea informa'tiei}
+Singtagma \emph{reg'asirea informa'tiei}(RI) are un spectru larg de in'telesuri. Scoaterea unui card de credit din portofel pentru a completa num'arul cardului 'intr-un formular este o form'a de reg'asire a informa'tiei. Dar, ca domeniu de studii academice, \emph{reg'asirea informa'tiei} poate fi definita astfel\cite{MAN}:
+\begin{quote}
+Reg'asirea informa'tiei se refer'a la g'asirea de material (de obicei documente) de natur'a nestructurat'a (de obicei text) care satisface
+o nevoie de informa'tie, din colectii mari de date (eventual stocate pe calculatoare).
+\end{quote}
 
-%\section{}
-%\subsection{}
+Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicata de ca'tiva oameni cum ar fi bibliotecarii. Acum lumea s-a schimbat 'si sute de milioane de oameni folosesc sisteme de reg'asire a informa'tiei precum motoate de c'autare web 'in fiecare zi. Reg'asirea informatiei devine rapid forma dominant'a de accesare a informatiei 'intrec'jnd modul traditional de c'autare de tip "baze de date" (c'autarea dupa un num'ar de identificare).
+
+RI este interdisciplinar'a, bazat'a pe informatic'a, matematic'a, 'stiin'ta informa'tiei, arhitectura informa\-'tiei, psihologie cognitiv'a, lingvistic'a, statistic'a, etc. Sisteme automate de RI au fost folosite pentru a reduce ceea ce se numeste "supra'inc'arcarea de informa'tie". Multe universit'a'ti 'si libr'arii publice folosesc sisteme RI pentru a facilita accesul la c'ar'ti, jurnale 'si alte tipuri de documente. Cele mai folosite aplicatii RI sunt motoarele de c'autare web.
+
+\section{Scurt istoric}
+Ideea de a folosi calculatoarele pentru a c'auta "buc'ati" de informatie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
+
+'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunita'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care scaleaza la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
+
+\section{Descrierea procesului}
+Un proces de reg'asire a informa'tiei 'incepe c'jnd un utilizator introduce o interogare (\emph{query}) 'in sistem. Interog'arile sunt formul'ari formale ale \emph{nevoilor de informa'tie}, de exemplu, cuvinte scrise 'in caseta de c'autare a unui motor de c'autare web. 'In RI o interogare nu identific'a 'in mod unic un obiect din colec'tia de obiecte. 'In schimb, mai multe obiecte pot fi considerate ca r'aspunsuri la interogare, eventual cu grade de relevan't'a diferite.
+
+Un obiect este o entitate stocat'a 'in sistemul RI. 'In func'tie de aplic'tie, obiectele pot fi texte, documente, imagini, videoclipuri, etc. 'In general, documentele propriu-zise nu sunt 'tinute 'in sistem ci sunt reprezentate de surogate(rezultate 'in urma proces'arii documentelor) si metadate.
+
+Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine se potriveste un obiect cu interogarea utilizatorului 'si apoi ierarhizeaz'a obiectele 'in func'tie de aceast'a valoare. Cele mai bune obiecte sunt apoi afi'sate utilizatorului.
+
+\section{Un exemplu}
+%MANNING boolean retrieval 1.1???
+
+\chapter{Reg'asirea informa'tiei - generalit'a'ti}
+\section{Indexare}
+\section{Cautare}
+\section{Reg'asirea boolean'a 'si ad-hoc}
+\subsection{TF-IDF}
+\section{Evaluare unui sistem RI}
+
 \chapter{Metode de ierarhizare}
+\section{VSM}
+\section{Cluster pruning}
+\section{Axiomatic retrieval}
+\section{Modelul probabilistic}
+\subsection{BM25}
 
 \chapter{Metode de agregare}
+\section{Borda}
+\section{Agregarea Rank Distance}
 
-\chapter{Studiu comparativ??}
+\chapter{Studiu comparativ}
 \section{Unelte}
+\subsection{Apache Lucene}
+\subsection{Pachetul Benchmark}
+\subsection{Apache Open Relevance Project}
 \section{Construirea framework-ului}
 \section{Rezultate}
 
 \chapter{Concluzii}
 
 \begin{thebibliography}{9}
-	\bibitem{Manning}Christopher D. Manning, Prabhakar Raghavan and Hinrich Schïtze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
-	\bibitem{wikiir} \url{http://en.wikipedia.org/wiki/Information_retrieval}
+	\bibitem{MAN}Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
+	\bibitem{IRWIKI} \url{http://en.wikipedia.org/wiki/Information_retrieval}
 \end{thebibliography}
 
 \end{document}

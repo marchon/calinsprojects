@@ -36,6 +36,8 @@
 \renewcommand{\tablename}{Tabelul}
 \renewcommand{\chaptername}{Capitolul}
 \renewcommand{\bibname}{Bibliografie}
+
+\newtheorem{thm}{Teorem'a}
 %titluri in romana
 
 
@@ -84,9 +86,52 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 \subsection{Similaritatea cosinus 'si td-idf}
 \section{Euristici pentru eficientizare}
 \section{Cluster pruning}
-\section{Axiomatic retrieval}
+\section{Modelul axiomatic}
 \subsection{F2-EXP}
 \section{Modelul probabilistic}
+Dac'a s-ar cunoa'ste relevan'a unui subset de documente, s-ar putea estima probabilitatea apari'tiei unui termen \emph{t} 'intr-un document relevant $P(t|R=1)$ 'si, ca urmare, acesta ar putea reprezenta baza unui clasificator care decide dac'a un document este relevant sau nu.
+
+Utilizatorii 'incep cu \emph{nevoi de informa'tie} pe care le transform'a 'in \emph{interog'ari}. 'In mod similar, documentele sunt transformate 'in \emph{reprezent'ari de documente} care difer'a de primele cel pu'tin prin felul 'in care textul este 'imp'ar'tit 'in token-i. Baz'jndu-se pe aceste dou'a reprezent'ari, un sistem 'incearc'a s'a determine c'jt de bine satisfac documentele nevoile de informa'tii. 'In modelul Boolean sau VSM, d'jndu-se numai o interogare, pentru un sistem RI nevoia de informa'tie este incert'a. D'jndu-se interogarea 'si reprezentarea documentelor, un sistem trebuie s'a "ghiceasc'a" daca un document are con'tinut relevant pentru respectiva nevoie de informa'tie. Teoria probabilit'a'tilor pune la dispozi'tie o funda'tie de principii potrivite pentru ra'tionament 'in situa'tii incerte. Aceste principii pot fi exploatate pentru a estima c'jt de probabil este ca un document sa fie relevant pentru o nevoie de informa'tie.
+
+Exist'a mai multe posibile modele probabilistice de reg'asire. 'In continuare voi discuta despre \emph{principiul probabilistic de ierarhizare} 'si despre \emph{modelul binar de independen't'a}, care a fost primul model probabilistic de reg'asire. 'In final voi prezenta 'si sistemul de ponderare \emph{Okapi BM25}, care a avut un succes destul de mare 'in practic'a.
+
+'In acest context, este util conceptul de 'sanse (\emph{odds}), pe l'jng'a cel de probabilitate.
+\begin{equation}
+Odds: O(A) = \frac{P(A)}{P(\bar{A})} = \frac{P(A)}{1 - P(A)}.
+\label{odds}
+\end{equation}
+
+\subsection{Principiul probabilistic de ierarhizare}
+\subsubsection{Cazul 1/0 loss}
+Presupunem c'a sistemul de RI 'intoarce ca r'aspuns la o interogare o list'a ordonat'a de documente 'si folosirea unei nota'tii binare pentru relevan't'a. Pentru o interogare \emph{q} 'si un document \emph{d}, fie $R_{d,q}$ o variabil'a aleatoare care indic'a dac'a \emph{d} este relevant 'in contextul interog'arii \emph{q}. Variabila ia valoarea 1 c'jnd documentul este relevant 'si 0 altfel.
+
+Folosind un model probabilistic, ordinea evident'a 'in care documentele trebuiesc prezentate utilizatorului este dat'a de ierarhizarea documentelor dup'a probabilitatea estimat'a de relevan't'a 'in raport cu nevoia de informa'tie: $P(R_{d,q}=1|d,q)$. Vom scrie $R$ 'in loc de $R_{d,q}$. Aceasta reprezint'a temelia \emph{principiului probabilistic de ierarhizare (PRP)}:
+
+\begin{quote}
+Dac'a r'aspunsul unui sistem la fiecare cerere este o ierarhizare a documentelor din colec'tie 'in ordinea descresc'atoare a probabilita'tii de relevan't'a, unde probabilit'a'tile sunt estimate c'jt mai bine cu putin't'a pe baza datelor pe care sistemul le are la 'indem'jn'a, eficien'ta sistemului este cea mai bun'a care se poate obtine folosind aceste date.
+\end{quote}
+
+'In cel mai simplu caz al PRP, nu exist'a costuri de reg'asire sau alte motive de 'ingrijorare care s'a valorifice diferit ac'tiunile sau erorile. Se pierde un punct fie pentru 'intoarcerea unui document nerelevant, fie pentru lipsa 'intoarcerii unui document relevant. O astfel de evaluare binar'a asupra preciziei poart'a numele de \emph{1/0 loss}. Scopul este s'a se 'intoarc'a cele mai bune k rezultate posibile, pentru orice valoare k aleas'a de utilizator. PRP spune c'a documentele trebuie ierarhizate 'in ordinea descresc'atoare a $P(R=1|d,q)$.
+
+%TODO: put bibl see man 204 - ripley
+\begin{thm}
+PRP este optim 'in sensul c'a minimizeaz'a pierderea a'stepat'a (sau riscul Bayes) 'in cazul 1/0 loss.
+\end{thm}
+
+Acest'a teorem'a este adev'arat'a dac'a toate probabilit'a'tile sunt corecte, ceea ce 'in practic'a este imposibil. Cu toate acestea, PRP reprezint'a o funda'tie pentru contruirea de modele de RI.
+
+\subsubsection{Costuri de reg'asire}
+S'a presupunem existen'ta unui model de costuri de reg'asire. Fie $C_1$ costul de reg'asire a unui document relevant 'si $C_0$ costul de reg'asire a uni document nerelevant. Atunci pentru un document d 'si pentru toate documentele d'' nereg'asite dac'a
+\begin{equation}
+C_1 \times P(R=1|d) + C_0 \times P(R=0|d) \leq C_1 \times P(R=1|d'') + C_0 \ times P(R=0|d'')
+\label{cost}
+\end{equation}
+atunci d este urm'atorul document care trebuie 'intors. Acest model asigur'a un cadru formal 'in care putem modela costurile diferen'tiale ale falselor-pozitive 'si falselor-negative.
+
+\subsection{Modelul binar de independen't'a}
+
+
+
 \subsection{BM25}
 
 \chapter{Metode de agregare}

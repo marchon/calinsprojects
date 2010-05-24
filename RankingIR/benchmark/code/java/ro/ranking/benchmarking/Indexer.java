@@ -15,7 +15,7 @@ import org.apache.lucene.benchmark.byTask.utils.Config;
 public class Indexer {
 	public static void main(String[] args) throws Exception {
 		if(args.length != 1) {
-			System.err.println("Usage: IndexCorpus <workDir>");
+			System.err.println("Usage: Indexer <workDir>");
 			System.exit(1);
 		}
 		
@@ -31,7 +31,7 @@ public class Indexer {
 	    top.addTask(reset);
 	    
 	    // 3. task to create the index
-	    CreateIndexTask create = new CreateIndexTask(runData);
+	    BM25CreateIndexTask create = new BM25CreateIndexTask(runData);
 	    top.addTask(create);
 	    
 	    // 4. task to add all docs from corpus

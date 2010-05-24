@@ -180,7 +180,7 @@ Fie $p_t = P(x_t=1|R=1,\vec{q})$ probabilitatea ca termenul $x_t$ s'a apara 'int
 	termen absent & $x_t = 0$ & $1 - p_t$ & $1 - u_t$\\
 	\hline
 \end{tabular}
-\label{tab:cont}
+\label{tab:cont1}
 \end{table}
  
 Fac'jnd asump'tia c'a termenii care nu apar 'in interogare au probabilit'a'ti egale de apari'tie intr'un document relevant, respectiv nerelevant: $q_t = 0 \Rightarrow p_t = u_t$, vor trebui lua'ti 'in considerare doar termenii care apar 'in interogare:
@@ -209,11 +209,96 @@ c_t = \log{\frac{p_t(1-u_t)}{u_t(1-p_t}} = \log{\frac{p_t}{1 - p_t}} + \log{\fra
 \end{equation}
 
 Termenii $c_t$ reprezint'a propor'tiile \emph{log odds} pentru termenii interog'arii. Valolare va fi 0 dac'a un termen are 'sanse egale s'a apar intr'un document relevant, respectiv nerelevant, 'si pozitiv'a dac'a este mai probabil s'a apar'a 'intr-un document relevant. Cantit'a'tile $c_t$ func'tioneaz'a ca ponderi ale termenilor 'in model, iar scorul pentru o interogare 'si un document este: $RSV_d = \sum_{x_t=q_t=1}{c_t}$. Problema r'amas'a este cum s'a se estimeze cantit'a'tile $c_t$ pentru o colec'tie de documente 'si o interogare.
+
 \subsubsection{Estim'ari teoretice}
+Urm'atorul tabel de contingen't'a prezint'a o serie de statistici ale colec'tiei, unde $df_t$ reprezint'a num'arul de documente care con'tin termenul $t$:
+\begin{table}[ht]
+\centering
+\begin{tabular}{|lc|cc|c|}
+	\hline
+	& document & relevante & nerelevante & total\\
+	\hline
+	termen present & $x_t = 1$ & $s$ & $df_t - s$ & $df_t$\\
+	termen absent & $x_t = 0$ & $S - s$ & $(N-df_t) - (S-s)$ & $N - df_t$\\
+	\hline
+	& total & $S$ & $N - S$ & $N$\\
+	\hline
+\end{tabular}
+\label{tab:cont2}
+\end{table}
+
+A'sadar, $p_t = s/S$ 'si $u_t = (df_t-s)/(N-S)$ 'si
+\begin{equation}
+c_t = K(N,df_t,S,s) = \log{\frac{s/(S-s)}{(df_t-s)/((N-df_t)-(S-s))}}.
+\label{eq:ct}
+\end{equation}
+Pentru a evita posibilitatea apari'tiei de zerouri (de exemplu, toate sau niciun document relevan con'tine un anumit termen) se adaug'a $\frac{1}{2}$ la fiecare dintre cele 4 cantit'a'ti 'si apoi se ajusteaz'a totalurile (N + 2). Ca urmare avem:
+\begin{equation}
+\hat{c_t} = K(N,df_t,S,s) = \log{\frac{(s+\frac{1}{2})/(S-s+\frac{1}{2})}{(df_t-s+\frac{1}{2})/(N-df_t-S+s+\frac{1}{2})}}.
+\label{eq:ct1}
+\end{equation}
+Ad'ugarea valorii $\frac{1}{2}$ este o form'a simpl'a de \emph{uniformizare}.
+
 \subsubsection{Estim'ari practice}
+Sub asum'tia c'a documentele relevante reprezint'a un procent infim din colec'tie, este plauzibil'a aproximarea statisticilor pentru documentele nerelevante cu statisticile pe 'intreaga colec'tie. Ca urmare, $u_t$ (probabilitatea ca un document nerelevant s'a con'tin'a termenul t pentru o interogare) poate fi aproximat cu $df_t/N$ 'si:
+\begin{equation}
+\log{\frac{1-u_t}{u_t}} = \log{\frac{N-df_t}{df_t}} \approx \log{\frac{N}{df_t}}
+\label{eq:assum}
+\end{equation}
+Rezultatul este interesant 'si prin faptul c'a furnizeaz'a o justificare teoretic'a a celei mai 'int'jlnite forme de ponderare \emph{idf} folosit'a 'in VSM.
 
+Tehnica de aproximare din ecua'tia \ref{eq:assum} nu poate fi usor extins'a la documente relevante. Cantitatea $p_t$ poate fi estimat'a 'in mai multe moduri:
+\begin{enumerate}
+	\item Se poate folosi frecven'ta termenilor din documentele cunoscute deja ca fiind relevante(dac'a se cunosc - metod'a folosit'a 'in cadrul \emph{feedback-ului de relevan't'a})
+	\item Se poate presupune c'a fiecare termen are s'anse egale s'a apara'a 'intr-un document relevant: $p_t = 0.5$. Aceast'a estimare este destul de slab'a. Combin'jnd aceast'a metod'a cu aproximarea lui $u_t$ de mai sus, ierarhizarea documentelor este dat'a de termenii interog'arii care apar 'in documente scala'ti cu ponderea \emph{idf}.
+	\item O alt'a aproximare propus'a folose'ste statisticile apari'tiilor termenilor 'in colec'tie: $p_t = df_t/N$.
+\end{enumerate}
 
-\subsection{BM25}
+\subsection{Okapi BM25}
+Metodele probabiliste sunt unele din cele mai vechi modele formale 'in RI. 'Inc'a din 1970 erau privite ca o oportunitate pentru a pune bazele teoretice 'in RI 'si, odat'a cu "rena'sterea" modelelor probabiliste 'in lingvistica computa'tional'a 'in anii 1990, aceast'a oportunitate s'a 'intors iar metodele probabiliste reprezint'a unul dintre subiectele cele mai discutate subiecte 'in materie de RI. Ob'tinerea unor aproxim'ari rezonabile ale probabilit'a'tilor necesare pentru un model RI probabilistic este posibil'a, dar necesit'a prezum'tii majore. 'In modelul BIM acestea sunt:
+\begin{itemize}
+	\item o reprezentare boolean'a a documentelor, interog'arilor, relevan'tei
+	\item independen'ta termenilor
+	\item termenii care nu apar 'in interogare nu afecteaz'a rezultatul
+	\item valorile de relevan't'a ale documentelor sunt independente
+\end{itemize}
+
+Poate c'a din cauza severit'a'tii asump'tiilor de modelare este dificil'a ob'tinerea unei performan'te mai bune. O problem'a general'a pare s'a fie c'a modelele probabiliste fie necesit'a informa'tii par'tiale de relevan't'a, fie duc la derivarea unor scheme aparent inferioare de ponderare a termenilor.
+
+Aceast'a situa'tie s-a schimbat 'in anii 1990 c'jnd schema de ponderare \emph{BM25} a avut rezultate foarte bune 'si a 'inceput s'a fie adoptat'a de multe sisteme RI. Diferen'ta dintre sistemele RI bazate pe \emph{spatiul vectorial} 'si cele bazate pe modelul probabilistic nu este a'sa de mare; 'in ambele cazuri se construieste un sistem similar, singura diferen't'a fiind c'a scorul documentelor in contextul unei interog'ari este dat pe de-o parte de \emph{similaritatea cosinus} aplicat'a pe vectori de ponderi \emph{tf-idf}, iar pe de alt'a parte de o formul'a u'sor diferit'a motivat'a de teoria probabilit'a'tilor.
+
+\subsubsection{Un model nebinar}
+Modelul BIM a fost ini'tial proiectat pentru scurte 'inregistr'ari de cataloage 'si a func'tionat destul de bine 'in acest context, dar pentru c'aut'ari \emph{full-text} pe colec'tii mari este evident c'a un model trebuie s'a ia 'in considerare frecven'ta termenilor 'si lungimea documentelor. Schema de ponderare numit'a Okapi dup'a sistemul 'in care a fost ini'tial implementat'a, a fost proiectat'a folosind un model probabilistic sensibil la aceste tipuri de informa'tie f'ar'a s'a introduc'a prea mul'ti parametrii adi'tionali.
+
+Cel mai simplu scor pentru un document $d$ este dat de adunarea ponderilor \emph{idf} ale termenilor interog'arii prezen'ti 'in document:
+\begin{equation}
+RSV_d=\sum\limits_{t \in q}{\log{\frac{N}{df_t}}}
+\label{eq:okapi1}
+\end{equation}
+Pornind de la formula din ecua'tia \ref{eq:ct1}, 'si estim'jnd $S=s=0$ 'in absen'ta feedback-ului de relevan't'a, se ob'tine o formulare alternativ'a a idf:
+\begin{equation}
+RSV_d=\sum\limits_{t \in q}{\log{\frac{N-df_t+\frac{1}{2}}{df_t + \frac{1}{2}}}}
+\label{eq:okapi2}
+\end{equation}
+Aceast'a variant'a are un comportament ciudat: dac'a un termen apare 'in peste jum'atate din documentele din colec'tie, modelul d'a o pondere negativ'a, lucru care este nedorit. 'In cazul folosirii unui \emph{stop list} acest lucru nu se 'int'jmpl'a de obicei.
+
+Ecua'tia \ref{eq:okapi1} poate fi 'imbun'at'a'tit'a prin folosirea frecven'tei termenilor 'si a lungimii documentului:
+\begin{equation}
+RSV_d = \sum\limits_{t \in q}{\log{\left[\frac{N}{df_t}\right]} \cdot \frac{(k_1+1)tf_{td}}{k_1((1-b)+b\times(L_d/L_{ave}))+tf_{td}}}
+\label{eq:okapi3}
+\end{equation}
+Aici, $tf_{td}$ este frecven'ta termenului t 'in documentul d 'si $L_d$ 'si $L_{ave}$ sunt lungimea documentului d, respectiv lungimea media a unui document din colec'tie. Variabila $k_1$ este un parametru pozitiv de ajustare care calibreaz'a scalarea frecven'tei $tf_td$: $k_1=0$ corespunde modelului binar, iar o valoare mare corespunde folosirii frecven'tei brute. $b$ este un alt parametru de calibrare ($0\leq{b}\leq{1}$) care determin'a scalarea dup'a lungimea documentului: $b=1$ presupune scalarea complet'a a ponderii termenului cu lungimea documentului 'in timp ce $b=0$ presupune lipsa normaliz'arii cu lungimea.
+
+Dac'a interogarea este lung'a, atunci am putea folosi o ponderare similar'a pentru termenii din interogare. Acest lucru este adecvat dac'a interog'arile au lungimi de dimensiunile unui paragraf, alftel este nenecesar:
+\begin{equation}
+RSV_d = \sum\limits_{t \in q}{\log{\left[\frac{N}{df_t}\right]} \cdot \frac{(k_1+1)tf_{td}}{k_1((1-b)+b\times(L_d/L_{ave}))+tf_{td}} \cdot \frac{(k_3+1)tf_{tq}}{k_3+tf_{tq}}}.
+\label{eq:okapi4}
+\end{equation}
+Aici $tf_{tq}$ este frecven'ta termenului t 'in interogarea 'si $k_3$ este un alt parametru pozitiv de calibrare care ajusteaz'a scalarea freven'tei termenilor din interogare. Parametru $b$ pentru normalizarea lungimii interog'arii este nenecesar.
+
+Acesti parametri 'in mod ideal sunt seta'ti s'a optimizeze performan'ta pe o colec'tie de test. C'autarea valorilor care s'a maximizeze performan'ta poate fi f'acut'a manual sau automat. 'In absen'ta unor astfel de optimiz'ari, experimentele au ar'atat c'a valori bune pentru ace'sti parametrii sunt $b=0.75$ 'si $1.2\leq{k_1,k_3}\leq2$.
+
+Formulele BM25 de ponderare a termenilor au fost folosite cu succes pe o varietate de colec'tii 'si tipuri de c'autare. Au avut o performan't'a extrem de bun'a la evalu'arile TREC 'si au fost implementate 'in multe sisteme RI.
 
 \chapter{Metode de agregare}
 \section{Borda}

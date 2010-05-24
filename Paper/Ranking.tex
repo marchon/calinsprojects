@@ -89,7 +89,7 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 \section{Modelul axiomatic}
 \subsection{F2-EXP}
 \section{Modelul probabilistic}
-Dac'a s-ar cunoa'ste relevan'a unui subset de documente, s-ar putea estima probabilitatea apari'tiei unui termen \emph{t} 'intr-un document relevant $P(t|R=1)$ 'si, ca urmare, acesta ar putea reprezenta baza unui clasificator care decide dac'a un document este relevant sau nu.
+Dac'a s-ar cunoa'ste relevan'ta unui subset de documente, s-ar putea estima probabilitatea apari'tiei unui termen \emph{t} 'intr-un document relevant $P(t|R=1)$ 'si, ca urmare, acesta ar putea reprezenta baza unui clasificator care decide dac'a un document este relevant sau nu.
 
 Utilizatorii 'incep cu \emph{nevoi de informa'tie} pe care le transform'a 'in \emph{interog'ari}. 'In mod similar, documentele sunt transformate 'in \emph{reprezent'ari de documente} care difer'a de primele cel pu'tin prin felul 'in care textul este 'imp'ar'tit 'in token-i. Baz'jndu-se pe aceste dou'a reprezent'ari, un sistem 'incearc'a s'a determine c'jt de bine satisfac documentele nevoile de informa'tii. 'In modelul Boolean sau VSM, d'jndu-se numai o interogare, pentru un sistem RI nevoia de informa'tie este incert'a. D'jndu-se interogarea 'si reprezentarea documentelor, un sistem trebuie s'a "ghiceasc'a" daca un document are con'tinut relevant pentru respectiva nevoie de informa'tie. Teoria probabilit'a'tilor pune la dispozi'tie o funda'tie de principii potrivite pentru ra'tionament 'in situa'tii incerte. Aceste principii pot fi exploatate pentru a estima c'jt de probabil este ca un document sa fie relevant pentru o nevoie de informa'tie.
 
@@ -105,7 +105,7 @@ Odds: O(A) = \frac{P(A)}{P(\bar{A})} = \frac{P(A)}{1 - P(A)}.
 \subsubsection{Cazul 1/0 loss}
 Presupunem c'a sistemul de RI 'intoarce ca r'aspuns la o interogare o list'a ordonat'a de documente 'si folosirea unei nota'tii binare pentru relevan't'a. Pentru o interogare \emph{q} 'si un document \emph{d}, fie $R_{d,q}$ o variabil'a aleatoare care indic'a dac'a \emph{d} este relevant 'in contextul interog'arii \emph{q}. Variabila ia valoarea 1 c'jnd documentul este relevant 'si 0 altfel.
 
-Folosind un model probabilistic, ordinea evident'a 'in care documentele trebuiesc prezentate utilizatorului este dat'a de ierarhizarea documentelor dup'a probabilitatea estimat'a de relevan't'a 'in raport cu nevoia de informa'tie: $P(R_{d,q}=1|d,q)$. Vom scrie $R$ 'in loc de $R_{d,q}$. Aceasta reprezint'a temelia \emph{principiului probabilistic de ierarhizare (PRP)}:
+Folosind un model probabilistic, ordinea evident'a 'in care documentele trebuie prezentate utilizatorului este dat'a de ierarhizarea documentelor dup'a probabilitatea estimat'a de relevan't'a 'in raport cu nevoia de informa'tie: $P(R_{d,q}=1|d,q)$. Vom scrie $R$ 'in loc de $R_{d,q}$. Aceasta reprezint'a temelia \emph{principiului probabilistic de ierarhizare (PRP)}:
 
 \begin{quote}
 Dac'a r'aspunsul unui sistem la fiecare cerere este o ierarhizare a documentelor din colec'tie 'in ordinea descresc'atoare a probabilita'tii de relevan't'a, unde probabilit'a'tile sunt estimate c'jt mai bine cu putin't'a pe baza datelor pe care sistemul le are la 'indem'jn'a, eficien'ta sistemului este cea mai bun'a care se poate obtine folosind aceste date.
@@ -123,13 +123,94 @@ Acest'a teorem'a este adev'arat'a dac'a toate probabilit'a'tile sunt corecte, ce
 \subsubsection{Costuri de reg'asire}
 S'a presupunem existen'ta unui model de costuri de reg'asire. Fie $C_1$ costul de reg'asire a unui document relevant 'si $C_0$ costul de reg'asire a uni document nerelevant. Atunci pentru un document d 'si pentru toate documentele d'' nereg'asite dac'a
 \begin{equation}
-C_1 \times P(R=1|d) + C_0 \times P(R=0|d) \leq C_1 \times P(R=1|d'') + C_0 \ times P(R=0|d'')
+C_1 \times P(R=1|d) + C_0 \times P(R=0|d) \leq C_1 \times P(R=1|d'') + C_0 \times P(R=0|d'')
 \label{cost}
 \end{equation}
 atunci d este urm'atorul document care trebuie 'intors. Acest model asigur'a un cadru formal 'in care putem modela costurile diferen'tiale ale falselor-pozitive 'si falselor-negative.
 
 \subsection{Modelul binar de independen't'a}
+\emph{BIM} este modelul care a fost folosit cu PRP. Introduce c'jteva asum'tii simple care permit estimarea func'tiei probabilistice $P(R|d, q)$. Aici binar este echivalent cu boolean: at'jt documentele c'jt si interog'arile sunt reprezentate ca vectori binari de incident'a a termenilor. Un document $d$ este reprezentat de vectorul $\vec{x} = (x_1, ..., x_M)$, unde $x_t=1$ dac'a termenul t este prezent 'in documentul $d$ 'si $x_t=0$ altfel. 'In contextul acestei repezent'ari, multe documente pot avea aceea'si reprezentare. 'In mod similar, interogarea $q$ este reprezentat'a prin vectorul de inciden't'a $\vec{q}$. "Independen't'a" se refer'a la faptul c'a termenii sunt modela'ti asa cum apar 'in documente 'in mod independent. Modelul nu recunoa'ste niciun tip de asociere 'intre termeni. Aceast'a asump'tie este, evident, incorect'a, dar, 'in pofida acestui aspect, ofer'a rezultate satisf'ac'atoare 'in practic'a. Este asump'tia care st'a 'si la baza modelului \emph{Bayes Naiv}, 'si este 'intr-un fel echivalent'a cu asum'tia din VSM, 'in care fiecare termen reprezint'a o dimensiune ortogonala fa't'a de celelalte.
 
+Pentru a face o strategie probabilistic'a de reg'asire precis'a, trebuie estimat modul 'in care termenii din documente contribuie la relevan't'a. Cu alte cuvinte, trebuie s'a specific'am cum frecven'ta termenilor 'intr-un document, num'arul de documente care con'tin un termen, lungimea unui document 'si alte statistici influen'teaz'a calculul relevan'tei unui document. Dup'a acest proces documentele vor fi ordonate 'in ordinea descresc'atoare a acestor probabilit'ati estimate.
+
+Se porne'ste de la asump'tia c'a relevan'ta fiec'arui document este independent'a de relevan'ta celorlalte documente. 'In practic'a, acest lucru pune o problem'a 'in momentul 'in care sunt 'intoarse documente duplicate sau aproape duplicate. 'In contextul BIM, probabilitatea c'a un document este relevant la o interogare $P(R|d,q)$ este modelat'a via probabilitatea $P(R|\vec{x},\vec{q})$, folosind vectorii de inciden't'a. Apoi, aplic'jnd regula lui Bayes, se ob'tine:
+\begin{equation}
+P(R=1|\vec{x},\vec{q}) = \frac{P(\vec{x}|R=1,\vec{q})P(R=1|\vec{q})}{P(\vec{x},\vec{q})}\,\,\,\,\,\,\,\,
+P(R=0|\vec{x},\vec{q}) = \frac{P(\vec{x}|R=0,\vec{q})P(R=0|\vec{q})}{P(\vec{x},\vec{q})}
+\label{bayes}
+\end{equation}
+
+Aici, $P(\vec{x}|R=1,\vec{q})$ 'si $P(\vec{x}|R=0,\vec{q})$ reprezint'a probabilitatea ca dac'a un document relevant, respectiv nerelevant, este 'intors, acesta s'a aiba reprezentarea $\vec{x}$. Aceste probabilit'a'ti nu se pot calcula exact, a'sa c'a trebuie folosi'ti estimatori: statistici ale colectiei de documente sunt folosite pentru a estima aceste probabilit'a'ti. $P(R=1|\vec{q})$ 'si $P(R=0|\vec{q})$ reprezint'a probabilitatea apriori de a 'intoarce un document relevant, respectiv nerelevant, dat'a fiind interogarea $\vec{q}$. Pentru c'a un document este fie relevant fie nerelevant 'in contextul unei interog'ari, avem:
+\begin{equation}
+P(R=1|\vec{x},\vec{q}) + P(R=0|\vec{x},\vec{q}) = 1.
+\label{prisum}
+\end{equation}
+
+\subsubsection{Derivarea unei func'tii de ierarhizare}
+Dec'jt s'a estim'am $P(R=1|\vec{x},\vec{q})$ direct, deoarece intereseaz'a doar ordinea 'in care sunt 'intoarse documentele, folosim alte cantit'a'ti care sunt mai usor de calculat 'si care au ca rezultat aceea'si ordine. Putem ordona documentele dup'a 'sansele (odds) de relevan't'a, ceea ce duce la o simplificare a rela'tiei:
+\begin{equation}
+O(R|\vec{x},\vec{q}) = \frac{P(R=1|\vec{x},\vec{q})}{P(R=0|\vec{x},\vec{q})} = \frac{\frac{P(\vec{x}|R=1,\vec{q})P(R=1|\vec{q})}{P(\vec{x},\vec{q})}}{\frac{P(\vec{x}|R=0,\vec{q})P(R=0|\vec{q})}{P(\vec{x},\vec{q})}} = \frac{P(R=1|\vec{q})}{P(R=0|\vec{q})} \cdot \frac{P(\vec{x}|R=1,\vec{q})}{P(\vec{x}|R=0,\vec{q})}
+\label{oddsrel}
+\end{equation}
+
+Termenul st'jng al expresiei din dreapta al ecua'tiei \ref{oddsrel} este constant pentru o interogare dat'a. Pentru c'a intereseaz'a doar ordinea, nu e nevoie s'a se estimeze. Trebuie estimat, 'in schimb, cel'alalt termen, lucru care pare dificil ini'tial: cum poate fie precis estimat'a probabilitatea unui 'intreg vector de inciden't'a? Pentru a face posibil'a estimarea, se face asum'tia de \emph{condi'tional-independen't'a Naive Bayes}: prezen'ta sau absen'ta unui cuv'jnt 'intr-un document este independent'a de prezen'ta sau absen'ta oric'arui alt cuv'jnt:
+\begin{equation}
+\frac{P(\vec{x}|R=1,\vec{q})}{P(\vec{x}|R=0,\vec{q})} = \prod\limits_{t=1}^M{\frac{P(x_t|R=1,\vec{q})}{P(x_t|R=0,\vec{q})}} 
+\label{naiveb}
+\end{equation}
+A'sadar:
+\begin{equation}
+O(R|\vec{x},\vec{q}) = O(R|\vec{q}) \cdot \prod\limits_{t=1}^M{\frac{P(x_t|R=1,\vec{q})}{P(x_t|R=0,\vec{q})}}.
+\label{oddsnb}
+\end{equation}
+Pentru c'a fiecare $x_t$ este fie 0, fie 1, putem separa termenii astfel:
+\begin{equation}
+O(R|\vec{x},\vec{q}) = O(R|\vec{q}) \cdot \prod\limits_{t:x_t=1}{\frac{P(x_t=1|R=1,\vec{q})}{P(x_t=1|R=0,\vec{q})}} \cdot \prod\limits_{t:x_t=0}{\frac{P(x_t=0|R=1,\vec{q})}{P(x_t=0|R=0,\vec{q})}}.
+\label{oddsnb1}
+\end{equation}
+
+Fie $p_t = P(x_t=1|R=1,\vec{q})$ probabilitatea ca termenul $x_t$ s'a apara 'intr-un document relevant la interogarea dat'a 'si $u_t = P(x_t=1|R=0,\vec{q})$, probabilitatea ca termenul s'a apara 'intr-un document nerelevant. Aceste cantit'a'ti pot fi vizualizate 'in tabelul de contingen't'a urm'ator (suma pe coloane este 1):
+\begin{table}[ht]
+\centering
+\begin{tabular}{|lc|cc|}
+	\hline
+	& document & relevant (R=1) & nerelevant(R=0)\\
+	\hline
+	termen present & $x_t = 1$ & $p_t$ & $u_t$\\
+	termen absent & $x_t = 0$ & $1 - p_t$ & $1 - u_t$\\
+	\hline
+\end{tabular}
+\label{tab:cont}
+\end{table}
+ 
+Fac'jnd asump'tia c'a termenii care nu apar 'in interogare au probabilit'a'ti egale de apari'tie intr'un document relevant, respectiv nerelevant: $q_t = 0 \Rightarrow p_t = u_t$, vor trebui lua'ti 'in considerare doar termenii care apar 'in interogare:
+\begin{equation}
+O(R|\vec{x},\vec{q}) = O(R|\vec{q}) \cdot \prod\limits_{t:x_t=q_t=1}{\frac{p_t}{u_t}} \cdot \prod\limits_{t:x_t=0,q_t=1}{\frac{1-p_t}{1-u_t}}.
+\label{eq:ptut}
+\end{equation}
+Primul produs este peste termenii interog'arii care apar 'in document 'si produsul din dreapta peste cei care nu apar.
+
+Expresia poate fi manipulat'a prin includerea termenilor g'asi'ti 'in document 'in produsul din dreapta, dar, 'in acela'si timp, ajust'jnd produsul st'jng pentru simplificare:
+\begin{equation}
+O(R|\vec{x},\vec{q}) = O(R|\vec{q}) \cdot \prod\limits_{t:x_t=q_t=1}{\frac{p_t(1-u_t)}{u_t(1-p_t)}} \cdot \prod\limits_{t:q_t=1}{\frac{1-p_t}{1-u_t}}.
+\label{eq:ptut1}
+\end{equation}
+
+Produsul drept este acum peste to'ti termenii interog'arii, ceea ce 'inseamn'a c'a e constant pentru o interogare, la fel ca $O(R|\vec{q})$. A'sa dar, singura cantitate care trebuie estimat'a pentru a ierarhiza documentele este cea din produsul st'jng. Putem ordona documentele 'si dup'a rezultatul logaritm'arii produsului, deoarece log este o func'tie monoton'a. Cantitatea folosit'a la ierarhizare se nume'ste \emph{valoarea statusului de reg'asire (RSV - retrieval status value)}:
+\begin{equation}
+RSV_d = \log{\prod\limits_{t:x_t=q_t=1}{\frac{p_t(1-u_t)}{u_t(1-p_t)}}} = \sum\limits_{t:x_t=q_t=1}{\log{\frac{p_t(1-u_t)}{u_t(1-p_t)}}}.
+\label{eq:rsv}
+\end{equation}
+
+Totul se reduce la clacularea RSV. Definim $c_t$:
+\begin{equation}
+c_t = \log{\frac{p_t(1-u_t)}{u_t(1-p_t}} = \log{\frac{p_t}{1 - p_t}} + \log{\frac{1-u_t}{u_t}}.
+\label{eq:}
+\end{equation}
+
+Termenii $c_t$ reprezint'a propor'tiile \emph{log odds} pentru termenii interog'arii. Valolare va fi 0 dac'a un termen are 'sanse egale s'a apar intr'un document relevant, respectiv nerelevant, 'si pozitiv'a dac'a este mai probabil s'a apar'a 'intr-un document relevant. Cantit'a'tile $c_t$ func'tioneaz'a ca ponderi ale termenilor 'in model, iar scorul pentru o interogare 'si un document este: $RSV_d = \sum_{x_t=q_t=1}{c_t}$. Problema r'amas'a este cum s'a se estimeze cantit'a'tile $c_t$ pentru o colec'tie de documente 'si o interogare.
+\subsubsection{Estim'ari teoretice}
+\subsubsection{Estim'ari practice}
 
 
 \subsection{BM25}

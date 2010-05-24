@@ -100,7 +100,7 @@ public class QueryDriver {
 		TrecTopicsReader qReader = new TrecTopicsReader();
 		BufferedReader topicsReader = new BufferedReader(
 				new InputStreamReader(new FileInputStream(topicsFile), "UTF-8"));
-		QualityQuery qqs[] = qReader.readQueries(topicsReader);
+		QualityQuery[] qqs = qReader.readQueries(topicsReader);
 
 		// prepare judge, with trec utilities that read from a QRels file
 		BufferedReader qrelsReader = new BufferedReader(

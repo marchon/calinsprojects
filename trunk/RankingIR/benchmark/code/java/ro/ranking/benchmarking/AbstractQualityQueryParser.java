@@ -12,7 +12,7 @@ import org.apache.lucene.search.Query;
 public abstract class AbstractQualityQueryParser implements QualityQueryParser {
 	protected String qqNames[];
 	protected String indexField;
-	private ThreadLocal<QueryParser> queryParserThreadLocal = new ThreadLocal<QueryParser>();
+	protected ThreadLocal<QueryParser> queryParserThreadLocal = new ThreadLocal<QueryParser>();
 
 	public AbstractQualityQueryParser(String[] qqNames, String indexField) {
 		this.qqNames = qqNames;

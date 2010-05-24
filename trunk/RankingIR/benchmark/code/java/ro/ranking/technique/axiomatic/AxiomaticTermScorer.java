@@ -111,28 +111,6 @@ public class AxiomaticTermScorer extends Scorer {
 		return raw;
 	}
 
-	public boolean skipTo(int target) throws IOException {
-		// first scan in cache
-		for (pointer++; pointer < pointerMax; pointer++) {
-			if (docs[pointer] >= target) {
-				doc = docs[pointer];
-				return true;
-			}
-		}
-
-		// not found in cache, seek underlying stream
-		boolean result = termDocs.skipTo(target);
-		if (result) {
-			pointerMax = 1;
-			pointer = 0;
-			docs[pointer] = doc = termDocs.doc();
-			freqs[pointer] = termDocs.freq();
-		} else {
-			doc = Integer.MAX_VALUE;
-		}
-		return result;
-	}
-
 	public Explanation explain(int doc) throws IOException {
 		TermQuery query = (TermQuery) weight.getQuery();
 		Explanation tfExplanation = new Explanation();

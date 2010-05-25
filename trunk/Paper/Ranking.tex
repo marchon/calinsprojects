@@ -123,12 +123,12 @@ Av'jnd aceste ingrediente, cum este m'asurat'a eficien'ta unui sistem? Cele mai 
 
 \emph{Precizia} este dat'a de raportul dintre documentele reg'asite care sunt relevante 'si documentele reg'asite:
 \begin{equation}
-P = \frac{\#(documente reg'asite 'si relevante)}{\#(documente reg'asite)} = P(relevante|reg'asite)
+P = \frac{\#(documente\,reg\breve{a}site\,si\,relevante)}{\#(documente\,reg\breve{a}site)} = P(relevante|reg\breve{a}site)
 \label{eq:prec}
 \end{equation}
 \emph{Returnarea} este raportul dintre documentele reg'asite care sunt relevante 'si documentele relevante:
 \begin{equation}
-R = \frac{\#(documente reg'asite 'si relevante)}{\#(documente relevante)} = P(reg'asite|relevante)
+R = \frac{\#(documente\,reg\breve{a}site\,si\,relevante)}{\#(documente\,relevante)} = P(reg\breve{a}site|relevante)
 \label{eq:rec}
 \end{equation}
 Aceste no'tiuni pot fi explicate mai clar folosind tabelul de contingen't'a de mai jos.
@@ -154,6 +154,13 @@ P = \frac{tp}{tp + fp}\,\,\,\,\,\,\,\,R = \frac{tp}{tp + fn}
 
 O alternativ'a evident'a este judecarea sistemului dup'a acurate'te, adic'a, procentul clasific'arilor corecte. Folosind tabelul de mai sus, $ac = (tp+tn)/(tp+fp+fn+tn)$. Acest lucru pare plauzibil din moment ce exist'a dou'a clase, relevant 'si nerelevant, iar un sistem RI poate fi privit ca un clasificator pe dou'a clase ('intoarce documentele etichetate cu \emph{relevant}). Aceasta este, de fapt, m'asura de eficien't'a folosit'a de obicei 'in evaluarea problemelor de clasificare.
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.7]{evl1.png}
+	\caption{Grafic care compar'a media armonic'a cu celelalte medii}
+	\label{fig:harm}
+\end{figure}
+
 Exist'a un motiv din cauza c'aruia acurate'tea nu este o masur'a corespunz'atoare pentru reg'asirea informa'tiei. 'In aproape toate circumstan'tele, datele sunt extrem de "denaturate": de obicei, peste 99,9\% din documente sunt 'in categoria nerelevant. Un sistem configurat s'a maximizeze acurate'tea poate p'area c'a func'tioneaz'a foarte bine prin considerearea tuturor documentelor ca fiind nerelevante la orice introgare. Acest lucru este inacceptabil pentru un sistem RI. Un utilizator va dori 'intotdeauna s'a vad'a niste documente 'si poate avea o mic'a toleran't'a pentru pozitive false dac'a majoritatea documentelor 'ii satisfac nevoia de informa'tie. M'asurile P 'si R concentreaz'a evaluarea pe 'intoarcerea de pozitive adev'arate, 'intreb'jnd ce procent de documente relevante a fost g'asit 'si cate pozitive false au fost 'intoarse.
 
 Avantajul faptului c'a exist'a dou'a masuri diferite este acela c'a 'in cele mai multe circumstan'te una este mai important'a dec'jt cealalt'a. Un utilizator web obi'snuit dore'ste ca fiecare rezultat de pe prima pagin'a s'a fie relevant(precizie mare) dar nu are nici cel mai mic interes s'a 'stie 'si mai ales s'a priveasc'a fiecare document relevant. Pe de alt'a parte, un profesionist care caut'a documente 'intr-un sistem RI intern va 'incerca s'a g'asesc'a toate documentele relevante la nevoia lui de informa'tie(returnare mare) 'si va tolera valori mici ale preciziei pentru a 'isi atinge scopul. 'In orice caz, exist'a un compromis 'intre cele dou'a valori: se poate 'intotdeauna ob'tine un recall maxim dar precizie mic'a dac'a se 'intorce o list'a cu toate documentele. Recall-ul este o functie non-descresc'atoare de num'arul de documente reg'asite. Pe de alt'a parte, 'intr-un sistem bun, precizia de obicei scade odat'a cu cresterea num'arului de documente reg'asite. 'In general se dore'ste o anumit'a valoare a recall-ului, toler'jndu-se un anumit procent de pozitive false.
@@ -170,14 +177,65 @@ F_{\beta=1} = \frac{2PR}{P+R}
 \end{equation}
 Valori ale lui $\beta$ mai mici dec'jt 1 scot 'in eviden't'a precizia, 'in timp ce valori mai mari ca 1 pun accentul pe returnare. Valorile discutate p'jn'a acum sunt m'asuri 'intre 0 'si 1, dar se mai scriu si ca procente pe o scal'a de la 1 la 100. Media armonic'a este folosit'a 'in locul mediei aritmetice deoarece 'in cazul 'in care un sistem ar 'intoarce toate documentele(100\% recall), ar avea tot timpul cel pu'tin $F=50\%$. Media armonic'a a dou'a numere ($a << b$) este mai apropiat'a de minim dec'jt de media lor aritmetic'a(vezi figura \ref{fig:harm}).
 
+\section{Evaluarea rezultatelor ordonate}
+M'asurile \emph{precision}, \emph{recall} 'si \emph{F} sunt bazate pe seturi; sunt calculate folosind seturi neordonate de documente. Este nevoie de o extindere a acestor m'asuri (sau de o definire de noi m'asuri) dac'a se dore'ste evaluarea unor rezultate ierarhizate care reprezint'a standardul 'in zilele noastre. 'Intr-un context de reg'asire ierarhizat'a setul care intereseaz'a este dat de \emph{primele k} documente. Pentru fiecare astfel de set, valorile preciziei si return'arii pot fi reprezentate grafic printr-o \emph{curb'a precision-recall}, ca cea din figura \ref{fig:precrec}.
+
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=.7]{evl1.png}
-	\caption{Grafic care compar'a media armonic'a cu celelalte medii}
-	\label{fig:harm}
+	\includegraphics[scale=.7]{evl2.png}
+	\caption{Grafic \emph{precision-recall}.}
+	\label{fig:precrec}
 \end{figure}
 
-\section{Evaluarea rezultatelor ordonate}
+Curbele precision-recall au o form'a de "fier'astr'au": dac'a al $(k+1)$-lea document reg'asit este nerelevant, atunci recall-ul este acela'si ca pentru primele $k$ documente reg'asite, dar precizia scade. Dac'a documentul este relevant atunci ambele valori cresc. Este de obicei util s'a se elimine aceast'a form'a 'si modul standard de a face acest lucru este folosind \emph{precizia interpolat'a} $p_{interp}$. La un anumit nivel de recall $r$, $p_{interp}$ este dat de cea mai mare valoare a preciziei g'asit'a pentru orice nivel de recall $r\prime \geq r$:
+\begin{equation}
+p_{interp} = \max\limits_{r\prime \geq r}{p(r\prime)}
+\label{eq:pinterp}
+\end{equation}
+Precizia interpolat'a este ilustrat'a 'in figura \ref{fig:precrec}.
+
+Examinarea 'intregii curbe precizion-recall este foarte informativ'a, dar, c'jteodata este necesar ca informa'tia s'a fie redus'a la c'jteva numere. Modul tradi'tional de a realiza acest lucru (folosit, de exemplu, la primele 8 evaluari TREC Ad Hoc) este \emph{precizia medie interpolat'a 'in 11 puncte}. Pentru fiecare nevoie de informa'tie, precizia interpolat'a este m'asurat'a 'in cele 11 puncte de recall: $0.1, 0.2, ..., 1.0$. Exemplul din figur'a \ref{fig:precrec} este ilustrat 'in tabelul \ref{tab:precrec}.
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+	Recall & Precizie interpolat'a\\
+	0.0 & 1.00\\
+	0.1 & 0.67\\
+	0.2 & 0.63\\
+	0.3 & 0.55\\
+	0.4 & 0.45\\
+	0.5 & 0.41\\
+	0.6 & 0.36\\
+	0.7 & 0.29\\
+	0.8 & 0.13\\
+	0.9 & 0.10\\
+	1.0 & 0.08\\
+\end{tabular}
+\caption{Calcularea preciziei medii interpolate 'in 11 puncte.}
+\label{tab:precrec}
+\end{table}
+
+Pentru fiecare nivel de recall se calculeaz'a media aritmetic'a a preciziei interpolate la acel nivel de recall pentru fiecare nevoie de informa'tie din colec'tie. O curb'a precizie-recall cu 11 puncte poate fi vizualizat'a apoi grafic. Un exemplu este prezent 'in figura \ref{fig:pinterp}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.4]{evl3.png}
+	\caption{Grafic al preciziei medii interpolate 'in 11 puncte.}
+	\label{fig:pinterp}
+\end{figure}
+
+'In ultimii ani, alte m'asuri au devenit mai comune. Cea mai folosit'a 'in comunitatea TREC este \emph{Mean Average Precision (MAP)}, care pune la dispozi'tie o singur'a m'asur'a de calitatea de-a lungul nivelelor de recall. Printre tipurile de masuri de evaluare s-a ar'atat c'a MAP func'tioneaz'a foarte bine la capitolele discriminare 'si stabilitate. Pentru o sigur'a nevoie de informa'tie, precizia medie este media valorilor de precizie ob'tinute pentru primele \emph{k} documente dup'a reg'asirea fiec'arui document relevant. Media acestei valori peste toate nevoile de informa'tie este MAP. Dac'a setul de documente relevante pentru o nevoie de informa'tie $q_j \in Q$ este ${d_1, ..., d_{m_j}}$ 'si $R_{jk}$ este setul de rezultate de la primul p'jn'a la documentul $d_k$, atunci:
+\begin{equation}
+MAP(Q) = \frac{1}{|Q|} \sum\limits_{j=1}^{|Q|}{\frac{1}{m_j} \sum\limits_{k=1}^{m_j}{Prec(R_{jk})}}
+\label{eq:map}
+\end{equation}
+C'jnd un document relevant nu este reg'asit, precizia este considerat'a 0. Pentru o singur'a nevoie de informa'tie, precizia medie aproximeaz'a aria de sub curba neinterpolat'a precizie-recall, 'asadar MAP aproximeaz'a aria medie de sub curba precizie-recall pentru un set de interog'ari.
+
+Folosind MAP, nu sunt alese nivele fixe de recall 'si nu este nevoie de interpolare. Un set de nevoi de informa'tie trebuie sa fie cuprinz'ator si diversificat pentru a putea m'asura c'jt mai exact eficient'a unui sistem.
+
+M'asurile descrise p'jn'a au 'in componen'ta precizia pentru fiecare nivel de recall. 'In cazul multor aplica'tii, cum ar fi un motor de c'autare web, acest lucru nu reflect'a neap'arat nevoile unui utilizator. 'In acest caz conteaz'a mai mult c'jte rezultate bune se gasesc 'in primele pagini. Acest lucru conduce la nevoia de a m'asura precizia pentru primele documente reg'asite (10 sau 30). Aceast'a tehnic'a poart'a numele de \emph{"Precizia la k"}. Are avantajul c'a nu necesit'a o esitmare a dimenisiunii setului de documente relevante($m_j$ 'in cazul MAP) 'si dezavantajele c'a este cea mai pu'tin stabil'a dintre metodele de evaluare 'si c'a nu se poate calcula media prea bine pentru ea.
+
+O alternativ'a care atenueaz'a aceast'a problem'a este \emph{R-precizia}. Implic'a existen'ta unui set $Rel$ de documente despre care se 'stie c'a sunt relevante, din care se calculeaz'a apoi precizia pentru primele $|Rel|$ documente reg'asite. R-precizia se ajusteaz'a la m'arimea setului de documente relevante: un sistem perfect ar putea puncta 1 la aceast'a m'asur'a pentru fiecare interogare, 'in timp ce p'jn'a 'si un sistem perfect, ar putea s'a ating'a o precizie la 20 de 0.4 dac'a ar exista doar 8 documente 'in colec'tia de documente relevante. Calcularea mediei peste setul de interog'ari are mai mult sens 'in acest caz. Dac'a exist'a $|Rel|$ documente relevante pentru o interogare, se examineaz'a primele $|Rel|$ rezultate date de un sistem 'si se g'asesc $r$ documente relevante, atunci precizia ('si deci R-precizia) este $r/|Rel|$, dar 'si recall-ul este tot $r/|Rel|$. A'sadar, R-precizia este identic'a cu o alt'a m'asur'a folosit'a c'jteodat'a: \emph{break-even point}, m'asur'a definit'a ca valoarea la care precizia 'si recall-ul sunt egale. Ca 'si \emph{Precizia la k}, \emph{R-precizia} descrie un singur punct de pe curb'a, 'si e uneori neclar de ce intereseaz'a mai mult nivelul 'in care cele dou'a valori sunt egale dec'jt nivelul cel mai bun de pe curb'a ('in care F este maxim) sau un nivelul de interes pentru o anumit'a aplica'tie (\emph{Precizia la k}). Cu toate acestea, R-precizia pare s'a fie corelata cu MAP, lucru constatat 'in urma experimentelor.
 
 
 

@@ -119,7 +119,67 @@ Seria de evalu'ari CLEF (Cross Language Evaluation Forum) s-a concentrat pe limb
 Pentru clasificarea de text, cea mai folosit'a colec'tie de test a fost \emph{Reuters-21578} compus'a din 21578 articole de 'stiri. Mai recent Reuters a publicat \emph{Reuters Corpus Volume 1 (RCV1)}, o colec'tie mult mai mare const'jnd 'n 806.791 documente.
 
 \section{Evaluarea rezultatelor neordonate}
+Av'jnd aceste ingrediente, cum este m'asurat'a eficien'ta unui sistem? Cele mai frecvente si fundamentale dou'a m'asuri 'in RI sunt a'sa-numitele \emph{precizia(precision - P)} 'si \emph{returnarea(recall - R)}. Acestea sunt mai 'int'ji definite pentru cazul 'in care sistemu RI 'intoarce un set neordonat de documente pentru o interogare 'si apoi extinse la liste ierarhizate de documente.
+
+\emph{Precizia} este dat'a de raportul dintre documentele reg'asite care sunt relevante 'si documentele reg'asite:
+\begin{equation}
+P = \frac{\#(documente reg'asite 'si relevante)}{\#(documente reg'asite)} = P(relevante|reg'asite)
+\label{eq:prec}
+\end{equation}
+\emph{Returnarea} este raportul dintre documentele reg'asite care sunt relevante 'si documentele relevante:
+\begin{equation}
+R = \frac{\#(documente reg'asite 'si relevante)}{\#(documente relevante)} = P(reg'asite|relevante)
+\label{eq:rec}
+\end{equation}
+Aceste no'tiuni pot fi explicate mai clar folosind tabelul de contingen't'a de mai jos.
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+	\hline
+	& Relevante & Nerelevante\\
+	\hline
+	Reg'asite & pozitive adev'arate(tp) & pozitive false(fp)\\
+	\hline
+	Nereg'asite & negative false(fn) & negative adev'arate(tn)\\
+	\hline
+\end{tabular}
+\label{tab:relnrel}
+\end{table}
+
+Atunci:
+\begin{equation}
+P = \frac{tp}{tp + fp}\,\,\,\,\,\,\,\,R = \frac{tp}{tp + fn}
+\label{eq:precrec}
+\end{equation}
+
+O alternativ'a evident'a este judecarea sistemului dup'a acurate'te, adic'a, procentul clasific'arilor corecte. Folosind tabelul de mai sus, $ac = (tp+tn)/(tp+fp+fn+tn)$. Acest lucru pare plauzibil din moment ce exist'a dou'a clase, relevant 'si nerelevant, iar un sistem RI poate fi privit ca un clasificator pe dou'a clase ('intoarce documentele etichetate cu \emph{relevant}). Aceasta este, de fapt, m'asura de eficien't'a folosit'a de obicei 'in evaluarea problemelor de clasificare.
+
+Exist'a un motiv din cauza c'aruia acurate'tea nu este o masur'a corespunz'atoare pentru reg'asirea informa'tiei. 'In aproape toate circumstan'tele, datele sunt extrem de "denaturate": de obicei, peste 99,9\% din documente sunt 'in categoria nerelevant. Un sistem configurat s'a maximizeze acurate'tea poate p'area c'a func'tioneaz'a foarte bine prin considerearea tuturor documentelor ca fiind nerelevante la orice introgare. Acest lucru este inacceptabil pentru un sistem RI. Un utilizator va dori 'intotdeauna s'a vad'a niste documente 'si poate avea o mic'a toleran't'a pentru pozitive false dac'a majoritatea documentelor 'ii satisfac nevoia de informa'tie. M'asurile P 'si R concentreaz'a evaluarea pe 'intoarcerea de pozitive adev'arate, 'intreb'jnd ce procent de documente relevante a fost g'asit 'si cate pozitive false au fost 'intoarse.
+
+Avantajul faptului c'a exist'a dou'a masuri diferite este acela c'a 'in cele mai multe circumstan'te una este mai important'a dec'jt cealalt'a. Un utilizator web obi'snuit dore'ste ca fiecare rezultat de pe prima pagin'a s'a fie relevant(precizie mare) dar nu are nici cel mai mic interes s'a 'stie 'si mai ales s'a priveasc'a fiecare document relevant. Pe de alt'a parte, un profesionist care caut'a documente 'intr-un sistem RI intern va 'incerca s'a g'asesc'a toate documentele relevante la nevoia lui de informa'tie(returnare mare) 'si va tolera valori mici ale preciziei pentru a 'isi atinge scopul. 'In orice caz, exist'a un compromis 'intre cele dou'a valori: se poate 'intotdeauna ob'tine un recall maxim dar precizie mic'a dac'a se 'intorce o list'a cu toate documentele. Recall-ul este o functie non-descresc'atoare de num'arul de documente reg'asite. Pe de alt'a parte, 'intr-un sistem bun, precizia de obicei scade odat'a cu cresterea num'arului de documente reg'asite. 'In general se dore'ste o anumit'a valoare a recall-ului, toler'jndu-se un anumit procent de pozitive false.
+
+O m'asur'a care 'inglobeaz'a at'jt precizia c'jt 'si returnarea este \emph{m'asura F}, care se calculeaz'a ca media armonic'a ponderat'a a celor dou'a valori:
+\begin{equation}
+F = \frac{1}{\alpha\frac{1}{P} + (1-\alpha)\frac{1}{R}} = \frac{(\beta^2+1)PR}{\beta^2P+R}\,\,\,unde\,\,\,\beta^2=\frac{1-\alpha}{\alpha}
+\label{eq:fms}
+\end{equation}
+unde $\alpha \in [0,1]$ 'si, ca urmare, $\beta^2 \in [0,\infty)$. M'asura F balansat'a 'tine cont 'in mod egal de precizie 'si recall($\alpha=1/2, \beta=1$). Este notat'a de obicei cu $F_1$ (de la $F_{\beta=1}$):
+\begin{equation}
+F_{\beta=1} = \frac{2PR}{P+R}
+\label{eq:f1}
+\end{equation}
+Valori ale lui $\beta$ mai mici dec'jt 1 scot 'in eviden't'a precizia, 'in timp ce valori mai mari ca 1 pun accentul pe returnare. Valorile discutate p'jn'a acum sunt m'asuri 'intre 0 'si 1, dar se mai scriu si ca procente pe o scal'a de la 1 la 100. Media armonic'a este folosit'a 'in locul mediei aritmetice deoarece 'in cazul 'in care un sistem ar 'intoarce toate documentele(100\% recall), ar avea tot timpul cel pu'tin $F=50\%$. Media armonic'a a dou'a numere ($a << b$) este mai apropiat'a de minim dec'jt de media lor aritmetic'a(vezi figura \ref{fig:harm}).
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.7]{evl1.png}
+	\caption{Grafic care compar'a media armonic'a cu celelalte medii}
+	\label{fig:harm}
+\end{figure}
+
 \section{Evaluarea rezultatelor ordonate}
+
+
 
 \chapter{Metode de ierarhizare}
 \section{Modelul spa'tiului vectorial (VSM)}

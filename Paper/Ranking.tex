@@ -59,7 +59,7 @@ Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicata de ca'tiva oam
 RI este interdisciplinar'a, bazat'a pe informatic'a, matematic'a, 'stiin'ta informa'tiei, arhitectura informa\-'tiei, psihologie cognitiv'a, lingvistic'a, statistic'a, etc. Sisteme automate de RI au fost folosite pentru a reduce ceea ce se numeste "supra'inc'arcarea de informa'tie". Multe universit'a'ti 'si libr'arii publice folosesc sisteme RI pentru a facilita accesul la c'ar'ti, jurnale 'si alte tipuri de documente. Cele mai folosite aplicatii RI sunt motoarele de c'autare web.
 
 \section{Scurt istoric}
-Ideea de a folosi calculatoarele pentru a c'auta "buc'ati" de informatie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
+Ideea de a folosi calculatoarele pentru a c'auta "buc'ati" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
 
 'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunita'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care scaleaza la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
 
@@ -187,9 +187,9 @@ M'asurile \emph{precision}, \emph{recall} 'si \emph{F} sunt bazate pe seturi; su
 	\label{fig:precrec}
 \end{figure}
 
-Curbele precision-recall au o form'a de "fier'astr'au": dac'a al $(k+1)$-lea document reg'asit este nerelevant, atunci recall-ul este acela'si ca pentru primele $k$ documente reg'asite, dar precizia scade. Dac'a documentul este relevant atunci ambele valori cresc. Este de obicei util s'a se elimine aceast'a form'a 'si modul standard de a face acest lucru este folosind \emph{precizia interpolat'a} $p_{interp}$. La un anumit nivel de recall $r$, $p_{interp}$ este dat de cea mai mare valoare a preciziei g'asit'a pentru orice nivel de recall $r\prime \geq r$:
+Curbele precision-recall au o form'a de "fier'astr'au": dac'a al $(k+1)$-lea document reg'asit este nerelevant, atunci recall-ul este acela'si ca pentru primele $k$ documente reg'asite, dar precizia scade. Dac'a documentul este relevant atunci ambele valori cresc. Este de obicei util s'a se elimine aceast'a form'a 'si modul standard de a face acest lucru este folosind \emph{precizia interpolat'a} $p_{interp}$. La un anumit nivel de recall $r$, $p_{interp}$ este dat de cea mai mare valoare a preciziei g'asit'a pentru orice nivel de recall $r' \geq r$:
 \begin{equation}
-p_{interp} = \max\limits_{r\prime \geq r}{p(r\prime)}
+p_{interp} = \max\limits_{r\prime \geq r}{p(r')}
 \label{eq:pinterp}
 \end{equation}
 Precizia interpolat'a este ilustrat'a 'in figura \ref{fig:precrec}.
@@ -237,7 +237,23 @@ M'asurile descrise p'jn'a au 'in componen'ta precizia pentru fiecare nivel de re
 
 O alternativ'a care atenueaz'a aceast'a problem'a este \emph{R-precizia}. Implic'a existen'ta unui set $Rel$ de documente despre care se 'stie c'a sunt relevante, din care se calculeaz'a apoi precizia pentru primele $|Rel|$ documente reg'asite. R-precizia se ajusteaz'a la m'arimea setului de documente relevante: un sistem perfect ar putea puncta 1 la aceast'a m'asur'a pentru fiecare interogare, 'in timp ce p'jn'a 'si un sistem perfect, ar putea s'a ating'a o precizie la 20 de 0.4 dac'a ar exista doar 8 documente 'in colec'tia de documente relevante. Calcularea mediei peste setul de interog'ari are mai mult sens 'in acest caz. Dac'a exist'a $|Rel|$ documente relevante pentru o interogare, se examineaz'a primele $|Rel|$ rezultate date de un sistem 'si se g'asesc $r$ documente relevante, atunci precizia ('si deci R-precizia) este $r/|Rel|$, dar 'si recall-ul este tot $r/|Rel|$. A'sadar, R-precizia este identic'a cu o alt'a m'asur'a folosit'a c'jteodat'a: \emph{break-even point}, m'asur'a definit'a ca valoarea la care precizia 'si recall-ul sunt egale. Ca 'si \emph{Precizia la k}, \emph{R-precizia} descrie un singur punct de pe curb'a, 'si e uneori neclar de ce intereseaz'a mai mult nivelul 'in care cele dou'a valori sunt egale dec'jt nivelul cel mai bun de pe curb'a ('in care F este maxim) sau un nivelul de interes pentru o anumit'a aplica'tie (\emph{Precizia la k}). Cu toate acestea, R-precizia pare s'a fie corelata cu MAP, lucru constatat 'in urma experimentelor.
 
+Un alt concept folosit uneori 'in evaluarea unui sistem este \emph{curba ROC} ("ROC" vine de la \emph{Receiver Operating Characteristics}). O curb'a ROC reprezint'a grafic rata pozitivelor adev'arate (\emph{senzitivitate}) ca func'tie de rata pozitivelor false (1 - \emph{specificitate}). Aici senzitivitate este un alt terment pentru recall. Rata de pozitive false este dat'a de $fp/(fp+tn)$. Figura \ref{fig:roc} ilustreaz'a cuba ROC corespondent'a cubei precizie-recall din figura \ref{fig:precrec}.
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.4]{evl4.png}
+	\caption{Curba ROC}
+	\label{fig:roc}
+\end{figure}
+
+O curb'a ROC urc'a 'intotdeauna din st'jnga jos spre dreapta sus. Pentru un sistem bun, graficul urc'a abrupt 'in partea st'jng'a. Are mai mult sens c'jnd se ia 'in considerare 'intreg spectrul de reg'asire 'si pune la dispozi'tie o alt'a perspectiv'a asupra datelor. 'In unele cazuri se foloseste estimarea ariei de sub curba ROC, care este o valoare analoag'a m'asurii MAP.
+
+O alt'a abordare care a fost adoptat'a din ce 'in ce mai des, 'in special 'in cazul sistemelor care folosesc \emph{machine learning}, este m'asura \emph{c'j'stigului cumulativ} (\emph{cumulative gain}) 'si, 'in particular, \emph{normalized discounted cumulative gain(NDCG)}. NDCG este proiectat pentru situa'tii 'in care relevan'ta este nebinar'a. Ca 'si \emph{Precizia la k}, este evaluat'a peste primele k rezultate. Pentru un set de interog'ari Q, fie $R(j,d)$ scorul de relevan't'a pe care evaluatorii l-au dat documentului d pentru interogarea j. Atunci,
+\begin{equation}
+NDCG(Q,k) = \frac{1}{|Q|}\sum\limits_{j=1}^{|Q|}{Z_{kj} \sum\limits_{m=1}^k{\frac{2^{R(j,m)}-1}{\log_2{(1+m)}}}},
+\label{eq:ndcg}
+\end{equation}
+unde $Z_{kj}$ este un factor de normalizare calculat pentru a face ca NDCG-ul unei ierarhiz'ari perfecte la k pentru interogarea j s'a fie 1. Pentru interog'ari pentru care $k' < k$ documente sunt returnate, ultima sum'a se face p'jn'a la $k'$
 
 \chapter{Metode de ierarhizare}
 \section{Modelul spa'tiului vectorial (VSM)}

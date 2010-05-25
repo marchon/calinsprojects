@@ -79,7 +79,47 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 \section{Cautare}
 \section{Reg'asirea boolean'a 'si ad-hoc}
 
-\chapter{Evaluarea unui sistem RI}
+
+\chapter{Evaluarea 'in reg'asirea informa'tiei}
+Exist'a multe alternative pentru a proiecta un sistem RI. Cum hot'ar'jm care dintre aceste tehnici sunt eficiente 'in anumite aplica'tii? Este idicat'a folosirea unui \emph{stop list} sau a unui \emph{stemmer}? Reg'asirea informa'tiei a evoluat ca o disciplin'a empiric'a, necesit'jnd evalu'ari atente 'si complete pentru a demonstra superioritatea performan'telor noilor tehnici ap'arute pe colec'tii reprezentative de documente.
+\section{Evaluarea unui sistem RI}
+Pentru a m'asura eficien'ta unui sistem ad-hoc RI este necesar'a o colec'tie de test alc'atuit'a din trei componente:
+\begin{enumerate}
+	\item O colec'tie de documente
+	\item O serie de \emph{nevoi de informa'tie} exprimate prin interog'ari
+	\item Un set de judec'a'ti de relevan't'a, de obicei o valoare binar'a (\emph{relevant/nerelevant}) pentru fiecare pereche interogare-document.
+\end{enumerate}
+Abordarea standard 'in evaluarea unui sistem RI se 'inv'jrte 'in jurul no'tiunii de documente \emph{relevante} 'si \emph{nerelevante}. Cu privire la o nevoie de informa'tie, unui document dintr-o colec'tie de test i se d'a o clasificare binar'a: relevant sau nerelevant. Colec'tia de documente 'si setul de interog'ari trebuie s'a fie destul de mari: este nevoie de efectuarea unei medii a rezultatelor de performan't'a peste seturi mari de test 'intruc'jt acestea variaz'a destul de mult de la interogare la interogare. Ca o regul'a derivat'a din experimente, 50 de nevoi de informa'tie reprezint'a un minim suficient.
+
+Relevan'ta este evaluat'a relativ la nevoia de informa'tie, nu la interogare. De exemplu, o nevoie de informa'tie ar putea fi:
+\begin{quote}
+Informa'tie cu privire la faptul c'a vinul ro'su este mai eficient 'in prevenirea atacurilor de cord dec'jt vinul alb.
+\end{quote}
+Interog'area asociat'a acestei nevoi de informa'tie ar putea fi:
+\begin{quote}
+vin 'SI ro'su 'SI alb 'SI atac 'SI cord 'SI eficient
+\end{quote}
+Un document este relevant dac'a se adreseaz'a nevoii de informa'tie nu doar pentru c'a se 'intampl'a s'a con'tin'a cuvintele din interogare. Acest lucru este des ne'in'teles 'in practic'a, deoarece nevoia de informa'tie este "ascuns'a". 'In orice caz, ea este prezent'a. Pentru o interogare care const'a 'intr-un cuv'jnt, este foarte greu pentru un sistem RI s'a 'i'si dea seama care este nevoia de informa'tie. Dar utilizatorul are o astfel de nevoie 'si va judeca rezultatele pe baza acesteia. Pentru a evalua un sistem este nevoie de o exprimare "deschis'a" a nevoii de informa'tie, care poate fi folosit'a la judecarea documentelor 'intoarse de sistem ca relevante sau nerelevante. Relevan'ta poate fi g'jndit'a ca o scal'a, cu unele documente \emph{mai} relevante dec'jt altele. Dar, pentru 'inceput, se va folosi o valoare binar'a a relevan'tei.
+
+Multe sisteme con'tin diferi'ti parametri de calibrare ce pot fi ajusta'ti pentru a m'ari performan'ta. Este gre'sit s'a se raporteze rezultate pe o colec'tie de test ob'tinute 'in urma modific'arii acestor parametrii cu scopul de a maximiza perfrorman'ta pe colec'tia respectiv'a deoarece parametrii vor fi seta'ti s'a maximizeze performan'ta pe un anumit set de interog'ari 'in loc s'a fac'a acest lucru pentru un e'santion aleator de interog'ari.
+
+\section{Colec'tii sandard de test}
+Aceasta este o list'a de colec'tii standard de test si evaluare. Majoritatea sunt menite pentru a testa sisteme ad-hoc de RI dar sunt si c'jteva folosite pentru clasificare de text.
+\paragraph{\emph{Cranfield}}
+Aceast'a colec'tie a fost prima care a permis m'asuri precise de eficient'a ale sistemelor de reg'asire a informa'tiei, dar acum este prea mic'a pentru un experiment "serios". A fost alc'atuit'a 'in anii 1950 in Regatul Unit 'si con'tine 1398 de sumare de articole despre aerodinamic'a, un set de 225 de interog'ari 'si judec'a'ti de relevan't'a complete pentru toate perechile (interogare, document).
+\paragraph{\emph{TREC}}
+NIST a construit un framework de evaluare pentru RI 'incep'jnd cu 1992. Din acest framework cele mai cunoscute sunt cele folosite la testele \emph{TREC Ad Hoc track} 'in timpul primelor opt conferin'te TREC (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) 'intre 1992 'si 1999. 'In total, aceste colec'tii de test 'insumeaz'a 6 CDuri 'si con'tin 1,89 milioane de documente (compuse cu preponderen't'a din articole de 'stiri) 'si judec'a'ti de relevan't'a pentru 450 de nevoi de informa'tie numite subiecte. Colec'tiile TREC 6-8 sunt formate din 150 de nevoi de informa'tie si 528.000 de articole de 'stiri. Acesta este probabil cea mai bun'a subcolec'tie datorit'a faptului c'a este cea mai mare 'si subiectele sunt mai consistente. Din cauza faptului c'a aceste colec'tii sunt foarte mari, nu exist'a judec'a'ti exhaustive ci sunt specificate doar pentru un subset de documente (primele \emph{k} documente 'intoarse de sistemul pentru care nevoia de informa'tie a fost dezvoltat'a).
+\paragraph{GOV2}
+'In ultimii ani, NIST a f'acut evalu'ari pe colec'tii mult mai mari, incluz'jnd colec'tia de 25 de milioane de pagini web, \emph{GOV2}. GOV2 este acum cea mai mare colec'tie de pagini web disponibil'a pentru cercetare. Cu toate acestea, GOV2 'inc'a este de cel pu'tin 2 ori mai mic'a dec'jt colec'tia de documente indexate de companiile mari de c'autare web.
+\paragraph{NTCIR}
+Proiectul \emph{NTCIR - NII Test Colections for IR Systems} a construit diferite colec'tii de test de m'arimi similare cu colec'tiile TREC. Aceste colec'tii sunt concentrate pe limba est-asiatic'a 'si pe \emph{reg'asirea informa'tiei cross-language} (interog'arile sunt f'acute 'intr-o limb'a peste un set de documente scrise 'in diferite limbi).
+\paragraph{CLEF}
+Seria de evalu'ari CLEF (Cross Language Evaluation Forum) s-a concentrat pe limbile europene 'si reg'asirea informa'tiei de tip cross-language.
+\paragraph{Reuters}
+Pentru clasificarea de text, cea mai folosit'a colec'tie de test a fost \emph{Reuters-21578} compus'a din 21578 articole de 'stiri. Mai recent Reuters a publicat \emph{Reuters Corpus Volume 1 (RCV1)}, o colec'tie mult mai mare const'jnd 'n 806.791 documente.
+
+\section{Evaluarea rezultatelor neordonate}
+\section{Evaluarea rezultatelor ordonate}
 
 \chapter{Metode de ierarhizare}
 \section{Modelul spa'tiului vectorial (VSM)}

@@ -40,6 +40,8 @@
 \newtheorem{thm}{Teorem'a}
 %titluri in romana
 
+\mathchardef\mhyphen="2D
+
 
 \begin{document}
 
@@ -257,7 +259,79 @@ unde $Z_{kj}$ este un factor de normalizare calculat pentru a face ca NDCG-ul un
 
 \chapter{Metode de ierarhizare}
 \section{Modelul spa'tiului vectorial (VSM)}
-\subsection{Similaritatea cosinus 'si td-idf}
+\subsection{Frecven'ta termenilor si ponderarea}
+Spre deosebire de o interogarea boolean'a, o interogare \emph{liber'a}("free text") e definit'a de un set de cuvinte neconectate de operatori. Acest tip de interogare este foarte popular'a pe web. Un mecanism de scor pentru aceast'a situa'tie poate fi calcularea sumei dintre scorurile pe care le ob'tine fiecare termen din interogare cu un document.
+
+'In acest scop, se asigneaz'a fiec'arui termen din document o pondere care depinde de num'arul de ocuren'te ale termenului 'in document. Se vrea calcularea unui scor 'intre termenul unei interog'ari, $t$ 'si un document $d$, pornind de la ponderea lui $t$ 'in $d$. Cea mai simpl'a abordare este ca ponderea s'a fie chiar frecven'ta termenului 'in document. Aceast'a schem'a de ponderarea este numit'a \emph{term frequency} 'si notat'a $tf_{t,d}$.
+
+Pentru un docunment $d$, setul de ponderi \emph{tf}(sau orice alte ponderi care mapeaz'a frecven'ta termenilor la numere reale pozitive) poate fi v'azut ca o reprezentare a documentului. 'In acest perspectiv'a asupra unui document, cunoscut'a 'in literatur'a sub numele de \emph{modelul bag of words}, ordinea cuvintelor 'in document este ignorat'a, dar, spre deosebire de modelul boolean, se 'tine cont de frecven'ta lor. 'In orice caz, pare intuitiv faptul c'a dou'a documente care au reprezent'ari similare, sunt similare 'si 'in con'tinut.
+
+O alt'a dilem'a care apare este urm'atoarea: toate cuvintele dintr-un document sunt la fel de importante? 'In mod evident, nu. Pe l'jng'a conceptul de \emph{cuvinte de stop} - cuvinte care nu se indexeaz'a, 'si ca urmare nu contribuie la calcularea scorului - exist'a alt mecanism pentru a c'jnt'ari importan'ta cuvintelor: \emph{frecven'ta invers'a documentelor pentru un termen} sau \emph{idf - inverse document frequency}. 
+
+\subsection{Frecven'ta invers'a a documentelor pentru un termen}
+Problema cu ponderarea \emph{tf} este c'a unii termeni ar trebui s'a aib'a mai pu'tin'a putere de discriminare dec'jt al'tii 'in determinarea relevan'tei. Este nevoie de un mecanism care s'a atenueze efectul termenilor care au o frecven'ta mare la nivel de colec'tie. O prim'a idee este reducerea ponderii \emph{tf} a unui termen cu un factor propor'tional cu frecven'ta la nivel de colec'tie(num'arul de ocuren'te 'in toate documentele).
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+	\hline
+	Cuv'jnt & cf & df\\
+	\hline
+	try & 10422 & 8760 \\
+	insurance & 10440 & 3997 \\
+	\hline
+\end{tabular}
+\caption{Frecven'ta la nivel de colec'tie(cf) 'si frecven'ta documentelor(df) se comport'a diferit - exemplu din colec'tia \emph{Reuters}}
+\label{tab:dfcf}
+\end{table}
+'In loc de acest factor, se folose'ste de obicei frecven'ta documentelor $df_t$, definit'a ca num'arul de documente care con'tin termenul $t$. Tabelul \ref{tab:dfcf} ilustreaz'a motivul pentru care este preferat $df$. 'In mod intuitiv, vrem ca pu'tinele documente care con'tin \emph{insurance} s'a aib'a un scor mai mare fa't'a de restul pentru o interogare ce con'tine cuv'jntul \emph{insurance}. Evident, acela'si lucru nu este valabil 'si pentru \emph{try}.
+
+Not'jnd cu $N$ num'arul de documente dintr-o colec'tie, definim frecven'ta invers'a a documentelor pentru un termen $t$, $idf_t$ astfel:
+\begin{equation}
+idf_t = \log{\frac{N}{df_t}}
+\label{eq:idf}
+\end{equation}
+
+A'sadar idf-ul unui termen rar este ridicat, 'in timp ce idf-ul unui termen frecvent este sc'azut. Tabelul \ref{tab:dfidf} ilustreaz'a valorile df 'si idf pentru c'j'tiva termeni din colec'tia Reuters.
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+	\hline
+	Termen & $df_t$ & $idf_t$\\
+	\hline
+	car & 18165 & 1.65\\
+	auto & 6723 & 2.08\\
+	insurance & 19241 & 1.62\\
+	best & 25235 & 1.5\\
+	\hline
+\end{tabular}
+\caption{Exemplu de valori idf din colec'tia Reuters de 806791 documente.}
+\label{tab:dfidf}
+\end{table}
+
+\subsection{Ponderarea \emph{tf-idf}}
+Combin'jnd defini'tiile celor dou'a m'asuri tf 'si idf, se ob'tine o pondere compus'a pentru fiecare temen din fiecare document. Schema de ponderare \emph{tf-idf} asigneaz'a termenului $t$ 'in documentul $d$ dat'a de:
+\begin{equation}
+tf \mhyphen idf_{t,d} = tf_{t,d} \times idf_t.
+\label{eq:tfidf}
+\end{equation}
+
+Cu alte cuvinte, $tf \mhyphen idf_{t,d}$ confer'a termenului $t$ din documentul $d$ o pondere care:
+\begin{enumerate}
+	\item are valorile cele mai mari c'jnd $t$ are un num'ar mare de ocuren'te 'in pu'tine documente
+	\item este mai mic'a c'jnd nu apare de foarte multe ori 'in $d$ sau apare 'in multe documente
+	\item are valoarea cea mai mic'a (zero) c'jnd apare 'in toate documentele.
+\end{enumerate}
+
+'In acest moment fiecare document poate fi vizualizat ca un vector cu c'jte o component'a pentru fiecare termen din dic'tionarul indexului, av'jnd valoarea dat'a de ecua'tia \ref{eq:tfidf}. Aceast'a form'a este crucial'a 'in ierarhizarea 'in RI. O prim'a variant'a de a calcula scorulul unui document 'in raport cu o interogare folosind cele men'tionate p'jn'a acum este:
+\begin{equation}
+Score(q,d) = \sum\limits_{t \in q}{tf \mhyphen idf_{t,d}}
+\label{eq:overlapscore}
+\end{equation} 
+
+\subsection{Similaritatea cosinus}
+
+
 \section{Euristici pentru eficientizare}
 \section{Cluster pruning}
 \section{Modelul axiomatic}
@@ -542,6 +616,8 @@ unde:
 
 \subsection{Pachetul Benchmark}
 \subsection{Apache Open Relevance Project}
+\subsection{trec\_eval}
+\subsection{JFreeChart}
 \section{Construirea framework-ului}
 \section{Rezultate}
 

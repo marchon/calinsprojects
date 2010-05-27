@@ -31,7 +31,7 @@ public class Indexer {
 	    top.addTask(reset);
 	    
 	    // 3. task to create the index
-	    BM25CreateIndexTask create = new BM25CreateIndexTask(runData);
+	    CreateIndexTask create = new CreateIndexTask(runData);
 	    top.addTask(create);
 	    
 	    // 4. task to add all docs from corpus

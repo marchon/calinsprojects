@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="ranking-benchmark" default="benchmark" basedir=".">
 	<property name="technique" value="lucene" />
+	<property name="aggregator" value="borda" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
 	<property name="export.dir" value="../exported" />
@@ -42,16 +43,26 @@
 	</target>
 
 	<target name="benchmark" depends="index,compile">
-		<mkdir dir="benchmark/results/${technique}" />
+		<tstamp>
+			<format property="time" pattern="MMddyyyyhhmm" unit="millisecond" />
+		</tstamp>
 		<java classname="ro.ranking.benchmarking.QueryDriver" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}/queries${collection.num}.txt" />
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
-			<arg file="benchmark/results/${technique}/${collection}-${collection.num}-submission.txt" />
-			<arg file="benchmark/results/${technique}/${collection}-${collection.num}-average.txt" />
 			<arg file="collections/${collection}/index" />
 			<arg value="${technique}" />
+			<arg value="${aggregator}" />
+			<arg file="subm_${time}.txt" />
 		</java>
+		
+		<exec executable="utils/trec_eval.exe" 
+			output="benchmark/results/${technique}-${collection}${collection.num}.txt">
+			<arg file="collections/${collection}/judgements${collection.num}.txt" />
+			<arg file="subm_${time}.txt" />
+		</exec>
+		
+		<delete file="subm_${time}.txt"> </delete>
 	</target>
 
 	<target name="export">
@@ -62,5 +73,12 @@
 		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java">
 		</copydir>
 	</target>
+
+	<target name="test">
+
+		<echo message="${touch.time}">
+		</echo>
+	</target>
+
 
 </project>

@@ -25,41 +25,40 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 public class QueryDriver {
+	
+	private static void showUsageAndExit() {
+		System.err
+				.println("Usage: QueryDriver <topicsFile> <qrelsFile> "
+						+ "<indexDir> <techiqueList> <aggregation> <resultsFile>" );
+		System.err.println("topicsFile: input file containing queries");
+		System.err
+				.println("qrelsFile: input file containing relevance judgements");
+		System.err.println("indexDir: index directory");
+		System.err
+				.println("techiqueList: the ranking technique(s) to be tested");
+		System.err
+				.println("aggregation: aggregation method used for multiple ranking techniques");
+		System.err
+		.println("submissionFile: output for trec_eval");
+		System.exit(1);
+	}
 
 	/**
 	 * @param args
 	 * 
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length < 6 || args.length > 7) {
-			System.err.println("Usage: QueryDriver <topicsFile> <qrelsFile> <submissionFile> " +
-							"<avgResFile> <indexDir> <techiqueList> [<aggregation>]");
-			System.err.println("topicsFile: input file containing queries");
-			System.err.println("qrelsFile: input file containing relevance judgements");
-			System.err.println("submissionFile: output submission file for trec_eval");
-			System.err.println("avgResFile: output benchmark measures(average)");
-			System.err.println("indexDir: index directory");
-			System.err.println("techiqueList: the ranking technique(s) to be tested");
-			System.err.println("aggregation: aggregation method used for multiple ranking techniques");
-			System.exit(1);
+		if (args.length != 6) {
+			showUsageAndExit();
 		}
 
 		File topicsFile = new File(args[0]);
-		File qrelsFile = new File(args[1]);
+		//File qrelsFile = new File(args[1]);
+	
 		
-		PrintWriter submissionPW = new PrintWriter(args[2]);
-		SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
-		PrintWriter fileLogger = new PrintWriter(new FileOutputStream(args[3]),
-				true);
+		File defaultIndexDir = new File(args[2]);
 		
-		File defaultIndexDir = new File(args[4]);
-		
-		String[] techniques = args[5].split(",");
-		
-		if(techniques.length > 1 && args.length != 7) {
-			System.err.println("Aggregator was not specified for multiple ranking methods.");
-			System.exit(1);
-		}
+		String[] techniques = args[3].split(",");
 		
 		//TODO: this is needed because just cluster pruning uses another index
 		//TODO: should make all use same index, somehow - this will simplify matters
@@ -73,7 +72,7 @@ public class QueryDriver {
 			
 			// default to title & desc
 			Directory dir = FSDirectory.open(defaultIndexDir);
-			rankingTechnique.prepare(dir, new String[] { "title", "description", "narrative"},
+			rankingTechnique.prepare(dir, new String[] { "title"/*, "description", "narrative"*/},
 					"body");
 			
 			// replace directory if needed(index is modified and stored in another place)
@@ -94,7 +93,7 @@ public class QueryDriver {
 		int maxResults = 200;
 		String docNameField = "docname";
 
-		PrintWriter logger = new PrintWriter(System.out, true);
+		//PrintWriter logger = new PrintWriter(System.out, true);
 
 		// use trec utilities to read trec topics into quality queries
 		TrecTopicsReader qReader = new TrecTopicsReader();
@@ -103,13 +102,15 @@ public class QueryDriver {
 		QualityQuery[] qqs = qReader.readQueries(topicsReader);
 
 		// prepare judge, with trec utilities that read from a QRels file
-		BufferedReader qrelsReader = new BufferedReader(
-				new FileReader(qrelsFile));
-		Judge judge = new TrecJudge(qrelsReader);
+//		BufferedReader qrelsReader = new BufferedReader(
+//				new FileReader(qrelsFile));
+//		Judge judge = new TrecJudge(qrelsReader);
 
 		// validate topics & judgments match each other
-		judge.validateData(qqs, logger);
-
+//		judge.validateData(qqs, logger);
+		
+		PrintWriter submissionPW = new PrintWriter(args[5]);
+		SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
 		QualityStats[] stats;
 		// run the benchmark
 		if(parserSearcherMap.size() == 1) {
@@ -117,7 +118,7 @@ public class QueryDriver {
 			QualityBenchmark qrun = new QualityBenchmark(qqs, ps.getKey(), ps.getValue(),
 					docNameField);
 			qrun.setMaxResults(maxResults);
-			stats = qrun.execute(judge, submitLog, logger);
+			stats = qrun.execute(null, submitLog, null);
 		} else { 
 			//aggregate results from multiple ranking techniques
 			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(
@@ -126,22 +127,20 @@ public class QueryDriver {
 			//no submission report
 			
 			Aggregator aggregator = ((Class<? extends Aggregator>) Class
-					.forName("ro.ranking.aggregator." + args[6] + ".AggregatorImpl")).newInstance();
+					.forName("ro.ranking.aggregator." + args[4] + ".AggregatorImpl")).newInstance();
 			
-			stats = qrun.execute(judge, aggregator, logger);
+			stats = qrun.execute(null, aggregator, null);
 		}
 		
 		// print an avarage sum of the results
-		QualityStats avg = QualityStats.average(stats);
-		avg.log("SUMMARY", 2, logger, "  ");
-
-		// write summary to file
-		avg.log("SUMMARY", 2, fileLogger, "  ");
+//		QualityStats avg = QualityStats.average(stats);
+//		avg.log("SUMMARY", 2, logger, "  ");
+//
+//		// write summary to file
+//		avg.log("SUMMARY", 2, fileLogger, "  ");
 		
 		//close stuff
 		topicsReader.close();
-		qrelsReader.close();
-		fileLogger.close();
 		submissionPW.close();
 	}
 

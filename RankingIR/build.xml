@@ -57,12 +57,20 @@
 		</java>
 		
 		<exec executable="utils/trec_eval.exe" 
-			output="benchmark/results/${technique}-${collection}${collection.num}.txt">
+			output="benchmark/results/${technique}@${collection}${collection.num}.txt">
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
 			<arg file="subm_${time}.txt" />
 		</exec>
 		
 		<delete file="subm_${time}.txt"> </delete>
+	</target>
+	
+	<target name="graph">
+		<java classname="ro.ranking.benchmarking.PRCurve" fork="true">
+			<classpath refid="prj.classpath" />
+			<arg file="benchmark/results/"/>
+			<arg value="${collection}${collection.num}"/>
+		</java>
 	</target>
 
 	<target name="export">
@@ -73,12 +81,5 @@
 		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java">
 		</copydir>
 	</target>
-
-	<target name="test">
-
-		<echo message="${touch.time}">
-		</echo>
-	</target>
-
 
 </project>

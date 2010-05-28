@@ -5,6 +5,8 @@
 \usepackage{fullpage}
 \usepackage{verbatim}
 \usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 %pachete folosite
 
 %calea catre diagrame
@@ -36,6 +38,7 @@
 \renewcommand{\tablename}{Tabelul}
 \renewcommand{\chaptername}{Capitolul}
 \renewcommand{\bibname}{Bibliografie}
+\floatname{algorithm}{Algoritmul}
 
 \newtheorem{thm}{Teorem'a}
 %titluri in romana
@@ -330,9 +333,125 @@ Score(q,d) = \sum\limits_{t \in q}{tf \mhyphen idf_{t,d}}
 \end{equation} 
 
 \subsection{Similaritatea cosinus}
+Reprezentarea unui set de documente ca vectori 'intr-un spa'tiu vectorial este cunoscut'a sub numele de \emph{modelul spa'tiului vectorial} (\emph{VSM - vector space model}) 'si este vital'a pentru o serie de opera'tii precum ob'tinerea scorului pentru o interogare, clasificare de documente 'si grupare(\emph{clustering}). Un aspect foarte important al acestui model este reprezentarea interog'arii 'in acel'si spa'tiu vectorial.
+
+\subsubsection{Produsul scalar}
+Not'am $\vec{V}(d)$ vectorul derivat din documentul $d$, cu c'jte o component'a pentru fiecare termen din dic'tionar. Presupunem c'a valoarea fiec'arei componente este calculat'a folosind schema de ponderare tf-idf, de'si schema de ponderare este nesemnificativ'a pentru model. Setul de documente din colec'tie poate fi privit acum ca un set de vectori 'intr-un spa'tiu vectorial cu c'jte o ax'a pentru fiecare termen. A'sa cum am mai men'tionat, acest tip de reprezentare ignor'a ordinea termenilor (\emph{bag of words}).
+
+Se pune problema cuantific'arii similarit'a'tii 'intre dou'a documente 'in acest spa'tiu vectorial. O prim'a idee ar fi ca aceasta s'a fie dat'a de vectorul diferen't'a dintre vectorii celor dou'a documente. Problema acestei abord'ari este c'a dou'a documente cu con'tinut similar pot avea o distan't'a foarte mare 'intre ele doar pentru c'a unul este mult mai lung dec'jt cel'alalt, distribu'tia relativ'a a termenilor fiind identic'a (dar frecven'tele absolute diferind).
+
+Pentru a compensa pentru efectul lungimii documentelor, modul standard de a cuantifica similaritatea dintre dou'a documente $d_1$ 'si $d_2$ este calcularea \emph{similarit'a'tii cosinus} ale celor dou'a reprezent'ari vectoriale $\vec{V}(d_1)$ 'si $\vec{V}(d_2)$
+\begin{equation}
+sim(d_1,d_2) = \frac{\vec{V}(d_1) \cdot \vec{V}(d_2)}{|\vec{V}(d_1)||\vec{V}(d_2)|},
+\label{eq:simcos}
+\end{equation}
+unde num'ar'atorul reprezint'a produsul scalar, 'in timp ce numitorul este produsul lungimilor celor doi vectori. Produsul scalar a doi vectori $\vec{x} \cdot \vec{y}$ este definit ca $\sum_{i=1}^M{x_i y_i}$. Fie $\vec{V}(d)$ reprezentarea vectorial'a a documentului $d$ cu $M$ componente $\vec{V_1}(d), ..., \vec{V_M}(d)$. Lungimea sau norma euclidian'a este definit'a ca $\sqrt{\sum_{i=1}^M{\vec{V_i^2}(d)}}$.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.7]{vsm1.png}
+\caption{Similaritatea cosinus ilustrat'a pentru interogarea "jealous gossip". $sim(d_1, d_2) = \cos{\theta}$}
+\label{fig:simcos}
+\end{figure}
+
+Efectul num'aratorilor este, a'sadar, s'a normalizeze vectorii $\vec{V}(d_1)$ 'si $\vec{V}(d_2)$ la vectorii unitate $\vec{v}(d_1) = \vec{V}(d_1)/|\vec{V}(d_1)|$ 'si $\vec{v}(d_2) = \vec{V}(d_2)/|\vec{V}(d_2)|$. Putem rescrie ecua'tia \ref{eq:simcos} ca:
+\begin{equation}
+sim(d_1,d_2) = \vec{v}(d_1) \cdot \vec{v}(d_2).
+\label{eq:simcos1}
+\end{equation}
+
+Ecua'tia \ref{eq:simcos1} poate fi v'azut'a ca produsul scalar dintre versiunile normalizate ale vectorilor celor dou'a documente. Aceast'a valoare reprezint'a cosinusul unghiului $\theta$ dintre cei doi vectori (vezi figura \ref{fig:simcos}). Dat fiind un document d, m'asura de similaritate poate fi folosit'a la g'asirea altor documente asem'an'atoare lui d. Acest lucru poate fi dorit de un utilizator care identific'a un document relevant la nevoia lui de informa'tie 'si, pornind de la acest document, dore'ste s'a g'asesc'a alte documente relevante. O astfel de abordare poart'a numele de \emph{mai multe ca acesta - more like this}. Problema g'asirii documentului $d_i$ cel mai asem'an'ator cu $d$ se reduce la g'asirea unui document $d_i$ cu proprietatea c'a produsul scalar $\vec{v}(d) \cdot \vec{v}(d_i)$ este maxim.
+
+Vizualizarea unei colec'tii de N documente ca o colec'tie de vectori conduce la vizualizarea colec'tiei ca o \emph{matrice termen-document}. Aceasta este o matrice de dimensiune $M \times N$ ale c'arei r'jnduri reprezint'a cei M termeni(dimensiuni) ale celor N coloane, fiecare corespunz'jnd unui document.
+
+\subsubsection{Interog'arile v'azute ca vectori}
+Exist'a un motiv 'si mai convig'ator pentru reprezentarea documentelor ca vectori: reprezentarea interog'arilor ca vectori. Ideea acum este s'a se asigneze fiec'arui document $d$ din colec'tie un scor egal cu produsul scalar $\vec{q} \cdot \vec{d}$.
+
+Prin vizualizarea unei interog'ari ca "un sac de cuvinte" (\emph{bag of words}), se poate trata ca un document foarte scurt. Scorurile rezultate 'in urma calcul'arii similarit'a'tilor fiec'arui document cu interogarea pot fi apoi folosite pentru a selecta 'si ierarhiza documentele relevante.
+\begin{equation}
+sim(q,d) = \frac{\vec{V}(q) \cdot \vec{V}(d)}{|\vec{V}(q)||\vec{V}(d)|},
+\label{eq:simcosq}
+\end{equation}
+
+Un document poate avea un scor cosinus mare pentru o interogare chiar dac'a nu con'tine to'ti termenii din interogare. Formula similarit'a'tii cosinus nu se bazeaz'a pe o anumit'a ponderare a termenilor, schema de ponderare put'jnd fi tf, tf-idf sau alte tipuri sau varia'tiuni.
+
+Calcularea similarit'a'tii cosinus 'intre vectorul interog'arii 'si vectorii fiec'arui document din colec'tie, sortarea sorurilor rezultate 'si selectarea primelor $K$ documente pot fi opera'tiuni costisitoare - computarea unei singure similarit'a'ti poate duce la calcularea unui produs sclalar pentru mii de dimensiuni (num'arul termenilor din colec'tie). De aceea exist'a o serie de euristici folosite pentru a 'imbun'at'a'ti timpul necesar efectu'arii calcului (vezi sec'tiunea \ref{sec:eur}).
+
+\subsubsection{Calcularea scorurilor}
+'Intr-o situa'tie uzual'a avem o colec'tie de documente, fiecare reprezentat de un vector, o interogare reprezentat'a de un vector 'si un 'intreg pozitiv $K$. C'aut'am primele K documente din colec'tie cu sorurile date de similaritatea cosinus cele mai mari 'in contextul interog'arii date. De exemplu, multe motoare de c'autare folosesc $K=10$ pentru a reg'asi si ierarhiza documentele afi'sate pe prima pagin'a (cele mai bune). Algoritmul \ref{alg:cossim} prezint'a algoritmul de baz'a pentru computarea scorurilor.
+
+\begin{algorithm}
+\caption{Calcularea similarit'a'tii cosinus}\label{alg:cossim}
+\begin{algorithmic}[1]
+\Procedure{CosineScore}{$q$}\Comment{primele K documente 'in ordinea similatit'a'tii cosinus}
+
+\State float $Scores[N]\gets 0$
+\State initialize $Length[N]$
+
+\ForAll{$t \in q$}\label{alg:cossim:1}
+	\State calculate $w_{t,q}$\label{alg:cossim:2}\Comment{ponderea termenului t 'in interogarea q}
+	\State fetch postings list ${P_t}$ and $idf_t$ for term t
+	\ForAll{$(d, tf_{t,d}) \in P_t$}\label{alg:cossim:3}
+		\State $wf_{t,d} \gets tf_{t,d} \times idf_t$\Comment{sau orice alt'a schem'a de ponderare}
+		\State $Score[d] \gets Score[d] + wf_{t,d} \times w_{t,q}$\Comment{produsul scalar}
+	\EndFor
+\EndFor
+\State read array $Length[d]$\Comment{norma euclidian'a pentru fiecare document}
+
+\ForAll{$d$}
+	\State $Scores[d] \gets Scores[d] / Length[d]$\Comment{normalizare}
+\EndFor
+
+\State \textbf{return} Top \textbf{K} components of $Scores[]$\label{alg:cossim:4}
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Lista $Length$ 'tine lungimile vectorilor (factorii de normalizare) pentru fiecare dintre cele $N$ documente, 'in timp ce lista $Scores$ 'tine scorul fiec'arui document. Dup'a ce scorul este calculat, tot ceea ce r'am'jne de f'acut este s'a se aleag'a primele $K$ documente cu scorul cel mai mare.
+
+Prima bucl'a de la pasul \ref{alg:cossim:1} itereaz'a peste fiecare termen din interogare actualiz'jnd scorul pentru fiecare document. La pasul \ref{alg:cossim:2} se calculeaz'a ponderea termenului $t$ 'in vectorul interog'arii. Itera'tia de la pasul \ref{alg:cossim:3} actualizeaz'a fiecare document din lista de postare a termenului $t$ cu contribui'tia aferent'a. Acest proces este cunoscut sub numele de \emph{acumulare} iar elementele listei $Scores$ sunt \emph{acumulatori}. Pentru a evita stocarea numerelor 'in virgul'a mobil'a 'in index, se poate stoca $df_t$ pentru fiecare termen, 'si $tf_{t,d}$ pentru fiecare document dintr-o list'a de postare. La c'autare, pentru fiecare termen t, se poate calcula $idf_t$ 'si apoi ponderea tf-idf pentru fiecare document din lista de postare. La pasul \ref{alg:cossim:4} sunt extrase primele $K$ documente; acest proces necesit'a o coad'a cu prioritate implementat'a de obicei folosind ca structur'a de date un heap.
+
+Algoritmul \ref{alg:cossim} nu prescrie o implementare specific'a despre cum trebuie traversate listele de postare ale termenilor din interogare. Acestea pot fi traversate pentru fiecare termen 'in parte sau 'in mod concurent, pentru to'ti termenii, calcul'jnd la fiecare pas 'intregul scor al unui document (cu condi'tia ca documentele s'a fie ordonate dup'a acela'si criteriu 'in fiecare list'a). Prima variant'a poart'a numele de \emph{term-at-a-time} iar cea de-a doua, \emph{document-at-a-time}.
+
+\subsection{Variante de ponderare tf-idf}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Frecven'ta termenilor(tf) & Frecven'ta 'in documente & Normalizare\\
+\hline
+\begin{tabular}{ll}
+n & $tf_{t,d}$\\
+l & $1 + \log{tf_{t,d}}$\\
+a & $0.5 + \frac{0.5 \times tf_{t,d}}{\max_t{tf_{t,d}}}$\\
+b & $\left\{\begin{array}{ll}
+1 & daca \quad tf_{t,d} > 0\\
+0 & altfel
+\end{array}\right.$\\
+L & $\frac{1+\log{tf_{t,d}}}{1+\log{ave_{t \in d}(tf_{t,d})}}$
+\end{tabular}&
+\begin{tabular}{ll}
+n & 1\\
+t & $\log{\frac{N}{df_t}}$\\
+p & $\max\left\{0,\,\log{\frac{N-df_t}{df_t}}\right\}$
+\end{tabular}&
+\begin{tabular}{ll}
+n & 1\\
+c & $\frac{1}{\sqrt{\sum\limits_{i=1}^M{w_i^2}}}$\\
+u & $1/u$\\
+b & $1/Cl^{\alpha}, \alpha < 1$
+\end{tabular}\\
+\hline
+\end{tabular}
+\caption{Nota'tia \emph{SMART} pentru variantele tf-idf; \emph{Cl} reprezint'a numarul de caractere din document}
+\label{tab:smart}
+\end{table}
 
 
 \section{Euristici pentru eficientizare}
+\label{sec:eur}
 \section{Cluster pruning}
 \section{Modelul axiomatic}
 \subsection{F2-EXP}
@@ -614,8 +733,8 @@ unde:
 \end{enumerate}
 
 
-\subsection{Pachetul Benchmark}
-\subsection{Apache Open Relevance Project}
+\subsection{Pachetul contrib/benchmark/quality}
+\subsection{Proiectul Apache Open Relevance (ORP)}
 \subsection{trec\_eval}
 \subsection{JFreeChart}
 \section{Construirea framework-ului}

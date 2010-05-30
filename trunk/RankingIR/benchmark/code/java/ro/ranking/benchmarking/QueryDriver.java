@@ -72,7 +72,7 @@ public class QueryDriver {
 			
 			// default to title & desc
 			Directory dir = FSDirectory.open(defaultIndexDir);
-			rankingTechnique.prepare(dir, new String[] { "title"/*, "description", "narrative"*/},
+			rankingTechnique.prepare(dir, new String[] { "title", "description", "narrative"},
 					"body");
 			
 			// replace directory if needed(index is modified and stored in another place)
@@ -90,7 +90,7 @@ public class QueryDriver {
 			parserSearcherMap.put(qqParser, searcher);
 		}
 
-		int maxResults = 200;
+		int maxResults = 1000;
 		String docNameField = "docname";
 
 		//PrintWriter logger = new PrintWriter(System.out, true);

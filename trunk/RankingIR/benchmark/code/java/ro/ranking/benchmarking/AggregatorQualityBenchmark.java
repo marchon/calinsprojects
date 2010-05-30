@@ -2,6 +2,7 @@ package ro.ranking.benchmarking;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,12 +22,72 @@ import org.apache.lucene.search.TopDocs;
 
 public class AggregatorQualityBenchmark {
 
+	public static class AggregatorSubmissionReport {
+		private NumberFormat nf;
+		  private PrintWriter logger;
+		  private String name;
+		  
+		  /**
+		   * Constructor for SubmissionReport.
+		   * @param logger if null, no submission data is created. 
+		   * @param name name of this run.
+		   */
+		  public AggregatorSubmissionReport (PrintWriter logger, String name) {
+		    this.logger = logger;
+		    this.name = name;
+		    nf = NumberFormat.getInstance();
+		    nf.setMaximumFractionDigits(4);
+		    nf.setMinimumFractionDigits(4);
+		  }
+		  
+		  /**
+		   * Report a search result for a certain quality query.
+		   * @param qq quality query for which the results are reported.
+		   * @param td search results for the query.
+		   * @param docNameField stored field used for fetching the result doc name.  
+		   * @param searcher index access for fetching doc name.
+		   * @throws IOException in case of a problem.
+		   */
+		  public void report(QualityQuery qq, String[] docNames, String docNameField, Searcher searcher) throws IOException {
+		    if (logger==null) {
+		      return;
+		    }
+		    String sep = " \t ";
+		    for (int i=0; i<docNames.length; i++) {
+		      String docName = docNames[i];
+		      logger.println(
+		          qq.getQueryID()       + sep +
+		          "Q0"                   + sep +
+		          format(docName,20)    + sep +
+		          format(""+i,7)        + sep +
+		          nf.format(1.0 / (i + 1.0)) + sep +
+		          name
+		          );
+		    }
+		  }
+
+		  public void flush() {
+		    if (logger!=null) {
+		      logger.flush();
+		    }
+		  }
+		  
+		  private static String padd = "                                    ";
+		  private String format(String s, int minLen) {
+		    s = (s==null ? "" : s);
+		    int n = Math.max(minLen,s.length());
+		    return (s+padd).substring(0,n);
+		  }
+	}
+	
 	/** Quality Queries that this quality benchmark would execute. */
 	protected QualityQuery qualityQueries[];
 
-	/** List of parsers for turning QualityQueries into Lucene Queries mapped to searchers */
-	/** This is in case one of the "classifiers" is using another index(but the index should contain the same docs)*/
-	protected Map<QualityQueryParser, Searcher> parserSearcherMap;
+	/** Parser for turning QualityQueries into Lucene Queries. */
+	protected QualityQueryParser[] qqParsers;
+
+	/** Index to be searched. */
+	protected Searcher searcher;
 
 	/**
 	 * index field to extract doc name for each search result; used for judging
@@ -57,9 +118,12 @@ public class AggregatorQualityBenchmark {
 	 *            extract the doc name for search results, and is important for
 	 *            judging the results.
 	 */
-	public AggregatorQualityBenchmark(QualityQuery qqs[], Map<QualityQueryParser, Searcher> parserSearcherMap, String docNameField) {
+	public AggregatorQualityBenchmark(QualityQuery qqs[],
+			QualityQueryParser[] qqParsers, Searcher searcher,
+			String docNameField) {
 		this.qualityQueries = qqs;
-		this.parserSearcherMap = parserSearcherMap;
+		this.qqParsers = qqParsers;
+		this.searcher = searcher;
 		this.docNameField = docNameField;
 	}
 
@@ -78,79 +142,83 @@ public class AggregatorQualityBenchmark {
 	 * @throws Exception
 	 *             if quality benchmark failed to run.
 	 */
-	public QualityStats[] execute(Judge judge, /*SubmissionReport submitRep,*/ Aggregator aggregator,
-			PrintWriter qualityLog) throws Exception {
+	public QualityStats[] execute(Judge judge, PrintWriter qualityLog,
+			AggregatorSubmissionReport submitRep, Aggregator aggregator) throws Exception {
 		int nQueries = Math.min(maxQueries, qualityQueries.length);
 		QualityStats stats[] = new QualityStats[nQueries];
 		for (int i = 0; i < nQueries; i++) {
 			QualityQuery qq = qualityQueries[i];
 			// generate query
-			Query[] qs = new Query[parserSearcherMap.size()];
+			Query[] qs = new Query[qqParsers.length];
 			int j = 0;
-			
+
 			List<String[]> rankings = new ArrayList<String[]>();
 			long totalSearchTime = 0;
 			DocNameExtractor xt = new DocNameExtractor(docNameField);
-			for (Iterator<Entry<QualityQueryParser, Searcher>> iterator = parserSearcherMap
-					.entrySet().iterator(); iterator.hasNext();) {
-				Entry<QualityQueryParser, Searcher> entry = iterator.next();
-				
-				Query q = entry.getKey().parse(qq);
-				
+
+			for (int k = 0; k < qqParsers.length; k++) {
+				QualityQueryParser qqParser = qqParsers[k];
+				Query q = qqParser.parse(qq);
+
 				long t1 = System.currentTimeMillis();
-				TopDocs td = entry.getValue().search(q, null, maxResults);
+				TopDocs td = searcher.search(q, null, maxResults);
 				long searchTime = System.currentTimeMillis() - t1;
-				
+
 				String[] docNames = new String[td.scoreDocs.length];
-				for (int k = 0; k < docNames.length; k++) {
-					docNames[k] = xt.docName(entry.getValue(), td.scoreDocs[k].doc);
+				for (int l = 0; l < docNames.length; l++) {
+					docNames[l] = xt.docName(searcher, td.scoreDocs[l].doc);
 				}
-				
+
 				rankings.add(docNames);
-				
+
 				totalSearchTime += searchTime;
-				
+
 				qs[j++] = q;
 			}
-			
-			//aggregate rankings
-			String[] aggregatedRanking = aggregator.aggregate(rankings
-					.toArray(new String[rankings.size()][]));
-			
+
+			// aggregate rankings
+			String[] finalRanking;
+
+			if (rankings.size() == 1 || aggregator == null) {
+				finalRanking = rankings.get(0);
+			} else {
+				finalRanking = aggregator.aggregate(rankings
+						.toArray(new String[rankings.size()][]));
+			}
 			// most likely we either submit or judge, but check both
 			if (judge != null) {
-				stats[i] = analyzeQueryResults(qq, qs, aggregatedRanking, judge, qualityLog,
-						totalSearchTime);
+				stats[i] = analyzeQueryResults(qq, qs, finalRanking,
+						judge, qualityLog, totalSearchTime);
 			}
-			
-			//TODO: make this work
-//			if (submitRep != null) {
-//				submitRep.report(qq, td, docNameField, searcher);
-//			}
+
+			if (submitRep != null) {
+				submitRep.report(qq, finalRanking, docNameField, searcher);
+			}
 		}
-//		if (submitRep != null) {
-//			submitRep.flush();
-//		}
+		if (submitRep != null) {
+			submitRep.flush();
+		}
+
 		return stats;
 	}
 
 	/* Analyze/judge results for a single quality query; optionally log them. */
 	private QualityStats analyzeQueryResults(QualityQuery qq, Query[] qs,
-			String[] docNames, /*long[] docNameExtractTimes,*/ Judge judge, PrintWriter logger, long searchTime)
-			throws IOException {
+			String[] docNames, /* long[] docNameExtractTimes, */Judge judge,
+			PrintWriter logger, long searchTime) throws IOException {
 		QualityStats stts = new QualityStats(judge.maxRecall(qq), searchTime);
 
 		for (int i = 0; i < docNames.length; i++) {
 			String docName = docNames[i];
-			
+
 			boolean isRelevant = judge.isRelevant(docName, qq);
-			stts.addResult(i + 1, isRelevant, /*docNameExtractTimes[i]*/0);
+			stts.addResult(i + 1, isRelevant, /* docNameExtractTimes[i] */0);
 		}
 		if (logger != null) {
 			for (Query q : qs) {
 				logger.println(qq.getQueryID() + "  -  " + q);
 			}
-			
+
 			stts.log(qq.getQueryID() + " Stats:", 1, logger, "  ");
 		}
 		return stts;

@@ -3,8 +3,6 @@ package ro.ranking.benchmarking;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -13,18 +11,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.lucene.benchmark.quality.Judge;
 import org.apache.lucene.benchmark.quality.QualityBenchmark;
 import org.apache.lucene.benchmark.quality.QualityQuery;
 import org.apache.lucene.benchmark.quality.QualityQueryParser;
 import org.apache.lucene.benchmark.quality.QualityStats;
-import org.apache.lucene.benchmark.quality.trec.TrecJudge;
 import org.apache.lucene.benchmark.quality.trec.TrecTopicsReader;
 import org.apache.lucene.benchmark.quality.utils.SubmissionReport;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
+import ro.ranking.benchmarking.AggregatorQualityBenchmark.AggregatorSubmissionReport;
 
 public class QueryDriver {
 	
@@ -67,8 +65,10 @@ public class QueryDriver {
 		//TODO: this is needed because just cluster pruning uses another index
 		//TODO: should make all use same index, somehow - this will simplify matters
 		//TODO: cluster pruning must be revised
-		Map<QualityQueryParser, Searcher> parserSearcherMap = new HashMap<QualityQueryParser, Searcher>();
-
+		Directory dir = FSDirectory.open(defaultIndexDir);
+		Searcher searcher;
+		QualityQueryParser[] qqParsers = new QualityQueryParser[techniques.length];
+		
 		String fieldSpec = args.length >= 7 ? args[6] : "T";
 		Set<String> fieldSet = new HashSet<String>();
 	    if (fieldSpec.indexOf('T') >= 0) fieldSet.add("title");
@@ -76,32 +76,27 @@ public class QueryDriver {
 	    if (fieldSpec.indexOf('N') >= 0) fieldSet.add("narrative");
 		int maxResults = args.length == 8? Integer.parseInt(args[7]) : 500;
 		
-		
 		for (int i = 0; i < techniques.length; i++) {
 			RankingTechnique rankingTechnique = ((Class<? extends RankingTechnique>) Class
 					.forName("ro.ranking.technique." + techniques[i] + ".RankingTechniqueImpl"))
 					.newInstance();
 			
 			// default to title & desc
-			Directory dir = FSDirectory.open(defaultIndexDir);
-			
-			
 			rankingTechnique.prepare(dir, fieldSet.toArray(new String[0]), "body");
 			
-			// replace directory if needed(index is modified and stored in another place)
-			// like in cluster pruning
+			//TODO: this is needed for cluster pruning, FIXME!!!
+			//all the searches will be done on the dir that is set by the last method that changes it
+			//ie. cp
 			if (rankingTechnique.getTestDirectory() != dir) {
 				dir.close();
 				dir = rankingTechnique.getTestDirectory();
 			}
 			
 			// get the parser
-			QualityQueryParser qqParser = rankingTechnique.getQualityQueryParser();
+			qqParsers[i] = rankingTechnique.getQualityQueryParser();
 
-			Searcher searcher = new IndexSearcher(dir, true);
-			
-			parserSearcherMap.put(qqParser, searcher);
 		}
+		searcher = new IndexSearcher(dir, true);
 		
 		String docNameField = "docname";
 
@@ -122,27 +117,24 @@ public class QueryDriver {
 //		judge.validateData(qqs, logger);
 		
 		PrintWriter submissionPW = new PrintWriter(args[5]);
-		SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
-		QualityStats[] stats;
+		
+		
 		// run the benchmark
-		if(parserSearcherMap.size() == 1) {
-			Entry<QualityQueryParser, Searcher> ps = parserSearcherMap.entrySet().iterator().next();
-			QualityBenchmark qrun = new QualityBenchmark(qqs, ps.getKey(), ps.getValue(),
-					docNameField);
+		if (techniques.length == 1) {
+			SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
+			QualityBenchmark qrun = new QualityBenchmark(qqs, qqParsers[0], searcher, docNameField);
 			qrun.setMaxResults(maxResults);
-			stats = qrun.execute(null, submitLog, null);
-		} else { 
-			//aggregate results from multiple ranking techniques
-//			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(
-//					qqs, parserSearcherMap, docNameField);
-//			qrun.setMaxResults(maxResults);
-//			//no submission report
-//			
-//			Aggregator aggregator = ((Class<? extends Aggregator>) Class
-//					.forName("ro.ranking.aggregator." + args[4] + ".AggregatorImpl")).newInstance();
-//			
-//			stats = qrun.execute(null, aggregator, null);
+			qrun.execute(null, submitLog, null);
+		} else {
+			AggregatorSubmissionReport submitLog = new AggregatorSubmissionReport(submissionPW, "lucene");
+			Aggregator aggregator = ((Class<? extends Aggregator>) Class
+					.forName("ro.ranking.aggregator." + args[4]
+							+ ".AggregatorImpl")).newInstance();
+			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(qqs, qqParsers, searcher, docNameField);
+			qrun.setMaxResults(maxResults);
+			qrun.execute(null, null, submitLog, aggregator);
 		}
+		
 		
 		// print an avarage sum of the results
 //		QualityStats avg = QualityStats.average(stats);

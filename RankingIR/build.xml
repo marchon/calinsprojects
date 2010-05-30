@@ -4,6 +4,11 @@
 	<property name="aggregator" value="borda" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
+	<property name="query.spec" value="TD" />
+	<property name="query.nbres" value="1000" />
+	
+	
+	
 	<property name="export.dir" value="../exported" />
 
 	<path id="prj.classpath">
@@ -54,10 +59,12 @@
 			<arg value="${technique}" />
 			<arg value="${aggregator}" />
 			<arg file="subm_${time}.txt" />
+			<arg value="${query.spec}"/>
+			<arg value="${query.nbres}"/>
 		</java>
 		
 		<exec executable="utils/trec_eval.exe" 
-			output="benchmark/results/${technique}@${collection}${collection.num}.txt">
+			output="benchmark/results/${technique}${aggr}-${query.spec}@${collection}-set${collection.num}.txt">
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
 			<arg file="subm_${time}.txt" />
 		</exec>

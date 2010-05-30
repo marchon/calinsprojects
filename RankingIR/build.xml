@@ -80,8 +80,8 @@
 		 <delete file="benchmark/results/subm_${time}.txt" />
 	</target>
 
-	<target name="graph">
-		<java classname="ro.ranking.benchmarking.PRCurve" fork="true">
+	<target name="report">
+		<java classname="ro.ranking.reporting.Report" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="benchmark/results/"/>
 			<arg value="${collection}-set${collection.num}"/>

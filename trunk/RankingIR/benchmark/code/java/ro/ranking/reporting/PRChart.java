@@ -1,4 +1,4 @@
-package ro.ranking.benchmarking.chart;
+package ro.ranking.reporting;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -55,10 +55,8 @@ public class PRChart {
 				plot, true);
 	}
 
-	public void writeToPNGFile(File path) throws IOException {
+	public void writeToPNGFile(OutputStream os) throws IOException {
 		BufferedImage bi = chart.createBufferedImage(1024, 768);
-        OutputStream os = new FileOutputStream(path);
         EncoderUtil.writeBufferedImage(bi, ImageFormat.PNG, os);
-        os.close();
 	}
 }

@@ -1,4 +1,4 @@
-package ro.ranking.benchmarking.chart;
+package ro.ranking.reporting;
 
 import java.util.Map;
 

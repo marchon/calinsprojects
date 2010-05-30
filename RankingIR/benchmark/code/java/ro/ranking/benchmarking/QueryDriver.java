@@ -8,7 +8,9 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.lucene.benchmark.quality.Judge;
@@ -29,7 +31,7 @@ public class QueryDriver {
 	private static void showUsageAndExit() {
 		System.err
 				.println("Usage: QueryDriver <topicsFile> <qrelsFile> "
-						+ "<indexDir> <techiqueList> <aggregation> <resultsFile>" );
+						+ "<indexDir> <techiqueList> <aggregation> <resultsFile> [querySpec] [maxResults]" );
 		System.err.println("topicsFile: input file containing queries");
 		System.err
 				.println("qrelsFile: input file containing relevance judgements");
@@ -40,6 +42,8 @@ public class QueryDriver {
 				.println("aggregation: aggregation method used for multiple ranking techniques");
 		System.err
 		.println("submissionFile: output for trec_eval");
+		System.err.println("querySpec: string composed of fields to use in query consisting of T=title,D=description,N=narrative");
+		System.err.println("maxResults: maximum number of results a query can produce");
 		System.exit(1);
 	}
 
@@ -48,7 +52,7 @@ public class QueryDriver {
 	 * 
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length != 6) {
+		if (args.length < 6 || args.length > 8) {
 			showUsageAndExit();
 		}
 
@@ -65,6 +69,14 @@ public class QueryDriver {
 		//TODO: cluster pruning must be revised
 		Map<QualityQueryParser, Searcher> parserSearcherMap = new HashMap<QualityQueryParser, Searcher>();
 
+		String fieldSpec = args.length >= 7 ? args[6] : "T";
+		Set<String> fieldSet = new HashSet<String>();
+	    if (fieldSpec.indexOf('T') >= 0) fieldSet.add("title");
+	    if (fieldSpec.indexOf('D') >= 0) fieldSet.add("description");
+	    if (fieldSpec.indexOf('N') >= 0) fieldSet.add("narrative");
+		int maxResults = args.length == 8? Integer.parseInt(args[7]) : 500;
+		
+		
 		for (int i = 0; i < techniques.length; i++) {
 			RankingTechnique rankingTechnique = ((Class<? extends RankingTechnique>) Class
 					.forName("ro.ranking.technique." + techniques[i] + ".RankingTechniqueImpl"))
@@ -72,8 +84,9 @@ public class QueryDriver {
 			
 			// default to title & desc
 			Directory dir = FSDirectory.open(defaultIndexDir);
-			rankingTechnique.prepare(dir, new String[] { "title", "description", "narrative"},
-					"body");
+			
+			
+			rankingTechnique.prepare(dir, fieldSet.toArray(new String[0]), "body");
 			
 			// replace directory if needed(index is modified and stored in another place)
 			// like in cluster pruning
@@ -89,8 +102,7 @@ public class QueryDriver {
 			
 			parserSearcherMap.put(qqParser, searcher);
 		}
-
-		int maxResults = 1000;
+		
 		String docNameField = "docname";
 
 		//PrintWriter logger = new PrintWriter(System.out, true);
@@ -121,15 +133,15 @@ public class QueryDriver {
 			stats = qrun.execute(null, submitLog, null);
 		} else { 
 			//aggregate results from multiple ranking techniques
-			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(
-					qqs, parserSearcherMap, docNameField);
-			qrun.setMaxResults(maxResults);
-			//no submission report
-			
-			Aggregator aggregator = ((Class<? extends Aggregator>) Class
-					.forName("ro.ranking.aggregator." + args[4] + ".AggregatorImpl")).newInstance();
-			
-			stats = qrun.execute(null, aggregator, null);
+//			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(
+//					qqs, parserSearcherMap, docNameField);
+//			qrun.setMaxResults(maxResults);
+//			//no submission report
+//			
+//			Aggregator aggregator = ((Class<? extends Aggregator>) Class
+//					.forName("ro.ranking.aggregator." + args[4] + ".AggregatorImpl")).newInstance();
+//			
+//			stats = qrun.execute(null, aggregator, null);
 		}
 		
 		// print an avarage sum of the results

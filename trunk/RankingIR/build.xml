@@ -2,13 +2,14 @@
 <project name="ranking-benchmark" default="benchmark" basedir=".">
 	<property name="technique" value="lucene" />
 	<property name="aggregator" value="borda" />
+	<property name="aggr" value="" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
 	<property name="query.spec" value="TD" />
 	<property name="query.nbres" value="1000" />
-	
-	
-	
+
+
+
 	<property name="export.dir" value="../exported" />
 
 	<path id="prj.classpath">
@@ -48,6 +49,12 @@
 	</target>
 
 	<target name="benchmark" depends="index,compile">
+		<script language="js">
+			if(project.getProperty('technique').indexOf(',') != -1) {
+		    	project.setProperty('aggr', '-' + project.getProperty('aggregator'))
+			}
+		</script>
+
 		<tstamp>
 			<format property="time" pattern="MMddyyyyhhmm" unit="millisecond" />
 		</tstamp>
@@ -58,25 +65,26 @@
 			<arg file="collections/${collection}/index" />
 			<arg value="${technique}" />
 			<arg value="${aggregator}" />
-			<arg file="subm_${time}.txt" />
+			<arg file="benchmark/results/subm_${time}.txt" />
 			<arg value="${query.spec}"/>
 			<arg value="${query.nbres}"/>
 		</java>
-		
+
 		<exec executable="utils/trec_eval.exe" 
 			output="benchmark/results/${technique}${aggr}-${query.spec}@${collection}-set${collection.num}.txt">
+			<!--<arg value="-a" />-->
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
-			<arg file="subm_${time}.txt" />
+			<arg file="benchmark/results/subm_${time}.txt" />
 		</exec>
-		
-		<delete file="subm_${time}.txt"> </delete>
+
+		 <delete file="benchmark/results/subm_${time}.txt" />
 	</target>
-	
+
 	<target name="graph">
 		<java classname="ro.ranking.benchmarking.PRCurve" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="benchmark/results/"/>
-			<arg value="${collection}${collection.num}"/>
+			<arg value="${collection}-set${collection.num}"/>
 		</java>
 	</target>
 

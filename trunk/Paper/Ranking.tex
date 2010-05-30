@@ -415,6 +415,37 @@ Prima bucl'a de la pasul \ref{alg:cossim:1} itereaz'a peste fiecare termen din i
 Algoritmul \ref{alg:cossim} nu prescrie o implementare specific'a despre cum trebuie traversate listele de postare ale termenilor din interogare. Acestea pot fi traversate pentru fiecare termen 'in parte sau 'in mod concurent, pentru to'ti termenii, calcul'jnd la fiecare pas 'intregul scor al unui document (cu condi'tia ca documentele s'a fie ordonate dup'a acela'si criteriu 'in fiecare list'a). Prima variant'a poart'a numele de \emph{term-at-a-time} iar cea de-a doua, \emph{document-at-a-time}.
 
 \subsection{Variante de ponderare tf-idf}
+Au fost propuse 'si alte alternative la \emph{tf} 'si \emph{idf} pentru ponderarea termenilor din documente.
+
+\subsubsection{Scalarea subliniar'a \emph{tf}}
+Pare improbabil ca 20 de ocuren'te ale unui termen 'intr-un document au o 'insemn'atate de 20 de ori mai mare dec'jt o singur'a ocuren't'a. Ca urmare, s-au c'autat variante de luare 'in considerare a frecven'tei termenilor folosind func'tii care nu cresc liniar cu num'arul de ocuren'te. O abordare comun'a este folosirea logaritmului frecven'tei termenilor:
+\begin{equation}
+wf_{t,d} = \left\{
+\begin{array}{ll}
+	1 + \log{tf_{t,d}} & dac\breve{a} \quad tf_{t,d} > 0\\
+	0 & altfel
+\end{array}
+\right..
+\label{eq:logtf}
+\end{equation}
+Utiliz'and aceast'a pondere 'in loc de tf, putem 'inlocui tf-idf cu:
+\begin{equation}
+wf-idf_{t,d} = wf_{t,d} \times idf_t.
+\label{eq:wfidf}
+\end{equation}
+
+\subsubsection{Normalizarea cu tf maxim}
+O alt'a tehnic'a este normalizarea ponderilor $tf$ pentru fiecare termen din document cu $tf$-ul maxim din acel document. Fie $td_{max}(d) = \max_{\tau \in d}{tf_{\tau,d}}$ pentru fiecare document $d$. Frecven'ta normalizat'a a termenilor este calculat'a astfel:
+\begin{equation}
+ntf_{t,d} = a + (1 - a)\frac{tf_{t,d}}{tf_{max}(d)},
+\label{eq:ntf}
+\end{equation}
+unde $a$ este o valoare 'intre 0 'si 1 (de obicei ia valoarea $0.4$) 'si se nume'ste \emph{factor de uniformizare}. Are rolul de a amortiza contribu'tia frac'tiei din ecua'tia \ref{eq:ntf} (ideea de baz'a este s'a se evite o oscila'tie mare a $ntf_{t,d}$ cauzat'a de o oscila'tie mic'a a $tf_{t,d}$).
+
+Ideea principal'a din spatele normaliz'arii cu tf maxim este evitarea urm'atoarei anomalii: se observ'a frecven'te mai mari ale termenilor 'in documente mai lungi, 'in principal din cauza faptului c'a documentele mai lungi tind s'a repete acelea'si cuvinte de mai multe ori, lucru care nu ar trebui s'a afecteze calcularea relevan'tei.
+
+\subsubsection{Scheme de ponderare pentru documente 'si interog'ari}
+Ecua'tia \ref{eq:simcosq} este fundamental'a pentru sisteme de reg'asirea informa'tiei care folosesc orice form'a de ierarhizare pe baza VSM. Diferen'tele dintre metodele VSM 'tin mai degrab'a de alegerea ponderilor din vectorii $\vec{V}(d)$ 'si $\vec{V}(q)$. Tabelul \ref{tab:smart} ilustreaz'a unele dintre principalele scheme de ponderare folosite at'jt pentru $\vec{V}(d)$ c'jt 'si pentr $\vec{V}(q)$, 'impreun'a cu mnemonice pentru a reprezenta o combina'tie specific'a de ponderi. Acest sistem de mnemonice poart'a numele de \emph{nota'tia SMART}.
 
 \begin{table}[ht]
 \centering
@@ -427,7 +458,7 @@ n & $tf_{t,d}$\\
 l & $1 + \log{tf_{t,d}}$\\
 a & $0.5 + \frac{0.5 \times tf_{t,d}}{\max_t{tf_{t,d}}}$\\
 b & $\left\{\begin{array}{ll}
-1 & daca \quad tf_{t,d} > 0\\
+1 & dac\breve{a} \quad tf_{t,d} > 0\\
 0 & altfel
 \end{array}\right.$\\
 L & $\frac{1+\log{tf_{t,d}}}{1+\log{ave_{t \in d}(tf_{t,d})}}$
@@ -449,6 +480,7 @@ b & $1/Cl^{\alpha}, \alpha < 1$
 \label{tab:smart}
 \end{table}
 
+Nota'tia pentru reprezentarea unei combina'tii de scheme de ponderare are forma $ddd.qqq$, unde primul triplet reprezint'a ponderarea pentru vectorul documentului iar cel de-al doilea pentru interogare. Prima liter'a din fiecare triplet reprezint'a componenta frecven'tei termenului, cea de-a doua, frecven'ta 'in documente, iar cea de-a treia, forma de normalizare folosit'a. 'In practic'a, se aplic'a scheme diferite de normalizare pentru document, respectiv interogare. De exemplu, o schem'a de ponderare des 'int'jlnit'a este \emph{lnc.ltc}.
 
 \section{Euristici pentru eficientizare}
 \label{sec:eur}

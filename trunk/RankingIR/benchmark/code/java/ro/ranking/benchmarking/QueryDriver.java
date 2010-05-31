@@ -120,20 +120,31 @@ public class QueryDriver {
 		
 		
 		// run the benchmark
-		if (techniques.length == 1) {
-			SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
-			QualityBenchmark qrun = new QualityBenchmark(qqs, qqParsers[0], searcher, docNameField);
-			qrun.setMaxResults(maxResults);
-			qrun.execute(null, submitLog, null);
-		} else {
-			AggregatorSubmissionReport submitLog = new AggregatorSubmissionReport(submissionPW, "lucene");
-			Aggregator aggregator = ((Class<? extends Aggregator>) Class
+//		if (techniques.length == 1) {
+//			SubmissionReport submitLog = new SubmissionReport(submissionPW, "lucene");
+//			QualityBenchmark qrun = new QualityBenchmark(qqs, qqParsers[0], searcher, docNameField);
+//			qrun.setMaxResults(maxResults);
+//			qrun.execute(null, submitLog, null);
+//		} else {
+		
+		// bad performance because sim was formatted with , instead of .
+		// see SubmissionReport -> nf.format(sd[i].score)
+		// still diff between results with lucene scores and len-docnum
+		// i guess because of the fact that with lucene scoring some docs have the same
+		// score and trec_eval sorts them by docno??
+		AggregatorSubmissionReport submitLog = new AggregatorSubmissionReport(
+				submissionPW, "lucene");
+		Aggregator aggregator = null;
+		if (techniques.length > 1) {
+			aggregator = ((Class<? extends Aggregator>) Class
 					.forName("ro.ranking.aggregator." + args[4]
 							+ ".AggregatorImpl")).newInstance();
-			AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(qqs, qqParsers, searcher, docNameField);
-			qrun.setMaxResults(maxResults);
-			qrun.execute(null, null, submitLog, aggregator);
 		}
+		AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(qqs,
+				qqParsers, searcher, docNameField);
+		qrun.setMaxResults(maxResults);
+		qrun.execute(null, null, submitLog, aggregator);
+//		}
 		
 		
 		// print an avarage sum of the results

@@ -45,19 +45,19 @@ public class AggregatorQualityBenchmark {
 		   * @param searcher index access for fetching doc name.
 		   * @throws IOException in case of a problem.
 		   */
-		  public void report(QualityQuery qq, String[] docNames, String docNameField, Searcher searcher, HashMap<String, Accum> scores) throws IOException {
+		  public void report(QualityQuery qq, String[] docNames, String docNameField, Searcher searcher) throws IOException {
 		    if (logger==null) {
 		      return;
 		    }
 		    String sep = " \t ";
-		    for (int i=0; i<docNames.length; i++) {
+		    for (int i=0; i< docNames.length; i++) {
 		      String docName = docNames[i];
 		      logger.println(
 		          qq.getQueryID()       + sep +
 		          "Q0"                   + sep +
 		          format(docName,20)    + sep +
 		          format(""+i,7)        + sep +
-		          nf.format(scores.get(docName).val) + sep +
+		          (docNames.length - i) + sep +
 		          name
 		          );
 		    }
@@ -124,20 +124,7 @@ public class AggregatorQualityBenchmark {
 		this.docNameField = docNameField;
 	}
 
-	private static class Accum {
-		double val = 0;
-		int i = 0;
 		
-		public void add(double x) {
-			val += x;
-			i++;
-		}
-		
-		public void average() {
-			val /= i;
-		}
-	}
-	
 	/**
 	 * Run the quality benchmark.
 	 * 
@@ -166,7 +153,6 @@ public class AggregatorQualityBenchmark {
 			List<String[]> rankings = new ArrayList<String[]>();
 			long totalSearchTime = 0;
 			DocNameExtractor xt = new DocNameExtractor(docNameField);
-			HashMap<String, Accum> scores = new HashMap<String, Accum>();
 			
 			for (int k = 0; k < qqParsers.length; k++) {
 				QualityQueryParser qqParser = qqParsers[k];
@@ -179,13 +165,6 @@ public class AggregatorQualityBenchmark {
 				String[] docNames = new String[td.scoreDocs.length];
 				for (int l = 0; l < docNames.length; l++) {
 					docNames[l] = xt.docName(searcher, td.scoreDocs[l].doc);
-					
-					Accum a = scores.get(docNames[l]);
-					if(a==null) {
-						a = new Accum();
-						scores.put(docNames[l], a);
-					}
-					a.add(td.scoreDocs[l].score);
 				}
 
 				rankings.add(docNames);
@@ -195,10 +174,6 @@ public class AggregatorQualityBenchmark {
 				qs[j++] = q;
 			}
 			
-			for (Accum acc : scores.values()) {
-				acc.average();
-			}
-
 			// aggregate rankings
 			String[] finalRanking;
 
@@ -215,7 +190,7 @@ public class AggregatorQualityBenchmark {
 			}
 
 			if (submitRep != null) {
-				submitRep.report(qq, finalRanking, docNameField, searcher, scores);
+				submitRep.report(qq, finalRanking, docNameField, searcher);
 			}
 		}
 		if (submitRep != null) {

@@ -53,6 +53,14 @@
 			if(project.getProperty('technique').indexOf(',') != -1) {
 		    	project.setProperty('aggr', '-' + project.getProperty('aggregator'))
 			}
+			
+			function S4() {
+			   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+			}
+			function guid() {
+			   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+			}
+			project.setProperty('guid', guid());
 		</script>
 
 		<tstamp>
@@ -65,7 +73,7 @@
 			<arg file="collections/${collection}/index" />
 			<arg value="${technique}" />
 			<arg value="${aggregator}" />
-			<arg file="benchmark/results/subm_${time}.txt" />
+			<arg file="benchmark/results/subm_${guid}.txt" />
 			<arg value="${query.spec}"/>
 			<arg value="${query.nbres}"/>
 		</java>
@@ -74,10 +82,10 @@
 			output="benchmark/results/${technique}${aggr}-${query.spec}@${collection}-set${collection.num}.txt">
 			<!--<arg value="-a" />-->
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
-			<arg file="benchmark/results/subm_${time}.txt" />
+			<arg file="benchmark/results/subm_${guid}.txt" />
 		</exec>
 
-		 <delete file="benchmark/results/subm_${time}.txt" />
+		 <!--<delete file="benchmark/results/subm_${guid}.txt" />-->
 	</target>
 
 	<target name="report">
@@ -86,6 +94,12 @@
 			<arg file="benchmark/results/"/>
 			<arg value="${collection}-set${collection.num}"/>
 		</java>
+		
+		<!--
+		<exec executable="firefox">
+			<arg file="benchmark/results/${collection}-set${collection.num}/results.html"/>
+		</exec>
+		-->
 	</target>
 
 	<target name="export">

@@ -79,11 +79,19 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 %MANNING boolean retrieval 1.1???
 
 \chapter{Reg'asirea informa'tiei - generalit'a'ti}
-%TODO: rethink this
 \section{Indexare}
-\section{Cautare}
-\section{Reg'asirea boolean'a 'si ad-hoc}
+\emph{Indexarea} este procesul unui sistem de reg'asire a informa'tiei prin care se colecteaz'a, parseaz'a 'si stocheaz'a informa'tia pentru a facilita reg'asirea rapid'a 'si precis'a. Proiectarea unui index presupune cuno'stin'te asupra unor concepte interdisciplinare din lingvistic'a, psihologie cognitiv'a, matematic'a, informatic'a, etc. Motoarele populare de c'autare se concetreaz'a pe indexarea de tip \emph{full-text} ale documentelor online scrise 'in limbaj natural. Tipurile media(video, audio, imagini) pot fi 'si ele indexate. Motoarele de meta-c'autare refolosesc indec'sii altor servicii f'ar'a s'a stocheze un index local, 'in timp ce sistemele RI cu cache stocheaz'a permanent at'jt indexul c'jt 'si corpusul. Spre deosebire de indec'sii full-text, un index \emph{partial-text} restric'tioneaz'a "ad'jncimea" index'arii pentru a reduce dimensiunea indexului. Unele servicii efectueaz'a procesul de indexare la intervale predeterminate de timp din cauza costurilor de procesare, 'in timp ce alte motoarele de c'autare indexeaz'a con'tinut 'in timp real.
 
+\subsection{Aspecte ale proiect'arii}
+Iat'a c'jteva aspecte majore 'in proiectarea arhitecturii unui sistem RI.
+\paragraph{'Imbinarea} se refer'a la modul 'in care informa'tia ajunge 'in index sau cum cuvintele sunt ad'augate 'in index 'in timpul unei travers'ari a corpusului 'si la posibilitatea de a permite indexare concurent'a 'si asincron'a. Programul de indexare trebuie mai 'intai s'a verifice dac'a actualizeaz'a con'tinut vechi sau adaug'a con'tinut nou.
+\paragraph{Tehnica de stocare} se refer'a la modul de stocare a datelor, mai exact la compresarea 'si filtrarea informa'tiei.
+\paragraph{M'arimea indexului} reprezint'a nevoia de spa'tiu de stocare.
+\paragraph{Viteza de c'autare} se refer'a la c'jt de repede poate fi g'asit un cuv'jnt 'in index. Viteza g'asirii unui element 'intr-o structur'a de date, 'impreun'a cu viteza de actualizare 'si 'stergere reprezint'a un punct central 'in informatic'a.
+\paragraph{'Intre'tinerea} se refer'a la felul 'in care un index este men'tinut de-a lungul timpului.
+\paragraph{Tolerarea defectelor} trateaz'a aspecte precum coruperea indexului, informa'tie eronat'a, hardware stricat, parti'tionare, replicare, etc.
+
+\section{Metode de reg'asire 'si ierarhizare}
 
 \chapter{Evaluarea 'in reg'asirea informa'tiei}
 Exist'a multe alternative pentru a proiecta un sistem RI. Cum hot'ar'jm care dintre aceste tehnici sunt eficiente 'in anumite aplica'tii? Este idicat'a folosirea unui \emph{stop list} sau a unui \emph{stemmer}? Reg'asirea informa'tiei a evoluat ca o disciplin'a empiric'a, necesit'jnd evalu'ari atente 'si complete pentru a demonstra superioritatea performan'telor noilor tehnici ap'arute pe colec'tii reprezentative de documente.
@@ -767,7 +775,85 @@ unde:
 
 \subsection{Pachetul contrib/benchmark/quality}
 \subsection{Proiectul Apache Open Relevance (ORP)}
+
 \subsection{trec\_eval}
+\emph{trec\_eval} este unealta standard folosit'a de comunitatea TREC pentru a evalua sisteme ad-hoc de reg'asirea informa'tiei, folosind un fi'sier standard de judec'a'ti de relevan't'a 'si fi'sierul cu rezultatele sistemului 'si calcul'jnd diferite m'asuri de evaluare.
+
+Majoritatea op'tiunilor pot fi ingnorate, singura folosit'a mai des este "-q", care, 'in cazul 'in care este specificat'a, duce la afi'sarea rezultatelor pentru toate interog'arile, nu doar mediile. Un exemplu de utilizare oficial'a poate fi:
+\begin{quote}\small
+\texttt{trec\_eval -q -c -M1000 official\_qrels submitted\_results.}
+\end{quote}
+pentru a asigura evaluarea corect'a dac'a fi'sierul de rezultate nu con'tine rezultate pentru toate interog'arile, sau con'tine mai mult de 1000 de rezultate per interogare.
+
+Folosire: 
+\begin{quote}\small
+\texttt{trec\_eval [-h] [-q] [-a] [-o] [-c] [-l<num>  [-Nnum] [-Mnum] [-Uanum] [-Ubnum] [-Ucnum] [-Udnum] [-T] trec\_rel\_file trec\_top\_file}
+\end{quote}
+
+Exist'a o sumedenie de op'tiuni care pot fi specificate la rulare \emph{trec\_eval}.
+\begin{itemize}
+	\item[] -h: printeaz'a mesajul de help 'si termin'a
+	\item[] -q: pe l'jng'a sumarul evalu'arilor, printeaz'a rezultatele pentru evaluarea fiec'arei interog'ari
+	\item[] -a: printeaz'a toate m'asurile, 'in loc de m'asurile oficiale pentru TREC
+	\item[] -o: printeaz'a in formatul nonrela'tional(inplicit este rela'tional)
+	\item[] -c: media este f'acut'a peste setul complet de interog'ari din judec'a'tile de relevan't'a 'in loc de intersec'tia dintre judec'a'ti 'si rezultatele sistemului. Interog'arile care lipses vor contribui valoarea 0 la toate m'asurile de evaluare(acceptabil pentru m'asurile TREC standard, nu neap'arat 'si pentru celelalte)
+\end{itemize}
+
+\emph{trec\_eval} cite'ste tupluri 'in urm'atorul format din fi'sierul rezultatelor:
+\begin{quote}\small
+\texttt{qid iter docno rank sim run\_id}
+\end{quote}
+
+Acest tuplu reprezint'a un document cu num'arul \emph{docno} reg'asit 'in contextul interog'arii cu id-ul \emph{qid} cu scorul similarit'a'tii \emph{sim}. Celelalte c'jmpuri sunt ignorate, cu excep'tia c'jmpului \emph{run\_id} care este printat. C'jmpul \emph{rank} este ignorat, rangurile fiind calculate prin sortarea dup'a c'jmpul \emph{sim}(problema egalit'a'tilor de scoruri 'intre documente este rezolvat'a deterministic, folosind \emph{docno}). A'sadar \emph{sim} se presupune c'a este mai mare pentru documentele mai relevante.
+
+Relevan'ta unui document \emph{docno} la o interogare \emph{qid} este dat'a de tuplurile din fi'sierul cu judec'a'ti de relevan't'a.
+\begin{quote}\small
+\texttt{qid iter docno rel,}
+\end{quote}
+Un tuplu reprezint'a relevan'ta \emph{rel} ('intreg pozitiv mai mic dec'jt 128, sau -1(nejudecat)) a unui document \emph{docnum} la o interogare \emph{qid}. C'jmpul \emph{iter} este ignorat. Interog'arile pentru care nu exist'a informa'tie despre relevan't'a sunt ignorate. Interog'arile pentru care exist'a documente relevante dar nu 'si documente reg'asite sunt ignorate implicit; acest lucru permite sistemelor s'a evalueze pe subseturi ale documentelor relevante, dar daca un sistem nu 'intoarce nici un documente pentru o interogare, acest lucru nu va afecta sumarul m'asurilor. Pentru a modifica acest comportament se folose'ste optiunea \emph{-c}.
+
+Formatul de output al \emph{trec\_eval} este:
+\begin{quote}\small
+\texttt{measure\_name query value,}
+\end{quote}
+unde \emph{measure\_name} reprezint'a numele m'asurii, \emph{query} reprezint'a id-ul interog'arii ('in cazul mediilor, valoare \emph{all} este afi'sat'a) 'si \emph{value} este valoarea m'asurii. Tabelul \ref{tab:treceval} prezint'a numele m'asurilor oficiale TREC 'si un scurt sumar.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+num\_ret & Num'arul total de documente reg'asite\\
+num\_rel & Num'arul total de documente relevante\\
+num\_rel\_ret & Num'arul total de documente relevante 'si reg'asite\\
+map & Precizia medie (MAP)\\
+gm\_ap & Precizia medie calculat'a flosind media geometric'a\\
+R-prec & R-precizia (precizia dup'a R documente reg'asite)\\
+bpref & Binary Preference, top R judged nonrel\\
+recip\_rank & Reciprical rank of top relevant document\\
+ircl\_prn.0.00 & Media preciziei interpolate la nivelul de recall 0.00\\
+ircl\_prn.0.10 & Media preciziei interpolate la nivelul de recall 0.10\\
+ircl\_prn.0.20 & Media preciziei interpolate la nivelul de recall 0.20\\
+ircl\_prn.0.30 & Media preciziei interpolate la nivelul de recall 0.30\\
+ircl\_prn.0.40 & Media preciziei interpolate la nivelul de recall 0.40\\
+ircl\_prn.0.50 & Media preciziei interpolate la nivelul de recall 0.50\\
+ircl\_prn.0.60 & Media preciziei interpolate la nivelul de recall 0.60\\
+ircl\_prn.0.70 & Media preciziei interpolate la nivelul de recall 0.70\\
+ircl\_prn.0.80 & Media preciziei interpolate la nivelul de recall 0.80\\
+ircl\_prn.0.90 & Media preciziei interpolate la nivelul de recall 0.90\\
+ircl\_prn.1.00 & Media preciziei interpolate la nivelul de recall 1.00\\
+P5 & Precizia dup'a 5 documente reg'asite\\
+P10 & Precizia dup'a 10 documente reg'asite\\
+P15 & Precizia dup'a 15 documente reg'asite\\
+P20 & Precizia dup'a 20 documente reg'asite\\
+P30 & Precizia dup'a 30 documente reg'asite\\
+P100 & Precizia dup'a 100 documente reg'asite\\
+P200 & Precizia dup'a 200 documente reg'asite\\
+P500 & Precizia dup'a 500 documente reg'asite\\
+P1000 & Precizia dup'a 1000 documente reg'asite
+\end{tabular}
+\caption{M'asurile oficiale afi'sate de trec\_eval}
+\label{tab:treceval}
+\end{table}
+
 \subsection{JFreeChart}
 \section{Construirea framework-ului}
 \section{Rezultate}

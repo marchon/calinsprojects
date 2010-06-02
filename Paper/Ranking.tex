@@ -79,19 +79,88 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 %MANNING boolean retrieval 1.1???
 
 \chapter{Reg'asirea informa'tiei - generalit'a'ti}
-\section{Indexare}
-\emph{Indexarea} este procesul unui sistem de reg'asire a informa'tiei prin care se colecteaz'a, parseaz'a 'si stocheaz'a informa'tia pentru a facilita reg'asirea rapid'a 'si precis'a. Proiectarea unui index presupune cuno'stin'te asupra unor concepte interdisciplinare din lingvistic'a, psihologie cognitiv'a, matematic'a, informatic'a, etc. Motoarele populare de c'autare se concetreaz'a pe indexarea de tip \emph{full-text} ale documentelor online scrise 'in limbaj natural. Tipurile media(video, audio, imagini) pot fi 'si ele indexate. Motoarele de meta-c'autare refolosesc indec'sii altor servicii f'ar'a s'a stocheze un index local, 'in timp ce sistemele RI cu cache stocheaz'a permanent at'jt indexul c'jt 'si corpusul. Spre deosebire de indec'sii full-text, un index \emph{partial-text} restric'tioneaz'a "ad'jncimea" index'arii pentru a reduce dimensiunea indexului. Unele servicii efectueaz'a procesul de indexare la intervale predeterminate de timp din cauza costurilor de procesare, 'in timp ce alte motoarele de c'autare indexeaz'a con'tinut 'in timp real.
 
-\subsection{Aspecte ale proiect'arii}
-Iat'a c'jteva aspecte majore 'in proiectarea arhitecturii unui sistem RI.
-\paragraph{'Imbinarea} se refer'a la modul 'in care informa'tia ajunge 'in index sau cum cuvintele sunt ad'augate 'in index 'in timpul unei travers'ari a corpusului 'si la posibilitatea de a permite indexare concurent'a 'si asincron'a. Programul de indexare trebuie mai 'intai s'a verifice dac'a actualizeaz'a con'tinut vechi sau adaug'a con'tinut nou.
-\paragraph{Tehnica de stocare} se refer'a la modul de stocare a datelor, mai exact la compresarea 'si filtrarea informa'tiei.
-\paragraph{M'arimea indexului} reprezint'a nevoia de spa'tiu de stocare.
-\paragraph{Viteza de c'autare} se refer'a la c'jt de repede poate fi g'asit un cuv'jnt 'in index. Viteza g'asirii unui element 'intr-o structur'a de date, 'impreun'a cu viteza de actualizare 'si 'stergere reprezint'a un punct central 'in informatic'a.
-\paragraph{'Intre'tinerea} se refer'a la felul 'in care un index este men'tinut de-a lungul timpului.
-\paragraph{Tolerarea defectelor} trateaz'a aspecte precum coruperea indexului, informa'tie eronat'a, hardware stricat, parti'tionare, replicare, etc.
 
-\section{Metode de reg'asire 'si ierarhizare}
+\section{Procesul de indexare}
+\emph{Indexarea} este procesul unui sistem de reg'asire a informa'tiei prin care se colecteaz'a, transform'a, 'si stocheaz'a informa'tia pentru a facilita reg'asirea rapid'a 'si precis'a. Proiectarea unui index presupune cuno'stin'te asupra unor concepte interdisciplinare din lingvistic'a, psihologie cognitiv'a, matematic'a, informatic'a, etc. Motoarele populare de c'autare se concetreaz'a pe indexarea de tip \emph{full-text} ale documentelor online scrise 'in limbaj natural. Tipurile media(video, audio, imagini) pot fi 'si ele indexate. Motoarele de meta-c'autare refolosesc indec'sii altor servicii f'ar'a s'a stocheze un index local, 'in timp ce sistemele RI cu cache stocheaz'a permanent at'jt indexul c'jt 'si corpusul. Spre deosebire de indec'sii full-text, un index \emph{partial-text} restric'tioneaz'a "ad'jncimea" index'arii pentru a reduce dimensiunea indexului. Unele servicii efectueaz'a procesul de indexare la intervale predeterminate de timp din cauza costurilor de procesare, 'in timp ce alte motoarele de c'autare indexeaz'a con'tinut 'in timp real.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.25]{ind.png}
+	\caption{Indexarea}
+	\label{fig:ind}
+\end{figure}
+
+\subsection{Colectarea textului}
+
+\subsection{Transformarea textului}
+\subsubsection{Parsarea}
+\subsubsection{Filtrarea}
+\subsubsection{Stemming}
+\subsubsection{Analizarea leg'aturilor}
+\subsubsection{Extragerea informa'tiei}
+\subsubsection{Clasificarea}
+
+\subsection{Crearea indexului}
+
+
+\section{Procesul de c'autare}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.34]{quer.png}
+	\caption{Interogarea indexului}
+	\label{fig:quer}
+\end{figure}
+
+\subsection{Interac'tiunea cu utilizatorul}
+
+
+\subsection{Procesul de reg'asire 'si ierarhizare}
+Algoritmul de ierarhizare poate fi considerat componenta de baz'a a unui sistem de reg'asire a informa'tiei. Strategiile de reg'asire au scopul de a asigna un scor de relevan't'a 'intre o interogare 'si un document. Aceste strategii sunt bazate pe no'tiunea conform c'areia cu c'jt un termen din interogare apare mai des 'in document, cu at'jt este mai "relevant" documentul la interogare. Unele dintre aceste tehnici aplic'a anumite m'asuri care s'a atenueze problemele cauzate de ambiguit'a'tiile limbii (acela'si concept poate fi exprimat folosind termeni diferi'ti sau acela'si termen poate avea sensuri diferite 'in contexte diferite). Un algoritm de ierarhizare are la intrare o interogare $Q$ 'si un set de documente $D_1, D_2, ..., D_n$ iar scopul lui este s'a identifice un coeficient de similaritate $SC(Q, D_i)$ pentru $1 \leq i \leq n$ (SC - \emph{similarity coefficient} - este uneori numit RSV - \emph{retrieval status value}).
+
+Exist'a mai multe modele de reg'asire 'si ierarhizare. O parte din ele sunt ilustrate 'in figura \ref{fig:irm} 'si c'jteva dintre acestea sunt descrise pe scurt 'in paragrafele urm'atoare\cite{GROSS}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.8]{irm.png}
+	\caption{Diferite modele de ierarhizare clasate dup'a metoda folosit'a 'si modul de tratare a termenilor\cite{IRWIKI}}
+	\label{fig:irm}
+\end{figure}
+
+\paragraph{Modelul boolean}
+La c'autare sunt 'intoarse documentele care satisfac condi'tia logic'a impus'a de interogare 'si, de obicei, se 'tine cont doar de apari'tia respectiv lipsa unui termen din document, nu 'si de frecven't'a.
+
+\paragraph{Modelul spa'tiului vectorial}
+'In cadrul acestui model, at'jt interogarea c'jt 'si documentele sunt reprezentate ca vectori 'intr-un spa'tiu vectorial cu c'jte o dimensiune pentru fiecare termen din colec'tie. O m'asur'a de similaritate este calculat'a 'intre interogare 'si un document ca un produs scalar 'intre cei doi vectori normaliza'ti, sau o varia'tiune a acestuia.
+
+\paragraph{Reg'asirea probabilistic'a}
+Pentru fiecare termen din colec'tie este calculat'a probabilitatea ca acesta s'a apar'a 'intr-un document relevant. Similaritatea dintre un document 'si o interogare este computat'a ca o combina'tie a probabilit'a'tilor termenilor comuni.
+
+\paragraph{Modele lingvistice}
+Un model lingvistic este calculat pentru fiecare document 'si, la c'autare, se calculeaz'a probabilitatea ca un document s'a genereze interogarea.
+
+\paragraph{Re'tele de inferen't'a}
+O re'tea baiesian'a este folosit'a pentru a infera relvan'ta unui document la o interogare. Acest'a concluzie se trage pe baza "eviden'telor" din document.
+
+\paragraph{Indexarea semantic'a latent'a}
+Ocuren'tele termenilor 'in documente sunt reprezentate folosind o matrice \emph{termen-document}. Matricea este redus'a prin SVD (\emph{Singular Value Decomposition}) pentru a filtra "g'al'agia" (\emph{noise}) g'asit'a 'in documente astfel 'inc'jt dou'a documente care au semantici similare s'a fie situate c'jt mai aproape 'intr-un spa'tiu multi-dimensional.
+
+\paragraph{Re'tele neurale}
+Anumi'ti "neuroni" dintr-o secven't'a (noduri 'intr-o re'tea) sunt activa'ti de o interogare 'si produc leg'aturi c'atre documente. "Puterea" fiec'arei leg'aturi din re'tea este transmis'a documentului 'si colectat'a pentru a forma un coeficient de similaritate 'intre interogare 'si document. Re'telele sunt antrenate prin ajustarea ponderilor leg'aturilor pe colec'tii cu interog'ari 'si r'aspunsuri predeterminate.
+
+\paragraph{Algoritmi genetici}
+O interogare optim'a pentru a g'asi documente relevante la o nevoie de informa'tie poate fi generat'a prin evolu'tie. O interogare ini'tial'a este folosit'a cu ponderi aleatoare sau estimate ale termenilor. Noi interog'ari sunt generate prin modificarea acestor ponderi. O nou'a interogare "supravie'tuie'ste" dac'a este similar'a cu documentele care se s'tiu a fi relevante la nevoia de informa'tie (predeterminate).
+
+\paragraph{Reg'asirea pe mul'timi fuzzy}
+Un document este mapat la o mul'time fuzzy (o mul'time 'in care fiecare element are asociat un num'ar care indic'a "puterea de apartenen't'a"). Interog'arile boolene sunt mapate la intersec'tii, reuniuni 'si complemente de mul'timi fuzzy care au ca rezultat o pondere de apartenten't'a asociat'a cu fiecare document care e relevant la interogare. Aceast'a pondere este folosit'a ca m'asur'a de similaritate.
+
+Pentru fiecare strategie se pot folosi diferite utilit'a'ti sunt folosite pentru a-i imbun'at'a'ti rezultatele. Acestea pot fi: \emph{expandarea interog'arilor}, \emph{feedback-ul de relevan't'a}, \emph{clustering}, \emph{n-grame}, \emph{re'tele semantice}, etc. 'Incerc'jnd s'a rafineze interogarea, majoritatea acestor utilit'a'ti adaug'a sau 'indep'arteaz'a termeni de la interogarea ini'tial'a. Aceste utilit'a'ti sunt componente \emph{"plug-and-play"} 'in sensul c'a ar trebui s'a poat'a fi folosite cu orice model de ierarhizare.
+
+O tratare mai detaliat'a a c'jtorva dintre aceste metode se va face 'in capitolul \ref{cap:rankmet}.
+
+\subsection{Evaluarea}
+
 
 \chapter{Evaluarea 'in reg'asirea informa'tiei}
 Exist'a multe alternative pentru a proiecta un sistem RI. Cum hot'ar'jm care dintre aceste tehnici sunt eficiente 'in anumite aplica'tii? Este idicat'a folosirea unui \emph{stop list} sau a unui \emph{stemmer}? Reg'asirea informa'tiei a evoluat ca o disciplin'a empiric'a, necesit'jnd evalu'ari atente 'si complete pentru a demonstra superioritatea performan'telor noilor tehnici ap'arute pe colec'tii reprezentative de documente.
@@ -269,6 +338,7 @@ NDCG(Q,k) = \frac{1}{|Q|}\sum\limits_{j=1}^{|Q|}{Z_{kj} \sum\limits_{m=1}^k{\fra
 unde $Z_{kj}$ este un factor de normalizare calculat pentru a face ca NDCG-ul unei ierarhiz'ari perfecte la k pentru interogarea j s'a fie 1. Pentru interog'ari pentru care $k' < k$ documente sunt returnate, ultima sum'a se face p'jn'a la $k'$
 
 \chapter{Metode de ierarhizare}
+\label{cap:rankmet}
 \section{Modelul spa'tiului vectorial (VSM)}
 \subsection{Frecven'ta termenilor si ponderarea}
 Spre deosebire de o interogarea boolean'a, o interogare \emph{liber'a}("free text") e definit'a de un set de cuvinte neconectate de operatori. Acest tip de interogare este foarte popular'a pe web. Un mecanism de scor pentru aceast'a situa'tie poate fi calcularea sumei dintre scorurile pe care le ob'tine fiecare termen din interogare cu un document.
@@ -492,7 +562,13 @@ Nota'tia pentru reprezentarea unei combina'tii de scheme de ponderare are forma 
 
 \section{Euristici pentru eficientizare}
 \label{sec:eur}
-\section{Cluster pruning}
+\subsection{Reg'asirea inexact'a a primelor K documente}
+\subsection{Ignorarea termenilor cu ponderi mici}
+\subsection{Listele de campioni}%??ih
+\subsection{Scoruri statice}
+\subsection{Impact ordering}
+\subsection{Cluster pruning}
+
 \section{Modelul axiomatic}
 \subsection{F2-EXP}
 \section{Modelul probabilistic}
@@ -787,7 +863,7 @@ pentru a asigura evaluarea corect'a dac'a fi'sierul de rezultate nu con'tine rez
 
 Folosire: 
 \begin{quote}\small
-\texttt{trec\_eval [-h] [-q] [-a] [-o] [-c] [-l<num>  [-Nnum] [-Mnum] [-Uanum] [-Ubnum] [-Ucnum] [-Udnum] [-T] trec\_rel\_file trec\_top\_file}
+\texttt{trec\_eval [-h] [-q] [-a] [-o] [-c] [-l<num>] [-N<num>] [-M<num>] [-Ua<num>] [-Ub<num>] [-Uc<num>] [-Ud<num>] [-T] trec\_rel\_file trec\_top\_file}
 \end{quote}
 
 Exist'a o sumedenie de op'tiuni care pot fi specificate la rulare \emph{trec\_eval}.
@@ -855,14 +931,19 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 \end{table}
 
 \subsection{JFreeChart}
-\section{Construirea framework-ului}
+
+\section{Descrierea framework-ului de test}
 \section{Rezultate}
 
 \chapter{Concluzii}
 
 \begin{thebibliography}{9}
+	%TODO: 2 puncte Schutze
 	\bibitem{MAN}Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
+	\bibitem{GROSS}David A. Grossman, Ophir Frieder , \emph{Information retrieval: algorithms and heuristics, 2nd Edition} 
+	\bibitem{SE} \url{http://www.search-engines-book.com/}
 	\bibitem{IRWIKI} \url{http://en.wikipedia.org/wiki/Information_retrieval}
+	\bibitem{IND} \url{http://en.wikipedia.org/wiki/Index_(search_engine)}
 	%sim javadoc
 \end{thebibliography}
 

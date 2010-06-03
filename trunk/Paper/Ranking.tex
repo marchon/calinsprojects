@@ -703,9 +703,36 @@ Ideea din spatele \emph{listelor de campioni} (\emph{champion lists, fancy lists
 Av'jnd o interogare q, cream setul $A$ astfel: lu'am reuniunea listeror de campioni ale fiec'arui termen din $q$. Restric'tion'am calcularea similarit'a'tii cosinus doar la documentele din A. Un parametru critic al acestei scheme este valoarea lui $r$, care variaz'a 'in func'tie de aplica'tie. Intuitiv, $r$ ar trebui sa fie mult mai mare dec'jt $K$, mai ales dac'a se folosesc euristicile prezentate 'in sec'tiunea precendet'a. O problem'a 'in cazul acesta este c'a $r$ este setat'a la construirea indexului, 'in timp ce $K$ este dependent de aplica'tie 'si exist'a posibilitatea s'a fie aflat doar la lansarea interog'arii. Ca urmare, se poate 'intmpla ca setul $A$ sa aib'a mai pu'tin de $K$ documente. Valoare lui $r$ ar putea fi setat'a mai mare pentru termeni mai rari.
 
 \subsection{Scoruri statice}
+Extindem listele de campioni la no'tiunea de \emph{scoruri statice}. 'In multe motoare de c'autare pentru fiecare document $d$ este disponibil'a o m'asur'a a calit'a'tii $g(d)$ independent'a de interogare, deci static'a. Aceast'a m'asur'a poate fi privit'a ca o valoare 'intre 0 'si 1. De exemplu, 'in contextul unei 'stiri de pe web, $d(d)$ ar putea fi derivat'a din num'arul de review-uri favorabile primite de la vizitatori.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.7]{stat.png}
+	\caption{Index ordonat static. g(1) = 0.25, g(2) = 0.5, g(3) = 1}
+	\label{fig:stat}
+\end{figure}
+
+Scorul net pentru documentul $d$ este o combina'tie 'intre $g(d)$ 'si scorul calculat la momentul interog'arii dup'a o anumit'a schem'a. Combina'tia poate fi determinat'a printr-un proces de 'inv'a'tare, dar, de dragul simplit'a'tii, vom considera urm'atoarea form'a:
+\begin{equation}
+score(q, d) = g(d) + \frac{\vec{V}(q) \cdot \vec{V}(d)}{|\vec{V}(q)||\vec{V}(d)|}.
+\label{eq:stat}
+\end{equation}
+'In aceast'a form'a simpl'am scorul static $g(d)$, 'si scorul calculat la interogare au contribu'tii egale, presupun'jnd c'a amblele se afl'a 'intre 0 'si 1.
+
+Mai 'int'ji s'a consider'am ordonarea documentelor din lista de postare a fiec'arui termen 'in mod descresc'ator dup'a valoarea lui $g(d)$. Acest lucru permite efectuarea intersect'arii listelor de postare 'in mod concurent ca 'si cum ar fi fost ordonate dup'a id-ul documentului (e nevoie doar de o ordonare comun'a pentru toate listele de postare). Acest tip de ordonare este ilustrat 'in figura \ref{fig:stat}.
+
+Una dintre idei este extinderea direct'a a listelor de campioni: pentru o valoare bine aleas'a $r$, men'tinem pentru fiecare termen $t$, o list'a de $r$ documente cu valorile cele mai mari ale $g(d) + tdidf_{t,d}$. Lista este sortat'a dup'a o ordonare comun'a. Apoi, la interogare, se calculeaz'a scorul net doar pentru documentele din reuniunea acestor liste de campioni.
+
+Cea de-a doua idee const'a 'in men'tinerea, pentru fiecare termen $t$, a dou'a liste de postare disjuncte, fiecare sortat'a dup'a $g(d)$. Prima list'a, numit'a \emph{high}, con'tine cele $m$ documente cu valorile $tf$ cele mai mari pentru $t$. Cea de-a doua list'a numit'a \emph{low}, con'tine toate celelalte documente ce 'il con'tin pe $t$. C'jnd se proceseaz'a o interogare, se scaneaz'a mai 'int'ji lista \emph{high}, calcul'jnd scorurile nete pentru fiecare document (sau documente care con'tin un num'ar mare din termenii interog'arii). Dac'a nu se ob'tin $K$ documente 'in urma acestui proces, se continu'a cu listele \emph{low}.
 
 \subsection{Impact ordering}
 \subsection{Cluster pruning}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.7]{cp.png}
+	\caption{Cluster pruning}
+	\label{fig:cp}
+\end{figure}
 
 
 \section{Modelul axiomatic}

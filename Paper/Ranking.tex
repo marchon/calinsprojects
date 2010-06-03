@@ -85,36 +85,107 @@ Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine
 \emph{Indexarea} este procesul unui sistem de reg'asire a informa'tiei prin care se colecteaz'a, transform'a, 'si stocheaz'a informa'tia pentru a facilita reg'asirea rapid'a 'si precis'a. Proiectarea unui index presupune cuno'stin'te asupra unor concepte interdisciplinare din lingvistic'a, psihologie cognitiv'a, matematic'a, informatic'a, etc. Motoarele populare de c'autare se concetreaz'a pe indexarea de tip \emph{full-text} ale documentelor online scrise 'in limbaj natural. Tipurile media(video, audio, imagini) pot fi 'si ele indexate. Motoarele de meta-c'autare refolosesc indec'sii altor servicii f'ar'a s'a stocheze un index local, 'in timp ce sistemele RI cu cache stocheaz'a permanent at'jt indexul c'jt 'si corpusul. Spre deosebire de indec'sii full-text, un index \emph{partial-text} restric'tioneaz'a "ad'jncimea" index'arii pentru a reduce dimensiunea indexului. Unele servicii efectueaz'a procesul de indexare la intervale predeterminate de timp din cauza costurilor de procesare, 'in timp ce alte motoarele de c'autare indexeaz'a con'tinut 'in timp real.
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.25]{ind.png}
-	\caption{Indexarea}
-	\label{fig:ind}
+    \centering
+    \includegraphics[scale=.25]{ind.png}
+    \caption{Indexarea}
+    \label{fig:ind}
 \end{figure}
 
 \subsection{Colectarea textului}
+Una din principalele tehnici prin care un sistem RI colecteaz'a textul pentru indexare este procesul de \emph{crawl-ing}. Un \emph{crawler} indentific'a si ob'tine documente pe care motorul de c'autare le va indexa. Exist'a mai multe tipuri de \emph{crawler-e}: \emph{web, enterprise 'si desktop}. Crawler-ele web urm'aresc hiperleg'aturile dintr-un document pentru a g'asi alte documente. Ele trebuie s'a furnizeze procesului de indexare un num'ar mare de pagini web, 'si, la eventuala modificare a acestora, trebuie depisteze acest lucru 'si s'a declan'seze reindexarea. Pentru asigurarea c'aut'arii pe un singur site se folosesc crawler-ele de site care restrict'ioneaz'a procesul de crawl-ing la un singur domeniu. Crawler-ele pentru c'autarea de tip enterprise 'si desktop indexeaz'a con'tinut local din sisteme de management de con'tinut (CMS) respectiv harddisk-ul local.
+Un alt mod de colectare este reprezentat de \emph{feed-uri}: stream-uri de documente 'in timp real (feed-uri web pentru 'stiri, bloguri, video, radio, tv, etc.). Un standard pentru a transporta aceste feed-uri este RSS care poate furniza procesului de indexare documente XML.
+
+Dup'a ce un document este colectat, 'inainte de indexare, acesta trebuie transformat 'intr-un format consistent de text 'si metadate despre document. De exemplu, un motor de c'autare care suport'a mai multe formate (HTML, XML, Word, PDF), le poate transforma 'inainte de indexare 'intr-un format XML. De asemenea, se adopt'a 'si un standard al encod'arii (de exemplu, UTF-8) pentru noile formate.
+
+Unele sisteme RI stocheaz'a documentele 'intr-un \emph{data store} 'inainte s'a le indexeze. Acest lucru facilitez'a accesul componentelor sistemului la setul de documente.
 
 \subsection{Transformarea textului}
+'Inainte de a indexa un document acesta este 'imp'ar'tit 'in \emph{tokeni} (parsat) pentru a identifica elementele structurale din text. Tokenii pot fi mai departe procesa'ti prin diverse procese cum ar fi \emph{filtrarea}, \emph{stemming-ul}, \emph{lematizarea}. Tot 'in acest moment se pot efectua procese precum analiza leg'aturilor, extragerea informa'tiei 'si clasificare.
+
 \subsubsection{Parsarea}
+Dat fiind o secven't'a de caractere 'si o unitate de document, token-izarea este procesul de 'imp'ar'tire 'in buc'a'ti numite \emph{"token-i"} 'si, 'in acela'si timp, eliminarea anumitor caractere precum semnele de punctua'tie. Ace'sti token-i sunt numi'ti uneori termeni sau cuvinte, dar este important s'a se fac'a distinc'tia 'intre aceste concepte. Un token reprezint'a instan'ta unei secven'te de caractere 'intr-un anumit document, care sunt grupate 'intr-o unitate semantic'a de care se va 'tine cont la procesare. Un \emph{tip} este clasa tuturor token-ilor care con'tin aceea'si secven't'a de caractere. Un \emph{termen} este un tip (de obicei normalizat) care este inclus 'in dic'tionarul sistemului RI. Termenii sunt str'jns lega'ti de token-ii din text, dar, de obicei, sunt ob'tinu'ti prin aplicarea diferitelor procese de normalizare (de exemplu, 'indep'artarea punctelor din prescurt'ari, eliminarea accentelor 'si diacriticelor sau transformarea tuturor literelor 'in litere mici), stemming 'si lematizare.
+
+'Intrebarea major'a care se pune 'in cadrul pars'arii este: \emph{care sunt token-ii potrivi'ti?} Raspunsul este c'a \emph{acest lucru specific limbii}. A'sadar, limba documentului trebuie cunoscut'a. Identificarea limbajului bazat'a pe clasificatori care folosesc secven'te scurte de caractere drept caracteristici este foarte eficient'a, majoritatea limbilor av'jnd modele distincte de astfel de semn'aturi.
+
 \subsubsection{Filtrarea}
-\subsubsection{Stemming}
-\subsubsection{Analizarea leg'aturilor}
-\subsubsection{Extragerea informa'tiei}
-\subsubsection{Clasificarea}
+C'jteodat'a, unele cuvinte extrem de frecvente, care au o contribu'tie foarte mic'a 'in a ajuta la g'asirea documentelor pentru o nevoie de informa'tie, sunt excluse total din vocabularul de termeni. Aceste sunt numite \emph{cuvinte de stop sau stop words}. Strategia general'a pentru a alc'atui o astfel de list'a de filtrare este selectarea termenilor cu frecven'te foarte mari 'in colec'tia de documente. Folosirea unei liste de filtrare duce la reducerea semnificativ'a a num'arului de post'ari din index 'si, de multe ori, nu are efecte negative (interog'arile de tip fraz'a exact'a constituie un exemplu in care lista de stop are efecte negative).
+
+Iat'a o list'a de cuvinte de stop pentru limba englez'a:
+\begin{quotation}
+a, an, and, are, as, at, be, by, from, for, has, he, in, is, it, its, on, of, that, the, to, was, where, will, with
+\end{quotation}
+
+Tendin'ta folosirii listelor de stop de-a lungul timpului a sc'azut de la liste foarte mare (200-300 termeni), la liste foarte mici (7-12 termeni), ajung'jndu-se la a nu se folosi deloc. 'In general, motoarele de c'autare web nu folosesc cuvinte de stop ci 'intrebuin'teaz'a statisitici ale limbii pentru tratarea mai bun'a a cuvintelor comune.
+
+\subsubsection{Stemming 'si lematizare}
+Documentele folosesc diferite forme ale aceluia's cuv'jtnt, de exemplu: \emph{organizez, organizeaz'a, organiz'jnd}. 'In multe situa'tii pare util ca o c'autare a unuia dintre aceste cuvinte s'a 'intoarc'a documente care folosesc oricare din formele lui.
+
+At'jt scopul \emph{stemming-ului} c'jt 'si al \emph{lematiz'arii} este \emph{reducerea formelor flexionare 'si a formelor derivate cu semantic'a similar'a a unui cuv'jnt la o form'a de baz'a}. De exemplu:
+\begin{quote}
+am, are, is $\Rightarrow$ be
+\end{quote}
+\begin{quote}
+car, cars, car''s, cars'' $\Rightarrow$ car
+\end{quote}
+
+Rezultatul aplic'arii acestui tip de reguli este urm'atorul:
+\begin{quote}
+the boy''s cars are different colors $\Rightarrow$ the boy car be differ color
+\end{quote}
+
+De'si au un scop comun, cele dou'a concepte difer'a prin mijloacele folosite. Stemming-ul se refer'a de obicei la procese euristice folosite pentru a 'indep'arta termina'tiile cuvintelor 'in speran'ta atingerii scopului de cele mai multe ori. Lematizarea 'incearac'a sa ating'a scopul prin mijloace mai "formale", folosind un vocabular 'si analiz'jnd morfologic cuvintele (forma din dic'tionar a unui cuv'jnt poart'a numele de \emph{lem'a}). Confruntate cu secven'ta de caractere \emph{saw}, un proces de stemming ar putea 'intoarce \emph{s}, in timp ce lematizarea ar 'incerca s'a intoarc'a \emph{see} sau \emph{saw} 'in func'tie de rolul cuv'jntului (verb, respectiv substantiv).
+
+Cel mai comun algoritm de stemming 'in englez'a este \emph{algoritmul Porter}. S-a constatat 'in mod empiric faptul c'a este foarte eficient.
 
 \subsection{Crearea indexului}
+Scopul index'arii este adunarea de "statistici" despre documente 'si stocarea lor 'intr-o structur'a u'sor accesibil'a. Aceste statistici pot fi, de exemplu, frecvent'a 'si pozi'tiile cuvintelor. De obicei, aceste statistici sunt combinate 'in ponderi precum \emph{tf-idf} (sec'tiunea \ref{sec:tfidf}) folosite 'in de algoritmul de ierarhizare. Tehnica de baz'a a index'arii este \emph{inversiunea}. Aceasta are rolulul de a converti informa'tie de tip document-termen 'in termen-document pentru accesarea rapid'a la interogare. Structura de date folosit'a trebuie s'a fie capabil'a s'a suporte actualiz'ari frecvente. Pentru a minimiza costurile de stocare se utilizeaz'a \emph{compresia} care are ca beneficiu 'si facilitarea folosirii sistemelor de caching (mai mult'a informa'tie poate 'inc'apea 'in memorie).
+Structura folosit'a de un sistem RI este \emph{indexul inversat}. Acesta este o structur'a de date care stocheaz'a o mapare de la con'tinut ('in acest caz, cuvinte) la loca'tia acestuia (documente). Date fiind textele $T_0$ = "it is what it is", $T_1$ = "what it is" 'si $T_2$ = "it is a banana", un index inversat are urm'atoarea form'a:
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+"a" & $\left[2\right]$\\
+"banana" & $\left[2\right]$\\
+"is" & $\left[0, 1, 2\right]$\\
+"it" & $\left[0, 1, 2\right]$\\
+"what" & $\left[0, 1\right]$
+\end{tabular}
+\caption{Index inversat}
+\label{tab:invind}
+\end{table}
+
+O c'autare dup'a termenii \emph{"what"}, \emph{"is"} 'si \emph{"it"} ar avea urm'atoarele rezultate:
+\[
+\left\{0, 1\right\} \cup \left\{0, 1, 2\right\} \cup \left\{0, 1, 2\right\} = \left\{0, 1\right\}.
+\]
+
+Pentru acelea'si texte se pot stoca 'si pozi'tiile pe care se g'asesc termenii.
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+"a" & $\left[\left(2,2\right)\right]$\\
+"banana" & $\left[\left(2,3\right)\right]$\\
+"is" & $\left[\left(0, 1\right),  \left(0, 4\right), \left(1, 1\right), \left(2, 1\right)\right]$\\
+"it" & $\left[\left(0, 0\right), \left(0, 3\right), \left(1, 2\right), \left(2, 0\right)\right]$\\
+"what" & $\left[\left(0, 2\right), \left(1, 0\right)\right]$
+\end{tabular}
+\caption{Index pozi'tional}
+\label{tab:invindpoz}
+\end{table}
 
 
 \section{Procesul de c'autare}
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.34]{quer.png}
-	\caption{Interogarea indexului}
-	\label{fig:quer}
+    \centering
+    \includegraphics[scale=.34]{quer.png}
+    \caption{Interogarea indexului}
+    \label{fig:quer}
 \end{figure}
 
 \subsection{Interac'tiunea cu utilizatorul}
+Un sistem RI pune la dispozi'tia utilizatorului o interfa't'a prin intermediul c'aruia se poate interoga indexul de documente. 'In general, aceast'a interfa't'a este destul de simpl'a, const'jnd 'intr-o caset'a 'in care utilizatorul scrie interogare 'si un buton pentru lansarea c'aut'arii. Interogarea este apoi procesat'a de un parser care interpreteaz'a limbajul folosit. Sintaxa interog'arilor difer'a 'in func'tie de sistem, dar de obicei (mai ales pe web) se folosesc interog'ari de tip free-text 'si eventual c'jtiva operatori logici. Dup'a ce interogarea este trasformat'a intr-o reprezentare intern'a, se aplic'a acelea'si transform'ari ale textului aplicate documentului (filtrare, normalizare, stemming). Unele sisteme verific'a scrierea corect'a 'si pot indic'a sugestii 'in cazul detect'arii erorilor. Pentru a rafina scopul c'aut'arii, un motor de c'autare poate extinde interogarea prin ad'augarea de termeni (sinonime, concepte 'inrudite).
 
+Dup'a ce c'autarea 'si ierarhizarea au avut loc, interfa'ta afi'seaz'a lista de documente. Pentru fiecare document din list'a se afi'seaz'a 'si fragmente 'in care termenii au fost reg'asi'ti (eventual termenii sunt sco'si 'in eviden't'a). Anumite sisteme afi'sez'a 'si reclame relevante la interogarea respectiv'a 'si anumite unelte de vizualizare pentru rafinarea interog'arii sau efectuarea de interog'ari 'inrudite.
 
 \subsection{Procesul de reg'asire 'si ierarhizare}
 Algoritmul de ierarhizare poate fi considerat componenta de baz'a a unui sistem de reg'asire a informa'tiei. Strategiile de reg'asire au scopul de a asigna un scor de relevan't'a 'intre o interogare 'si un document. Aceste strategii sunt bazate pe no'tiunea conform c'areia cu c'jt un termen din interogare apare mai des 'in document, cu at'jt este mai "relevant" documentul la interogare. Unele dintre aceste tehnici aplic'a anumite m'asuri care s'a atenueze problemele cauzate de ambiguit'a'tiile limbii (acela'si concept poate fi exprimat folosind termeni diferi'ti sau acela'si termen poate avea sensuri diferite 'in contexte diferite). Un algoritm de ierarhizare are la intrare o interogare $Q$ 'si un set de documente $D_1, D_2, ..., D_n$ iar scopul lui este s'a identifice un coeficient de similaritate $SC(Q, D_i)$ pentru $1 \leq i \leq n$ (SC - \emph{similarity coefficient} - este uneori numit RSV - \emph{retrieval status value}).
@@ -122,10 +193,10 @@ Algoritmul de ierarhizare poate fi considerat componenta de baz'a a unui sistem 
 Exist'a mai multe modele de reg'asire 'si ierarhizare. O parte din ele sunt ilustrate 'in figura \ref{fig:irm} 'si c'jteva dintre acestea sunt descrise pe scurt 'in paragrafele urm'atoare\cite{GROSS}.
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.8]{irm.png}
-	\caption{Diferite modele de ierarhizare clasate dup'a metoda folosit'a 'si modul de tratare a termenilor\cite{IRWIKI}}
-	\label{fig:irm}
+    \centering
+    \includegraphics[scale=.8]{irm.png}
+    \caption{Diferite modele de ierarhizare clasate dup'a metoda folosit'a 'si modul de tratare a termenilor\cite{IRWIKI}}
+    \label{fig:irm}
 \end{figure}
 
 \paragraph{Modelul boolean}
@@ -160,9 +231,10 @@ Pentru fiecare strategie se pot folosi diferite utilit'a'ti sunt folosite pentru
 O tratare mai detaliat'a a c'jtorva dintre aceste metode se va face 'in capitolul \ref{cap:rankmet}.
 
 \subsection{Evaluarea}
-
+Pentru 'imbun'at'a'tirea eficien'tei sistemului este crucial'a stocarea interog'arilor 'si interac'tiunilor 'intr-un log. Analiza eficien'tei ierarhiz'arii permite ajustarea sistemului pentru a da rezultate c'jt mai relevante la nevoile de informa'tie 'si constituie o tem'a de baz'a a acestei lucr'ari. Tehnicile de evaluare sunt descrise 'in capitolul \ref{cap:eval}.
 
 \chapter{Evaluarea 'in reg'asirea informa'tiei}
+\label{cap:eval}
 Exist'a multe alternative pentru a proiecta un sistem RI. Cum hot'ar'jm care dintre aceste tehnici sunt eficiente 'in anumite aplica'tii? Este idicat'a folosirea unui \emph{stop list} sau a unui \emph{stemmer}? Reg'asirea informa'tiei a evoluat ca o disciplin'a empiric'a, necesit'jnd evalu'ari atente 'si complete pentru a demonstra superioritatea performan'telor noilor tehnici ap'arute pe colec'tii reprezentative de documente.
 \section{Evaluarea unui sistem RI}
 Pentru a m'asura eficien'ta unui sistem ad-hoc RI este necesar'a o colec'tie de test alc'atuit'a din trei componente:
@@ -391,6 +463,7 @@ A'sadar idf-ul unui termen rar este ridicat, 'in timp ce idf-ul unui termen frec
 \end{table}
 
 \subsection{Ponderarea \emph{tf-idf}}
+\label{sec:tfidf}
 Combin'jnd defini'tiile celor dou'a m'asuri tf 'si idf, se ob'tine o pondere compus'a pentru fiecare temen din fiecare document. Schema de ponderare \emph{tf-idf} asigneaz'a termenului $t$ 'in documentul $d$ dat'a de:
 \begin{equation}
 tf \mhyphen idf_{t,d} = tf_{t,d} \times idf_t.
@@ -562,12 +635,78 @@ Nota'tia pentru reprezentarea unei combina'tii de scheme de ponderare are forma 
 
 \section{Euristici pentru eficientizare}
 \label{sec:eur}
+Revizualiz'jnd algoritmul \ref{alg:cossim} pentru o interogare \emph{q = jealous gossip}, dou'a observa'tii sunt imediate:
+\begin{enumerate}
+\item Vectorul $\vec{v}(q)$ are dou'a componente diferite de zero.
+\item 'In absen'ta unei ponder'ari pentru termenii interog'arii, cele dou'a componente nenule au aceea'si valoare.
+\end{enumerate}
+Pentru a ierarhiza documentele relevante la interogare, suntem interesa'ti de scorurile relative ale documentelor din colec'tie. A'sadar, este suficient'a calcularea similarit'a'tii cosinus 'intre fiecare vector normalizat $\vec{v}(d)$ 'si $\vec{V}(q)$ ('in care toate componentele nenule sunt egale cu 1) 'in loc de $\vec{v}(q)$. Pentru oricare dou'a documente $d_1, d_2$
+\begin{equation}
+\vec{V}(q) \cdot \vec{v}(d_1) > \vec{V}(q) \cdot \vec{v}(d_2) \Leftrightarrow \vec{v}(q) \cdot \vec{v}(d_1) > \vec{v}(q) \cdot \vec{v}(d_2).
+\label{eq:rankeq}
+\end{equation}
+
+Pentru fiecare document $d$, similaritatea cosinus $vec{V}(q) \cdot \vec{v}(d)$ este suma peste to'ti termenii din interogarea $q$ a ponderilor acestor termeni 'in $d$. Aceast'a sum'a se poate calcula prin intersectarea listelor de postare ca 'in algoritmul \ref{alg:cossim}, cu men'tiunea c'a ponderile interog'arii sunt considerate 1. Aceast'a schem'a calculeaz'a un scor pentru fiecare document din listele de postare ale termenilor din interogare (num'arul de documente poate fi considerabil mai mic dec'jt $N$).
+
+\begin{algorithm}
+\caption{Un algoritm mai rapid pentru calcularea similarit'a'tii cosinus}\label{alg:cossim1}
+\begin{algorithmic}[1]
+\Procedure{CosineScore}{$q$}\Comment{primele K documente 'in ordinea similatit'a'tii cosinus}
+
+\State float $Scores[N]\gets 0$
+\State initialize $Length[N]$
+
+\ForAll{$t \in q$}\label{alg:cossim1:1}
+    \State fetch postings list ${P_t}$ and $idf_t$ for term t
+    \ForAll{$(d, tf_{t,d}) \in P_t$}\label{alg:cossim1:3}
+        \State $wf_{t,d} \gets tf_{t,d} \times idf_t$\Comment{sau orice alt'a schem'a de ponderare}
+        \State $Score[d] \gets Score[d] + wf_{t,d}$
+    \EndFor
+\EndFor
+\State read array $Length[d]$\Comment{norma euclidian'a pentru fiecare document}
+
+\ForAll{$d$}
+    \State $Scores[d] \gets Scores[d] / Length[d]$\Comment{normalizare}
+\EndFor
+
+\State \textbf{return} Top \textbf{K} components of $Scores[]$\label{alg:cossim1:4}
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Dup'a calcularea scorurilor, pasul final 'inainte de prezentarea rezultatelor unui utilizator este s'a se aleag'a $K$ documente cu cele mai bune scoruri. Se poate folosi o sortare dar o abordare mai bun'a este folosirea unui \emph{heap} pentru a p'astra ordinea documentelor. Dac'a $J$ este num'arul de documente cu scoruri nenule, construirea acestui heap poate fi f'acut'a 'in $2J$ pa'si.
+
 \subsection{Reg'asirea inexact'a a primelor K documente}
-\subsection{Ignorarea termenilor cu ponderi mici}
-\subsection{Listele de campioni}%??ih
+P'jn'a acum scopul primordial a fost reg'asirea \emph{precis'a} a primelor $K$ documente pentru o interogare. 'In continuare voi prezenta scheme cu ajutorul c'arora sunt produse $K$ documente pentru care 'sansele sunt foarte mari s'a fac'a parte din \emph{primele K}. Proced'jnd astfel, scopul este de a mic'sora semnificativ costul reg'asirii, f'ara a altera percep'tia utilizatorului asupra relevan'tei documentelor 'intoarse. 'In sec'tiunile urm'atoare sunt detaliate euristici care realizeaz'a acest lucru.
+
+O astfel de reg'asire inexact'a nu e 'in mod necesar, din perspectiva utilizatorului, un lucru r'au. Documentele din \emph{top-K} dup'a similaritatea cosinus nu sunt neap'arat cele mai bune $K$ pentru nevoia respectiv'a de informa'tie. Principalul cost decurge din calcularea similarit'a'tii cosinus 'intre interogare 'si un num'ar mare de documente. Un num'ar mare de documente duce 'si la cre'stereea costului de selec'tie 'in faza final'a de extragere din heap.
+
+Vom considera, 'in continuare o serie de idei care au ca scop eliminarea unui num'ar mare de documente f'ar'a a mai calcula similaritatea. Euristicile au la baz'a urm'atorii pa'si:
+\begin{enumerate}
+\item G'ase'ste un set $A$ de documente pretendente, unde $K < |A| << N$. $A$ nu con'tine neap'arat cele mai bune $K$ documente, dar 'sansele sunt foarte mari s'a con'tin'a o bun'a parte din acestea.
+\item 'Intoarce cele mai bune $K$ documente din $A$.
+\end{enumerate}
+
+Din descrierea acestor idei, este clar c'a multe dintre euristici vor necesita parametri care s'a fie ajusta'ti la colec'tie 'si aplica'tie. Majoritatea acestor euristici sunt adecvate pentru interog'ari de tip "free text" dar nu 'si pentru interog'ari booleane sau "fraz'a exact'a".
+
+\subsection{Ignorarea termenilor}
+Pentru o interogare multi-termen $q$, este evident c'a se vor lua 'in calcul doar documente care con'tin cel pu'tin unul din termeni. Acest lucru poate fi extins folosind euristici adi'tionale:
+\begin{enumerate}
+\item Se consider'a doar documente care con'tin termeni ale c'aror ponderi $idf$ sunt mai mari dec'jt o valoare prestabilit'a. A'sadar, la traversarea listelor de postare, se traverseaz'a doar listele termenilor cu $idf$ mare. Acest lucru aduce un beneficiu mare: listele de postare ale termenilor cu ponderi $idf$ mici sunt 'in general lungi; prin 'indep'artarea lor setul de documente pentru care trebuie calculat'a similaritatea scade considerabil. O alt'a perspectiv'a asupra acestei euristici este c'a termenii cu $idf$ redus sunt considera'ti cuvinte de stop 'si nu contribuie la calcularea scorului.
+\item Se consider'a doar documente car con'tin mul'ti (sau to'ti) tereni din interogare. Acest lucru poate fi realizat la traversarea post'arilor. Un pericol al acestei scheme este c'a dac'a se elimin'a prea multe documente setul de documente $A$ va avea mai pu'tin de $K$ documente.
+\end{enumerate}
+
+\subsection{Listele de campioni}
+Ideea din spatele \emph{listelor de campioni} (\emph{champion lists, fancy lists, top docs}) este precomputarea, pentru fiecare termen $t$ din dic'tionar, unui set de $r$ documente care au ponderi foarte mari pentru $t$; valoare lui $r$ este aleas'a ini'tial. Pentru ponderarea $tf-idf$, acestea ar fi primele $r$ cu ponderea $tf$ cea mai mare pentru termenul $t$. Numim acest'a mul'time de $r$ documente \emph{lista de campioni} a termenului $t$.
+
+Av'jnd o interogare q, cream setul $A$ astfel: lu'am reuniunea listeror de campioni ale fiec'arui termen din $q$. Restric'tion'am calcularea similarit'a'tii cosinus doar la documentele din A. Un parametru critic al acestei scheme este valoarea lui $r$, care variaz'a 'in func'tie de aplica'tie. Intuitiv, $r$ ar trebui sa fie mult mai mare dec'jt $K$, mai ales dac'a se folosesc euristicile prezentate 'in sec'tiunea precendet'a. O problem'a 'in cazul acesta este c'a $r$ este setat'a la construirea indexului, 'in timp ce $K$ este dependent de aplica'tie 'si exist'a posibilitatea s'a fie aflat doar la lansarea interog'arii. Ca urmare, se poate 'intmpla ca setul $A$ sa aib'a mai pu'tin de $K$ documente. Valoare lui $r$ ar putea fi setat'a mai mare pentru termeni mai rari.
+
 \subsection{Scoruri statice}
+
 \subsection{Impact ordering}
 \subsection{Cluster pruning}
+
 
 \section{Modelul axiomatic}
 \subsection{F2-EXP}
@@ -944,6 +1083,7 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 	\bibitem{SE} \url{http://www.search-engines-book.com/}
 	\bibitem{IRWIKI} \url{http://en.wikipedia.org/wiki/Information_retrieval}
 	\bibitem{IND} \url{http://en.wikipedia.org/wiki/Index_(search_engine)}
+	\bibitem{IND1} \url{http://en.wikipedia.org/wiki/Inverted_index}
 	%sim javadoc
 \end{thebibliography}
 

@@ -34,6 +34,13 @@ public class AxiomaticTermScorer extends Scorer {
 
 	private static final int SCORE_CACHE_SIZE = 32;
 	private float[] scoreCache = new float[SCORE_CACHE_SIZE];
+	
+	private float avgDL;
+	private float getScore(float freq) {
+		float numTerms = (float)Math.pow(1.0f / Similarity.decodeNorm(norms[doc]), 2);
+		float ln = numTerms / avgDL;
+		return freq * weightValue / (freq + paramS + paramS * ln);
+	}
 
 	AxiomaticTermScorer(Weight weight, TermDocs td, Similarity similarity,
 			byte[] norms, float avgDL, float paramS) {
@@ -43,14 +50,15 @@ public class AxiomaticTermScorer extends Scorer {
 		this.norms = norms;
 		this.weightValue = weight.getValue();
 		this.paramS = paramS;
-		this.lenNorm = 1.0f / Similarity.decodeNorm(norms[doc])
-				/ Similarity.decodeNorm(norms[doc]) / avgDL;
-
-		for (int i = 0; i < SCORE_CACHE_SIZE; i++)
-			scoreCache[i] = (float) Math.pow(getSimilarity().tf(i), 2)
-					* weightValue
-					/ ((float) Math.pow(getSimilarity().tf(i), 2) + paramS + paramS
-							* lenNorm);
+		this.avgDL = avgDL;
+//		this.lenNorm = 1.0f / Similarity.decodeNorm(norms[doc])
+//				/ Similarity.decodeNorm(norms[doc]) / avgDL;
+//
+//		for (int i = 0; i < SCORE_CACHE_SIZE; i++)
+//			scoreCache[i] = (float) Math.pow(getSimilarity().tf(i), 2)
+//					* weightValue
+//					/ ((float) Math.pow(getSimilarity().tf(i), 2) + paramS + paramS
+//							* lenNorm);
 
 	}
 
@@ -100,13 +108,14 @@ public class AxiomaticTermScorer extends Scorer {
 
 	public float score() {
 		int f = freqs[pointer];
-		float raw = // compute tf(f)*weight
-		f < SCORE_CACHE_SIZE // check cache
-		? scoreCache[f] // cache hit
-				: (float) Math.pow(getSimilarity().tf(f), 2)
-						* weightValue
-						/ ((float) Math.pow(getSimilarity().tf(f), 2) + paramS + paramS
-								* lenNorm);
+//		float raw = // compute tf(f)*weight
+//		f < SCORE_CACHE_SIZE // check cache
+//		? scoreCache[f] // cache hit
+//				: (float) Math.pow(getSimilarity().tf(f), 2)
+//						* weightValue
+//						/ ((float) Math.pow(getSimilarity().tf(f), 2) + paramS + paramS
+//								* lenNorm);
+		float raw = getScore(f);
 
 		return raw;
 	}

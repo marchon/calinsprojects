@@ -133,7 +133,7 @@ public class QueryDriver {
 		// i guess because of the fact that with lucene scoring some docs have the same
 		// score and trec_eval sorts them by docno??
 		AggregatorSubmissionReport submitLog = new AggregatorSubmissionReport(
-				submissionPW, "lucene");
+				submissionPW, args[3]);
 		Aggregator aggregator = null;
 		if (techniques.length > 1) {
 			aggregator = ((Class<? extends Aggregator>) Class

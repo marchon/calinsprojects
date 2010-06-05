@@ -71,6 +71,7 @@ public class RankingTechniqueImpl implements RankingTechnique {
 			System.err.println("Error calculating average document lenght!!!");
 			System.exit(1);
 		}
+		
 		BM25Parameters.setAverageLength(indexField, sumT / numT);
 	}
 

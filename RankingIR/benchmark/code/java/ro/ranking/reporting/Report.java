@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -54,84 +55,121 @@ public class Report {
 	private static class HTMLReporter implements Reporter {
 		private static Map<String, String> labels = new LinkedHashMap<String, String>();
 		static {
-			labels.put("num_q", "Nb. interogari");
-			labels.put("num_ret", "Nb. ret");
-			labels.put("num_rel", "num_rel");
-			labels.put("num_rel_ret", "num_rel_ret");
-			labels.put("map", "map");
-			labels.put("gm_ap", "gm_ap");
-			labels.put("R-prec", "R-prec");
-			labels.put("bpref", "bpref");
-			labels.put("recip_rank", "recip_rank");
-			/*labels.put("ircl_prn.0.00", "ircl_prn.0.00");
-			labels.put("ircl_prn.0.10", "ircl_prn.0.10");
-			labels.put("ircl_prn.0.20", "ircl_prn.0.20");
-			labels.put("ircl_prn.0.30", "ircl_prn.0.30");
-			labels.put("ircl_prn.0.40", "ircl_prn.0.40");
-			labels.put("ircl_prn.0.50", "ircl_prn.0.50");
-			labels.put("ircl_prn.0.60", "ircl_prn.0.60");
-			labels.put("ircl_prn.0.70", "ircl_prn.0.70");
-			labels.put("ircl_prn.0.80", "ircl_prn.0.80");
-			labels.put("ircl_prn.0.90", "ircl_prn.0.90");
-			labels.put("ircl_prn.1.00", "ircl_prn.1.00");*/
+			labels.put("num_q", "Q");
+			labels.put("num_ret", "RET");
+			labels.put("num_rel", "REL");
+			labels.put("num_rel_ret", "REL+RET");
+			labels.put("map", "MAP");
+			labels.put("gm_ap", "MGP");
+			labels.put("R-prec", "R-PR");
+			/* labels.put("bpref", "BPREF"); */
+			labels.put("recip_rank", "MRR");
+			/*
+			 * labels.put("ircl_prn.0.00", "ircl_prn.0.00");
+			 * labels.put("ircl_prn.0.10", "ircl_prn.0.10");
+			 * labels.put("ircl_prn.0.20", "ircl_prn.0.20");
+			 * labels.put("ircl_prn.0.30", "ircl_prn.0.30");
+			 * labels.put("ircl_prn.0.40", "ircl_prn.0.40");
+			 * labels.put("ircl_prn.0.50", "ircl_prn.0.50");
+			 * labels.put("ircl_prn.0.60", "ircl_prn.0.60");
+			 * labels.put("ircl_prn.0.70", "ircl_prn.0.70");
+			 * labels.put("ircl_prn.0.80", "ircl_prn.0.80");
+			 * labels.put("ircl_prn.0.90", "ircl_prn.0.90");
+			 * labels.put("ircl_prn.1.00", "ircl_prn.1.00");
+			 */
 			labels.put("P5", "P5");
-			labels.put("P10", "P10");
-			labels.put("P15", "P15");
-			labels.put("P20", "P20");
+			/*
+			 * labels.put("P10", "P10"); labels.put("P15", "P15");
+			 * labels.put("P20", "P20");
+			 */
 			labels.put("P30", "P30");
 			labels.put("P100", "P100");
-			labels.put("P200", "P200");
-			labels.put("P500", "P500");
+			/*
+			 * labels.put("P200", "P200"); labels.put("P500", "P500");
+			 */
 			labels.put("P1000", "P1000");
+		}
+
+		private void computeWinners(Map<String, Map<String, String>> data) {
+			for (String measure : labels.keySet()) {
+				String winner = null;
+				float wval = 0;
+				int cnt = 1;
+				for (String method : data.keySet()) {
+					float v = Float.parseFloat(data.get(method).get(measure));
+					if (v > wval) {
+						wval = v;
+						winner = method;
+					} else if (v == wval) {
+						cnt++;
+					}
+				}
+
+				if (cnt < data.size()) {
+					String mark = "+" + data.get(winner).get(measure);
+					data.get(winner).put(measure, mark);
+				}
+			}
 		}
 
 		@Override
 		public void report(String reportName,
-				Map<String, Map<String, String>> data, OutputStream os) throws IOException {
+				Map<String, Map<String, String>> data, OutputStream os)
+				throws IOException {
+
+			computeWinners(data);
+
 			StringBuilder sb = new StringBuilder();
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					Report.class.getResourceAsStream("template.html")));
 
 			String line;
-			
-			while(!(line = br.readLine()).contains("$$$$")) {
+
+			while (!(line = br.readLine()).contains("$$$$")) {
 				sb.append(line);
 			}
-			
+
 			sb.append(reportName);
-			
-			while(!(line = br.readLine()).contains("$$$$")) {
+
+			while (!(line = br.readLine()).contains("$$$$")) {
 				sb.append(line);
 			}
-			
-			//build the table
-			//header
+
+			// build the table
+			// header
 			sb.append("<th scope='col'>Metode</th>");
 			for (String measure : labels.keySet()) {
 				sb.append("<th scope='col'>");
 				sb.append(labels.get(measure));
 				sb.append("</td>");
 			}
-			
-			while(!(line = br.readLine()).contains("$$$$")) {
+
+			while (!(line = br.readLine()).contains("$$$$")) {
 				sb.append(line);
 			}
-			
+
 			for (String method : data.keySet()) {
 				sb.append("<tr><td>");
 				sb.append(method);
 				sb.append("</td>");
 				Map<String, String> res = data.get(method);
 				for (String measure : labels.keySet()) {
-					sb.append("<td>");
-					sb.append(res.get(measure));
+					String val = res.get(measure);
+					boolean win = false;
+					if (val.startsWith("+")) {
+						val = val.substring(1);
+						win = true;
+					}
+
+					sb.append("<td" + (win ? " class='win'" : "") + ">");
+					sb.append(val);
 					sb.append("</td>");
 				}
-				
+
 				sb.append("</tr>");
 			}
-			
-			while((line = br.readLine()) != null) {
+
+			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
 
@@ -158,7 +196,7 @@ public class Report {
 			}
 		});
 
-		Map<String, Map<String, String>> trecres = new LinkedHashMap <String, Map<String, String>>();
+		Map<String, Map<String, String>> trecres = new LinkedHashMap<String, Map<String, String>>();
 
 		for (int i = 0; i < results.length; i++) {
 			String name = results[i].getName();

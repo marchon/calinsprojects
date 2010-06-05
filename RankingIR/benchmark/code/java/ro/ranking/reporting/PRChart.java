@@ -54,7 +54,7 @@ public class PRChart {
 	}
 
 	public void writeToPNGFile(OutputStream os) throws IOException {
-		BufferedImage bi = chart.createBufferedImage(1024, 768);
+		BufferedImage bi = chart.createBufferedImage(800, 600);
         EncoderUtil.writeBufferedImage(bi, ImageFormat.PNG, os);
 	}
 }

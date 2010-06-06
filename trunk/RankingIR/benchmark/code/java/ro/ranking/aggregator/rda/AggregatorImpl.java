@@ -2,12 +2,12 @@ package ro.ranking.aggregator.rda;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import ro.ranking.benchmarking.Aggregator;
 
 
 public class AggregatorImpl implements Aggregator {
+	
 	private String[] buildUniverse(String[][] rankings, LinkedHashMap<String, Integer> univMap) {
 		//link hash map to preserve order
 		int maxId = 0;
@@ -15,7 +15,7 @@ public class AggregatorImpl implements Aggregator {
 			String[] ranking = rankings[i];
 			
 			for (int j = 0; j < ranking.length; j++) {
-				String obj = ranking[j];
+				String obj = ranking[j].trim();
 				
 				Integer id = univMap.get(obj);
 				if(id == null) {
@@ -26,6 +26,18 @@ public class AggregatorImpl implements Aggregator {
 		}
 		
 		return univMap.keySet().toArray(new String[univMap.keySet().size()]);
+	}
+	
+	private int[] sigmaRanking(int[] objIds, int n) {
+		int[] sigma = new int[n];
+		
+		Arrays.fill(sigma, n);
+		
+		for (int i = 0; i < objIds.length; i++) {
+			sigma[objIds[i]] = i;
+		}
+		
+		return sigma;
 	}
 	
 	private int[][] buildSigmaRankings(String[][] rankings, LinkedHashMap<String, Integer> univMap) {
@@ -53,7 +65,9 @@ public class AggregatorImpl implements Aggregator {
 	}
 	
 	private int ord(int[] sigma, int x) {
-		return sigma.length - sigma[x];
+		int ret = sigma.length - sigma[x] - 1;
+		ret = ret < 0? 0 : ret;
+		return ret;
 	}
 	
 	private int delta(int[] sigma, int[] tau) {
@@ -74,98 +88,112 @@ public class AggregatorImpl implements Aggregator {
 		return s;
 	}
 	
+	private int[] taggregate(int[][] sigmaRankings, int t) {
+		int n = sigmaRankings[0].length;
+		double[][] D = new double[n][n];
+
+		// calculate d
+		for (int k = 0; k < n; k++) {
+			for (int j = 0; j < n; j++) {
+				int sum = 0;
+				for (int i = 0; i < sigmaRankings.length; i++) {
+					int ord = ord(sigmaRankings[i], k);
+					if (j < t)
+						ord = j - ord;
+					sum += Math.abs(ord);
+				}
+				D[j][k] = sum;
+			}
+		}
+
+		int[] tAggregation = HungarianAlgorithm.hgAlgorithm(D, "min");
+
+		return reverse(Arrays.copyOf(tAggregation, t));
+	}
+	
+	private int[] reverse(int[] arr) {
+		for (int i = 0; i < arr.length / 2; i++) {
+			int j = arr.length - i - 1;
+			int temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+		
+		return arr;
+	}
+	
 	@Override
 	public String[] aggregate(String[][] rankings) {
 		LinkedHashMap<String, Integer> universeMap = new LinkedHashMap<String, Integer>();
 		String[] universe = buildUniverse(rankings, universeMap);
-		int n = universe.length;
+		
+//		System.out.println(Arrays.toString(universe));
 		
 		int[][] sigmaRankings = buildSigmaRankings(rankings, universeMap);
 		
-		float[][] D = new float[n][n];
-		float[][] D1 = new float[n][n];
-		AssignmentAlgorithm resolver = new HungarianAlgorithm();
-		int minDelta = Integer.MAX_VALUE;
-		int[] aggreg = null;
+
+		int max = rankings[0].length;
+
+		for (int i = 1; i < rankings.length; i++) {
+			if (rankings[i].length > max)
+				max = rankings[i].length;
+		}
+
+		int t = Math.min(max, universe.length);
 		
-		for (int t = 0; t < n; t++) {
-			
-			//calculate d
-			for (int k = 0; k < n; k++) {
-				for (int j = 0; j < n; j++) {
-					int sum = 0;
-					for (int i = 0; i < sigmaRankings.length; i++) {
-						int ord = ord(sigmaRankings[i], k);
-						if(j <= t) ord = j - ord;
-						sum += Math.abs(ord);						
-					}
-					D[k][j] = sum;
-					D1[k][j] = sum;
-				}
-			}
-			
-//			for (int i = 0; i < D.length; i++) {
-//				for (int j = 0; j < D[i].length; j++) {
-//					System.out.print(D[i][j]+" ");
-//				}
-//				System.out.println();
+		int[] best = taggregate(sigmaRankings, t);
+//		int bestDist = Integer.MAX_VALUE;
+//		for (int t = 1; t <= universe.length; t++) {
+//			int[] aggreg = taggregate(sigmaRankings, t);
+//			
+//			String[] result = new String[aggreg.length];
+//			for (int i = 0; i < result.length; i++) {
+//				result[i] = universe[aggreg[i]];
 //			}
-			//i1, i2,..., it
-			//Arrays.copyOf(resolver.computeAssignments(D), t + 1);
-			int[] tAggregation = resolver.computeAssignments(D);
-			
-			int delta = 0;
-			for (int i = 0; i < tAggregation.length; i++) {
-				delta += D1[tAggregation[i]][i];
-			}
-			
-//			System.out.println("delta=" + delta + ",min=" + minDelta);
-			if(delta < minDelta) {
-				minDelta = delta;
-				aggreg = Arrays.copyOf(tAggregation, t + 1);
-				
-//				for (int i = 0; i < aggreg.length; i++) {
-//					System.out.print(aggreg[i] + " ");
+//			
+//			int dist = delta(sigmaRanking(aggreg, universe.length), sigmaRankings);
+//			
+//			System.out.println(t + "-aggreg: (" + Arrays.toString(result) + ", " + dist + ")");
+//			
+//			if(dist <= bestDist) {
+//				bestDist = dist;
+//				best = aggreg;
+//			}
+//		}
+		
+//		for (int i = 0; i < best.length - 1; i++) {
+//			if(best[i] == best[i+1]) {
+//				for (int j = 0; j < rankings.length; j++) {
+//					System.out.println(Arrays.toString(rankings[j]));
 //				}
 //				System.out.println();
-			}
-		}
+//				break;
+//			}
+//		}
 		
-		if(aggreg == null)
-			return null;
-		
-		String[] result = new String[aggreg.length];
+		String[] result = new String[best.length];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = universe[aggreg[i]];
+			result[i] = universe[best[i]];
 		}
+		
+		System.out.println(Arrays.toString(result));
 		
 		return result;
 	}
 	
 	public static void main(String[] args) {
 		AggregatorImpl rda = new AggregatorImpl();
-//		LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
+
 		String[][] rankings = new String[][]{
 				{"1", "2", "3"},
 				{"3", "4"},
 				{"1", "3", "2", "4"}
+//				{"b", "a", "c", "e"},
+//				{"d", "e", "c", "a"},
+//				{"a", "b", "e", "c"},
+//				{"b", "a", "d", "e"}
 		};
-//		System.out.println(Arrays.asList(rda.buildUniverse(rankings, map)));
-//		System.out.println(map);
-//		
-//		int[][] mat = rda.buildSigmaRankings(rankings, map);
-//		
-//		for (int i = 0; i < mat.length; i++) {
-//			for (int j = 0; j < mat[i].length; j++) {
-//				System.out.print(mat[i][j]+" ");
-//			}
-//			System.out.println();
-//		}
-//		
-//		for (int i = 0; i < mat[0].length; i++) {
-//			System.out.println(rda.ord(mat[0], i));
-//		}
-		
-		System.out.println(Arrays.asList(rda.aggregate(rankings)));
+
+		System.out.println(Arrays.toString(rda.aggregate(rankings)));
 	}
 }

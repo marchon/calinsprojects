@@ -33,6 +33,7 @@ public class ShouldBooleanScorer extends AbstractBooleanScorer {
 	private boolean initializated = false;
 	private int doc = Integer.MAX_VALUE;
 
+	
 	public ShouldBooleanScorer(Similarity similarity, Scorer scorer[])
 			throws IOException {
 		super(similarity, scorer);
@@ -83,12 +84,15 @@ public class ShouldBooleanScorer extends AbstractBooleanScorer {
 	@Override
 	public float score() throws IOException {
 		double result = 0f;
+		int overlap = 0;
 		for (int i = 0; i < this.subScorer.length; i++) {
-			if (this.subScorer[i].docID() == this.doc)
+			if (this.subScorer[i].docID() == this.doc) {
 				result += this.subScorer[i].score();
+				overlap ++;
+			}
 
 		}
-		return (float) result;
+		return (float) result * getSimilarity().coord(overlap, this.subScorer.length);
 	}
 
 	private boolean init() throws IOException {

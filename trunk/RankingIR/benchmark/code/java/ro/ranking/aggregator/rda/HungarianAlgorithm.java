@@ -1,417 +1,602 @@
 package ro.ranking.aggregator.rda;
 /*
- * This file is part of the TimeFinder project.
- *  Visit http://www.timefinder.de for more information.
- *  Copyright (c) 2009 the original author or authors.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
-/*
- * HungarianAlgorithm.java
- *
- * Created on 10. December 2007, 20:34
+ * Created on Apr 25, 2005
  * 
- * This code stands under the GPLv3! 
- * Use KuhnMunkresAlgorithm for an Apache2 licensed alternative.
+ * Munkres-Kuhn (Hungarian) Algorithm Clean Version: 0.11
+ * 
+ * Konstantinos A. Nedas                     
+ * Department of Spatial Information Science & Engineering
+ * University of Maine, Orono, ME 04469-5711, USA
+ * kostas@spatial.maine.edu
+ * http://www.spatial.maine.edu/~kostas       
  *
- * History:
- * The Hungarian Method based on ideas of König and Egervary, and
- *                      was published from Kuhn.
- * Later on Munkres showed that this algorithm is strongly polynomial O(n^4)
- * => Hungarian Algorithm (== Kuhn-Munkres algorithm)
- * Edmonds showed then that the time complexity of the algorithm is O(n^3)
- */
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * This is the basic assignment algorithm known as Hungarian Method.
- * Where a matching between the sets S and T is represented as a
- * m x n matrix, with |S|=m and |T|=n.
+ * This Java class implements the Hungarian algorithm [a.k.a Munkres' algorithm,
+ * a.k.a. Kuhn algorithm, a.k.a. Assignment problem, a.k.a. Marriage problem,
+ * a.k.a. Maximum Weighted Maximum Cardinality Bipartite Matching].
  *
- * @author gary baker, http://www.thegarybakery.com
- * @author Peter Karich, peat_hal 'at' users 'dot' sourceforge 'dot' net
+ * [It can be used as a method call from within any main (or other function).]
+ * It takes 2 arguments:
+ * a. A 2-D array (could be rectangular or square).
+ * b. A string ("min" or "max") specifying whether you want the min or max assignment.
+ * [It returns an assignment matrix[array.length][2] that contains the row and col of
+ * the elements (in the original inputted array) that make up the optimum assignment.]
+ *  
+ * [This version contains only scarce comments. If you want to understand the 
+ * inner workings of the algorithm, get the tutorial version of the algorithm
+ * from the same website you got this one (http://www.spatial.maine.edu/~kostas/dev/soft/munkres.htm)]
+ * 
+ * Any comments, corrections, or additions would be much appreciated. 
+ * Credit due to professor Bob Pilgrim for providing an online copy of the
+ * pseudocode for this algorithm (http://216.249.163.93/bob.pilgrim/445/munkres.html)
+ * 
+ * Feel free to redistribute this source code, as long as this header--with
+ * the exception of sections in brackets--remains as part of the file.
+ * 
+ * Requirements: JDK 1.5.0_01 or better.
+ * [Created in Eclipse 3.1M6 (www.eclipse.org).]
+ * 
  */
-public class HungarianAlgorithm implements AssignmentAlgorithm {
 
-    /**
-     * We need these arrays to ignore the invalid (all entries are MAX_VALUE)
-     * rows or columns.
-     */
-    private boolean[] initialCovRows;
-    private boolean[] initialCovCols;
-    private boolean[] coveredRows;
-    private boolean[] coveredCols;
-    private int[] starsByRow;
-    private int[] starsByCol;
+import static java.lang.Math.*;
+import java.util.*;
 
-    public int[] computeAssignments(float[][] matrix) {
-        return originalComputeAssignments(matrix);
-    }
+public class HungarianAlgorithm {
 
-    public int[] originalComputeAssignments(float[][] matrix) {
-        //assert matrix[0].length <= matrix.length : "Do not process matrices where cols > rows!";
-
-        initialCovRows = new boolean[matrix.length];
-        initialCovCols = new boolean[matrix[0].length];
-
-        // subtract minumum value from rows and columns to create lots of zeroes
-        // reduceMatrix(matrix);
-        reduceMatrixAndInitialize(matrix);
-
-        // non negative values are the index of the starred or primed zero in the row or column
-        starsByRow = new int[matrix.length];
-        Arrays.fill(starsByRow, -1);
-        starsByCol = new int[matrix[0].length];
-        Arrays.fill(starsByCol, -1);
-        int[] primesByRow = new int[matrix.length];
-        Arrays.fill(primesByRow, -1);
-
-        // star any zero that has no other starred zero in the same row or column
-        initStars(matrix);
-
-        coveredRows = initCoveredRows();
-        coveredCols = initCoveredCols();
-        coverColumnsOfStarredZeroes();
-
-        while (!allColsAreCovered()) {
-
-            int[] primedZero = primeSomeUncoveredZero(matrix, primesByRow);
-            boolean onlyInvalidEntries = false;
-
-            while (primedZero == null) {
-                // keep making more zeroes until we find something that we can
-                // prime (i.e. a zero that is uncovered)                
-                if (!makeMoreZeroes(matrix)) {
-                    onlyInvalidEntries = true;
-                    break;
-                }
-                primedZero = primeSomeUncoveredZero(matrix, primesByRow);
-                onlyInvalidEntries = false;
-            }
-            if (onlyInvalidEntries) {
-                break;
-            }
-            // check if there is a starred zero in the primed zero's row
-            int columnIndex = starsByRow[primedZero[0]];
-            if (-1 == columnIndex) {
-                // if not, then we need to increment the zeroes and start over
-                incrementSetOfStarredZeroes(primedZero, primesByRow);
-                Arrays.fill(primesByRow, -1);
-
-                coveredCols = initCoveredCols();
-                coveredRows = initCoveredRows();
-                coverColumnsOfStarredZeroes();
-            } else {
-
-                // cover the row of the primed zero and uncover the column of
-                // the starred zero in the same row
-                coverRow(primedZero[0], true);
-                coverColumn(columnIndex, false);
-            }
-        }
-
-        // now we should have assigned everything
-        // take the starred zeroes in each column as the correct assignments
-
-//        int[][] retval = new int[matrix[0].length][];
-//
-//        for (int i = 0; i < matrix[0].length; i++) {
-//            if (starsByCol[i] != -1) {
-//                retval[i] = new int[]{starsByCol[i], i};
-//            }
-//            //else could happen if we covered an invalid col, because no valid entries
-//            //-> no assignment possible
-//        }
-        return starsByCol;
-    }
-
-    /**
-     * @param b true if you want to cover the specified row; false to uncover
-     */
-    private void coverRow(int row, boolean b) {
-        //TODO change initial array
-        //TODO change maxPossibleRows
-        if (b) {
-            coveredRows[row] = true;
-        } else {
-            assert false : "uncover of rows isn't used. Row:" + row;
-        }
-    }
-
-    /**
-     * @param b true if you want to cover the specified columns; false to uncover
-     */
-    private void coverColumn(int column, boolean b) {
-        //TODO change initial array
-        //TODO change maxPossibleCols
-        if (b) {
-            coveredCols[column] = true;
-        } else {
-            assert !initialCovCols[column] :
-                    "We should uncover an invalid col:" + column;
-            coveredCols[column] = false;
-        }
-    }
-
-    private boolean allColsAreCovered() {
-        for (boolean covered : coveredCols) {
-            if (!covered) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean[] initCoveredRows() {
-        //Arrays.fill(coveredRows, false);
-        boolean[] covRows = new boolean[initialCovRows.length];
-        System.arraycopy(initialCovRows, 0, covRows, 0, initialCovRows.length);
-        return covRows;
-    }
-
-    private boolean[] initCoveredCols() {
-        //Arrays.fill(coveredCols, false);
-        boolean[] covCols = new boolean[initialCovCols.length];
-        System.arraycopy(initialCovCols, 0, covCols, 0, initialCovCols.length);
-        return covCols;
-    }
-
-    /**
-     * The first step of the hungarian algorithm is to find the smallest element
-     * in each row and subtract it's values from all elements in that row.
-     * <p/>
-     * Initializes initialCovRows, initialCovCols and maxPossibleAssignment.
-     */
-    private void reduceMatrixAndInitialize(float[][] matrix) {
-
-        // find the min value in each row
-        float minValInRow;
-        for (int row = 0; row < matrix.length; row++) {
-            minValInRow = Float.MAX_VALUE;
-            for (int col = 0; col < matrix[row].length; col++) {
-                if (minValInRow > matrix[row][col]) {
-                    minValInRow = matrix[row][col];
-                }
-            }
-
-            // subtract it from all values in the row            
-            if (minValInRow < Float.MAX_VALUE) {
-                for (int col = 0; col < matrix[row].length; col++) {
-                    if (matrix[row][col] < Float.MAX_VALUE) {
-                        matrix[row][col] -= minValInRow;
-                    }
-                }
-            } else {
-                initialCovRows[row] = true;
-            }
-        }
-
-        //do the same for the columns
-        float minValInCol = Float.MAX_VALUE;
-        for (int col = 0; col < matrix[0].length; col++) {
-            minValInCol = Float.MAX_VALUE;
-            for (int row = 0; row < matrix.length; row++) {
-                if (minValInCol > matrix[row][col]) {
-                    minValInCol = matrix[row][col];
-                }
-            }
-
-            if (minValInCol < Float.MAX_VALUE) {
-                for (int row = 0; row < matrix.length; row++) {
-                    if (matrix[row][col] < Float.MAX_VALUE) {
-                        matrix[row][col] -= minValInCol;
-                    }
-                }
-            } else {
-                initialCovCols[col] = true;
-            }
-        }
-    }
-
-    /**
-     * Init starred zeroes. For each column find the first zero if there is no
-     * other starred zero in that row then star the zero, cover the column
-     * and row and go onto the next column
-     */
-    //create an initial matching
-    private void initStars(float costMatrix[][]) {
-
-        boolean[] rowHasStarredZero = new boolean[costMatrix.length];
-        boolean[] colHasStarredZero = new boolean[costMatrix[0].length];
-
-        for (int row = 0; row < costMatrix.length; row++) {
-            for (int col = 0; col < costMatrix[row].length; col++) {
-                if (0 == costMatrix[row][col] &&
-                        !rowHasStarredZero[row] &&
-                        !colHasStarredZero[col]) {
-                    starsByRow[row] = col;
-                    starsByCol[col] = row;
-                    rowHasStarredZero[row] = true;
-                    colHasStarredZero[col] = true;
-                    break; // move onto the next row
-                }
-            }
-        }
-    }
-
-    /**
-     * Just marke the columns covered for any column containing a starred zero
-     */
-    private void coverColumnsOfStarredZeroes() {
-        for (int col = 0; col < starsByCol.length; col++) {
-
-            assert !(coveredCols[col] && starsByCol[col] != -1) :
-                    "We shouldn't have covered a starred column; col:" + col;
-
-            if (starsByCol[col] != -1) {
-                coverColumn(col, true);
-            }
-        }
-    }
-
-    /**
-     * Finds some uncovered zero and primes it.
-     */
-    private int[] primeSomeUncoveredZero(float matrix[][], int[] primesByRow) {
-
-        // find an uncovered zero and prime it
-        for (int i = 0; i < matrix.length; i++) {
-            if (coveredRows[i]) {
-                continue;
-            }
-
-            for (int j = 0; j < matrix[i].length; j++) {
-                // if it's a zero and the column is not covered
-                if (0 == matrix[i][j] && !coveredCols[j]) {
-                    // ok this is an unstarred zero
-                    // prime it
-                    primesByRow[i] = j;
-                    return new int[]{i, j};
-                }
-            }
-        }
-        return null;
-    }
-
-    private void incrementSetOfStarredZeroes(
-            int[] unpairedZeroPrime,
-            int[] primesByRow) {
-
-        // build the alternating zero sequence (prime, star, prime, star, etc)
-        int i, j = unpairedZeroPrime[1];
-
-        Set<int[]> zeroSequence = new HashSet<int[]>();
-        zeroSequence.add(unpairedZeroPrime);
-        boolean paired = false;
-        do {
-            i = starsByCol[j];
-            paired = -1 != i && zeroSequence.add(new int[]{i, j});
-            if (!paired) {
-                break;
-            }
-
-            j = primesByRow[i];
-            paired = -1 != j && zeroSequence.add(new int[]{i, j});
-
-        } while (paired);
-
-
-        // unstar each starred zero of the sequence
-        // and star each primed zero of the sequence
-        for (int[] zero : zeroSequence) {
-            if (starsByCol[zero[1]] == zero[0]) {
-                starsByCol[zero[1]] = -1;
-                starsByRow[zero[0]] = -1;
-            }
-
-            if (primesByRow[zero[0]] == zero[1]) {
-                starsByRow[zero[0]] = zero[1];
-                starsByCol[zero[1]] = zero[0];
-            }
-        }
-    }
-
-    /**
-     * @return true if making more zeroes was possible.
-     */
-    private boolean makeMoreZeroes(float[][] matrix) {
-
-        // find the minimum uncovered value
-        float minUncoveredValue = Float.MAX_VALUE;
-        for (int i = 0; i < matrix.length; i++) {
-            if (!coveredRows[i]) {
-                for (int j = 0; j < matrix[i].length; j++) {
-                    if (!coveredCols[j] && matrix[i][j] < minUncoveredValue) {
-                        minUncoveredValue = matrix[i][j];
-                    }
-                }
-            }
-        }
-
-        if (minUncoveredValue >= Float.MAX_VALUE) {
-            return false;
-        }
-
-        // add the min value to all covered rows
-        for (int row = 0; row < coveredRows.length; row++) {
-            if (coveredRows[row]) {
-                for (int col = 0; col < matrix[row].length; col++) {
-                    if (matrix[row][col] < Float.MAX_VALUE) {
-                        matrix[row][col] += minUncoveredValue;
-                    }
-                }
-            }
-        }
-
-        // subtract the min value from all uncovered columns
-        for (int col = 0; col < coveredCols.length; col++) {
-            if (!coveredCols[col]) {
-                for (int row = 0; row < matrix.length; row++) {
-                    if (matrix[row][col] < Float.MAX_VALUE) {
-                        matrix[row][col] -= minUncoveredValue;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-    
-    
-    
-    public static void main(String[] args) {
-		HungarianAlgorithm algo = new HungarianAlgorithm();
-		float[][] mat = new float[][]{
-				{4,  5,  3,  2,  3  },
-				{3,  2,  4,  3,  4  },
-				{3,  3,  4,  4,  3  },
-				{2,  4,  3,  2,  4  },
-				{2,  1,  3,  4,  3  }
+	//********************************//
+	//METHODS FOR CONSOLE INPUT-OUTPUT//
+	//********************************//
+	
+	public static int readInput(String prompt)	//Reads input,returns double.
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.print(prompt);
+		int input = in.nextInt();
+		return input;
+	}
+	public static void printTime(double time)	//Formats time output.
+	{
+		String timeElapsed = "";
+		int days = (int)floor(time)/(24 * 3600);
+		int hours = (int)floor(time%(24*3600))/(3600);
+		int minutes = (int)floor((time%3600)/60);
+		int seconds = (int)round(time%60);
+		
+		if (days > 0)
+			timeElapsed = Integer.toString(days) + "d:";
+		if (hours > 0)
+			timeElapsed = timeElapsed + Integer.toString(hours) + "h:";
+		if (minutes > 0)
+			timeElapsed = timeElapsed + Integer.toString(minutes) + "m:";
+		
+		timeElapsed = timeElapsed + Integer.toString(seconds) + "s";
+		System.out.print("\nTotal time required: " + timeElapsed + "\n\n");
+	}
+	
+	//*******************************************//
+	//METHODS THAT PERFORM ARRAY-PROCESSING TASKS//
+	//*******************************************//
+	
+	public static void generateRandomArray	//Generates random 2-D array.
+	(double[][] array, String randomMethod)	
+	{
+		Random generator = new Random();
+		for (int i=0; i<array.length; i++)
+		{
+			for (int j=0; j<array[i].length; j++)
+			{
+				if (randomMethod.equals("random"))
+					{array[i][j] = generator.nextDouble();}
+				if (randomMethod.equals("gaussian"))
+				{
+						array[i][j] = generator.nextGaussian()/4;		//range length to 1.
+						if (array[i][j] > 0.5) {array[i][j] = 0.5;}		//eliminate outliers.
+						if (array[i][j] < -0.5) {array[i][j] = -0.5;}	//eliminate outliers.
+						array[i][j] = array[i][j] + 0.5;				//make elements positive.
+				}
+			}
+		}			
+	}
+	public static double findLargest		//Finds the largest element in a positive array.
+	(double[][] array)
+	//works for arrays where all values are >= 0.
+	{
+		double largest = 0;
+		for (int i=0; i<array.length; i++)
+		{
+			for (int j=0; j<array[i].length; j++)
+			{
+				if (array[i][j] > largest)
+				{
+					largest = array[i][j];
+				}
+			}
+		}
+			
+		return largest;
+	}
+	public static double[][] transpose		//Transposes a double[][] array.
+	(double[][] array)	
+	{
+		double[][] transposedArray = new double[array[0].length][array.length];
+		for (int i=0; i<transposedArray.length; i++)
+		{
+			for (int j=0; j<transposedArray[i].length; j++)
+			{transposedArray[i][j] = array[j][i];}
+		}
+		return transposedArray;
+	}
+	public static double[][] copyOf			//Copies all elements of an array to a new array.
+	(double[][] original)	
+	{
+		double[][] copy = new double[original.length][original[0].length];
+		for (int i=0; i<original.length; i++)
+		{
+			//Need to do it this way, otherwise it copies only memory location
+			System.arraycopy(original[i], 0, copy[i], 0, original[i].length);
+		}
+		
+		return copy;
+	}
+	
+	//**********************************//
+	//METHODS OF THE HUNGARIAN ALGORITHM//
+	//**********************************//
+	
+	public static int[] hgAlgorithm (double[][] array, String sumType)
+	{
+		double[][] cost = copyOf(array);	//Create the cost matrix
+		
+		if (sumType.equalsIgnoreCase("max"))	//Then array is weight array. Must change to cost.
+		{
+			double maxWeight = findLargest(cost);
+			for (int i=0; i<cost.length; i++)		//Generate cost by subtracting.
+			{
+				for (int j=0; j<cost[i].length; j++)
+				{
+					cost [i][j] = (maxWeight - cost [i][j]);
+				}
+			}
+		}
+		double maxCost = findLargest(cost);		//Find largest cost matrix element (needed for step 6).
+		
+		int[][] mask = new int[cost.length][cost[0].length];	//The mask array.
+		int[] rowCover = new int[cost.length];					//The row covering vector.
+		int[] colCover = new int[cost[0].length];				//The column covering vector.
+		int[] zero_RC = new int[2];								//Position of last zero from Step 4.
+		int step = 1;											
+		boolean done = false;
+		while (done == false)	//main execution loop
+		{ 
+			switch (step)
+		    {
+				case 1:
+					step = hg_step1(step, cost);     
+		    	    break;
+		    	case 2:
+		    	    step = hg_step2(step, cost, mask, rowCover, colCover);
+					break;
+		    	case 3:
+		    	    step = hg_step3(step, mask, colCover);
+					break;
+		    	case 4:
+		    	    step = hg_step4(step, cost, mask, rowCover, colCover, zero_RC);
+					break;
+		    	case 5:
+					step = hg_step5(step, mask, rowCover, colCover, zero_RC);
+					break;
+		    	case 6:
+		    	   	step = hg_step6(step, cost, rowCover, colCover, maxCost);
+					break;
+		  	    case 7:
+		    	    done=true;
+		    	    break;
+		    }
+		}//end while
+		
+		int[] assignment = new int[array.length];	//Create the returned array.
+		for (int i=0; i<mask.length; i++)
+		{
+			for (int j=0; j<mask[i].length; j++)
+			{
+				if (mask[i][j] == 1)
+				{
+					assignment[i] = j;
+				}
+			}
+		}
+		
+		//If you want to return the min or max sum, in your own main method
+		//instead of the assignment array, then use the following code:
+		/*
+		double sum = 0; 
+		for (int i=0; i<assignment.length; i++)
+		{
+			sum = sum + array[assignment[i][0]][assignment[i][1]];
+		}
+		return sum;
+		*/
+		//Of course you must also change the header of the method to:
+		//public static double hgAlgorithm (double[][] array, String sumType)
+		
+		return assignment;
+	}
+	public static int hg_step1(int step, double[][] cost)
+	{
+		//What STEP 1 does:
+		//For each row of the cost matrix, find the smallest element
+		//and subtract it from from every other element in its row. 
+	    
+	   	double minval;
+	   	
+		for (int i=0; i<cost.length; i++)	
+	   	{									
+	   	    minval=cost[i][0];
+	   	    for (int j=0; j<cost[i].length; j++)	//1st inner loop finds min val in row.
+	   	    {
+	   	        if (minval>cost[i][j])
+	   	        {
+	   	            minval=cost[i][j];
+	   	        }
+			}
+			for (int j=0; j<cost[i].length; j++)	//2nd inner loop subtracts it.
+	   	    {
+	   	        cost[i][j]=cost[i][j]-minval;
+	   	    }
+		}
+	   			    
+		step=2;
+		return step;
+	}
+	public static int hg_step2(int step, double[][] cost, int[][] mask, int[]rowCover, int[] colCover)
+	{
+		//What STEP 2 does:
+		//Marks uncovered zeros as starred and covers their row and column.
+		
+		for (int i=0; i<cost.length; i++)
+	    {
+	        for (int j=0; j<cost[i].length; j++)
+	        {
+	            if ((cost[i][j]==0) && (colCover[j]==0) && (rowCover[i]==0))
+	            {
+	                mask[i][j]=1;
+					colCover[j]=1;
+	                rowCover[i]=1;
+				}
+	        }
+	    }
+							
+		clearCovers(rowCover, colCover);	//Reset cover vectors.
+			    
+		step=3;
+		return step;
+	}
+	public static int hg_step3(int step, int[][] mask, int[] colCover)
+	{
+		//What STEP 3 does:
+		//Cover columns of starred zeros. Check if all columns are covered.
+		
+		for (int i=0; i<mask.length; i++)	//Cover columns of starred zeros.
+	    {
+	        for (int j=0; j<mask[i].length; j++)
+	        {
+	            if (mask[i][j] == 1)
+	            {
+	                colCover[j]=1;
+				}
+	        }
+	    }
+	    
+		int count=0;						
+		for (int j=0; j<colCover.length; j++)	//Check if all columns are covered.
+	    {
+	        count=count+colCover[j];
+	    }
+		
+		if (count>=mask.length)	//Should be cost.length but ok, because mask has same dimensions.	
+	    {
+			step=7;
+		}
+	    else
+		{
+			step=4;
+		}
+	    	
+		return step;
+	}
+	public static int hg_step4(int step, double[][] cost, int[][] mask, int[] rowCover, int[] colCover, int[] zero_RC)
+	{
+		//What STEP 4 does:
+		//Find an uncovered zero in cost and prime it (if none go to step 6). Check for star in same row:
+		//if yes, cover the row and uncover the star's column. Repeat until no uncovered zeros are left
+		//and go to step 6. If not, save location of primed zero and go to step 5.
+		
+		int[] row_col = new int[2];	//Holds row and col of uncovered zero.
+		boolean done = false;
+		while (done == false)
+		{
+			row_col = findUncoveredZero(row_col, cost, rowCover, colCover);
+			if (row_col[0] == -1)
+			{
+				done = true;
+				step = 6;
+			}
+			else
+			{
+				mask[row_col[0]][row_col[1]] = 2;	//Prime the found uncovered zero.
+				
+				boolean starInRow = false;
+				for (int j=0; j<mask[row_col[0]].length; j++)
+				{
+					if (mask[row_col[0]][j]==1)		//If there is a star in the same row...
+					{
+						starInRow = true;
+						row_col[1] = j;		//remember its column.
+					}
+				}
+							
+				if (starInRow==true)	
+				{
+					rowCover[row_col[0]] = 1;	//Cover the star's row.
+					colCover[row_col[1]] = 0;	//Uncover its column.
+				}
+				else
+				{
+					zero_RC[0] = row_col[0];	//Save row of primed zero.
+					zero_RC[1] = row_col[1];	//Save column of primed zero.
+					done = true;
+					step = 5;
+				}
+			}
+		}
+		
+		return step;
+	}
+	public static int[] findUncoveredZero	//Aux 1 for hg_step4.
+	(int[] row_col, double[][] cost, int[] rowCover, int[] colCover)
+	{
+		row_col[0] = -1;	//Just a check value. Not a real index.
+		row_col[1] = 0;
+		
+		int i = 0; boolean done = false;
+		while (done == false)
+		{
+			int j = 0;
+			while (j < cost[i].length)
+			{
+				if (cost[i][j]==0 && rowCover[i]==0 && colCover[j]==0)
+				{
+					row_col[0] = i;
+					row_col[1] = j;
+					done = true;
+				}
+				j = j+1;
+			}//end inner while
+			i=i+1;
+			if (i >= cost.length)
+			{
+				done = true;
+			}
+		}//end outer while
+		
+		return row_col;
+	}
+	public static int hg_step5(int step, int[][] mask, int[] rowCover, int[] colCover, int[] zero_RC)
+	{
+		//What STEP 5 does:	
+		//Construct series of alternating primes and stars. Start with prime from step 4.
+		//Take star in the same column. Next take prime in the same row as the star. Finish
+		//at a prime with no star in its column. Unstar all stars and star the primes of the
+		//series. Erasy any other primes. Reset covers. Go to step 3.
+		
+		int count = 0;												//Counts rows of the path matrix.
+		int[][] path = new int[(mask[0].length*mask.length)][2];	//Path matrix (stores row and col).
+		path[count][0] = zero_RC[0];								//Row of last prime.
+		path[count][1] = zero_RC[1];								//Column of last prime.
+		
+		boolean done = false;
+		while (done == false)
+		{ 
+			int r = findStarInCol(mask, path[count][1]);
+			if (r>=0)
+			{
+				count = count+1;
+				path[count][0] = r;					//Row of starred zero.
+				path[count][1] = path[count-1][1];	//Column of starred zero.
+			}
+			else
+			{
+				done = true;
+			}
+			
+			if (done == false)
+			{
+				int c = findPrimeInRow(mask, path[count][0]);
+				count = count+1;
+				path[count][0] = path [count-1][0];	//Row of primed zero.
+				path[count][1] = c;					//Col of primed zero.
+			}
+		}//end while
+		
+		convertPath(mask, path, count);
+		clearCovers(rowCover, colCover);
+		erasePrimes(mask);
+		
+		step = 3;
+		return step;
+		
+	}
+	public static int findStarInCol			//Aux 1 for hg_step5.
+	(int[][] mask, int col)
+	{
+		int r=-1;	//Again this is a check value.
+		for (int i=0; i<mask.length; i++)
+		{
+			if (mask[i][col]==1)
+			{
+				r = i;
+			}
+		}
+				
+		return r;
+	}
+	public static int findPrimeInRow		//Aux 2 for hg_step5.
+	(int[][] mask, int row)
+	{
+		int c = -1;
+		for (int j=0; j<mask[row].length; j++)
+		{
+			if (mask[row][j]==2)
+			{
+				c = j;
+			}
+		}
+		
+		return c;
+	}
+	public static void convertPath			//Aux 3 for hg_step5.
+	(int[][] mask, int[][] path, int count)
+	{
+		for (int i=0; i<=count; i++)
+		{
+			if (mask[(path[i][0])][(path[i][1])]==1)
+			{
+				mask[(path[i][0])][(path[i][1])] = 0;
+			}
+			else
+			{
+				mask[(path[i][0])][(path[i][1])] = 1;
+			}
+		}
+	}
+	public static void erasePrimes			//Aux 4 for hg_step5.
+	(int[][] mask)
+	{
+		for (int i=0; i<mask.length; i++)
+		{
+			for (int j=0; j<mask[i].length; j++)
+			{
+				if (mask[i][j]==2)
+				{
+					mask[i][j] = 0;
+				}
+			}
+		}
+	}
+	public static void clearCovers			//Aux 5 for hg_step5 (and not only).
+	(int[] rowCover, int[] colCover)
+	{
+		for (int i=0; i<rowCover.length; i++)
+		{
+			rowCover[i] = 0;
+		}
+		for (int j=0; j<colCover.length; j++)
+		{
+			colCover[j] = 0;
+		}
+	}
+	public static int hg_step6(int step, double[][] cost, int[] rowCover, int[] colCover, double maxCost)
+	{
+		//What STEP 6 does:
+		//Find smallest uncovered value in cost: a. Add it to every element of covered rows
+		//b. Subtract it from every element of uncovered columns. Go to step 4.
+		
+		double minval = findSmallest(cost, rowCover, colCover, maxCost);
+		
+		for (int i=0; i<rowCover.length; i++)
+		{
+			for (int j=0; j<colCover.length; j++)
+			{
+				if (rowCover[i]==1)
+				{
+					cost[i][j] = cost[i][j] + minval;
+				}
+				if (colCover[j]==0)
+				{
+					cost[i][j] = cost[i][j] - minval;
+				}
+			}
+		}
+			
+		step = 4;
+		return step;
+	}
+	public static double findSmallest		//Aux 1 for hg_step6.
+	(double[][] cost, int[] rowCover, int[] colCover, double maxCost)
+	{
+		double minval = maxCost;				//There cannot be a larger cost than this.
+		for (int i=0; i<cost.length; i++)		//Now find the smallest uncovered value.
+		{
+			for (int j=0; j<cost[i].length; j++)
+			{
+				if (rowCover[i]==0 && colCover[j]==0 && (minval > cost[i][j]))
+				{
+					minval = cost[i][j];
+				}
+			}
+		}
+		
+		return minval;
+	}
+	
+	//***********//
+	//MAIN METHOD//
+	//***********//
+	
+	public static void main(String[] args) 
+	{
+		//Below enter "max" or "min" to find maximum sum or minimum sum assignment.
+		String sumType = "min";		
+				
+		//Hard-coded example.
+		double[][] array =
+		{
+				{9, 6, 11},
+				{7, 4, 9},
+				{3, 6, 9}
 		};
 		
-		for (int i = 0; i < mat.length; i++) {
-			for (int j = 0; j < mat[i].length; j++) {
-				System.out.print(mat[i][j]+" ");
-			}
+		//<UNCOMMENT> BELOW AND COMMENT BLOCK ABOVE TO USE A RANDOMLY GENERATED MATRIX
+//		int numOfRows = readInput("How many rows for the matrix? ");
+//		int numOfCols = readInput("How many columns for the matrix? ");
+//		double[][] array = new double[numOfRows][numOfCols];
+//		generateRandomArray(array, "random");	//All elements within [0,1].
+		//</UNCOMMENT>
+		
+		if (array.length > array[0].length)
+		{
+			System.out.println("Array transposed (because rows>columns).\n");	//Cols must be >= Rows.
+			array = transpose(array);
+		}
+				
+		//<COMMENT> TO AVOID PRINTING THE MATRIX FOR WHICH THE ASSIGNMENT IS CALCULATED
+		System.out.println("\n(Printing out only 2 decimals)\n");
+		System.out.println("The matrix is:");
+		for (int i=0; i<array.length; i++)
+		{
+			for (int j=0; j<array[i].length; j++)
+				{System.out.printf("%.2f\t", array[i][j]);}
 			System.out.println();
 		}
+		System.out.println();
+		//</COMMENT>*/
 		
-		int[] res = algo.computeAssignments(mat);
-		for (int i = 0; i < res.length; i++) {
-				System.out.print(res[i]+" ");
+		double startTime = System.nanoTime();	
+		int[] assignment = hgAlgorithm(array, sumType);	//Call Hungarian algorithm.
+		double endTime = System.nanoTime();
+						
+		System.out.println("The winning assignment (" + sumType + " sum) is:\n");	
+		double sum = 0;
+		for (int i=0; i<assignment.length; i++)
+		{
+			//<COMMENT> to avoid printing the elements that make up the assignment
+			System.out.printf("array(%d,%d) = %.2f\n", (i+1), (assignment[i]+1),
+					array[i][assignment[i]]);
+			sum = sum + array[i][assignment[i]];
+			//</COMMENT>
 		}
+		
+		System.out.printf("\nThe %s is: %.2f\n", sumType, sum);
+		printTime((endTime - startTime)/1000000000.0);
+		
 	}
 }

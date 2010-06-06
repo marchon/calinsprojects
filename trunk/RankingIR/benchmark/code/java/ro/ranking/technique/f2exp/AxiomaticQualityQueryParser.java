@@ -3,7 +3,6 @@ package ro.ranking.technique.f2exp;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -12,6 +11,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
 import ro.ranking.benchmarking.AbstractQualityQueryParser;
+import ro.ranking.benchmarking.Utils;
 
 public class AxiomaticQualityQueryParser extends AbstractQualityQueryParser {
 	private float avdl;
@@ -38,13 +38,13 @@ public class AxiomaticQualityQueryParser extends AbstractQualityQueryParser {
 				throws ParseException {
 			// disable coord; 
 			//TODO: see what this means
-			return getBooleanQuery(clauses, true);
+			return getBooleanQuery(clauses, false);
 		}
 	}
 
 	@Override
 	public QueryParser createQueryParser() {
 		return new AxiomaticQueryParser(Version.LUCENE_CURRENT, indexField,
-				new StandardAnalyzer(Version.LUCENE_CURRENT), avdl);
+				Utils.getDefaultAnalyzer(), avdl);
 	}
 }

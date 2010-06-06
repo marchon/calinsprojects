@@ -57,6 +57,7 @@ public class BM25BooleanScorer extends Scorer {
 	                         BooleanTermQuery[] must, BooleanTermQuery[] not,
 	                         Similarity similarity) throws IOException {
 		super(similarity);
+
 		this.ndocs = reader.numDocs();
 
 		if (should != null && should.length > 0) {

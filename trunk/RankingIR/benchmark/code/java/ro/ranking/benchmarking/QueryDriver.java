@@ -6,19 +6,13 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.benchmark.quality.QualityBenchmark;
 import org.apache.lucene.benchmark.quality.QualityQuery;
 import org.apache.lucene.benchmark.quality.QualityQueryParser;
-import org.apache.lucene.benchmark.quality.QualityStats;
 import org.apache.lucene.benchmark.quality.trec.TrecTopicsReader;
-import org.apache.lucene.benchmark.quality.utils.SubmissionReport;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
@@ -54,7 +48,7 @@ public class QueryDriver {
 	 * 
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length != 9) {
+		if (args.length != 10) {
 			showUsageAndExit();
 		}
 
@@ -160,17 +154,13 @@ public class QueryDriver {
 		AggregatorQualityBenchmark qrun = new AggregatorQualityBenchmark(qqs,
 				qqParsers, searcher, docNameField);
 		qrun.setMaxResults(maxResults);
-		qrun.execute(null, null, submitLog, aggregator);
-		// }
-
-		// print an avarage sum of the results
-		// QualityStats avg = QualityStats.average(stats);
-		// avg.log("SUMMARY", 2, logger, "  ");
-		//
-		// // write summary to file
-		// avg.log("SUMMARY", 2, fileLogger, "  ");
-
-		// close stuff
+		long st = qrun.execute(null, null, submitLog, aggregator);
+		
+		//write time before trec output
+		PrintWriter trecOut = new PrintWriter(new File(args[9]));
+		trecOut.println("src_tm all " + st);
+		
+		trecOut.close();
 		topicsReader.close();
 		submissionPW.close();
 	}

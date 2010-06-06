@@ -140,10 +140,13 @@ public class AggregatorQualityBenchmark {
 	 * @throws Exception
 	 *             if quality benchmark failed to run.
 	 */
-	public QualityStats[] execute(Judge judge, PrintWriter qualityLog,
+	public long execute(Judge judge, PrintWriter qualityLog,
 			AggregatorSubmissionReport submitRep, Aggregator aggregator) throws Exception {
 		int nQueries = Math.min(maxQueries, qualityQueries.length);
 		QualityStats stats[] = new QualityStats[nQueries];
+		
+		long avgSearchTime = 0;
+		
 		for (int i = 0; i < nQueries; i++) {
 			QualityQuery qq = qualityQueries[i];
 			// generate query
@@ -192,12 +195,16 @@ public class AggregatorQualityBenchmark {
 			if (submitRep != null) {
 				submitRep.report(qq, finalRanking, docNameField, searcher);
 			}
+			
+			avgSearchTime += totalSearchTime;
 		}
 		if (submitRep != null) {
 			submitRep.flush();
 		}
 
-		return stats;
+		avgSearchTime /= nQueries;
+		
+		return avgSearchTime;
 	}
 
 	/* Analyze/judge results for a single quality query; optionally log them. */

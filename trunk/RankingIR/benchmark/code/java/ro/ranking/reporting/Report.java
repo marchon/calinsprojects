@@ -55,15 +55,16 @@ public class Report {
 	private static class HTMLReporter implements Reporter {
 		private static Map<String, String> labels = new LinkedHashMap<String, String>();
 		static {
+			labels.put("-src_tm", "QT(ms)");
 			labels.put("num_q", "Q");
 			labels.put("num_ret", "RET");
 			labels.put("num_rel", "REL");
 			labels.put("num_rel_ret", "REL+RET");
-			labels.put("map", "MAP");
-			labels.put("gm_ap", "MGP");
-			labels.put("R-prec", "R-PR");
+			labels.put("+map", "MAP");
+			labels.put("+gm_ap", "MGP");
+			labels.put("+R-prec", "R-PR");
 			/* labels.put("bpref", "BPREF"); */
-			labels.put("recip_rank", "MRR");
+			labels.put("+recip_rank", "MRR");
 			/*
 			 * labels.put("ircl_prn.0.00", "ircl_prn.0.00");
 			 * labels.put("ircl_prn.0.10", "ircl_prn.0.10");
@@ -77,27 +78,35 @@ public class Report {
 			 * labels.put("ircl_prn.0.90", "ircl_prn.0.90");
 			 * labels.put("ircl_prn.1.00", "ircl_prn.1.00");
 			 */
-			labels.put("P5", "P5");
+			labels.put("+P5", "P5");
 			/*
 			 * labels.put("P10", "P10"); labels.put("P15", "P15");
 			 * labels.put("P20", "P20");
 			 */
-			labels.put("P30", "P30");
-			labels.put("P100", "P100");
+			labels.put("+P30", "P30");
+			labels.put("+P100", "P100");
 			/*
 			 * labels.put("P200", "P200"); labels.put("P500", "P500");
 			 */
-			labels.put("P1000", "P1000");
+			labels.put("+P1000", "P1000");
 		}
 
 		private void computeWinners(Map<String, Map<String, String>> data) {
 			for (String measure : labels.keySet()) {
+				
+				char type = measure.charAt(0);
+				if(type == '+' || type == '-') {
+					measure = measure.substring(1);
+				} else {
+					continue;
+				}
+				
 				String winner = null;
-				float wval = 0;
+				float wval = type == '+'? Integer.MIN_VALUE : Integer.MAX_VALUE;
 				int cnt = 1;
 				for (String method : data.keySet()) {
 					float v = Float.parseFloat(data.get(method).get(measure));
-					if (v > wval) {
+					if ((type == '+' && v > wval) || (type == '-' && v < wval)) {
 						wval = v;
 						winner = method;
 					} else if (v == wval) {
@@ -154,6 +163,11 @@ public class Report {
 				sb.append("</td>");
 				Map<String, String> res = data.get(method);
 				for (String measure : labels.keySet()) {
+					char type = measure.charAt(0);
+					if(type == '+' || type == '-') {
+						measure = measure.substring(1);
+					}
+					
 					String val = res.get(measure);
 					boolean win = false;
 					if (val.startsWith("+")) {

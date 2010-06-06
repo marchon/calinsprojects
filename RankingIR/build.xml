@@ -5,12 +5,11 @@
 	<property name="aggr" value="" />
 	<property name="collection" value="ohsumed-small" />
 	<property name="collection.num" value="1" />
-	<property name="query.spec" value="TD" />
+	<property name="query.spec" value="T" />
 	<property name="query.nbres" value="1000" />
-
-
-
+	<property name="technique.test" value="" />
 	<property name="export.dir" value="../exported" />
+	<property name="analyzer" value="simple" />
 
 	<path id="prj.classpath">
 		<pathelement location="benchmark/code/classes" />
@@ -29,22 +28,25 @@
 		<delete dir="benchmark/code/classes" />
 	</target>
 
-	<target name="clean-index">
+	<target name="cli">
 		<delete dir="collections/${collection}/index" />
 	</target>
 
-	<target name="clean-results">
-		<delete dir="benchmark/results/${technique}" />
+	<target name="clr">
+		<delete includeemptydirs="true">
+		  <fileset dir="benchmark/results/" includes="**/*" excludes=".svn"/>
+		</delete>
 	</target>
 
 	<target name="check-index">
-		<available file="collections/${collection}/index" type="dir" property="index.exist" />
+		<available file="collections/${collection}/index_${analyzer}" type="dir" property="index.exist" />
 	</target>
 
 	<target name="index" depends="check-index,compile" unless="index.exist">
 		<java classname="ro.ranking.benchmarking.Indexer" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}" />
+			<arg value="${analyzer}"/>
 		</java>
 	</target>
 
@@ -61,31 +63,32 @@
 			   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 			}
 			project.setProperty('guid', guid());
+			
+			if(project.getProperty('test') != null) {
+				project.setProperty('technique.test', '#' + project.getProperty('test') + '#');
+			}
 		</script>
 
-		<tstamp>
-			<format property="time" pattern="MMddyyyyhhmm" unit="millisecond" />
-		</tstamp>
 		<java classname="ro.ranking.benchmarking.QueryDriver" maxmemory="512M" fork="true">
 			<classpath refid="prj.classpath" />
 			<arg file="collections/${collection}/queries${collection.num}.txt" />
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
-			<arg file="collections/${collection}/index" />
+			<arg file="collections/${collection}/index_${analyzer}" />
 			<arg value="${technique}" />
 			<arg value="${aggregator}" />
 			<arg file="benchmark/results/subm_${guid}.txt" />
 			<arg value="${query.spec}"/>
 			<arg value="${query.nbres}"/>
+			<arg value="${analyzer}" />
 		</java>
 
 		<exec executable="utils/trec_eval.exe" 
-			output="benchmark/results/${technique}${aggr}-${query.spec}@${collection}-set${collection.num}.txt">
-			<!--<arg value="-a" />-->
+			output="benchmark/results/${technique.test}${technique}${aggr}-${query.spec}-${analyzer}@${collection}-set${collection.num}.txt">
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
 			<arg file="benchmark/results/subm_${guid}.txt" />
 		</exec>
 
-		 <!--<delete file="benchmark/results/subm_${guid}.txt" />-->
+		<delete file="benchmark/results/subm_${guid}.txt" />
 	</target>
 
 	<target name="report">
@@ -94,12 +97,13 @@
 			<arg file="benchmark/results/"/>
 			<arg value="${collection}-set${collection.num}"/>
 		</java>
-		
-		<!--
-		<exec executable="firefox">
-			<arg file="benchmark/results/${collection}-set${collection.num}/results.html"/>
+
+		<exec executable="cmd.exe">
+			<arg value="/C" />
+			<arg value="start" />
+			<arg file="benchmark/results/${collection}-set${collection.num}/results.html" />
 		</exec>
-		-->
+
 	</target>
 
 	<target name="export">

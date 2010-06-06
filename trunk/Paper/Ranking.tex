@@ -726,7 +726,31 @@ Una dintre idei este extinderea direct'a a listelor de campioni: pentru o valoar
 Cea de-a doua idee const'a 'in men'tinerea, pentru fiecare termen $t$, a dou'a liste de postare disjuncte, fiecare sortat'a dup'a $g(d)$. Prima list'a, numit'a \emph{high}, con'tine cele $m$ documente cu valorile $tf$ cele mai mari pentru $t$. Cea de-a doua list'a numit'a \emph{low}, con'tine toate celelalte documente ce 'il con'tin pe $t$. C'jnd se proceseaz'a o interogare, se scaneaz'a mai 'int'ji lista \emph{high}, calcul'jnd scorurile nete pentru fiecare document (sau documente care con'tin un num'ar mare din termenii interog'arii). Dac'a nu se ob'tin $K$ documente 'in urma acestui proces, se continu'a cu listele \emph{low}.
 
 \subsection{Impact ordering}
+'In toate listele de postare descrise p'jn'a acum, documentele au fost ordonate dup'a o ordonare comun'a (dup'a id-ul documentului sau scoruri statice). O astfel de ordonare comun'a suport'a traversarea concurent'a a listelor de postare, calcul'jnd scorul pentru fiecare document 'in momentul 'in care acesta este 'int'jlnit. O astfel de abordare este numit'a notare \emph{document-at-a-time}. 'In aceast'a sec'tiune voi vorbi despre o tehnic'a 'in care listele de postare nu sunt toate ordonate dup'a o ordonare comun'a, lucru care 'impiedic'a o traversare concurent'a. Ca urmare, scorurile vor fi "acumulate" lu'jnd termenii pe r'jnd ca 'in algoritmul \ref{alg:cossim} (\emph{term-at-a-time}).
+
+Idee const'a 'in ordonarea documentelor din listele de postare descresc'ator dup'a $tf_{t,d}$. Ca urmare, ordonarea va fi diferit'a de la o list'a de post'ari la alta 'si nu se poate face o traversare concurent'a pentru to'ti termenii din interogare. Av'jnd listele ordonate descresc'ator dup'a $tf_{t,d}$, dou'a ideei s-au remarcat 'in a reduce substan'tial num'arul de documente pentru care terbuie acumulate scorurile:
+\begin{enumerate}
+\item c'jnd se traverseaz'a lista unui termen $t$, algoritmul se opre'ste dup'a ce parcurge un anumit prefix al acesteia - fie dup'a un num'ar fix $r$ de intr'ari, fie dup'a ce $tf_{t,d}$ a sc'azut sub o anumit'a valoare presetat'a;
+\item termenii interog'arii se parcurg 'in ordinea descresc'atoare a $idf$, astfel 'inc'jt termenii care au o probabilitate mai mare s'a contribuie mai mult la scorurile finale s'a fie lua'ti 'in considerare primii.
+\end{enumerate}
+Aceast'a ultim'a idee poate fi adaptat'a la momentul proces'arii interog'arii: c'jnd se ajunge la termeni ai interog'arii cu $idf$ sc'azut, se poate determina dac'a se continu'a pe baza schib'arilor scorurilor documentelor de la parcurgerea listei termenului anterior. Dac'a schimb'arile sunt minime, se poate omite procesarea listei, sau se poate procesa doar un prefix.
+
+Aceste idei vin dintr-o generealizare a metodelor introduse 'in sec'tiunile precedente. Depinz'jnd de metoda de ponderare, listele de postare pot fi ordonate dup'a alte cantit'a'ti dec'jt frecven'ta termenilor. 'In contextul RI aceast'a metod'a poart'a numele de \emph{impact ordering}.
+
 \subsection{Cluster pruning}
+'In \emph{cluster pruning} exist'a un etap'a de preprocesare 'in cadrul c'areia vectorii documentelor sunt grupa'ti. Apoi, la momentul interog'arii, se consider'a doar documentele dintr'un num'ar mic de grupuri drept candida'ti pentru care se calculeaz'a similaritatea. Pa'sii de preprocesare sunt urm'atorii:
+\begin{enumerate}
+\item Alege $\sqrt{N}$ documente din colec'tie 'in mod aleator. Nume'ste aceste documente \emph{lideri}.
+\item Pentru fiecare document care nu este lider, afl'a care este cel mai "apropiat" lider.
+\end{enumerate}
+Documentele care nu sunt lideri vor fi numite \emph{adep'ti}. Intuitiv, num'arul aproximativ de \emph{adep'ti} pentru fiecare lider este $\approx N / \sqrt{N} = \sqrt{N}$. Procesul de interogare decurge 'in felul urm'ator:
+\begin{enumerate}
+\item Dat'a fiind o interogare $q$, g'ase'ste liderul $L$ cel mai apropiat de $q$. Acest lucru presupune computearea similarit'a'tilor cosinus 'intre $q$ 'si fiecare dintre cei $\sqrt{N}$ lideri.
+\item Setul de candida'ti $A$ este alc'atuit din $L$ 'si adep'tii acestuia. Se computeaz'a scorurile pentru toate documente din acest set.
+\end{enumerate}
+
+Folosirea liderilor ale'si aleator pentru grupare este rapid'a 'si probabilitatea s'a reflecte distribu'tia vectorilor 'in spa'tiu este destul de mare. Acest luctru este ilustrat 'in figura \ref{fig:cp}.
+
 \begin{figure}[ht]
 	\centering
 	\includegraphics[scale=.7]{cp.png}
@@ -734,9 +758,9 @@ Cea de-a doua idee const'a 'in men'tinerea, pentru fiecare termen $t$, a dou'a l
 	\label{fig:cp}
 \end{figure}
 
+Varia'tii ale acestei metode introduc parametrii adi'tionali $b_1$ 'si $b_2$, 'intregi pozitivi. 'In faza de preprocesare se ata'sez'a fiecare adept la cei mai apropia'ti $b_1$ lideri. La procesul de c'autare se consider'a cei mai apropia'ti $b_2$ lideri de interogarea $q$. Schema de mai sus corespunde cazului $b_1=b_2=1$. Cre'sterea celor doi parametri duce la cre'sterea 'sanselor de a g'asi $K$ documente care sa fac'a parte din $top-K$, dar necesit'a mai multe computa'tii.
 
-\section{Modelul axiomatic}
-\subsection{F2-EXP}
+
 \section{Modelul probabilistic}
 Dac'a s-ar cunoa'ste relevan'ta unui subset de documente, s-ar putea estima probabilitatea apari'tiei unui termen \emph{t} 'intr-un document relevant $P(t|R=1)$ 'si, ca urmare, acesta ar putea reprezenta baza unui clasificator care decide dac'a un document este relevant sau nu.
 
@@ -949,9 +973,176 @@ Acesti parametri 'in mod ideal sunt seta'ti s'a optimizeze performan'ta pe o col
 
 Formulele BM25 de ponderare a termenilor au fost folosite cu succes pe o varietate de colec'tii 'si tipuri de c'autare. Au avut o performan't'a extrem de bun'a la evalu'arile TREC 'si au fost implementate 'in multe sisteme RI.
 
+\section{O abordare axiomatic'a}
+Este dificil, dac'a nu imposibil, s'a se prezic'a performan'ta unui model de reg'asire 'intr-un mod analitic. 'In continuare voi prezenta o abordare \emph{axiomatic'a} ce poate fi folosit'a la proiectarea de noi modele de ierarhizare 'in reg'asirea informa'tiei bazate pe modelarea direct'a a relevan'tei cu constr'jngeri de reg'asire formalizate definite la nivelul termenilor. Ideea de baz'a a acestei abord'ari este c'autare 'intr-un spa'tiu de func'tii candidat a unei func'tii care satisface un set de constr'jngeri(\emph{axiome}) de reg'asire. Pentru a defini spa'tiul de func'tii, se va defini o func'tie de reg'asire 'in mod inductiv 'si se va descompune 'in trei componente.
+'In \cite{AXIOM} s-a constatat c'a euristicile intuitive de reg'asire pot fi formal definite ca axiome 'si c'a performan'ta empiric'a a unei func'tii de ierarhizare este legat'a str'jns de c'jt de bine sunt sunt satisf'acute aceste constr'jngeri.
+
+Pentru a defini un model axiomatic pentru RI, trebuie s'a se defineasc'a un \emph{spa'tiu de c'autare} ale poten'tialelor func'tii 'si un set de \emph{constr'jngeri de reg'asire} pe care orice func'tie rezonabil'a trebuie s'a le satisac'a. Asum'tia este c'a dac'a o func'tie satisface toate constr'jngerile, atunci are toate 'sansele s'a aib'a rezultate forte bune 'in practic'a. Spa'tiul de c'autare trebuie s'a fie destul de mare 'inc'jt s'a cuprind'a func'tii "bune", 'si suficient de mic pentru o c'autare.
+
+\subsection{Spa'tiul func'tiilor}
+Din moment ce o func'tie de reg'asire este definit'a pe un document 'si o interogare, trebuie, mai 'int'ji, s'a se defineasc'a documentele 'si interog'arile. P'astr'jnd perspectiva metodelor curente de ierarhizare, documentele 'si interog'arile vor fi v'azute ca "bag of words". 
+
+Fie $T$ mul'timea tuturor termenilor. Fie interogarea $Q=\{q_1,...,q_n\}$ 'si documentul $D=\{d_1,...,d_m\}$, dou'a seturi de termeni cu $q_i,d_i \in T$. Este posibil ca $q_i=q_j$ sau $d_i=d_j$ chiar dac'a $i \neq j$. Scopul este definirea unei func'tii de scor $S(Q,D) \in \Re $. Pentru facilitarea c'aut'arii 'in spa'tiul de func'tii 'si definirii de constr'jngeri, func'tia de c'autare va fi construit'a inductiv.
+
+Vom 'incepe cu cazul de baz'a 'in care at'jt documentul c'jt 'si interogarea con'tin un singur termen.
+
+\textbf{Caz de baz'a:} Presupunem c'a $Q={q}$ 'si $D={d}$.
+\[
+S(Q,D) = f(q,d) = \left\{
+\begin{array}{ll}
+	weight(q) = weight(d), & q = d\\
+	penalty(q,d), & q \neq d
+\end{array}
+\right..
+\]
+
+Func'tia $f$ calculeaz'a scorul 'intre un document 'si o interogare, fiecare av'jnd un singur termen. Ea va fi numit'a \emph{func'tia primitiv'a de ponderare (Primitive weighting function)}. Recompenseaz'a documentul cu un scor $weight(q)$ c'jnd termenii sunt identici 'si 'ii aplic'a o penalizare 'in caz contrar.
+
+La pasul inductiv se ia 'in considerare cazul 'in care documentul sau interogarea con'tin mai mult de un termen.
+
+\textbf{Pas inductiv:} $\forall Q,D$ astfel 'inc'jt $|Q| \geq 1$ 'si $|D| \geq 1$,
+\[
+(1) \mbox{Presupunem } Q' = Q \cup \{q\} \mbox{, atunci } S(Q',D)=S(Q \cup \{q\},D)=g(S(Q,D),S(\{q\},D),q,Q,D).
+\]
+\[
+(2) \mbox{Presupunem } D' = D \cup \{d\}\mbox{, atunci } S(Q,D')=S(Q, D \cup \{d\})=h(S(Q,D),S(Q,\{d\}),d,Q,D).
+\]
+
+Func'tia $g$ descrie schimbarea scorului c'jnd se adaug'a un termen la o interogare 'si este numit'a \emph{func'tia de cre'stere a interog'arii (Query growth function)}. C'jnd un nou termen $q$ este ad'augat la interogarea $Q$, scorul oric'arui document pentru noua interogare ($S(Q \cup \{q\},D)$) va fi determinat de scorul documentului pentru vechea interogare ($S(Q,D)$), scorul documentului pentru noul termen ad'augat ($S(\{q\},D)$) 'si orice alte ajust'ari determinate de $D$, $Q$ sau $q$. 'In mod similar, func'tia $h$ descrie schimbarea scorului c'jnd se adaug'a un termen unui document 'si este numit'a \emph{func'tia de cre'stere a documentului (Document growth function)}.
+
+Este necesar'a condi'tia ca $S(Q,D)$ s'a nu 'isi modifice valorile 'in func'tie de ordinea 'in care termenii sunt ad'auga'ti fie 'in interogare fie 'in document.
+
+\subsection{Constr'jngeri de reg'asire}
+O alt'a component'a important'a 'in modelul axiomatic este reprezentat'a de constr'jngerile de reg'asire. Au fost definite trei constr'jngeri pe care orice formul'a rezonabil'a de calculare a scorului trebuie sa le satisfac'a.
+
+\paragraph{Constr'jngerea 1:} 
+$\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \in Q, S(Q, D \cup \{d\}) > S(Q, D)$. Aceast'a constr'jngere spune c'a ad'augarea unui termen din interogare la un document trebuie s'a creasc'a scorul.
+
+\paragraph{Constr'jngerea 2:} 
+$\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \notin Q, S(Q, D \cup \{d\}) < S(Q, D)$. Aceast'a constr'jngere asigur'a c'a ad'ugarea unui termen care nu face parte dintr'o interogare la un document are ca urmare sc'aderea scorului.
+
+\paragraph{Constr'jngerea 3:} 
+$\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \in Q, \delta_d(d, D, Q) > \delta_d(d, D \cup \{d\}, Q)$, unde $\delta_d(d, D, Q) = S(Q, D \cup \{d\}) - S(Q,D)$. Aceast'a constr'jngere asigur'a c'a cantitatea de cre'stere a scorului prin ad'augarea unui termen $d$ din interogare 'in document trebuie s'a se mic'soreze pe m'asur'a ce se adaug'a mai mul'ti termeni.
+
+
+\subsection{Modelarea func'tiilor}
+
 \chapter{Metode de agregare}
+Consider'am problema combin'arii ierarhiz'arilor rezultate din diferite surse. Principalele aplica'tii includ motoare de meta-c'autare, \emph{combinarea metodelor de ierarhizare}, selectarea documentelor pe baza mai multor criterii, 'imbunat'a'tirea preciziei c'auta'rii prin asocierea cuvintelor \cite{RAM}. 'In lucrarea de fa't'a agregarea a fost folosit'a pentru a combina rezultatele diverselor metode de ierarhizare.
+
+Sarcina ierarhiz'arii unei liste de obiecte pe baza uneia sau mai multor criterii este 'int'jlnit'a 'in multe situa'tii. Unul dintre principalele scopuri ale acestui efort este identificarea celor mai bune alternative. C'jnd exist'a un singur criteriu (sau "judec'ator") pentru ierarhizare, sarcina este relativ u'soar'a. Problema apare c'jnd se fac mai multe ierarhiz'ari dup'a criterii diferite 'si trebuie g'asit un "consens" 'intre acestea. Aceast'a problem'a poart'a numele de \emph{rank aggregation problem}.
+
+Voi prezenta mai 'intai un model matematic pentru problema agreg'arii 'si voi trata apoi dou'a metode de agregare.
+
+Fie $U$ un set finit de obiecte numit \emph{univers}. Putem presupune, f'ar'a pierderea generalit'a'tii, c'a $U = \left\{1,2,...,|U|\right\}$ (unde $|U|$ reprezint'a cardinalitatea lui $U$). O ierarhizare peste $U$ este o list'a ordonat'a: $\tau = (x_1 > x_2 > ... > x_n)$, unde $x_i \in U$ pentru orice $1 \leq i \leq d$, $x_i \neq x_j$ pentru orice $1 \leq i \neq j \leq d$, 'si $>$ este o rela'tie de ordonare pe $\{x_1,...,x_d\}$ numi't'a \emph{criteriu de ordonare}. Pentru un obiect dat $i \in U$ prezent 'in $\tau$, $\tau(i)$ reprezint'a pozi'tia (sau rangul) lui $i$ 'in $\tau$. 
+
+Dac'a ierarhia $\tau$ con'tine toate elementele lui $U$, atunc'i se nume'ste \emph{list'a(ierarhie) complet'a}. Exist'a situa'tii c'jnd anumite obiecte nu sunt ierarhizate de un anume criteriu; dac'a $\tau$ con'tine doar un subset de elemente din universul $U$, atunci $\tau$ se nume'ste \emph{list'a par'tial'a}.
+
 \section{Borda}
-\section{Agregarea Rank Distance}
+Metoda \emph{Borda} (dup'a Jean-Charles, chevalier de Borda, May 4, 1733 – February 19, 1799) este o metod'a "pozi'tiona'l'a", 'in sensul c'a atribuie un scor 'in func'tie de pozi'tia pe care un candidat o ocup'a 'in lista fiec'arui votant. Ierarhia final'a este dat'a de sortarea descresc'atoare dup'a scorul cumulat. Un prim avantaj al metodelor pozi'tionale este c'a au o complexitate sc'azut'a: pot fi implementate 'in timp liniar. 'In acela'si timp satisfac propriet'a'tile de \emph{anonimitate}, \emph{neutralitate} 'si \emph{consisten't'a}. Cu toate acestea, nu pot satisface \emph{criteriul Condorcet}. De fapt, este posibil s'a se demonstreze c'a nici o metod'a care asigneaz'a ponderi fiec'arei pozi'tii 'si apoi sorteaz'a rezultatele aplic'jnd o func'tie ponderilor asociate cu fiecare candidat nu satisface principiul Condorcet.
+
+Fie listele complete $\tau_1, ..., \tau_k$, 'si $S$ mul'timea tuturor candida'tilor. Pentru fiecare $c \in S$ 'si fiecare list'a $\tau_i$, metoda Borda calculeaz'a scorul $B_i(c) = $ num'arul de candida'ti afa'ti sub $c$ 'in ierarhia $\tau_i$. Scorul total este definit ca:
+\begin{equation}
+B(c) = \sum_{i=i}^{k}{B_i(c)}.
+\label{eq:borda}
+\end{equation}
+Candida'tii sunt apoi sorta'ti 'in ordinea descresc'atoare a acestui scor. 
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	Pozi'tie & Candidat & Formul'a & Puncte\\
+	\hline
+	1 & A & (n - 1) & 4\\
+	2 & B & (n - 2) & 3\\
+	3 & C & (n - 3) & 2\\
+	4 & D & (n - 4) & 1\\
+	5 & E & (n - 5) & 0\\
+	\hline
+\end{tabular}
+\caption{Scorurile primite de candida'tii 'intr-o ierarhizare dup'a metoda Borda}
+\label{tab:borda1}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	Pozi'tie & Candidat & Formul'a & Puncte\\
+	\hline
+	1 & A & (1 / 1) & 1.00\\
+	2 & B & (1 / 2) & 0.50\\
+	3 & C & (1 / 3) & 0.33\\
+	4 & D & (1 / 4) & 0.25\\
+	5 & E & (1 / 5) & 0.20\\
+	\hline
+\end{tabular}
+\caption{Borda cu o func'tie diferit'a de scor}
+\label{tab:borda2}
+\end{table}
+
+\section{Agregarea Distan't'a-Rang}
+Urm'atoarea abordare se bazeaz'a pe folosirea unei m'asuri de \emph{distan't'a} (sau similaritate) 'intre ierarhii. Pa'sii aceste abord'ari sunt simpli: mai 'intai sunt date ierarhiile care trebuiesc combinate, apoi se define'ste o dinstan't'a 'intre o pereche de ierarhii, urm'jnd s'a se caute o ierarhizare care are proprietatea c'a minimizeaz'a distan'tele de la ea la fiecare dintre ierarhiile date. Privit'a printr-o perspectiv'a geometric'a, acest'a problem'a se reduce la g'asirea punctului median al multisetului de ierarhii. De aceea aceste tipuri de agreg'ari se mai numesc 'si ierarhiz'ari mediene.
+
+Problemele care trebuiesc adresate 'in continuare sunt: \emph{cum s'a se defineasc'a distant'a 'intre ierarhii} 'si \emph{ce algoritm trebuie folosit pentru a calcula 'in mod eficient agregarea?}
+
+\subsection{Distan'ta-rang}
+Fie $\sigma=(x_1>x_2>...>x_n)$ o ierarhie par'tial'a peste $U$; spunem c'a $n$ este lungimea lui $\sigma$. Pentru un element $x \in U \cap \sigma$ definim ordinea lui $x$ 'in ierarhia $\sigma$ prin $ord(\sigma, x) = |n - \sigma(x)|$. Prin conven'tie, dac'a $x \in U \backslash \sigma$ atunci $ord(\sigma, x) = 0$.
+
+Fie dou'a ierarhii par'tiale $\sigma$ 'si $\tau$ peste acela'si univers. Distan'ta-rang dintre ele este definit'a ca:
+\begin{equation}
+\Delta(\sigma, \tau) = \sum\limits_{x \in \sigma \cup \tau}{|ord(\sigma, x) - ord(\tau, x)|}.
+\label{eq:rd}
+\end{equation}
+Din moment ce pentru orice $x \in U \backslash (\sigma \cup \tau)$ avem $ord(\sigma, x) = ord(\tau, x) = 0$, urm'atoarea egalitate este adev'arat'a:
+\begin{eqnarray*}
+  \lefteqn{\Delta(\sigma, \tau) = \sum\limits_{x \in \sigma \cup \tau}{|ord(\sigma, x) - ord(\tau, x)|} =} \\
+  & & = \sum\limits_{x \in \sigma \cup \tau}{|ord(\sigma, x) - ord(\tau, x)|} + \sum\limits_{x \in U \backslash (\sigma \cup \tau)}{|ord(\sigma, x) - ord(\tau, x)|} =\\
+  & & =\sum\limits_{x \in U}{|ord(\sigma, x) - ord(\tau, x)|}.
+\end{eqnarray*}
+
+Exist'a dou'a motive pentru care a fost folosit'a ordinea 'in loc de rangul propriu-zis. 'In primul r'jnd s-a considerat c'a distan'ta dintre dou'a ierarhii ar trebui s'a fie mai mare dac'a obiectele situate pe primele locuri difer'a. Un alt motiv este constituit de faptul c'a lungimea ierarhiei este 'si ea important'a: dac'a o ierarhie este mai lung'a, criteriul care a produs-o se consider'a c'a a efectuat o analiz'a mai am'anun'tit'a asupra obiectelor, a'sadar, este mai demn'a de 'incredere dec'jt o ierarhie mai scurt'a.
+
+Fie un multiset de ierarhii $T = \{\tau_1, ...,\tau_k\}$. Se define'ste $\Delta(\sigma, T) = \sum\limits_{\tau \in T}{\Delta(\sigma, \tau)}$.
+
+\subsection{Problema rang-agreg'arii}
+Fie $T$ un multiset de ierarhii $\{\tau_1, ...\tau_k\}$. O \emph{agregare distan't'a-rang} (RDA - rank-distance aggregation) a acestui multiset este o ierarhie $\sigma$, peste acela'si unives ca 'si ierarhiile din $T$, care minimizeaz'a $\Delta(\sigma, T)$. Setul de agreg'ari RD al lui $T$ se noteaz'a $agr(T)$.
+
+Orice ierarhie par'tial'a $\sigma$ de lungime $t$ care minimizeaz'a (printre celelalte ierarhii de lungime $t$) $\Delta(\sigma, T)$ se nume'ste $t$-agregare a lui $T$. Este evident c'a o $t$-agregare este o RD-agregare dac'a distan'ta fa't'a de $T$ este minim'a consider'jnd toate valorile lui $t$. De asemenea, dac'a o $t$-agregare este 'in $agr(T)$, atunci toate $t$-agreg'arile sunt 'in $agr(T)$, pentru un anume $t$. Aceste dou'a observa'tii demonstreaz'a c'a $agr(T)$ con'tine $t$-agreg'arile care minimizeaz'a distan'ta p'jn'a la $T$, peste toate valorile lui $t$.
+
+%%exemplu???
+
+S'a presupunem c'a vrem s'a calcul'am agreg'arile pentru un multiset de ierarhii $T = \{\tau_1, ...,\tau_p\}$, peste universul de obiecte $U = \{1,2,...,n\}$. Definim matricile p'atratice n-dimensionale $D^{(t)}, 1 \leq t \leq n$ 'in felul urm'ator:
+\begin{equation}
+D^{(t)}(k,j) = \left\{
+\begin{array}{ll}
+	\sum\limits_{i=1}^p{|j - ord(\tau_i, k)|}, & j \leq t\\
+	\sum\limits_{i=1}^p{|ord(\tau_i, k)|}, & t < j
+\end{array}
+\right..
+\label{eq:rdamatrix}
+\end{equation}
+
+Fie $\pi = (i_1 > ... > i_t)$ o ierarhie de lungime $t$, 'si, $i_{t+1},...,i_n$ sunt obiectele din $U$ care nu apar 'in $\pi$ (adic'a, $ord(\pi, i_j) = 0, \forall j > t$).
+Au loc urm'atoarele egalit'a'ti:
+
+\begin{eqnarray*}
+  \lefteqn{\Delta(\pi, T) = \sum\limits_{\tau_i \in T}{\Delta(\pi, \tau_i)} = \sum\limits_{\tau_i \in T}{\sum\limits_{j \in U}{|ord(\pi,j) - ord(\tau_i,j)|}}=} \\
+  & & = \sum\limits_{\tau_i \in T}{\sum\limits_{j = 1,n}{|ord(\pi,j) - ord(\tau_i,j)|}}=\sum\limits_{\tau_i \in T}{\sum\limits_{j = 1,n}{|ord(\pi,i_j) - ord(\tau_i,i_j)|}}=\\
+  & & =\sum\limits_{\tau_i \in T}{\sum\limits_{j = 1,t}{|j - ord(\tau_i,i_j)|} + \sum\limits_{j = t+1,n}{|ord(\tau_i,i_j)|}}=\\
+  & & =\sum\limits_{j=1,n}{D^{(t)}(i_j,j)}.
+\end{eqnarray*}
+
+A'sadar, distan'ta de la $\pi$ la multisetul $T$ este $\Delta(\pi, T) = \sum\limits_{j=1,n}{D^{(t)}(i_j,j)}$.
+
+Egalitatea de mai sus este folositoare pentru a g'asi o $t$-agregare: se caut'a o permutare $(i_1,...,i_n)$ a lui $U$, astfel 'inc'jt $E=\sum\limits_{j=1,n}{D^{(t)}(i_j,j)}$ sa fie minim; odat'a g'asit'a o astfel de permutare, $t$-agregarea este $(i_1>i_2>...>i_t)$. Pentru a g'asi toate t-agreg'arile, se caut'a toate permut'arile care minimizeaz'a expresia $E$. Urm'atorul pas este g'asirea RD-agreg'arilor select'jnd $t$-agreg'arile care minimizeaz'a distan'ta la multisetul $T$, pentru orice valaore a lui $t$.
+
+G'asirea unei $t$-agreg'ari se reduce la urm'atoarea problem'a de optimizare: av'jnd o matrice p'atratic'a n-dimensional'a $M=(m_{i,j})_{1 \leq i,j \leq n}$ cu elemente 'intregi pozitive, s'a se g'aseasc'a mul'timea 
+\begin{equation}
+A=\{(i_1,...,i_n)|(i_k \neq i_j \forall k \neq j), (1 \leq i_j \leq n), \mbox{ si suma }  \sum\limits_{j=1,n}{m_{i_j,j} \mbox{ este minima}} \}.
+\end{equation}
+Solu'tia clasic'a a acestei probleme este \emph{Algoritmul Ungar} a c'arui prezentare nu 'tine de scopul acestei lucr'ari.
 
 \chapter{Studiu comparativ}
 \section{Unelte}
@@ -959,7 +1150,6 @@ Formulele BM25 de ponderare a termenilor au fost folosite cu succes pe o varieta
 \subsubsection{Similaritate 'si ierarhizare}
 \emph{Lucene} combin'a modelul boolean (BM) cu modelul de spa'tiu vectorial (VSM): documentele care trec de BM sunt etichetate cu un scor de c'atre VSM.
 
-%remove?
 'In VSM, documentele si interog'arile sunt reprezentate ca vectori de ponderi 'intr-un spa'tiu multidimensional, unde fiecare termen din index este o dimensiune 'si ponderile sunt valorile \emph{tf-idf}. VSM nu necesit'a faptul ca ponderile s'a fie valori tf-idf, dar aceste ponderi au rezultate foarte bune 'in practic'a, 'si, ca urmare, Lucene folo'ste aceast'a abordare. Pentru un termen \emph{t} 'si un document (sau interogare) \emph{x}, tf(t,x) cre'te odat'a cu num'arul de ocuren'te ale lui t 'in x iar idf(t) descre'ste odat'a cu cre'sterea num'arului de documente din index care il con'tin pe t.
 
 Scorul documentului d pentru interogarea q este dat de \emph{similaritatea cosinus} pentru vectorii de ponderi V(q) 'si V(d):
@@ -1096,21 +1286,26 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 \label{tab:treceval}
 \end{table}
 
-\subsection{JFreeChart}
-
 \section{Descrierea framework-ului de test}
 \section{Rezultate}
-
+%de scris despre coord (overlap, ovelapmax)
+%de scris despre bm25 idf+1
+%de scris ca la persian rezultate mai bune pt T fata de TD(depinde si de interogari)
+%cluster pruning foarte praf...poate fi imbunatatit?
 \chapter{Concluzii}
 
 \begin{thebibliography}{9}
 	%TODO: 2 puncte Schutze
-	\bibitem{MAN}Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
+	\bibitem{MAN} Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
 	\bibitem{GROSS}David A. Grossman, Ophir Frieder , \emph{Information retrieval: algorithms and heuristics, 2nd Edition} 
 	\bibitem{SE} \url{http://www.search-engines-book.com/}
 	\bibitem{IRWIKI} \url{http://en.wikipedia.org/wiki/Information_retrieval}
 	\bibitem{IND} \url{http://en.wikipedia.org/wiki/Index_(search_engine)}
 	\bibitem{IND1} \url{http://en.wikipedia.org/wiki/Inverted_index}
+	\bibitem{AXIOM} Hui Fang, ChengXiang Zhai, \emph{An Exploration of Axiomatic Approaches to Information Retrieval}
+	\bibitem{RDA} Liviu P. Dinu, Florin Manea, \emph{An Efficient Approach for the Rank
+Aggregation Problem}
+	\bibitem{RAM} C. Dwork, R. Kumar, M. Naor, and D. Sivakumar, \emph{Rank aggregation methods for the Web}, Proc. of the 10th International WWW Conference, 2001.
 	%sim javadoc
 \end{thebibliography}
 

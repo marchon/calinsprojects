@@ -16,6 +16,7 @@ public class AggregatorImpl implements Aggregator {
 	private class DoubleAccumulator {
 		double val = 0.0;
 	}
+	
 	@Override
 	public String[] aggregate(String[][] rankings) {
 		Map<String, DoubleAccumulator> accumulatorMap = new HashMap<String, DoubleAccumulator>();
@@ -47,8 +48,18 @@ public class AggregatorImpl implements Aggregator {
 					}
 				});
 
-		String[] aggRank = new String[list.size()];
-		for (int i = 0; i < aggRank.length; i++) {
+		//calc max len
+		int max = rankings[0].length;
+		
+		for (int i = 1; i < rankings.length; i++) {
+			if(rankings[i].length > max)
+				max = rankings[i].length;
+		}
+		
+		int n = Math.min(max, list.size());
+		
+		String[] aggRank = new String[n];
+		for (int i = 0; i < n; i++) {
 			aggRank[i] = list.get(i).getKey();
 		}
 		return aggRank;
@@ -56,8 +67,8 @@ public class AggregatorImpl implements Aggregator {
 	
 	public static void main(String[] args) {
 		System.out.println(Arrays.asList(new AggregatorImpl().aggregate(new String[][]{
-				{"a", "b", "c"}, 
-				{"b", "a", "c"}, 
+				{"a", "b", "c", "d"}, 
+				{"b", "a", "c", "e"}, 
 				{"b", "c", "a"}
 		})));
 	}

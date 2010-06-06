@@ -1,6 +1,5 @@
 package ro.ranking.technique.bm25;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.benchmark.quality.QualityQuery;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -8,6 +7,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
 import ro.ranking.benchmarking.AbstractQualityQueryParser;
+import ro.ranking.benchmarking.Utils;
 
 public class BM25QualityQueryParser extends AbstractQualityQueryParser {
 	public BM25QualityQueryParser(String[] qqNames, String indexField) {
@@ -17,7 +17,7 @@ public class BM25QualityQueryParser extends AbstractQualityQueryParser {
 	@Override
 	public QueryParser createQueryParser() {
 		return new QueryParser(Version.LUCENE_CURRENT, indexField,
-				new StandardAnalyzer(Version.LUCENE_CURRENT));
+				Utils.getDefaultAnalyzer());
 	}
 
 	public Query parse(QualityQuery qq) throws ParseException {
@@ -38,7 +38,9 @@ public class BM25QualityQueryParser extends AbstractQualityQueryParser {
 					qsb.append(" ");
 			}
 		}
-
-		return new BM25BooleanQuery(qsb.toString(), qp);
+		
+		Query q = new BM25BooleanQuery(qsb.toString(), qp);
+		
+		return q;
 	}
 }

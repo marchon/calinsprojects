@@ -1,10 +1,10 @@
 package ro.ranking.technique.lucene;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
 
 import ro.ranking.benchmarking.AbstractQualityQueryParser;
+import ro.ranking.benchmarking.Utils;
 
 public class LuceneQualityQueryParser extends AbstractQualityQueryParser {
 
@@ -15,7 +15,7 @@ public class LuceneQualityQueryParser extends AbstractQualityQueryParser {
 	@Override
 	public QueryParser createQueryParser() {
 		return new QueryParser(Version.LUCENE_CURRENT, indexField,
-				new StandardAnalyzer(Version.LUCENE_CURRENT));
+				Utils.getDefaultAnalyzer());
 	}
 
 }

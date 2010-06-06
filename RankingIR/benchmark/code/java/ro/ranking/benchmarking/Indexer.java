@@ -14,12 +14,12 @@ import org.apache.lucene.benchmark.byTask.utils.Config;
 
 public class Indexer {
 	public static void main(String[] args) throws Exception {
-		if(args.length != 1) {
-			System.err.println("Usage: Indexer <workDir>");
+		if(args.length != 2) {
+			System.err.println("Usage: Indexer <workDir> <analyzer>");
 			System.exit(1);
 		}
 		
-	    Properties p = initProps(args[0]);
+	    Properties p = initProps(args[0], args[1]);
 	    Config conf = new Config(p);
 	    PerfRunData runData = new PerfRunData(conf);
 	    
@@ -57,12 +57,12 @@ public class Indexer {
 		top.doLogic();
 	  }
 
-	  private static Properties initProps(String workingDir) {
+	  private static Properties initProps(String workingDir, String analyzer) {
 	    Properties p = new Properties();
 	    p.setProperty ( "work.dir"  				, workingDir );
 	    p.setProperty ( "content.source"			, "org.apache.lucene.benchmark.byTask.feeds.TrecContentSource" );
 	    p.setProperty ( "content.source.log.step" 	, "2500" );
-	    p.setProperty ( "analyzer"            		, "org.apache.lucene.analysis.standard.StandardAnalyzer" );
+	    p.setProperty ( "analyzer"            		, Utils.loadAnalyzerClass(analyzer).getName());
 	    p.setProperty ( "directory"           		, "FSDirectory" );
 	    p.setProperty ( "doc.tokenized"       		, "true" );
 	    p.setProperty ( "doc.stored"          		, "true" );
@@ -71,6 +71,7 @@ public class Indexer {
 	    p.setProperty ( "content.source.forever"	, "false" );
 	    p.setProperty ( "content.source.encoding"	, "UTF-8" );
 	    p.setProperty ( "content.source.excludeIteration", "true" );
+	    p.setProperty ( "index.name", "index_" + analyzer);
 	    return p;
 	  }
 }

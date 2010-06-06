@@ -29,12 +29,16 @@
 	</target>
 
 	<target name="cli">
-		<delete dir="collections/${collection}/index" />
+		<delete dir="collections/${collection}/index_${analyzer}" />
+	</target>
+
+	<target name="clis">
+		<delete includeemptydirs="true" dir="collections/${collection}/" includes="**/index*/**" />
 	</target>
 
 	<target name="clr">
 		<delete includeemptydirs="true">
-		  <fileset dir="benchmark/results/" includes="**/*" excludes=".svn"/>
+			<fileset dir="benchmark/results/" includes="**/*" />
 		</delete>
 	</target>
 
@@ -80,9 +84,10 @@
 			<arg value="${query.spec}"/>
 			<arg value="${query.nbres}"/>
 			<arg value="${analyzer}" />
+			<arg file="benchmark/results/${technique.test}${technique}${aggr}-${query.spec}-${analyzer}@${collection}-set${collection.num}.txt" />
 		</java>
 
-		<exec executable="utils/trec_eval.exe" 
+		<exec executable="utils/trec_eval.exe" append="true"
 			output="benchmark/results/${technique.test}${technique}${aggr}-${query.spec}-${analyzer}@${collection}-set${collection.num}.txt">
 			<arg file="collections/${collection}/judgements${collection.num}.txt" />
 			<arg file="benchmark/results/subm_${guid}.txt" />
@@ -113,6 +118,13 @@
 		</copydir>
 		<copydir dest="${export.dir}/benchmark/code/java" src="./benchmark/code/java">
 		</copydir>
+	</target>
+
+	<target name="luke">
+		<java jar="utils/luke.jar" fork="true">
+			<arg value="-index"/>
+			<arg file="collections/${collection}/index_${analyzer}"/>
+		</java>
 	</target>
 
 </project>

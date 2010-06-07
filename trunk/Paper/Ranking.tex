@@ -1258,7 +1258,57 @@ Proiectul \emph{Lucene Java} con'tine 'si un "spa'tiu de lucru" numit \emph{Luce
 Printre contribu'tiile din acest set de pachete se afl'a pachetul \emph{analyzers} ce con'tine o multitudine de analizoare (componente de preprocesare a textului: liste de stop, stemmer-e) 'si pachetul \emph{benchmark}. Pachetul \emph{benchmark} con'tine unelte pentru testarea 'si evaluarea lui \emph{Lucene} folosind corpusuri standard. 'In spe'ta, subpachetul \emph{quality} este folosit la rularea unui set de interog'ari 'in format standard (de exemplu TREC) pe un index de documente 'si la calcularea unor m'asuri de evaluare a sistemului.
 
 \subsection{Proiectul Apache Open Relevance (ORP)}
+Proiectul \emph{ORP (Open Relevance Project)} este un sub-proiect Lucene care are scopul de a construi materiale pentru evaluarea relevan'tei 'in reg'asirea informa'tiei(de asemenea, \emph{Machine Learning} 'si \emph{Procesarea limbajului natural}) urm'jnd ca acestea s'a fie distribuite sub licen't'a open-source\cite{ORP}. Aceste materiale sunt compuse din colec'tii de documente, unul sau mai multe seturi de interog'ari 'si judec'a'ti de relevan't'a pentru fiecare set.
 
+'In timp ce \emph{TREC} 'si alte conferin'te pun la dispozi'tie corpusuri, seturi de interog'ari 'si judec'a'ti de relevan't'a, niciuna dintre ele nu face acest lucru 'in mod "gratuit" 'si "deschis". Intrarea 'in posesia unei astfel de colec'tii implic'a de obicei, o sum'a de bani, semnarea unui contract 'si livrarea prin po'st'a.
+
+'In momentul de fa't'a \emph{ORP} pune la dispozi'tie trei corpusuri de test: \emph{Ohsumed}, \emph{Hamshahri} 'si \emph{Tempo}. ORP con'tine o serie de scripturi \emph{ant} (\url{http://ant.apache.org/}) 'si adaptoarea (programe Java) folsite pentru a desc'arca de pe Internet respectiv converti formatele originale ale acestor colec'tii la un format standard (TREC). 'In continuare voi prezenta fiecare dintre aceste colec'tii.
+
+\subsubsection{Ohsumed}
+Aceast corpus este versiunea folosit'a la \emph{TREC-9 filtering track}. Corpusul poate fi ob'tinut de la adresa \url{http://trec.nist.gov/data/t9_filtering.html}.
+
+Colec'tia de test \emph{Oshumed} este un set de 348,556 referin'te din \emph{MEDLINE}(baza de date a \emph{Bibiliotecii Na'tionale de Medicin'a a Statelor Unite}), const'jnd din titluri 'si/sau rezumate din 270 de jurnale medicale (1987-1991). C'jmpurile disponibile sunt \emph{title}, \emph{abstract}, \emph{MeSH indexing terms}, \emph{author}, \emph{source}, 'si \emph{publication type}.
+
+Colec'tia pune la dispozi'tie trei seturi diferite de topicuri(interog'ari):
+\begin{enumerate}
+	\item un subset de 63 de interog'ari din setul original.
+	\item un set de 4904 de termeni \emph{MeSH}* 'si defini'tiile lor(MSH)
+	\item un subset de 500 de termeni \emph{MeSH} (MSH-SMP)
+\end{enumerate}
+
+(*)\emph{MeSH} este vocabularul "controlat" al Bibliotecii Na'tionale de Medicin'a a Statelor Unite folosit la indexarea articolelor pentru MEDLINE. Terminologia MeSh asigur'a un mod consistent de a reg'asi informa'tie care poate folosi termninologii diferite pentru acelea'si concepte.
+
+\subsubsection{Hamshahri}
+Corpusul \emph{Hamshahri} con'tine documente de 'stiri din ziarul on-line 'in limba persan'a \emph{Hamshahri} (\url{http://www.hamshahrionline.ir/}). Colec'tia se g'ase'ste la adresa \url{http://ece.ut.ac.ir/dbrg/Hamshahri/} 'si con'tine documente din 1996 p'jn'a 'in 2002, acoperind 82 de categorii diferite (politic'a, literatur'a, art'a, etc.).
+
+Colec'tia con'tine dou'a seturi de interog'ari de c'jte 65 respectiv 58 de subiecte 'si sunt cunoscute urm'atoarele statistici:
+\begin{itemize}
+	\item M'arime(MB): 345MB(564MB cu etichete)
+	\item Num'ar de documente: 166,774
+	\item Num'ar de termeni: 417,339
+	\item Lungimea medie a unui document ('in cuvinte): 380.
+\end{itemize}
+
+Mai multe informa'tii se pot g'asi la 'in articolul \emph{Hamshahri: A Standard Persian Text Collection} (\url{http://ece.ut.ac.ir/dbrg/Hamshahri/Papers/Hamshahri_Description.pdf}).
+
+\subsubsection{Tempo}
+Corpusul \emph{Tempo} con'tine articole de 'stiri din perioada 2000-2002 din ziarul indonezian on-line \emph{Tempo} (\url{http://www.tempointeraktif.com/}). Colec'tia se poate desc'arca de la adresa \url{http://ilps.science.uva.nl/resources/bahasa}.
+
+Corpusul are urm'atoarele statistici:
+\begin{itemize}
+	\item M'arime(MB): 45.57MB
+	\item Num'ar de documente: 22,944
+	\item Media de termeni unici: 155
+	\item Lungimea medie a unui document ('in octe'ti): 1549.59.
+\end{itemize}
+
+Exist'a un set de 35 de interog'ari care au ca subiect evenimente petrecute 'in Indonezia 'in acea perioad'a. Statisticile interog'arilor sunt urm'atoarele:
+\begin{itemize}
+	\item Num'ar de interog'ari: 35
+	\item Lungimea medie('in cuvinte) 5.2
+	\item Media de cuvinte unice: 5.17
+	\item Media num'arului de documente relevante per interogare: 66.971.
+\end{itemize}
 
 \subsection{trec\_eval}
 \emph{trec\_eval} este unealta standard folosit'a de comunitatea TREC pentru a evalua sisteme ad-hoc de reg'asirea informa'tiei, folosind un fi'sier standard de judec'a'ti de relevan't'a 'si fi'sierul cu rezultatele sistemului 'si calcul'jnd diferite m'asuri de evaluare.
@@ -1311,8 +1361,8 @@ num\_rel\_ret & Num'arul total de documente relevante 'si reg'asite\\
 map & Precizia medie (MAP)\\
 gm\_ap & Precizia medie calculat'a flosind media geometric'a\\
 R-prec & R-precizia (precizia dup'a R documente reg'asite)\\
-bpref & Binary Preference, top R judged nonrel\\
-recip\_rank & Reciprical rank of top relevant document\\
+bpref & Preferin'ta binar'a\\
+recip\_rank & Rangul reciproc al primului document relevant\\
 ircl\_prn.0.00 & Media preciziei interpolate la nivelul de recall 0.00\\
 ircl\_prn.0.10 & Media preciziei interpolate la nivelul de recall 0.10\\
 ircl\_prn.0.20 & Media preciziei interpolate la nivelul de recall 0.20\\
@@ -1344,6 +1394,8 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 %de scris despre bm25 idf+1
 %de scris ca la persian rezultate mai bune pt T fata de TD(depinde si de interogari)
 %cluster pruning foarte praf...poate fi imbunatatit?
+%seturile de interogari
+%analizor indonezian
 \chapter{Concluzii}
 
 \begin{thebibliography}{9}
@@ -1361,6 +1413,7 @@ Aggregation Problem}
 	\bibitem{LUC} \url{http://lucene.apache.org/java/docs/}
 	\bibitem{LUCSIM} \url{http://lucene.apache.org/java/3_0_1/api/core/index.html}
 	\bibitem{ORP} \url{https://cwiki.apache.org/ORP/}
+	\bibitem{TRECEVAL} \url{http://trec.nist.gov/trec_eval/}
 \end{thebibliography}
 
 \end{document}

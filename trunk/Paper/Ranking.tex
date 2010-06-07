@@ -64,7 +64,7 @@ Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicata de ca'tiva oam
 RI este interdisciplinar'a, bazat'a pe informatic'a, matematic'a, 'stiin'ta informa'tiei, arhitectura informa\-'tiei, psihologie cognitiv'a, lingvistic'a, statistic'a, etc. Sisteme automate de RI au fost folosite pentru a reduce ceea ce se numeste "supra'inc'arcarea de informa'tie". Multe universit'a'ti 'si libr'arii publice folosesc sisteme RI pentru a facilita accesul la c'ar'ti, jurnale 'si alte tipuri de documente. Cele mai folosite aplicatii RI sunt motoarele de c'autare web.
 
 \section{Scurt istoric}
-Ideea de a folosi calculatoarele pentru a c'auta "buc'ati" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
+Ideea de a folosi calculatoarele pentru a c'auta "buc'a'ti" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
 
 'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunita'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care scaleaza la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
 
@@ -1024,8 +1024,50 @@ $\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \notin Q, S(Q, D \cup 
 \paragraph{Constr'jngerea 3:} 
 $\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \in Q, \delta_d(d, D, Q) > \delta_d(d, D \cup \{d\}, Q)$, unde $\delta_d(d, D, Q) = S(Q, D \cup \{d\}) - S(Q,D)$. Aceast'a constr'jngere asigur'a c'a cantitatea de cre'stere a scorului prin ad'augarea unui termen $d$ din interogare 'in document trebuie s'a se mic'soreze pe m'asur'a ce se adaug'a mai mul'ti termeni.
 
-
 \subsection{Modelarea func'tiilor}
+Pentru a ob'tine o rela'tie 'intre func'tiile de reg'asire deja existente 'si noul model axiomatic, au fost rescrise mai c'jteva din aceastea folosind schema inductiv'a prezentat'a mai sus. 'In continuare este prezentat'a rescrierea formulei \emph{Okapi BM25}.
+
+Okapi define'ste scorul 'intre o interogare 'si un document astfel:
+\[
+S(Q,D) = \sum\limits_{t \in Q \cap D}{\ln{\frac{N - df(t) + 0.5}{df(t) + 0.5}} \times QTF(C_t^Q) \times TF\_LN(C_t^D, |D|)},
+\]
+unde $C_t^Q$ 'si $C_t^D$ reprezint'a num'arul de ocuren'te ale termenului $t$ 'in interogarea $Q$, respectiv 'in documentul $D$, $df(t)$ reprezint'a num'arul de documente care con'tin termenul $t$, $QTF(x)=\frac{(k_3+1) \times x}{k_3+x}$ 'si $TF\_LN(x,y)=\frac{(k_1+1) \times x}{k_1((1-b) + b \frac{y}{avdl}) + x}$. $k_1$, $b$ 'si $k_3$ sunt constante descrise 'in capitolul anterior.
+
+Dup'a rescriere ob'tinem:
+\begin{eqnarray*}
+  weight(q) & = & \ln{\frac{N - df(t) + 0.5}{df(t) + 0.5}} \cdot TF\_LN(1,1)\\
+  penalty() & = & 0\\
+  g() & = & S(Q,D) + \Delta QTF(C_t^D) \cdot S({q},D)\\
+  h() & = & S(Q,D) + S(Q, {d}) \cdot \Delta TF(C_t^D, |D|+1) \cdot \gamma\\
+  		& + & \sum\limits_{t \in Q \cap D}{S(Q,{t}) \cdot \Delta LN(C_t^D,|D|) \cdot \gamma}\\
+  		& = & \sum\limits_{t \in Q \cap D - {d}}{S(Q,{t}) \cdot TF\_LN(C_t^D,|D|+1) \cdot \gamma}\\
+  		& + & S(Q, {d}) \cdot TF\_LN(C_t^D + 1, |D| + 1) \cdot \gamma,
+\end{eqnarray*}
+unde $\Delta TF(x,y) = TF\_LN(x+1,y) - TF\_LN(x,y)$, $\Delta LN(x,y)=TF\_LN(x, y+1) - TF\_LN(x,y)$, $\Delta QTF(x) = QTF(x+1) - QTF(X)$ 'si $\gamma = \frac{1}{TF\_LN(1,1)}$.
+Se observ'a c'a $weight(q)$ este 'in str'jns'a leg'atur'a cu $idf$ 'si c'a $h()$ implementeaz'a normalizarea cu lungimea documentului 'si normalizarea $tf$.
+
+\subsubsection{Func'tiile derivate}
+Combin'jnd toate posibilit'a'tile celor trei componente s-au ob'tinut 'sase noi formule \cite{AXIOM}:
+\begin{eqnarray*}
+  \textbf{F1-LOG(s): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF(C_t^D) \cdot LN(|D|) \cdot LW(t)}\\
+  \textbf{F1-EXP(s,k): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF(C_t^D) \cdot LN(|D|) \cdot EW(t)}\\
+  \textbf{F2-LOG(s): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF\_LN(C_t^D,|D|) \cdot LW(t)}\\
+  \textbf{F2-EXP(s,k): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF\_LN(C_t^D,|D|) \cdot EW(t)}\\
+  \textbf{F3-LOG(s): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF(C_t^D) \cdot LW(t) - \gamma(|D|, |Q|)}\\
+  \textbf{F3-EXP(s,k): } S(Q,D)& = & \sum_{t \in Q \cap D}{C_t^D \cdot TF(C_t^D) \cdot EW(t) - \gamma(|D|, |Q|)},
+\end{eqnarray*}
+unde:
+\begin{eqnarray*}
+TF(X)&=&1+\ln{(1+\ln{(x)})}\\
+LW(t)&=&\ln{\frac{N+1}{df(t)}}\\
+EW(t)&=&\left(\frac{N+1}{df(t)}\right)^k\\
+LN(x)&=&\frac{avdl+s}{avdl+x \cdot s}\\
+TF\_LN(x,y)&=&\frac{x}{x+s+\frac{s \cdot y}{avdl}}\\
+\gamma(x,y)&=&\frac{(x-y) \cdot x \cdot s}{avdl}\\
+\end{eqnarray*}
+'si $0 \leq s,k \leq 1$.
+
+'In \cite{AXIOM} se conchide, 'in urma experimentelor, c'a $\textbf{F2-EXP}$ este mai stabil'a, 'si, per total, o variant'a mai bun'a dec'jt celelalte cinci func'tii.
 
 \chapter{Metode de agregare}
 Consider'am problema combin'arii ierarhiz'arilor rezultate din diferite surse. Principalele aplica'tii includ motoare de meta-c'autare, \emph{combinarea metodelor de ierarhizare}, selectarea documentelor pe baza mai multor criterii, 'imbunat'a'tirea preciziei c'auta'rii prin asocierea cuvintelor \cite{RAM}. 'In lucrarea de fa't'a agregarea a fost folosit'a pentru a combina rezultatele diverselor metode de ierarhizare.
@@ -1145,8 +1187,14 @@ A=\{(i_1,...,i_n)|(i_k \neq i_j \forall k \neq j), (1 \leq i_j \leq n), \mbox{ s
 Solu'tia clasic'a a acestei probleme este \emph{Algoritmul Ungar} a c'arui prezentare nu 'tine de scopul acestei lucr'ari.
 
 \chapter{Studiu comparativ}
+
+
 \section{Unelte}
 \subsection{Apache Lucene}
+\emph{Apache Lucene} este o bibliotec'a software performant'a de reg'asirea informa'tiei scris'a 'in 'intregime 'in \emph{Java} 'si distribuit'a gratuit sub licen'ta \emph{open-source} \emph{Apache}. Pachetul \emph{Lucene} este folosit cu succes de o foarte multe companii software 'in produse at'jt comerciale c'jt 'si open-source, printre ele num'ar'jndu-se site-ul \emph{Wikipedia} 'si mediul integrat de dezvoltare \emph{Eclipse IDE}.
+
+'In contextul lucr'arii actuale, \emph{Lucene} a fost folosit pentru a testa 'si compara diverse metode de ierarhizare, 'si, ca urmare, voi prezenta 'in continuare metoda implicit'a pe care \emph{Lucene} o folo'ste la ierarhizarea documentelor.
+
 \subsubsection{Similaritate 'si ierarhizare}
 \emph{Lucene} combin'a modelul boolean (BM) cu modelul de spa'tiu vectorial (VSM): documentele care trec de BM sunt etichetate cu un scor de c'atre VSM.
 
@@ -1204,9 +1252,13 @@ unde:
 	\item \emph{boost(t)} reprezint'a nivelul de boost al termenului; acesta poate fi setat din sintaxa interog'arii dac'a este folosit parserul de interog'ari pus la dispozi'tie de Lucene, sau prin intermediul api-ului obiectului \emph{Query}.
 \end{enumerate}
 
+\subsubsection{Pachetul contrib/benchmark/quality}
+Proiectul \emph{Lucene Java} con'tine 'si un "spa'tiu de lucru" numit \emph{Lucene Contrib} care g'azduie'ste contribu'tii "third-party", contribu'tii cu dependin'te externe (pachetul principal nu are dependin'te) 'si implement'ari de noi idei.
 
-\subsection{Pachetul contrib/benchmark/quality}
+Printre contribu'tiile din acest set de pachete se afl'a pachetul \emph{analyzers} ce con'tine o multitudine de analizoare (componente de preprocesare a textului: liste de stop, stemmer-e) 'si pachetul \emph{benchmark}. Pachetul \emph{benchmark} con'tine unelte pentru testarea 'si evaluarea lui \emph{Lucene} folosind corpusuri standard. 'In spe'ta, subpachetul \emph{quality} este folosit la rularea unui set de interog'ari 'in format standard (de exemplu TREC) pe un index de documente 'si la calcularea unor m'asuri de evaluare a sistemului.
+
 \subsection{Proiectul Apache Open Relevance (ORP)}
+
 
 \subsection{trec\_eval}
 \emph{trec\_eval} este unealta standard folosit'a de comunitatea TREC pentru a evalua sisteme ad-hoc de reg'asirea informa'tiei, folosind un fi'sier standard de judec'a'ti de relevan't'a 'si fi'sierul cu rezultatele sistemului 'si calcul'jnd diferite m'asuri de evaluare.
@@ -1306,7 +1358,9 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 	\bibitem{RDA} Liviu P. Dinu, Florin Manea, \emph{An Efficient Approach for the Rank
 Aggregation Problem}
 	\bibitem{RAM} C. Dwork, R. Kumar, M. Naor, and D. Sivakumar, \emph{Rank aggregation methods for the Web}, Proc. of the 10th International WWW Conference, 2001.
-	%sim javadoc
+	\bibitem{LUC} \url{http://lucene.apache.org/java/docs/}
+	\bibitem{LUCSIM} \url{http://lucene.apache.org/java/3_0_1/api/core/index.html}
+	\bibitem{ORP} \url{https://cwiki.apache.org/ORP/}
 \end{thebibliography}
 
 \end{document}

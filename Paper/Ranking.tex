@@ -76,10 +76,50 @@ Un obiect este o entitate stocat'a 'in sistemul RI. 'In func'tie de aplic'tie, o
 Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine se potriveste un obiect cu interogarea utilizatorului 'si apoi ierarhizeaz'a obiectele 'in func'tie de aceast'a valoare. Cele mai bune obiecte sunt apoi afi'sate utilizatorului.
 
 \section{Un exemplu}
-%MANNING boolean retrieval 1.1???
+S'a presupunem c'a avem la dispozi'tie o colec'tie de piese scrise de Shakespeare 'si vrem sa determin'am care dintre aceste piese con'tine cuvintele \emph{Brutus 'SI Caesar} 'si \emph{NU} con'tine cuv'jntul \emph{Calpurnia}. O posibilitate este s'a se parcurg'a fiecare pies'a cuv'jnt cu cuv'jnt. Acest tip de scanare liniar'a este o form'a foarte simpl'a de reg'asire a documentelor 'si poart'a numele de \emph{grepping} (de la comanda Unix). Acest proces poate fi eficient, mai ales 'in contextul vitezei calculatoarelor moderne; pentru o colec'tie de dimensiuni reduse nu este nevoie de nimic mai mult.
+
+Dar pentru o serie de alte scopuri, este nevoie de mai mult:
+\begin{enumerate}
+	\item Pentru a procesa o colec'tie mare de documente rapid. Cantitatea datelor on-line a crescut cel pu'tin la fel de repede ca viteza calculatoarelor, 'si se pune problema c'aut'arii 'in colec'tii care 'insumeaz'a trilioane de cuvinte.
+	\item Pentru a permite interog'ari mai flexibile. 
+	\item Reg'asirea ierarhizat'a: 'in multe cazuri, se dore'ste rezultatul cel mai bun pentru o nevoie de informa'tie dintre mai multe documente care con'tin anumite cuvinte.
+\end{enumerate}
+
+Varianta alternativ'a la scanare liniar'a este indexarea anticipat'a a documentelor.
+S'a presupunem c'a 'inregistr'am pentru fiecare document dac'a con'tine sau nu fiecare cuv'jnt din setul total de cuvinte care apar 'in colec'tie. Rezultatul este o matrice binar'a de inciden't'a \emph{numit'a matrice termen-document} (figura \ref{fig:termdoc}). Termenii sunt unit'a'tile indexate; sunt, de obicei, cuvinte, dar exist'a cazuri c'jnd un termen este alc'atuit din mai multe cuvinte (\emph{Hong Kong}). Este important s'a se fac'a diferen'tierea conceptual'a dintre termen, ca unitate indexat'a, 'si cuv'jnt.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=.7]{td.png}
+    \caption{Matrice termen-document pentru colec'tia pieselor lui Shakespeare. Elementul (t, d) este 1 dac'a piesa din coloana d con'tine cuv'jntul din r'jndul t 'si 0, altfel.}
+    \label{fig:termdoc}
+\end{figure}
+
+Pentru a r'aspunde la interogarea \emph{Brutus 'SI Caesar 'SI NU Calpurnia} se iau vectorii celor trei termeni, se complementeaz'a ultimul, 'si se face opera'tia binar'a \emph{AND}:
+\begin{quote}
+110100 AND 110111 AND 101111 = 100100
+\end{quote}
+
+Acest model se num'ste \emph{modelul boolean de reg'asire} 'si permite c'autarea cu o interogare sub forma unei expresii boolene de termeni. Modelul boolean vede fiecare document ca un simplu set de cuvinte.
+
+Scopul este proiectarea unui sistem adresat \emph{reg'asirii ad-hoc}. Acest tip de reg'asire este cea mai 'int'jlnit'a. 'In cadrul reg'asirii ad-hoc, sistemul are drept scop s'a g'aseasc'a documentele relevante la o \emph{nevoie de informa'tie} aleatoare comunicat'a sistemului prin intermediul unei interog'ari. O \emph{nevoie de informa'tie} reprezint'a subiectul despre care utilizatorul dore'ste s'a afle informatii 'si difer'a de \emph{interogare} care este o 'incercare de a comunica nevoia de informa'tie sistemului. Un document este \emph{relevant} daca utilizatorul il percepe ca un set de informa'tii "valoroase" cu privire la subiectul c'autat. Pentru a evalua eficien'ta unui sistem RI (calitatea rezultatelor), un utilizator va dori s'a 'stie dou'a valori statistice ale rezultatelor 'intoarse pentru o interogare:
+\begin{itemize}
+	\item \emph{Precizie}: Ce procent din rezultatele returnate sunt relevante la nevoia de informa'tie?
+	\item \emph{Recall}: Ce procent din documentele relvante din colec'tie sunt returnate de sistem?
+\end{itemize}
+Mai multe detalii despre evaluarea unui sistem RI vor fi discutate 'in capitolul \ref{cap:eval}.
+
+Pentru colec'tii foarte mari este ineficient'a construirea unei matric termen-document. Observa'tia de baz'a este c'a matricea este foarte "risipit'a" (are foarte multe componente de zero). O reprezentare mai bun'a este 'inregistrarea ocuren'telor (pozi'tiile de 1). Aceast'a idee e central'a pentru primul concept major din reg'asirea informa'tiei: \emph{indexul inversat}. Se p'astreaz'a un dic'tionar de termeni 'si, pentru fiecare termen, se stocheaz'a intr-o list'a documentele 'in care apare. Fiecare document din list'a se nume'ste \emph{postare} 'si lista se nume'ste \emph{list'a de postare}. 'In figura \ref{fig:invind} se afl'a un exemplu de index inversat.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=.7]{invind.png}
+    \caption{Dou'a p'ar'ti ale unui index invesat. Dic'tionarul este de obicei p'astrat 'in memorie, 'in timp ce listele de postare sunt stocate pe disc.}
+    \label{fig:invind}
+\end{figure}
+
 
 \chapter{Reg'asirea informa'tiei - generalit'a'ti}
-
 
 \section{Procesul de indexare}
 \emph{Indexarea} este procesul unui sistem de reg'asire a informa'tiei prin care se colecteaz'a, transform'a, 'si stocheaz'a informa'tia pentru a facilita reg'asirea rapid'a 'si precis'a. Proiectarea unui index presupune cuno'stin'te asupra unor concepte interdisciplinare din lingvistic'a, psihologie cognitiv'a, matematic'a, informatic'a, etc. Motoarele populare de c'autare se concetreaz'a pe indexarea de tip \emph{full-text} ale documentelor online scrise 'in limbaj natural. Tipurile media(video, audio, imagini) pot fi 'si ele indexate. Motoarele de meta-c'autare refolosesc indec'sii altor servicii f'ar'a s'a stocheze un index local, 'in timp ce sistemele RI cu cache stocheaz'a permanent at'jt indexul c'jt 'si corpusul. Spre deosebire de indec'sii full-text, un index \emph{partial-text} restric'tioneaz'a "ad'jncimea" index'arii pentru a reduce dimensiunea indexului. Unele servicii efectueaz'a procesul de indexare la intervale predeterminate de timp din cauza costurilor de procesare, 'in timp ce alte motoarele de c'autare indexeaz'a con'tinut 'in timp real.
@@ -1187,7 +1227,9 @@ A=\{(i_1,...,i_n)|(i_k \neq i_j \forall k \neq j), (1 \leq i_j \leq n), \mbox{ s
 Solu'tia clasic'a a acestei probleme este \emph{Algoritmul Ungar} a c'arui prezentare nu 'tine de scopul acestei lucr'ari.
 
 \chapter{Studiu comparativ}
+'In cadrul acestei lucr'ari, ca parte practic'a, am testat 'si comparat performan'tele c'jtorva metode de ierarhizare prezentate 'in capitolele anterioare: \emph{VSM}, \emph{BM25} 'si \emph{F2EXP}. De asemenea, am implementat 'si testat o metod'a euristic'a cu scopul de a mic'sora timpul de c'autare; este vorba de \emph{Cluster pruning}. Am implementat dou'a tehnici de agregare (cele dou'a prezentate 'in capitolul anterior) cu scopul de a combina rezultatele ob'tinute cu cele trei func'tii de reg'asire. Rezultatele testelor sunt prezentate 'in ultima sec'tiune a acestui capitol.
 
+Pentru a implementa 'si testa aceste tehnici, am dezvoltat un "framework" de test folosind diverse unelte prezentate 'in sec'tiunea imediat urm'atoare. De asemenea, corpusurile de test sunt prezentate tot aici.
 
 \section{Unelte}
 \subsection{Apache Lucene}
@@ -1388,15 +1430,74 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 \label{tab:treceval}
 \end{table}
 
-\section{Descrierea framework-ului de test}
+\section{Framework-ul de test}
+Pachetul \emph{/contrib/benchmark/quality} nu a fost de ajuns pentru a automatiza procesul de testare 'si a extrage statisticile pe care le-am considerat necesare. Ca urmare, am dezvoltat un "framework", folosind c'jteva unelte (majoritatea sunt descrise mai sus), care are urm'atoarele facilit'a'ti:
+\begin{enumerate}
+\item se pot ad'aug'a colec'tii de test compuse din: un set de documente, seturi de interog'ari 'si relevan'te (standardul TREC);
+\item se pot implementa metode de ierarhizare ca extensii la \emph{Lucene} dup'a un anumit standard;
+\item se poate rula un test al unei metode pe un anumit corpus, cu diverse op'tiuni (setul de interog'ari, c'jmpurile interog'arii, \emph{liste de stop/stemmer}, etc.);
+\item dup'a testarea mai multor metode de ierarhizare pe un anumit corpus, se poate compila un raport al rezultatelor, compus dintr-un tabel cu diferite m'asur'atori calculate de \emph{trec\_eval} 'si un grafic al preciziei interpolate 'in 11 puncte de recall; raportul are scopul de a facilita compararea rezultatelor diverselor metode implementate.
+\end{enumerate}
+
+Framework-ul este construit folosind urm'atoarele componente:
+\begin{itemize}
+\item \emph{Apache ant} - pentru automatizarea task-urilor;
+\item \emph{Apache Lucene}, 'in spe't'a pachetul \emph{/contrib/benchmark} - pentru indexarea documentelor 'si rularea interog'arilor 'si compilarea fi'sierului cu rezultate 'in format standard pentru \emph{trec\_eval} (aceast'a component'a a fost extins'a pentru a facilita ad'augarea de noi metode 'intr-un mod simplu 'si agregarea rezultatelor mai multor metode folosind o tehnic'a specificat'a de agregare);
+\item \emph{trec\_eval} - pentru a calcula m'asurile standard de performan't'a pe baza judec'a'tilor de relevan't'a si a rezultatelor;
+\item \emph{JFreeChart} (\url{http://www.jfree.org/jfreechart/} - pentru a construi grafice \emph{precizie-recall};
+\item \emph{Luke} (\url{http://www.getopt.org/luke/}) - pentru a vizualiza con'tinutul unui index \emph{Lucene}.
+\end{itemize}
+
+Figura \ref{fig:framework} ilustreaz'a structura acestui framework. Directorul \emph{benchmark/code/} con'tine codul \emph{Java} at'jt al framework-ului propriu-zis c'jt 'si al implement'arilor de diferite metode de ierarhizare 'si agregare. Directorul \emph{benchmark/results/} con'tine rezultatele testelor (fi'sierele de ie'sire \emph{trec\_eval} cu nume reprezentative). Tot aici se compileaz'a 'si rapoartele pe testele efectuate pe un anumit corpus. Directorul \emph{jars/} con'tine dependin'tele framework-ului (dac'a se implementeaz'a o metod'a care are pachete externe ca dependin'te, acestea vor fi depozitate 'in acest director). Directorul \emph{utils/} con'tine anumite utilitare folosite: \emph{trec\_eval} 'si \emph{luke}. 'In final, fi'sierul \emph{build.xml} con'tine scriptul \emph{ant} care automatizeaz'a diverse procese prezentate mai jos.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.7]{fmk.png}
+\caption{Structura framework-ului}
+\label{fig:framework}
+\end{figure}
+
+Pentru a ad'aug'a o nou'a metod'a de ierarhizare tot ceea ce trebuie f'acut este s'a se adauge un nou pachet \emph{Java} cu numele \emph{ro.ranking.technique.[NUME\_METOD'A]} care s'a con'tin'a o clas'a numit'a \emph{RankingTechniqueImpl} (trebuie s'a implementeze interfa'ta \emph{RankingTechnique}). Aceast'a clas'a furnizeaz'a anumite componente folosite de modulul de testare. Modulul de testare nu face dec'jt sa foloseasc'a componentele \emph{Lucene} ob'tinute prin intermediul clasei pentru a interoga indexul unei colec'tii 'si a scrie rezultatele 'intr-un fi'sier. 'In momentul 'in care se efectueaz'a un test, metoda este 'inc'arcata dinamic 'in func'tie de parametrii pasa'ti programului. Implementarea unei metode de agregare se face 'intr-un mod similar: trebuie creat'a o implementare a interfe'tei \emph{Aggregator} dup'a 'sablonul \emph{ro.ranking.aggregator.[NUME].AggregatorImpl}.
+
+Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automatizate folosind urm'atoarele \emph{task-uri ant}:
+\begin{itemize}
+\item \textbf{compile: } compilarea codului java;
+\item \textbf{index: } indexarea unei colec'tii cu folosind un anumit analizor (list'a de stop, stemmer);
+\item \textbf{benchmark: } testarea unei metode pe o anumit'a colec'tie, cu un anumit analizor, fololosind un anumit set de interog'ari (dac'a sunt specificate mai multe tehnici, rezultatele lor sunt agregate folosind o anumit'a metod'a de agregare) - to'ti ace'sti parametri se pot specifica la rulare dar au 'si valori implicite;
+\item \textbf{report: } compilarea unui raport al performan'telor pe o anumit'a colec'tie
+\item \textbf{luke: } vizualizarea con'tinutului unui anumit index.
+\end{itemize}
+
+
 \section{Rezultate}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{ohs1-t.png}
+\caption{Rezultate Lucene, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
+\label{fig:res1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{ham1-t.png}
+\caption{Rezultate Lucene, F2EXP 'si BM25 la rularea pe corpusul \emph{Hamshahri} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
+\label{fig:res2}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{tem-t.png}
+\caption{Rezultate Lucene, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed}}
+\label{fig:res3}
+\end{figure}
+
 %de scris despre coord (overlap, ovelapmax)
 %de scris despre bm25 idf+1
 %de scris ca la persian rezultate mai bune pt T fata de TD(depinde si de interogari)
 %cluster pruning foarte praf...poate fi imbunatatit?
 %seturile de interogari
 %analizor indonezian
-\chapter{Concluzii}
 
 \begin{thebibliography}{9}
 	%TODO: 2 puncte Schutze

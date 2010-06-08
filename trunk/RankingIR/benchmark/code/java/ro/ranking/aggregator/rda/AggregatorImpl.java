@@ -65,6 +65,14 @@ public class AggregatorImpl implements Aggregator {
 	}
 	
 	private int ord(int[] sigma, int x) {
+		//sigma are intotdeuna marimea universului
+		//pentru ca este o mapare a id-ului unui obiect
+		//la pozitia 'in ierarhie
+		//daca ierarhia nu con'tine un obiect i,
+		//sigma[i] = n
+		
+		//ord(x) este definit ca |len(sigma) - sigma(x)|
+		//TODO: tine lungimea ierarhiei separat
 		int ret = sigma.length - sigma[x] - 1;
 		ret = ret < 0? 0 : ret;
 		return ret;

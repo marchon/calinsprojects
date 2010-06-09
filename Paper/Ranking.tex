@@ -53,35 +53,35 @@
 \tableofcontents
 
 \chapter{Introducere}
-Singtagma \emph{reg'asirea informa'tiei}(RI) are un spectru larg de in'telesuri. Scoaterea unui card de credit din portofel pentru a completa num'arul cardului 'intr-un formular este o form'a de reg'asire a informa'tiei. Dar, ca domeniu de studii academice, \emph{reg'asirea informa'tiei} poate fi definita astfel\cite{MAN}:
+Singtagma \emph{reg'asirea informa'tiei}(RI) are un spectru larg de in'telesuri. Scoaterea unui card de credit din portofel pentru a completa num'arul cardului 'intr-un formular este o form'a de reg'asire a informa'tiei. Dar, ca domeniu de studii academice, \emph{reg'asirea informa'tiei} poate fi definit'a astfel\cite{MAN}:
 \begin{quote}
 Reg'asirea informa'tiei se refer'a la g'asirea de material (de obicei documente) de natur'a nestructurat'a (de obicei text) care satisface
 o nevoie de informa'tie, din colectii mari de date (eventual stocate pe calculatoare).
 \end{quote}
 
-Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicata de ca'tiva oameni cum ar fi bibliotecarii. Acum lumea s-a schimbat 'si sute de milioane de oameni folosesc sisteme de reg'asire a informa'tiei precum motoate de c'autare web 'in fiecare zi. Reg'asirea informatiei devine rapid forma dominant'a de accesare a informatiei 'intrec'jnd modul tradi'tional de c'autare de tip "baze de date" (c'autarea dupa un num'ar de identificare).
+Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicat'a de ca'tiva oameni cum ar fi bibliotecarii. Acum lumea s-a schimbat 'si sute de milioane de oameni folosesc sisteme de reg'asire a informa'tiei precum motoate de c'autare web 'in fiecare zi. Reg'asirea informatiei devine rapid forma dominant'a de accesare a informatiei 'intrec'jnd modul tradi'tional de c'autare de tip "baze de date" (c'autarea dupa un num'ar de identificare).
 
 RI este interdisciplinar'a, bazat'a pe informatic'a, matematic'a, 'stiin'ta informa'tiei, arhitectura informa\-'tiei, psihologie cognitiv'a, lingvistic'a, statistic'a, etc. Sisteme automate de RI au fost folosite pentru a reduce ceea ce se numeste "supra'inc'arcarea de informa'tie". Multe universit'a'ti 'si libr'arii publice folosesc sisteme RI pentru a facilita accesul la c'ar'ti, jurnale 'si alte tipuri de documente. Cele mai folosite aplicatii RI sunt motoarele de c'autare web.
 
 \section{Scurt istoric}
 Ideea de a folosi calculatoarele pentru a c'auta "buc'a'ti" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
 
-'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunita'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care scaleaza la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
+'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunit'a'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care se scaleaz'a la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
 
 \section{Descrierea procesului}
 Un proces de reg'asire a informa'tiei 'incepe c'jnd un utilizator introduce o interogare (\emph{query}) 'in sistem. Interog'arile sunt formul'ari formale ale \emph{nevoilor de informa'tie}, de exemplu, cuvinte scrise 'in caseta de c'autare a unui motor de c'autare web. 'In RI o interogare nu identific'a 'in mod unic un obiect din colec'tia de obiecte. 'In schimb, mai multe obiecte pot fi considerate ca r'aspunsuri la interogare, eventual cu grade de relevan't'a diferite.
 
-Un obiect este o entitate stocat'a 'in sistemul RI. 'In func'tie de aplic'tie, obiectele pot fi texte, documente, imagini, videoclipuri, etc. 'In general, documentele propriu-zise nu sunt 'tinute 'in sistem ci sunt reprezentate de surogate(rezultate 'in urma proces'arii documentelor) si metadate.
+Un obiect este o entitate stocat'a 'in sistemul RI. 'In func'tie de aplic'tie, obiectele pot fi texte, documente, imagini, videoclipuri, etc. 'In general, documentele propriu-zise nu sunt 'tinute 'in sistem ci sunt reprezentate de surogate(rezultate 'in urma proces'arii documentelor) 'si metadate.
 
-Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a cat de bine se potriveste un obiect cu interogarea utilizatorului 'si apoi ierarhizeaz'a obiectele 'in func'tie de aceast'a valoare. Cele mai bune obiecte sunt apoi afi'sate utilizatorului.
+Majoritatea sistemelor RI calculeaz'a un scor numeric ce reprezint'a c'jt de bine se potrive'ste un obiect cu interogarea utilizatorului 'si apoi ierarhizeaz'a obiectele 'in func'tie de aceast'a valoare. Cele mai bune obiecte sunt apoi afi'sate utilizatorului.
 
 \section{Un exemplu}
-S'a presupunem c'a avem la dispozi'tie o colec'tie de piese scrise de Shakespeare 'si vrem sa determin'am care dintre aceste piese con'tine cuvintele \emph{Brutus 'SI Caesar} 'si \emph{NU} con'tine cuv'jntul \emph{Calpurnia}. O posibilitate este s'a se parcurg'a fiecare pies'a cuv'jnt cu cuv'jnt. Acest tip de scanare liniar'a este o form'a foarte simpl'a de reg'asire a documentelor 'si poart'a numele de \emph{grepping} (de la comanda Unix). Acest proces poate fi eficient, mai ales 'in contextul vitezei calculatoarelor moderne; pentru o colec'tie de dimensiuni reduse nu este nevoie de nimic mai mult.
+S'a presupunem c'a avem la dispozi'tie o colec'tie de piese scrise de Shakespeare 'si vrem s'a determin'am care dintre aceste piese con'tine cuvintele \emph{Brutus 'SI Caesar} 'si \emph{NU} con'tine cuv'jntul \emph{Calpurnia}. O posibilitate este s'a se parcurg'a fiecare pies'a cuv'jnt cu cuv'jnt. Acest tip de scanare liniar'a este o form'a foarte simpl'a de reg'asire a documentelor 'si poart'a numele de \emph{grepping} (de la comanda Unix). Acest proces poate fi eficient, mai ales 'in contextul vitezei calculatoarelor moderne; pentru o colec'tie de dimensiuni reduse nu este nevoie de nimic mai mult.
 
 Dar pentru o serie de alte scopuri, este nevoie de mai mult:
 \begin{enumerate}
-	\item Pentru a procesa o colec'tie mare de documente rapid. Cantitatea datelor on-line a crescut cel pu'tin la fel de repede ca viteza calculatoarelor, 'si se pune problema c'aut'arii 'in colec'tii care 'insumeaz'a trilioane de cuvinte.
-	\item Pentru a permite interog'ari mai flexibile. 
+	\item Procesarea rapid'a a unei colec'tii mari de documente: cantitatea datelor on-line a crescut cel pu'tin la fel de repede ca viteza calculatoarelor, 'si se pune problema c'aut'arii 'in colec'tii care 'insumeaz'a trilioane de cuvinte.
+	\item Permiterea interog'arilor mai flexibile. 
 	\item Reg'asirea ierarhizat'a: 'in multe cazuri, se dore'ste rezultatul cel mai bun pentru o nevoie de informa'tie dintre mai multe documente care con'tin anumite cuvinte.
 \end{enumerate}
 
@@ -1238,6 +1238,7 @@ Pentru a implementa 'si testa aceste tehnici, am dezvoltat un "framework" de tes
 'In contextul lucr'arii actuale, \emph{Lucene} a fost folosit pentru a testa 'si compara diverse metode de ierarhizare, 'si, ca urmare, voi prezenta 'in continuare metoda implicit'a pe care \emph{Lucene} o folo'ste la ierarhizarea documentelor.
 
 \subsubsection{Similaritate 'si ierarhizare}
+\label{sss:lucsim}
 \emph{Lucene} combin'a modelul boolean (BM) cu modelul de spa'tiu vectorial (VSM): documentele care trec de BM sunt etichetate cu un scor de c'atre VSM.
 
 'In VSM, documentele si interog'arile sunt reprezentate ca vectori de ponderi 'intr-un spa'tiu multidimensional, unde fiecare termen din index este o dimensiune 'si ponderile sunt valorile \emph{tf-idf}. VSM nu necesit'a faptul ca ponderile s'a fie valori tf-idf, dar aceste ponderi au rezultate foarte bune 'in practic'a, 'si, ca urmare, Lucene folo'ste aceast'a abordare. Pentru un termen \emph{t} 'si un document (sau interogare) \emph{x}, tf(t,x) cre'te odat'a cu num'arul de ocuren'te ale lui t 'in x iar idf(t) descre'ste odat'a cu cre'sterea num'arului de documente din index care il con'tin pe t.
@@ -1471,17 +1472,18 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 
 \section{Rezultate}
 
+\subsection{VSM, BM25 'si F2EXP}
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.54]{ohs1-t.png}
-\caption{Rezultate Lucene, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
+\caption{Rezultate Lucene VSM, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
 \label{fig:res1}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.54]{ham1-t.png}
-\caption{Rezultate Lucene, F2EXP 'si BM25 la rularea pe corpusul \emph{Hamshahri} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
+\caption{Rezultate Lucene VSM, F2EXP 'si BM25 la rularea pe corpusul \emph{Hamshahri} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
 \label{fig:res2}
 \end{figure}
 
@@ -1492,13 +1494,90 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \label{fig:res3}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{ham2-td-vs-t.png}
+\caption{Interog'ari lungi 'si interog'ari scurte (titlu + descriere 'si titlu), setul doi de interog'ari, corpus \emph{Hamshahri}}
+\label{fig:res4}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.53]{ohs2-MeSH-t-vs-d.png}
+\caption{Rezultate pentru interog'arile \emph{MeSH}(titlu vs. descriere)}
+\label{fig:res5}
+\end{figure}
+\clearpage
+
+\subsection{Preprocesarea textului}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{ham1-sim-vs-per.png}
+\caption{Rezultate comparative pe corpusul \emph{Hamshahri} (f'ar'a analizor vs. analizor persan)}
+\label{fig:res6}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.53]{ohs1-t-sim-vs-en.png}
+\caption{Rezultate comparative pe corpusul \emph{Ohsumed} (f'ar'a analizor vs. analizor englez)}
+\label{fig:res7}
+\end{figure}
+\clearpage
+
+\subsection{Cluster pruning}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.51]{ohs1-t-cp-vs-rest.png}
+\caption{Performan'te slabe \emph{cluster prunning} comparativ cu restul metodelor (nici viteza nu exceleaz'a)}
+\label{fig:res8}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.51]{ohs1-t-cp-vs-cpen.png}
+\caption{Comportament mai slab 'in cazul folosirii listelor de stop 'si stemmer-ului englez pentru \emph{Cluster pruning}}
+\label{fig:res9}
+\end{figure}
+\clearpage
+
+\subsection{'Imbun'at'a'tirea performan'telor}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.49]{osh1-bm25-coord.png}
+\caption{Cre'sterea substan'tial'a a performan'telor pentru \emph{bm25} la folosirea normaliz'arii \emph{coord()}(vezi sec'tiunea \ref{sss:lucsim})}
+\label{fig:res10}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.54]{osh3-bm25-idf+1.png}
+\caption{Cre'sterea performan'telor pentru \emph{bm25} la modificarea formulei idf pentru evitarea rezultatelor negative din cauza logaritm'arii unui num'ar subunitar}
+\label{fig:res11}
+\end{figure}
+\clearpage
+
+\subsection{Agregare}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.53]{tem-t-agg.png}
+\caption{Rezultate agregare \emph{Borda} 'si \emph{RDA} pe corpusul \emph{Tempo}}
+\label{fig:res12}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.53]{osh3-t-agg.png}
+\caption{Rezultate agregare \emph{Borda} 'si \emph{RDA} pe corpusul \emph{Ohsumed}, setul de interog'ari \emph{OHSU}}
+\label{fig:res13}
+\end{figure}
+
+
 %de scris despre coord (overlap, ovelapmax)
 %de scris despre bm25 idf+1
 %de scris ca la persian rezultate mai bune pt T fata de TD(depinde si de interogari)
 %cluster pruning foarte praf...poate fi imbunatatit?
 %seturile de interogari
-%analizor indonezian
-
 \begin{thebibliography}{9}
 	%TODO: 2 puncte Schutze
 	\bibitem{MAN} Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.

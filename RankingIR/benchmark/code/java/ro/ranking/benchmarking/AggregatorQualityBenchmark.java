@@ -183,8 +183,11 @@ public class AggregatorQualityBenchmark {
 			if (rankings.size() == 1 || aggregator == null) {
 				finalRanking = rankings.get(0);
 			} else {
+				long t1 = System.currentTimeMillis();
 				finalRanking = aggregator.aggregate(rankings
 						.toArray(new String[rankings.size()][]));
+				
+				totalSearchTime += (System.currentTimeMillis() - t1);
 			}
 			// most likely we either submit or judge, but check both
 			if (judge != null) {

@@ -1,6 +1,5 @@
 package ro.ranking.benchmarking;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.benchmark.quality.QualityQuery;
 import org.apache.lucene.benchmark.quality.QualityQueryParser;
 import org.apache.lucene.queryParser.ParseException;

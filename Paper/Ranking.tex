@@ -14,7 +14,7 @@
 %calea catre diagrame
 
 %pentru diacritice
-\newcommand{\myqq}{''}
+\newcommand{\myqq}{'}
 \catcode`\'=13
 \newcommand{'}[1]{\ifmmode {}^\prime \noexpand#1%
 \else\ifx#1a\u{a}% 
@@ -53,20 +53,20 @@
 \tableofcontents
 
 \chapter{Introducere}
-Singtagma \emph{reg'asirea informa'tiei}(RI) are un spectru larg de in'telesuri. Scoaterea unui card de credit din portofel pentru a completa num'arul cardului 'intr-un formular este o form'a de reg'asire a informa'tiei. Dar, ca domeniu de studii academice, \emph{reg'asirea informa'tiei} poate fi definit'a astfel\cite{MAN}:
+Sintagma \emph{reg'asirea informa'tiei}(RI) are un spectru larg de in'telesuri. Scoaterea unui card de credit din portofel pentru a completa num'arul cardului 'intr-un formular este o form'a de reg'asire a informa'tiei. Dar, ca domeniu de studii academice, \emph{reg'asirea informa'tiei} poate fi definit'a astfel\cite{MAN}:
 \begin{quote}
 Reg'asirea informa'tiei se refer'a la g'asirea de material (de obicei documente) de natur'a nestructurat'a (de obicei text) care satisface
 o nevoie de informa'tie, din colectii mari de date (eventual stocate pe calculatoare).
 \end{quote}
 
-Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicat'a de ca'tiva oameni cum ar fi bibliotecarii. Acum lumea s-a schimbat 'si sute de milioane de oameni folosesc sisteme de reg'asire a informa'tiei precum motoate de c'autare web 'in fiecare zi. Reg'asirea informatiei devine rapid forma dominant'a de accesare a informatiei 'intrec'jnd modul tradi'tional de c'autare de tip "baze de date" (c'autarea dupa un num'ar de identificare).
+Reg'asirea informa'tiei obi'snuia s'a fie o activitate practicat'a de ca'tiva oameni cum ar fi bibliotecarii. Acum lumea s-a schimbat 'si sute de milioane de oameni folosesc sisteme de reg'asire a informa'tiei precum motoate de c'autare web 'in fiecare zi. Reg'asirea informatiei devine rapid forma dominant'a de accesare a informa'tiei 'intrec'jnd modul tradi'tional de c'autare de tip "baze de date" (c'autarea dupa un num'ar de identificare).
 
 RI este interdisciplinar'a, bazat'a pe informatic'a, matematic'a, 'stiin'ta informa'tiei, arhitectura informa\-'tiei, psihologie cognitiv'a, lingvistic'a, statistic'a, etc. Sisteme automate de RI au fost folosite pentru a reduce ceea ce se numeste "supra'inc'arcarea de informa'tie". Multe universit'a'ti 'si libr'arii publice folosesc sisteme RI pentru a facilita accesul la c'ar'ti, jurnale 'si alte tipuri de documente. Cele mai folosite aplicatii RI sunt motoarele de c'autare web.
 
 \section{Scurt istoric}
-Ideea de a folosi calculatoarele pentru a c'auta "buc'a'ti" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 si 1960. P'jn'a in 1970 cateva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
+Ideea de a folosi calculatoarele pentru a c'auta "buc'a'ti" de informa'tie a fost popularizat'a 'in articolul \emph{As We May Think} de c'atre \emph{Vannevar Bush} 'in anul 1945\cite{IRWIKI}. Primele sisteme automate de reg'asire a informa'tiei au fost introduse 'in anii 1950 'si 1960. P'jn'a 'in 1970 c'jteva tehnici au fost testate cu succes pe corpusuri mici de text cum ar fi colec'tia \emph{Cranfield} (c'jteva mii de documente). Sisteme mari de RI cum ar fi \emph{Lockheed Dialog system}, au fost date 'in folosin't'a la 'inceputul anilor 1970.
 
-'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunit'a'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care se scaleaz'a la colectii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
+'In 1992 Departamentul de Ap'arare al Statelor Unite 'impreun'a cu Institutul Na'tional de Standarde 'si Tehnologie (NIST) au sponsorizat \emph{TREC} (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) ca parte din programul TIPSTER. Scopul a fost s'a se asigure comunit'a'tii RI infrastructura necesar'a pentru testarea 'si evaluarea metodelor de reg'asire a textului pe colectii foarte mari. Acest program a ac'tionat ca un catalizator 'in ceea ce prive'ste cercetarea metodelor RI care se scaleaz'a la colec'tii foarte mari. Apari'tia motoarelor de c'autare pe web a adus o nevoie 'si mai mare de sisteme RI care pot face fa'ta unor colec'tii imense de date.
 
 \section{Descrierea procesului}
 Un proces de reg'asire a informa'tiei 'incepe c'jnd un utilizator introduce o interogare (\emph{query}) 'in sistem. Interog'arile sunt formul'ari formale ale \emph{nevoilor de informa'tie}, de exemplu, cuvinte scrise 'in caseta de c'autare a unui motor de c'autare web. 'In RI o interogare nu identific'a 'in mod unic un obiect din colec'tia de obiecte. 'In schimb, mai multe obiecte pot fi considerate ca r'aspunsuri la interogare, eventual cu grade de relevan't'a diferite.
@@ -81,12 +81,12 @@ S'a presupunem c'a avem la dispozi'tie o colec'tie de piese scrise de Shakespear
 Dar pentru o serie de alte scopuri, este nevoie de mai mult:
 \begin{enumerate}
 	\item Procesarea rapid'a a unei colec'tii mari de documente: cantitatea datelor on-line a crescut cel pu'tin la fel de repede ca viteza calculatoarelor, 'si se pune problema c'aut'arii 'in colec'tii care 'insumeaz'a trilioane de cuvinte.
-	\item Permiterea interog'arilor mai flexibile. 
+	\item Permiterea interog'arilor flexibile. 
 	\item Reg'asirea ierarhizat'a: 'in multe cazuri, se dore'ste rezultatul cel mai bun pentru o nevoie de informa'tie dintre mai multe documente care con'tin anumite cuvinte.
 \end{enumerate}
 
 Varianta alternativ'a la scanare liniar'a este indexarea anticipat'a a documentelor.
-S'a presupunem c'a 'inregistr'am pentru fiecare document dac'a con'tine sau nu fiecare cuv'jnt din setul total de cuvinte care apar 'in colec'tie. Rezultatul este o matrice binar'a de inciden't'a \emph{numit'a matrice termen-document} (figura \ref{fig:termdoc}). Termenii sunt unit'a'tile indexate; sunt, de obicei, cuvinte, dar exist'a cazuri c'jnd un termen este alc'atuit din mai multe cuvinte (\emph{Hong Kong}). Este important s'a se fac'a diferen'tierea conceptual'a dintre termen, ca unitate indexat'a, 'si cuv'jnt.
+S'a presupunem c'a 'inregistr'am pentru fiecare document dac'a con'tine sau nu fiecare cuv'jnt din setul total de cuvinte care apar 'in colec'tie. Rezultatul este o matrice binar'a de inciden't'a \emph{numit'a matrice termen-document} (figura \ref{fig:termdoc}). Termenii sunt unit'a'tile indexate; sunt, de obicei, cuvinte, dar exist'a cazuri c'jnd un termen este alc'atuit din mai multe cuvinte (\emph{Hong Kong}) sau este un cuv'jnt trunchiat. Este important s'a se fac'a diferen'tierea conceptual'a dintre termen, ca unitate indexat'a, 'si cuv'jnt.
 
 \begin{figure}[ht]
     \centering
@@ -102,14 +102,14 @@ Pentru a r'aspunde la interogarea \emph{Brutus 'SI Caesar 'SI NU Calpurnia} se i
 
 Acest model se num'ste \emph{modelul boolean de reg'asire} 'si permite c'autarea cu o interogare sub forma unei expresii boolene de termeni. Modelul boolean vede fiecare document ca un simplu set de cuvinte.
 
-Scopul este proiectarea unui sistem adresat \emph{reg'asirii ad-hoc}. Acest tip de reg'asire este cea mai 'int'jlnit'a. 'In cadrul reg'asirii ad-hoc, sistemul are drept scop s'a g'aseasc'a documentele relevante la o \emph{nevoie de informa'tie} aleatoare comunicat'a sistemului prin intermediul unei interog'ari. O \emph{nevoie de informa'tie} reprezint'a subiectul despre care utilizatorul dore'ste s'a afle informatii 'si difer'a de \emph{interogare} care este o 'incercare de a comunica nevoia de informa'tie sistemului. Un document este \emph{relevant} daca utilizatorul il percepe ca un set de informa'tii "valoroase" cu privire la subiectul c'autat. Pentru a evalua eficien'ta unui sistem RI (calitatea rezultatelor), un utilizator va dori s'a 'stie dou'a valori statistice ale rezultatelor 'intoarse pentru o interogare:
+Scopul este proiectarea unui sistem adresat \emph{reg'asirii ad-hoc}. Acest tip de reg'asire este cea mai 'int'jlnit'a. 'In cadrul reg'asirii ad-hoc, sistemul are drept scop s'a g'aseasc'a documentele relevante la o \emph{nevoie de informa'tie} aleatoare comunicat'a sistemului prin intermediul unei interog'ari. O \emph{nevoie de informa'tie} reprezint'a subiectul despre care utilizatorul dore'ste s'a afle informatii 'si difer'a de \emph{interogare} care este o 'incercare de a comunica nevoia de informa'tie sistemului. Un document este \emph{relevant} dac'a utilizatorul 'il percepe ca un set de informa'tii "valoroase" cu privire la subiectul c'autat. Pentru a evalua eficien'ta unui sistem RI (calitatea rezultatelor), un utilizator va dori s'a 'stie dou'a valori statistice ale rezultatelor 'intoarse pentru o interogare:
 \begin{itemize}
 	\item \emph{Precizie}: Ce procent din rezultatele returnate sunt relevante la nevoia de informa'tie?
 	\item \emph{Recall}: Ce procent din documentele relvante din colec'tie sunt returnate de sistem?
 \end{itemize}
 Mai multe detalii despre evaluarea unui sistem RI vor fi discutate 'in capitolul \ref{cap:eval}.
 
-Pentru colec'tii foarte mari este ineficient'a construirea unei matric termen-document. Observa'tia de baz'a este c'a matricea este foarte "risipit'a" (are foarte multe componente de zero). O reprezentare mai bun'a este 'inregistrarea ocuren'telor (pozi'tiile de 1). Aceast'a idee e central'a pentru primul concept major din reg'asirea informa'tiei: \emph{indexul inversat}. Se p'astreaz'a un dic'tionar de termeni 'si, pentru fiecare termen, se stocheaz'a intr-o list'a documentele 'in care apare. Fiecare document din list'a se nume'ste \emph{postare} 'si lista se nume'ste \emph{list'a de postare}. 'In figura \ref{fig:invind} se afl'a un exemplu de index inversat.
+Pentru colec'tii foarte mari este ineficient'a construirea unei matrice termen-document. Observa'tia de baz'a este c'a matricea este foarte "risipit'a" (are foarte multe componente de zero). O reprezentare mai bun'a este 'inregistrarea ocuren'telor (pozi'tiile de 1). Aceast'a idee e central'a pentru primul concept major din reg'asirea informa'tiei: \emph{indexul inversat}. Se p'astreaz'a un dic'tionar de termeni 'si, pentru fiecare termen, se stocheaz'a 'intr-o list'a referin'tele documentelor 'in care apare. Fiecare document din list'a se nume'ste \emph{postare} 'si lista se nume'ste \emph{list'a de postare}. 'In figura \ref{fig:invind} se afl'a un exemplu de index inversat.
 
 \begin{figure}[ht]
     \centering
@@ -132,7 +132,7 @@ Pentru colec'tii foarte mari este ineficient'a construirea unei matric termen-do
 \end{figure}
 
 \subsection{Colectarea textului}
-Una din principalele tehnici prin care un sistem RI colecteaz'a textul pentru indexare este procesul de \emph{crawl-ing}. Un \emph{crawler} indentific'a si ob'tine documente pe care motorul de c'autare le va indexa. Exist'a mai multe tipuri de \emph{crawler-e}: \emph{web, enterprise 'si desktop}. Crawler-ele web urm'aresc hiperleg'aturile dintr-un document pentru a g'asi alte documente. Ele trebuie s'a furnizeze procesului de indexare un num'ar mare de pagini web, 'si, la eventuala modificare a acestora, trebuie depisteze acest lucru 'si s'a declan'seze reindexarea. Pentru asigurarea c'aut'arii pe un singur site se folosesc crawler-ele de site care restrict'ioneaz'a procesul de crawl-ing la un singur domeniu. Crawler-ele pentru c'autarea de tip enterprise 'si desktop indexeaz'a con'tinut local din sisteme de management de con'tinut (CMS) respectiv harddisk-ul local.
+Una din principalele tehnici prin care un sistem RI colecteaz'a textul pentru indexare este procesul de \emph{crawl-ing}. Un \emph{crawler} indentific'a si ob'tine documente pe care motorul de c'autare le va indexa. Exist'a mai multe tipuri de \emph{crawler-e}: \emph{web, enterprise 'si desktop}. Crawler-ele web urm'aresc hiperleg'aturile dintr-un document pentru a g'asi alte documente. Ele trebuie s'a furnizeze procesului de indexare un num'ar mare de pagini web, 'si, la eventuala modificare a acestora, trebuie s'a depisteze acest lucru 'si s'a declan'seze reindexarea. Pentru asigurarea c'aut'arii pe un singur site, se folosesc crawler-ele de site care restric'tioneaz'a procesul de crawl-ing la un singur domeniu. Crawler-ele pentru c'autarea de tip enterprise 'si desktop indexeaz'a con'tinut local din sisteme de management de con'tinut (CMS) respectiv harddisk-ul local.
 Un alt mod de colectare este reprezentat de \emph{feed-uri}: stream-uri de documente 'in timp real (feed-uri web pentru 'stiri, bloguri, video, radio, tv, etc.). Un standard pentru a transporta aceste feed-uri este RSS care poate furniza procesului de indexare documente XML.
 
 Dup'a ce un document este colectat, 'inainte de indexare, acesta trebuie transformat 'intr-un format consistent de text 'si metadate despre document. De exemplu, un motor de c'autare care suport'a mai multe formate (HTML, XML, Word, PDF), le poate transforma 'inainte de indexare 'intr-un format XML. De asemenea, se adopt'a 'si un standard al encod'arii (de exemplu, UTF-8) pentru noile formate.
@@ -140,12 +140,12 @@ Dup'a ce un document este colectat, 'inainte de indexare, acesta trebuie transfo
 Unele sisteme RI stocheaz'a documentele 'intr-un \emph{data store} 'inainte s'a le indexeze. Acest lucru facilitez'a accesul componentelor sistemului la setul de documente.
 
 \subsection{Transformarea textului}
-'Inainte de a indexa un document acesta este 'imp'ar'tit 'in \emph{tokeni} (parsat) pentru a identifica elementele structurale din text. Tokenii pot fi mai departe procesa'ti prin diverse procese cum ar fi \emph{filtrarea}, \emph{stemming-ul}, \emph{lematizarea}. Tot 'in acest moment se pot efectua procese precum analiza leg'aturilor, extragerea informa'tiei 'si clasificare.
+'Inainte de a indexa un document acesta este 'imp'ar'tit 'in \emph{tokeni} (parsat) pentru a identifica elementele structurale din text. Tokenii pot fi mai departe procesa'ti prin diverse procedee cum ar fi \emph{filtrarea}, \emph{stemming-ul}, \emph{lematizarea}. Tot 'in acest moment se pot efectua procese precum analiza leg'aturilor, extragerea informa'tiei 'si clasificare.
 
 \subsubsection{Parsarea}
 Dat fiind o secven't'a de caractere 'si o unitate de document, token-izarea este procesul de 'imp'ar'tire 'in buc'a'ti numite \emph{"token-i"} 'si, 'in acela'si timp, eliminarea anumitor caractere precum semnele de punctua'tie. Ace'sti token-i sunt numi'ti uneori termeni sau cuvinte, dar este important s'a se fac'a distinc'tia 'intre aceste concepte. Un token reprezint'a instan'ta unei secven'te de caractere 'intr-un anumit document, care sunt grupate 'intr-o unitate semantic'a de care se va 'tine cont la procesare. Un \emph{tip} este clasa tuturor token-ilor care con'tin aceea'si secven't'a de caractere. Un \emph{termen} este un tip (de obicei normalizat) care este inclus 'in dic'tionarul sistemului RI. Termenii sunt str'jns lega'ti de token-ii din text, dar, de obicei, sunt ob'tinu'ti prin aplicarea diferitelor procese de normalizare (de exemplu, 'indep'artarea punctelor din prescurt'ari, eliminarea accentelor 'si diacriticelor sau transformarea tuturor literelor 'in litere mici), stemming 'si lematizare.
 
-'Intrebarea major'a care se pune 'in cadrul pars'arii este: \emph{care sunt token-ii potrivi'ti?} Raspunsul este c'a \emph{acest lucru specific limbii}. A'sadar, limba documentului trebuie cunoscut'a. Identificarea limbajului bazat'a pe clasificatori care folosesc secven'te scurte de caractere drept caracteristici este foarte eficient'a, majoritatea limbilor av'jnd modele distincte de astfel de semn'aturi.
+'Intrebarea major'a care se pune 'in cadrul pars'arii este: \emph{care sunt token-ii potrivi'ti?} Raspunsul este c'a \emph{acest lucru este specific limbii}. A'sadar, limba documentului trebuie cunoscut'a. Identificarea limbajului bazat'a pe clasificatori care folosesc secven'te scurte de caractere drept caracteristici este foarte eficient'a, majoritatea limbilor av'jnd modele distincte de astfel de semn'aturi.
 
 \subsubsection{Filtrarea}
 C'jteodat'a, unele cuvinte extrem de frecvente, care au o contribu'tie foarte mic'a 'in a ajuta la g'asirea documentelor pentru o nevoie de informa'tie, sunt excluse total din vocabularul de termeni. Aceste sunt numite \emph{cuvinte de stop sau stop words}. Strategia general'a pentru a alc'atui o astfel de list'a de filtrare este selectarea termenilor cu frecven'te foarte mari 'in colec'tia de documente. Folosirea unei liste de filtrare duce la reducerea semnificativ'a a num'arului de post'ari din index 'si, de multe ori, nu are efecte negative (interog'arile de tip fraz'a exact'a constituie un exemplu in care lista de stop are efecte negative).
@@ -155,10 +155,10 @@ Iat'a o list'a de cuvinte de stop pentru limba englez'a:
 a, an, and, are, as, at, be, by, from, for, has, he, in, is, it, its, on, of, that, the, to, was, where, will, with
 \end{quotation}
 
-Tendin'ta folosirii listelor de stop de-a lungul timpului a sc'azut de la liste foarte mare (200-300 termeni), la liste foarte mici (7-12 termeni), ajung'jndu-se la a nu se folosi deloc. 'In general, motoarele de c'autare web nu folosesc cuvinte de stop ci 'intrebuin'teaz'a statisitici ale limbii pentru tratarea mai bun'a a cuvintelor comune.
+Tendin'ta folosirii listelor de stop de-a lungul timpului a sc'azut de la liste foarte mari (200-300 termeni), la liste foarte mici (7-12 termeni), ajung'jndu-se la a nu se folosi deloc. 'In general, motoarele de c'autare web nu folosesc cuvinte de stop ci 'intrebuin'teaz'a statisitici ale limbii pentru tratarea mai bun'a a cuvintelor comune.
 
 \subsubsection{Stemming 'si lematizare}
-Documentele folosesc diferite forme ale aceluia's cuv'jtnt, de exemplu: \emph{organizez, organizeaz'a, organiz'jnd}. 'In multe situa'tii pare util ca o c'autare a unuia dintre aceste cuvinte s'a 'intoarc'a documente care folosesc oricare din formele lui.
+Documentele folosesc diferite forme ale aceluia'si cuv'jnt, de exemplu: \emph{organizez, organizeaz'a, organiz'jnd}. 'In multe situa'tii pare util ca o c'autare a unuia dintre aceste cuvinte s'a 'intoarc'a documente care folosesc oricare din formele lui.
 
 At'jt scopul \emph{stemming-ului} c'jt 'si al \emph{lematiz'arii} este \emph{reducerea formelor flexionare 'si a formelor derivate cu semantic'a similar'a a unui cuv'jnt la o form'a de baz'a}. De exemplu:
 \begin{quote}
@@ -198,7 +198,7 @@ O c'autare dup'a termenii \emph{"what"}, \emph{"is"} 'si \emph{"it"} ar avea urm
 \left\{0, 1\right\} \cup \left\{0, 1, 2\right\} \cup \left\{0, 1, 2\right\} = \left\{0, 1\right\}.
 \]
 
-Pentru acelea'si texte se pot stoca 'si pozi'tiile pe care se g'asesc termenii.
+Pentru acelea'si texte se pot stoca 'si pozi'tiile pe care se g'asesc termenii (tabelul \ref{tab:invindpoz}).
 \begin{table}[ht]
 \centering
 \begin{tabular}{ll}
@@ -223,7 +223,7 @@ Pentru acelea'si texte se pot stoca 'si pozi'tiile pe care se g'asesc termenii.
 \end{figure}
 
 \subsection{Interac'tiunea cu utilizatorul}
-Un sistem RI pune la dispozi'tia utilizatorului o interfa't'a prin intermediul c'aruia se poate interoga indexul de documente. 'In general, aceast'a interfa't'a este destul de simpl'a, const'jnd 'intr-o caset'a 'in care utilizatorul scrie interogare 'si un buton pentru lansarea c'aut'arii. Interogarea este apoi procesat'a de un parser care interpreteaz'a limbajul folosit. Sintaxa interog'arilor difer'a 'in func'tie de sistem, dar de obicei (mai ales pe web) se folosesc interog'ari de tip free-text 'si eventual c'jtiva operatori logici. Dup'a ce interogarea este trasformat'a intr-o reprezentare intern'a, se aplic'a acelea'si transform'ari ale textului aplicate documentului (filtrare, normalizare, stemming). Unele sisteme verific'a scrierea corect'a 'si pot indic'a sugestii 'in cazul detect'arii erorilor. Pentru a rafina scopul c'aut'arii, un motor de c'autare poate extinde interogarea prin ad'augarea de termeni (sinonime, concepte 'inrudite).
+Un sistem RI pune la dispozi'tia utilizatorului o interfa't'a prin intermediul c'aruia se poate interoga indexul de documente. 'In general, aceast'a interfa't'a este destul de simpl'a, const'jnd 'intr-o caset'a 'in care utilizatorul scrie interogarea 'si un buton pentru lansarea c'aut'arii. Interogarea este apoi procesat'a de un parser care interpreteaz'a limbajul folosit. Sintaxa interog'arilor difer'a 'in func'tie de sistem, dar de obicei (mai ales pe web) se folosesc interog'ari de tip free-text 'si eventual c'j'tiva operatori logici. Dup'a ce interogarea este trasformat'a intr-o reprezentare intern'a, se aplic'a acelea'si transform'ari ale textului aplicate documentului (filtrare, normalizare, stemming). Unele sisteme verific'a scrierea corect'a 'si pot indic'a sugestii 'in cazul detect'arii erorilor. Pentru a rafina scopul c'aut'arii, un motor de c'autare poate extinde interogarea prin ad'augarea de termeni (sinonime, concepte 'inrudite).
 
 Dup'a ce c'autarea 'si ierarhizarea au avut loc, interfa'ta afi'seaz'a lista de documente. Pentru fiecare document din list'a se afi'seaz'a 'si fragmente 'in care termenii au fost reg'asi'ti (eventual termenii sunt sco'si 'in eviden't'a). Anumite sisteme afi'sez'a 'si reclame relevante la interogarea respectiv'a 'si anumite unelte de vizualizare pentru rafinarea interog'arii sau efectuarea de interog'ari 'inrudite.
 
@@ -252,7 +252,7 @@ Pentru fiecare termen din colec'tie este calculat'a probabilitatea ca acesta s'a
 Un model lingvistic este calculat pentru fiecare document 'si, la c'autare, se calculeaz'a probabilitatea ca un document s'a genereze interogarea.
 
 \paragraph{Re'tele de inferen't'a}
-O re'tea baiesian'a este folosit'a pentru a infera relvan'ta unui document la o interogare. Acest'a concluzie se trage pe baza "eviden'telor" din document.
+O re'tea bayes-ian'a este folosit'a pentru a infera relvan'ta unui document la o interogare. Acest'a concluzie se trage pe baza "eviden'telor" din document.
 
 \paragraph{Indexarea semantic'a latent'a}
 Ocuren'tele termenilor 'in documente sunt reprezentate folosind o matrice \emph{termen-document}. Matricea este redus'a prin SVD (\emph{Singular Value Decomposition}) pentru a filtra "g'al'agia" (\emph{noise}) g'asit'a 'in documente astfel 'inc'jt dou'a documente care au semantici similare s'a fie situate c'jt mai aproape 'intr-un spa'tiu multi-dimensional.
@@ -266,12 +266,12 @@ O interogare optim'a pentru a g'asi documente relevante la o nevoie de informa't
 \paragraph{Reg'asirea pe mul'timi fuzzy}
 Un document este mapat la o mul'time fuzzy (o mul'time 'in care fiecare element are asociat un num'ar care indic'a "puterea de apartenen't'a"). Interog'arile boolene sunt mapate la intersec'tii, reuniuni 'si complemente de mul'timi fuzzy care au ca rezultat o pondere de apartenten't'a asociat'a cu fiecare document care e relevant la interogare. Aceast'a pondere este folosit'a ca m'asur'a de similaritate.
 
-Pentru fiecare strategie se pot folosi diferite utilit'a'ti sunt folosite pentru a-i imbun'at'a'ti rezultatele. Acestea pot fi: \emph{expandarea interog'arilor}, \emph{feedback-ul de relevan't'a}, \emph{clustering}, \emph{n-grame}, \emph{re'tele semantice}, etc. 'Incerc'jnd s'a rafineze interogarea, majoritatea acestor utilit'a'ti adaug'a sau 'indep'arteaz'a termeni de la interogarea ini'tial'a. Aceste utilit'a'ti sunt componente \emph{"plug-and-play"} 'in sensul c'a ar trebui s'a poat'a fi folosite cu orice model de ierarhizare.
+Pentru fiecare strategie se pot folosi diferite utilit'a'ti pentru a-i imbun'at'a'ti rezultatele. Acestea pot fi: \emph{expandarea interog'arilor}, \emph{feedback-ul de relevan't'a}, \emph{clustering}, \emph{n-grame}, \emph{re'tele semantice}, etc. 'Incerc'jnd s'a rafineze interogarea, majoritatea acestor utilit'a'ti adaug'a sau 'indep'arteaz'a termeni de la interogarea ini'tial'a. Aceste utilit'a'ti sunt componente \emph{"plug-and-play"} 'in sensul c'a ar trebui s'a poat'a fi folosite cu orice model de ierarhizare.
 
 O tratare mai detaliat'a a c'jtorva dintre aceste metode se va face 'in capitolul \ref{cap:rankmet}.
 
 \subsection{Evaluarea}
-Pentru 'imbun'at'a'tirea eficien'tei sistemului este crucial'a stocarea interog'arilor 'si interac'tiunilor 'intr-un log. Analiza eficien'tei ierarhiz'arii permite ajustarea sistemului pentru a da rezultate c'jt mai relevante la nevoile de informa'tie 'si constituie o tem'a de baz'a a acestei lucr'ari. Tehnicile de evaluare sunt descrise 'in capitolul \ref{cap:eval}.
+Pentru 'imbun'at'a'tirea eficien'tei sistemului este crucial'a stocarea interog'arilor 'si interac'tiunilor 'intr-un log. Analiza eficien'tei ierarhiz'arii permite ajustarea sistemului pentru a da rezultate c'jt mai relevante la nevoile de informa'tie 'si constituie tema de baz'a a acestei lucr'ari. Tehnicile de evaluare sunt descrise 'in capitolul \ref{cap:eval}.
 
 \chapter{Evaluarea 'in reg'asirea informa'tiei}
 \label{cap:eval}
@@ -302,7 +302,7 @@ Aceasta este o list'a de colec'tii standard de test si evaluare. Majoritatea sun
 \paragraph{\emph{Cranfield}}
 Aceast'a colec'tie a fost prima care a permis m'asuri precise de eficient'a ale sistemelor de reg'asire a informa'tiei, dar acum este prea mic'a pentru un experiment "serios". A fost alc'atuit'a 'in anii 1950 in Regatul Unit 'si con'tine 1398 de sumare de articole despre aerodinamic'a, un set de 225 de interog'ari 'si judec'a'ti de relevan't'a complete pentru toate perechile (interogare, document).
 \paragraph{\emph{TREC}}
-NIST a construit un framework de evaluare pentru RI 'incep'jnd cu 1992. Din acest framework cele mai cunoscute sunt cele folosite la testele \emph{TREC Ad Hoc track} 'in timpul primelor opt conferin'te TREC (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) 'intre 1992 'si 1999. 'In total, aceste colec'tii de test 'insumeaz'a 6 CDuri 'si con'tin 1,89 milioane de documente (compuse cu preponderen't'a din articole de 'stiri) 'si judec'a'ti de relevan't'a pentru 450 de nevoi de informa'tie numite subiecte. Colec'tiile TREC 6-8 sunt formate din 150 de nevoi de informa'tie si 528.000 de articole de 'stiri. Acesta este probabil cea mai bun'a subcolec'tie datorit'a faptului c'a este cea mai mare 'si subiectele sunt mai consistente. Din cauza faptului c'a aceste colec'tii sunt foarte mari, nu exist'a judec'a'ti exhaustive ci sunt specificate doar pentru un subset de documente (primele \emph{k} documente 'intoarse de sistemul pentru care nevoia de informa'tie a fost dezvoltat'a).
+NIST a construit un framework de evaluare pentru RI 'incep'jnd cu 1992. Din acest framework cele mai cunoscute colec'tii de test sunt cele folosite la testele \emph{TREC Ad Hoc track} 'in timpul primelor opt conferin'te TREC (\textbf{T}ext \textbf{RE}trieval \textbf{C}onference) 'intre 1992 'si 1999. 'In total, aceste colec'tii de test 'insumeaz'a 6 CD-uri 'si con'tin 1,89 milioane de documente (compuse cu preponderen't'a din articole de 'stiri) 'si judec'a'ti de relevan't'a pentru 450 de nevoi de informa'tie numite "subiecte". Colec'tiile TREC 6-8 sunt formate din 150 de nevoi de informa'tie si 528.000 de articole de 'stiri. Acesta este probabil cea mai bun'a subcolec'tie datorit'a faptului c'a este cea mai mare 'si subiectele sunt mai consistente. Din cauza faptului c'a aceste colec'tii sunt foarte mari, nu exist'a judec'a'ti exhaustive ci sunt specificate doar pentru un subset de documente (primele \emph{k} documente 'intoarse de sistemul pentru care nevoia de informa'tie a fost dezvoltat'a).
 \paragraph{GOV2}
 'In ultimii ani, NIST a f'acut evalu'ari pe colec'tii mult mai mari, incluz'jnd colec'tia de 25 de milioane de pagini web, \emph{GOV2}. GOV2 este acum cea mai mare colec'tie de pagini web disponibil'a pentru cercetare. Cu toate acestea, GOV2 'inc'a este de cel pu'tin 2 ori mai mic'a dec'jt colec'tia de documente indexate de companiile mari de c'autare web.
 \paragraph{NTCIR}
@@ -313,14 +313,14 @@ Seria de evalu'ari CLEF (Cross Language Evaluation Forum) s-a concentrat pe limb
 Pentru clasificarea de text, cea mai folosit'a colec'tie de test a fost \emph{Reuters-21578} compus'a din 21578 articole de 'stiri. Mai recent Reuters a publicat \emph{Reuters Corpus Volume 1 (RCV1)}, o colec'tie mult mai mare const'jnd 'n 806.791 documente.
 
 \section{Evaluarea rezultatelor neordonate}
-Av'jnd aceste ingrediente, cum este m'asurat'a eficien'ta unui sistem? Cele mai frecvente si fundamentale dou'a m'asuri 'in RI sunt a'sa-numitele \emph{precizia(precision - P)} 'si \emph{returnarea(recall - R)}. Acestea sunt mai 'int'ji definite pentru cazul 'in care sistemu RI 'intoarce un set neordonat de documente pentru o interogare 'si apoi extinse la liste ierarhizate de documente.
+Av'jnd aceste ingrediente, cum este m'asurat'a eficien'ta unui sistem? Cele mai frecvente si fundamentale dou'a m'asuri 'in RI sunt \emph{precizia(precision - P)} 'si \emph{recall-ul (R)}. Acestea sunt mai 'int'ji definite pentru cazul 'in care sistemul RI 'intoarce un set neordonat de documente pentru o interogare 'si apoi extinse la liste ierarhizate de documente.
 
 \emph{Precizia} este dat'a de raportul dintre documentele reg'asite care sunt relevante 'si documentele reg'asite:
 \begin{equation}
 P = \frac{\#(documente\,reg\breve{a}site\,si\,relevante)}{\#(documente\,reg\breve{a}site)} = P(relevante|reg\breve{a}site)
 \label{eq:prec}
 \end{equation}
-\emph{Returnarea} este raportul dintre documentele reg'asite care sunt relevante 'si documentele relevante:
+\emph{Recall-ul} este raportul dintre documentele reg'asite care sunt relevante 'si documentele relevante:
 \begin{equation}
 R = \frac{\#(documente\,reg\breve{a}site\,si\,relevante)}{\#(documente\,relevante)} = P(reg\breve{a}site|relevante)
 \label{eq:rec}
@@ -357,9 +357,9 @@ O alternativ'a evident'a este judecarea sistemului dup'a acurate'te, adic'a, pro
 
 Exist'a un motiv din cauza c'aruia acurate'tea nu este o masur'a corespunz'atoare pentru reg'asirea informa'tiei. 'In aproape toate circumstan'tele, datele sunt extrem de "denaturate": de obicei, peste 99,9\% din documente sunt 'in categoria nerelevant. Un sistem configurat s'a maximizeze acurate'tea poate p'area c'a func'tioneaz'a foarte bine prin considerearea tuturor documentelor ca fiind nerelevante la orice introgare. Acest lucru este inacceptabil pentru un sistem RI. Un utilizator va dori 'intotdeauna s'a vad'a niste documente 'si poate avea o mic'a toleran't'a pentru pozitive false dac'a majoritatea documentelor 'ii satisfac nevoia de informa'tie. M'asurile P 'si R concentreaz'a evaluarea pe 'intoarcerea de pozitive adev'arate, 'intreb'jnd ce procent de documente relevante a fost g'asit 'si cate pozitive false au fost 'intoarse.
 
-Avantajul faptului c'a exist'a dou'a masuri diferite este acela c'a 'in cele mai multe circumstan'te una este mai important'a dec'jt cealalt'a. Un utilizator web obi'snuit dore'ste ca fiecare rezultat de pe prima pagin'a s'a fie relevant(precizie mare) dar nu are nici cel mai mic interes s'a 'stie 'si mai ales s'a priveasc'a fiecare document relevant. Pe de alt'a parte, un profesionist care caut'a documente 'intr-un sistem RI intern va 'incerca s'a g'asesc'a toate documentele relevante la nevoia lui de informa'tie(returnare mare) 'si va tolera valori mici ale preciziei pentru a 'isi atinge scopul. 'In orice caz, exist'a un compromis 'intre cele dou'a valori: se poate 'intotdeauna ob'tine un recall maxim dar precizie mic'a dac'a se 'intorce o list'a cu toate documentele. Recall-ul este o functie non-descresc'atoare de num'arul de documente reg'asite. Pe de alt'a parte, 'intr-un sistem bun, precizia de obicei scade odat'a cu cresterea num'arului de documente reg'asite. 'In general se dore'ste o anumit'a valoare a recall-ului, toler'jndu-se un anumit procent de pozitive false.
+Avantajul faptului c'a exist'a dou'a masuri diferite este acela c'a 'in cele mai multe circumstan'te una este mai important'a dec'jt cealalt'a. Un utilizator web obi'snuit dore'ste ca fiecare rezultat de pe prima pagin'a s'a fie relevant(precizie mare) dar nu are nici cel mai mic interes s'a 'stie 'si mai ales s'a priveasc'a fiecare document relevant. Pe de alt'a parte, un profesionist care caut'a documente 'intr-un sistem RI intern va 'incerca s'a g'asesc'a toate documentele relevante la nevoia lui de informa'tie(recall mare) 'si va tolera valori mici ale preciziei pentru a 'isi atinge scopul. 'In orice caz, exist'a un compromis 'intre cele dou'a valori: se poate 'intotdeauna ob'tine un recall maxim dar precizie mic'a dac'a se 'intorce o list'a cu toate documentele. Recall-ul este o functie non-descresc'atoare de num'arul de documente reg'asite. Pe de alt'a parte, 'intr-un sistem bun, precizia de obicei scade odat'a cu cresterea num'arului de documente reg'asite. 'In general se dore'ste o anumit'a valoare a recall-ului, toler'jndu-se un anumit procent de pozitive false.
 
-O m'asur'a care 'inglobeaz'a at'jt precizia c'jt 'si returnarea este \emph{m'asura F}, care se calculeaz'a ca media armonic'a ponderat'a a celor dou'a valori:
+O m'asur'a care 'inglobeaz'a at'jt precizia c'jt 'si recall-ul este \emph{m'asura F}, care se calculeaz'a ca media armonic'a ponderat'a a celor dou'a valori:
 \begin{equation}
 F = \frac{1}{\alpha\frac{1}{P} + (1-\alpha)\frac{1}{R}} = \frac{(\beta^2+1)PR}{\beta^2P+R}\,\,\,unde\,\,\,\beta^2=\frac{1-\alpha}{\alpha}
 \label{eq:fms}
@@ -369,21 +369,21 @@ unde $\alpha \in [0,1]$ 'si, ca urmare, $\beta^2 \in [0,\infty)$. M'asura F bala
 F_{\beta=1} = \frac{2PR}{P+R}
 \label{eq:f1}
 \end{equation}
-Valori ale lui $\beta$ mai mici dec'jt 1 scot 'in eviden't'a precizia, 'in timp ce valori mai mari ca 1 pun accentul pe returnare. Valorile discutate p'jn'a acum sunt m'asuri 'intre 0 'si 1, dar se mai scriu si ca procente pe o scal'a de la 1 la 100. Media armonic'a este folosit'a 'in locul mediei aritmetice deoarece 'in cazul 'in care un sistem ar 'intoarce toate documentele(100\% recall), ar avea tot timpul cel pu'tin $F=50\%$. Media armonic'a a dou'a numere ($a << b$) este mai apropiat'a de minim dec'jt de media lor aritmetic'a(vezi figura \ref{fig:harm}).
+Valori ale lui $\beta$ mai mici dec'jt 1 scot 'in eviden't'a precizia, 'in timp ce valori mai mari ca 1 pun accentul pe recall. Valorile discutate p'jn'a acum sunt m'asuri 'intre 0 'si 1, dar se mai scriu si ca procente pe o scal'a de la 1 la 100. Media armonic'a este folosit'a 'in locul mediei aritmetice deoarece 'in cazul 'in care un sistem ar 'intoarce toate documentele(100\% recall), ar avea tot timpul cel pu'tin $F=50\%$. Media armonic'a a dou'a numere ($a << b$) este mai apropiat'a de minim dec'jt de media lor aritmetic'a(vezi figura \ref{fig:harm}).
 
 \section{Evaluarea rezultatelor ordonate}
-M'asurile \emph{precision}, \emph{recall} 'si \emph{F} sunt bazate pe seturi; sunt calculate folosind seturi neordonate de documente. Este nevoie de o extindere a acestor m'asuri (sau de o definire de noi m'asuri) dac'a se dore'ste evaluarea unor rezultate ierarhizate care reprezint'a standardul 'in zilele noastre. 'Intr-un context de reg'asire ierarhizat'a setul care intereseaz'a este dat de \emph{primele k} documente. Pentru fiecare astfel de set, valorile preciziei si return'arii pot fi reprezentate grafic printr-o \emph{curb'a precision-recall}, ca cea din figura \ref{fig:precrec}.
+\emph{Precizia}, \emph{recall-ul} 'si \emph{F} sunt bazate pe seturi; sunt calculate folosind seturi neordonate de documente. Este nevoie de o extindere a acestor m'asuri (sau de o definire de noi m'asuri) dac'a se dore'ste evaluarea unor rezultate ierarhizate care reprezint'a standardul 'in zilele noastre. 'Intr-un context de reg'asire ierarhizat'a setul care intereseaz'a este dat de \emph{primele k} documente. Pentru fiecare astfel de set, valorile preciziei si recall-ului pot fi reprezentate grafic printr-o \emph{curb'a precizie-recall}, ca cea din figura \ref{fig:precrec}.
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[scale=.7]{evl2.png}
-	\caption{Grafic \emph{precision-recall}.}
+	\caption{Grafic \emph{precizie-recall}.}
 	\label{fig:precrec}
 \end{figure}
 
-Curbele precision-recall au o form'a de "fier'astr'au": dac'a al $(k+1)$-lea document reg'asit este nerelevant, atunci recall-ul este acela'si ca pentru primele $k$ documente reg'asite, dar precizia scade. Dac'a documentul este relevant atunci ambele valori cresc. Este de obicei util s'a se elimine aceast'a form'a 'si modul standard de a face acest lucru este folosind \emph{precizia interpolat'a} $p_{interp}$. La un anumit nivel de recall $r$, $p_{interp}$ este dat de cea mai mare valoare a preciziei g'asit'a pentru orice nivel de recall $r' \geq r$:
+Curbele precizie-recall au o form'a de "fier'astr'au": dac'a al $(k+1)$-lea document reg'asit este nerelevant, atunci recall-ul este acela'si ca pentru primele $k$ documente reg'asite, dar precizia scade. Dac'a documentul este relevant atunci ambele valori cresc. Este de obicei util s'a se elimine aceast'a form'a 'si modul standard de a face acest lucru este folosind \emph{precizia interpolat'a} $p_{interp}$. La un anumit nivel de recall $r$, $p_{interp}$ este dat de cea mai mare valoare a preciziei g'asit'a pentru orice nivel de recall $r' \geq r$:
 \begin{equation}
-p_{interp} = \max\limits_{r\prime \geq r}{p(r')}
+p_{interp} = \max\limits_{r' \geq r}{p(r')}
 \label{eq:pinterp}
 \end{equation}
 Precizia interpolat'a este ilustrat'a 'in figura \ref{fig:precrec}.
@@ -423,11 +423,11 @@ Pentru fiecare nivel de recall se calculeaz'a media aritmetic'a a preciziei inte
 MAP(Q) = \frac{1}{|Q|} \sum\limits_{j=1}^{|Q|}{\frac{1}{m_j} \sum\limits_{k=1}^{m_j}{Prec(R_{jk})}}
 \label{eq:map}
 \end{equation}
-C'jnd un document relevant nu este reg'asit, precizia este considerat'a 0. Pentru o singur'a nevoie de informa'tie, precizia medie aproximeaz'a aria de sub curba neinterpolat'a precizie-recall, 'asadar MAP aproximeaz'a aria medie de sub curba precizie-recall pentru un set de interog'ari.
+C'jnd un document relevant nu este reg'asit, precizia este considerat'a 0. Pentru o singur'a nevoie de informa'tie, precizia medie aproximeaz'a aria de sub curba neinterpolat'a precizie-recall, a'sadar, MAP aproximeaz'a aria medie de sub curba precizie-recall pentru un set de interog'ari.
 
 Folosind MAP, nu sunt alese nivele fixe de recall 'si nu este nevoie de interpolare. Un set de nevoi de informa'tie trebuie sa fie cuprinz'ator si diversificat pentru a putea m'asura c'jt mai exact eficient'a unui sistem.
 
-M'asurile descrise p'jn'a au 'in componen'ta precizia pentru fiecare nivel de recall. 'In cazul multor aplica'tii, cum ar fi un motor de c'autare web, acest lucru nu reflect'a neap'arat nevoile unui utilizator. 'In acest caz conteaz'a mai mult c'jte rezultate bune se gasesc 'in primele pagini. Acest lucru conduce la nevoia de a m'asura precizia pentru primele documente reg'asite (10 sau 30). Aceast'a tehnic'a poart'a numele de \emph{"Precizia la k"}. Are avantajul c'a nu necesit'a o esitmare a dimenisiunii setului de documente relevante($m_j$ 'in cazul MAP) 'si dezavantajele c'a este cea mai pu'tin stabil'a dintre metodele de evaluare 'si c'a nu se poate calcula media prea bine pentru ea.
+M'asurile descrise p'jn'a acum au 'in componen't'a precizia pentru fiecare nivel de recall. 'In cazul multor aplica'tii, cum ar fi un motor de c'autare web, acest lucru nu reflect'a neap'arat nevoile unui utilizator. 'In acest caz conteaz'a mai mult c'jte rezultate bune se gasesc 'in primele pagini. Acest lucru conduce la nevoia de a m'asura precizia pentru primele documente reg'asite (10 sau 30). Aceast'a tehnic'a poart'a numele de \emph{"Precizia la k"}. Are avantajul c'a nu necesit'a o esitmare a dimenisiunii setului de documente relevante($m_j$ 'in cazul MAP) 'si dezavantajele c'a este cea mai pu'tin stabil'a dintre metodele de evaluare 'si c'a nu se poate calcula media prea bine pentru ea.
 
 O alternativ'a care atenueaz'a aceast'a problem'a este \emph{R-precizia}. Implic'a existen'ta unui set $Rel$ de documente despre care se 'stie c'a sunt relevante, din care se calculeaz'a apoi precizia pentru primele $|Rel|$ documente reg'asite. R-precizia se ajusteaz'a la m'arimea setului de documente relevante: un sistem perfect ar putea puncta 1 la aceast'a m'asur'a pentru fiecare interogare, 'in timp ce p'jn'a 'si un sistem perfect, ar putea s'a ating'a o precizie la 20 de 0.4 dac'a ar exista doar 8 documente 'in colec'tia de documente relevante. Calcularea mediei peste setul de interog'ari are mai mult sens 'in acest caz. Dac'a exist'a $|Rel|$ documente relevante pentru o interogare, se examineaz'a primele $|Rel|$ rezultate date de un sistem 'si se g'asesc $r$ documente relevante, atunci precizia ('si deci R-precizia) este $r/|Rel|$, dar 'si recall-ul este tot $r/|Rel|$. A'sadar, R-precizia este identic'a cu o alt'a m'asur'a folosit'a c'jteodat'a: \emph{break-even point}, m'asur'a definit'a ca valoarea la care precizia 'si recall-ul sunt egale. Ca 'si \emph{Precizia la k}, \emph{R-precizia} descrie un singur punct de pe curb'a, 'si e uneori neclar de ce intereseaz'a mai mult nivelul 'in care cele dou'a valori sunt egale dec'jt nivelul cel mai bun de pe curb'a ('in care F este maxim) sau un nivelul de interes pentru o anumit'a aplica'tie (\emph{Precizia la k}). Cu toate acestea, R-precizia pare s'a fie corelata cu MAP, lucru constatat 'in urma experimentelor.
 
@@ -440,7 +440,7 @@ Un alt concept folosit uneori 'in evaluarea unui sistem este \emph{curba ROC} ("
 	\label{fig:roc}
 \end{figure}
 
-O curb'a ROC urc'a 'intotdeauna din st'jnga jos spre dreapta sus. Pentru un sistem bun, graficul urc'a abrupt 'in partea st'jng'a. Are mai mult sens c'jnd se ia 'in considerare 'intreg spectrul de reg'asire 'si pune la dispozi'tie o alt'a perspectiv'a asupra datelor. 'In unele cazuri se foloseste estimarea ariei de sub curba ROC, care este o valoare analoag'a m'asurii MAP.
+O curb'a ROC urc'a 'intotdeauna din st'jnga jos spre dreapta sus. Pentru un sistem bun, graficul urc'a abrupt 'in partea st'jng'a. Are mai mult sens c'jnd se ia 'in considerare 'intreg spectrul de reg'asire 'si pune la dispozi'tie o alt'a perspectiv'a asupra datelor. 'In unele cazuri se folose'ste estimarea ariei de sub curba ROC, care este o valoare analoag'a m'asurii MAP.
 
 O alt'a abordare care a fost adoptat'a din ce 'in ce mai des, 'in special 'in cazul sistemelor care folosesc \emph{machine learning}, este m'asura \emph{c'j'stigului cumulativ} (\emph{cumulative gain}) 'si, 'in particular, \emph{normalized discounted cumulative gain(NDCG)}. NDCG este proiectat pentru situa'tii 'in care relevan'ta este nebinar'a. Ca 'si \emph{Precizia la k}, este evaluat'a peste primele k rezultate. Pentru un set de interog'ari Q, fie $R(j,d)$ scorul de relevan't'a pe care evaluatorii l-au dat documentului d pentru interogarea j. Atunci,
 \begin{equation}
@@ -457,9 +457,9 @@ Spre deosebire de o interogarea boolean'a, o interogare \emph{liber'a}("free tex
 
 'In acest scop, se asigneaz'a fiec'arui termen din document o pondere care depinde de num'arul de ocuren'te ale termenului 'in document. Se vrea calcularea unui scor 'intre termenul unei interog'ari, $t$ 'si un document $d$, pornind de la ponderea lui $t$ 'in $d$. Cea mai simpl'a abordare este ca ponderea s'a fie chiar frecven'ta termenului 'in document. Aceast'a schem'a de ponderarea este numit'a \emph{term frequency} 'si notat'a $tf_{t,d}$.
 
-Pentru un docunment $d$, setul de ponderi \emph{tf}(sau orice alte ponderi care mapeaz'a frecven'ta termenilor la numere reale pozitive) poate fi v'azut ca o reprezentare a documentului. 'In acest perspectiv'a asupra unui document, cunoscut'a 'in literatur'a sub numele de \emph{modelul bag of words}, ordinea cuvintelor 'in document este ignorat'a, dar, spre deosebire de modelul boolean, se 'tine cont de frecven'ta lor. 'In orice caz, pare intuitiv faptul c'a dou'a documente care au reprezent'ari similare, sunt similare 'si 'in con'tinut.
+Pentru un docunment $d$, setul de ponderi \emph{tf}(sau orice alte ponderi care mapeaz'a frecven'ta termenilor la numere reale pozitive) poate fi v'azut ca o reprezentare a documentului. 'In aceast'a perspectiv'a asupra unui document, cunoscut'a 'in literatur'a sub numele de \emph{modelul bag of words}, ordinea cuvintelor 'in document este ignorat'a, dar, spre deosebire de modelul boolean, se 'tine cont de frecven'ta lor. 'In orice caz, pare intuitiv faptul c'a dou'a documente care au reprezent'ari similare, sunt similare 'si 'in con'tinut.
 
-O alt'a dilem'a care apare este urm'atoarea: toate cuvintele dintr-un document sunt la fel de importante? 'In mod evident, nu. Pe l'jng'a conceptul de \emph{cuvinte de stop} - cuvinte care nu se indexeaz'a, 'si ca urmare nu contribuie la calcularea scorului - exist'a alt mecanism pentru a c'jnt'ari importan'ta cuvintelor: \emph{frecven'ta invers'a documentelor pentru un termen} sau \emph{idf - inverse document frequency}. 
+O alt'a dilem'a care apare este urm'atoarea: toate cuvintele dintr-un document sunt la fel de importante? 'In mod evident, nu. Pe l'jng'a conceptul de \emph{cuvinte de stop} - cuvinte care nu se indexeaz'a, 'si ca urmare nu contribuie la calcularea scorului - exist'a alt mecanism pentru a c'jnt'ari importan'ta cuvintelor: \emph{frecven'ta invers'a a documentelor pentru un termen} (\emph{idf - inverse document frequency}). 
 
 \subsection{Frecven'ta invers'a a documentelor pentru un termen}
 Problema cu ponderarea \emph{tf} este c'a unii termeni ar trebui s'a aib'a mai pu'tin'a putere de discriminare dec'jt al'tii 'in determinarea relevan'tei. Este nevoie de un mecanism care s'a atenueze efectul termenilor care au o frecven'ta mare la nivel de colec'tie. O prim'a idee este reducerea ponderii \emph{tf} a unui termen cu un factor propor'tional cu frecven'ta la nivel de colec'tie(num'arul de ocuren'te 'in toate documentele).
@@ -621,7 +621,7 @@ wf_{t,d} = \left\{
 \end{equation}
 Utiliz'and aceast'a pondere 'in loc de tf, putem 'inlocui tf-idf cu:
 \begin{equation}
-wf-idf_{t,d} = wf_{t,d} \times idf_t.
+wf \mhyphen idf_{t,d} = wf_{t,d} \times idf_t.
 \label{eq:wfidf}
 \end{equation}
 
@@ -636,7 +636,7 @@ unde $a$ este o valoare 'intre 0 'si 1 (de obicei ia valoarea $0.4$) 'si se nume
 Ideea principal'a din spatele normaliz'arii cu tf maxim este evitarea urm'atoarei anomalii: se observ'a frecven'te mai mari ale termenilor 'in documente mai lungi, 'in principal din cauza faptului c'a documentele mai lungi tind s'a repete acelea'si cuvinte de mai multe ori, lucru care nu ar trebui s'a afecteze calcularea relevan'tei.
 
 \subsubsection{Scheme de ponderare pentru documente 'si interog'ari}
-Ecua'tia \ref{eq:simcosq} este fundamental'a pentru sisteme de reg'asirea informa'tiei care folosesc orice form'a de ierarhizare pe baza VSM. Diferen'tele dintre metodele VSM 'tin mai degrab'a de alegerea ponderilor din vectorii $\vec{V}(d)$ 'si $\vec{V}(q)$. Tabelul \ref{tab:smart} ilustreaz'a unele dintre principalele scheme de ponderare folosite at'jt pentru $\vec{V}(d)$ c'jt 'si pentr $\vec{V}(q)$, 'impreun'a cu mnemonice pentru a reprezenta o combina'tie specific'a de ponderi. Acest sistem de mnemonice poart'a numele de \emph{nota'tia SMART}.
+Ecua'tia \ref{eq:simcosq} este fundamental'a pentru sisteme de reg'asirea informa'tiei care folosesc orice form'a de ierarhizare pe baza VSM. Diferen'tele dintre metodele VSM 'tin mai degrab'a de alegerea ponderilor din vectorii $\vec{V}(d)$ 'si $\vec{V}(q)$. Tabelul \ref{tab:smart} ilustreaz'a unele dintre principalele scheme de ponderare folosite at'jt pentru $\vec{V}(d)$ c'jt 'si pentru $\vec{V}(q)$, 'impreun'a cu mnemonice pentru a reprezenta o combina'tie specific'a de ponderi. Acest sistem de mnemonice poart'a numele de \emph{nota'tia SMART}.
 
 \begin{table}[ht]
 \centering
@@ -686,7 +686,7 @@ Pentru a ierarhiza documentele relevante la interogare, suntem interesa'ti de sc
 \label{eq:rankeq}
 \end{equation}
 
-Pentru fiecare document $d$, similaritatea cosinus $vec{V}(q) \cdot \vec{v}(d)$ este suma peste to'ti termenii din interogarea $q$ a ponderilor acestor termeni 'in $d$. Aceast'a sum'a se poate calcula prin intersectarea listelor de postare ca 'in algoritmul \ref{alg:cossim}, cu men'tiunea c'a ponderile interog'arii sunt considerate 1. Aceast'a schem'a calculeaz'a un scor pentru fiecare document din listele de postare ale termenilor din interogare (num'arul de documente poate fi considerabil mai mic dec'jt $N$).
+Pentru fiecare document $d$, similaritatea cosinus $\vec{V}(q) \cdot \vec{v}(d)$ este suma peste to'ti termenii din interogarea $q$ a ponderilor acestor termeni 'in $d$. Aceast'a sum'a se poate calcula prin intersectarea listelor de postare ca 'in algoritmul \ref{alg:cossim}, cu men'tiunea c'a ponderile interog'arii sunt considerate 1. Aceast'a schem'a calculeaz'a un scor pentru fiecare document din listele de postare ale termenilor din interogare (num'arul de documente poate fi considerabil mai mic dec'jt $N$).
 
 \begin{algorithm}
 \caption{Un algoritm mai rapid pentru calcularea similarit'a'tii cosinus}\label{alg:cossim1}
@@ -736,11 +736,12 @@ Pentru o interogare multi-termen $q$, este evident c'a se vor lua 'in calcul doa
 \item Se consider'a doar documente care con'tin termeni ale c'aror ponderi $idf$ sunt mai mari dec'jt o valoare prestabilit'a. A'sadar, la traversarea listelor de postare, se traverseaz'a doar listele termenilor cu $idf$ mare. Acest lucru aduce un beneficiu mare: listele de postare ale termenilor cu ponderi $idf$ mici sunt 'in general lungi; prin 'indep'artarea lor setul de documente pentru care trebuie calculat'a similaritatea scade considerabil. O alt'a perspectiv'a asupra acestei euristici este c'a termenii cu $idf$ redus sunt considera'ti cuvinte de stop 'si nu contribuie la calcularea scorului.
 \item Se consider'a doar documente car con'tin mul'ti (sau to'ti) tereni din interogare. Acest lucru poate fi realizat la traversarea post'arilor. Un pericol al acestei scheme este c'a dac'a se elimin'a prea multe documente setul de documente $A$ va avea mai pu'tin de $K$ documente.
 \end{enumerate}
+Aceste metode euristice intr'a 'in categoria \emph{index elimination}.
 
 \subsection{Listele de campioni}
-Ideea din spatele \emph{listelor de campioni} (\emph{champion lists, fancy lists, top docs}) este precomputarea, pentru fiecare termen $t$ din dic'tionar, unui set de $r$ documente care au ponderi foarte mari pentru $t$; valoare lui $r$ este aleas'a ini'tial. Pentru ponderarea $tf-idf$, acestea ar fi primele $r$ cu ponderea $tf$ cea mai mare pentru termenul $t$. Numim acest'a mul'time de $r$ documente \emph{lista de campioni} a termenului $t$.
+Ideea din spatele \emph{listelor de campioni} (\emph{champion lists, fancy lists, top docs}) este precomputarea, pentru fiecare termen $t$ din dic'tionar, unui set de $r$ documente care au ponderi foarte mari pentru $t$; valoare lui $r$ este aleas'a ini'tial. Pentru ponderarea $tf \mhyphen idf$, acestea ar fi primele $r$ cu ponderea $tf$ cea mai mare pentru termenul $t$. Numim acest'a mul'time de $r$ documente \emph{lista de campioni} a termenului $t$.
 
-Av'jnd o interogare q, cream setul $A$ astfel: lu'am reuniunea listeror de campioni ale fiec'arui termen din $q$. Restric'tion'am calcularea similarit'a'tii cosinus doar la documentele din A. Un parametru critic al acestei scheme este valoarea lui $r$, care variaz'a 'in func'tie de aplica'tie. Intuitiv, $r$ ar trebui sa fie mult mai mare dec'jt $K$, mai ales dac'a se folosesc euristicile prezentate 'in sec'tiunea precendet'a. O problem'a 'in cazul acesta este c'a $r$ este setat'a la construirea indexului, 'in timp ce $K$ este dependent de aplica'tie 'si exist'a posibilitatea s'a fie aflat doar la lansarea interog'arii. Ca urmare, se poate 'intmpla ca setul $A$ sa aib'a mai pu'tin de $K$ documente. Valoare lui $r$ ar putea fi setat'a mai mare pentru termeni mai rari.
+Av'jnd o interogare q, cre'am setul $A$ astfel: lu'am reuniunea listeror de campioni ale fiec'arui termen din $q$. Restric'tion'am calcularea similarit'a'tii cosinus doar la documentele din A. Un parametru critic al acestei scheme este valoarea lui $r$, care variaz'a 'in func'tie de aplica'tie. Intuitiv, $r$ ar trebui sa fie mult mai mare dec'jt $K$, mai ales dac'a se folosesc euristicile prezentate 'in sec'tiunea precendet'a. O problem'a 'in cazul acesta este c'a $r$ este setat'a la construirea indexului, 'in timp ce $K$ este dependent de aplica'tie 'si exist'a posibilitatea s'a fie aflat doar la lansarea interog'arii. Ca urmare, se poate 'intmpla ca setul $A$ sa aib'a mai pu'tin de $K$ documente. Valoare lui $r$ ar putea fi setat'a mai mare pentru termeni mai rari.
 
 \subsection{Scoruri statice}
 Extindem listele de campioni la no'tiunea de \emph{scoruri statice}. 'In multe motoare de c'autare pentru fiecare document $d$ este disponibil'a o m'asur'a a calit'a'tii $g(d)$ independent'a de interogare, deci static'a. Aceast'a m'asur'a poate fi privit'a ca o valoare 'intre 0 'si 1. De exemplu, 'in contextul unei 'stiri de pe web, $d(d)$ ar putea fi derivat'a din num'arul de review-uri favorabile primite de la vizitatori.
@@ -768,7 +769,7 @@ Cea de-a doua idee const'a 'in men'tinerea, pentru fiecare termen $t$, a dou'a l
 \subsection{Impact ordering}
 'In toate listele de postare descrise p'jn'a acum, documentele au fost ordonate dup'a o ordonare comun'a (dup'a id-ul documentului sau scoruri statice). O astfel de ordonare comun'a suport'a traversarea concurent'a a listelor de postare, calcul'jnd scorul pentru fiecare document 'in momentul 'in care acesta este 'int'jlnit. O astfel de abordare este numit'a notare \emph{document-at-a-time}. 'In aceast'a sec'tiune voi vorbi despre o tehnic'a 'in care listele de postare nu sunt toate ordonate dup'a o ordonare comun'a, lucru care 'impiedic'a o traversare concurent'a. Ca urmare, scorurile vor fi "acumulate" lu'jnd termenii pe r'jnd ca 'in algoritmul \ref{alg:cossim} (\emph{term-at-a-time}).
 
-Idee const'a 'in ordonarea documentelor din listele de postare descresc'ator dup'a $tf_{t,d}$. Ca urmare, ordonarea va fi diferit'a de la o list'a de post'ari la alta 'si nu se poate face o traversare concurent'a pentru to'ti termenii din interogare. Av'jnd listele ordonate descresc'ator dup'a $tf_{t,d}$, dou'a ideei s-au remarcat 'in a reduce substan'tial num'arul de documente pentru care terbuie acumulate scorurile:
+Idee const'a 'in ordonarea documentelor din listele de postare descresc'ator dup'a $tf_{t,d}$. Ca urmare, ordonarea va fi diferit'a de la o list'a de post'ari la alta 'si nu se poate face o traversare concurent'a pentru to'ti termenii din interogare. Av'jnd listele ordonate descresc'ator dup'a $tf_{t,d}$, dou'a ideei s-au remarcat 'in a reduce substan'tial num'arul de documente pentru care trebuie acumulate scorurile:
 \begin{enumerate}
 \item c'jnd se traverseaz'a lista unui termen $t$, algoritmul se opre'ste dup'a ce parcurge un anumit prefix al acesteia - fie dup'a un num'ar fix $r$ de intr'ari, fie dup'a ce $tf_{t,d}$ a sc'azut sub o anumit'a valoare presetat'a;
 \item termenii interog'arii se parcurg 'in ordinea descresc'atoare a $idf$, astfel 'inc'jt termenii care au o probabilitate mai mare s'a contribuie mai mult la scorurile finale s'a fie lua'ti 'in considerare primii.
@@ -778,7 +779,7 @@ Aceast'a ultim'a idee poate fi adaptat'a la momentul proces'arii interog'arii: c
 Aceste idei vin dintr-o generealizare a metodelor introduse 'in sec'tiunile precedente. Depinz'jnd de metoda de ponderare, listele de postare pot fi ordonate dup'a alte cantit'a'ti dec'jt frecven'ta termenilor. 'In contextul RI aceast'a metod'a poart'a numele de \emph{impact ordering}.
 
 \subsection{Cluster pruning}
-'In \emph{cluster pruning} exist'a un etap'a de preprocesare 'in cadrul c'areia vectorii documentelor sunt grupa'ti. Apoi, la momentul interog'arii, se consider'a doar documentele dintr'un num'ar mic de grupuri drept candida'ti pentru care se calculeaz'a similaritatea. Pa'sii de preprocesare sunt urm'atorii:
+'In \emph{cluster pruning} exist'a o etap'a de preprocesare 'in cadrul c'areia vectorii documentelor sunt grupa'ti. Apoi, la momentul interog'arii, se consider'a doar documentele dintr-un num'ar mic de grupuri drept candida'ti pentru care se calculeaz'a similaritatea. Pa'sii de preprocesare sunt urm'atorii:
 \begin{enumerate}
 \item Alege $\sqrt{N}$ documente din colec'tie 'in mod aleator. Nume'ste aceste documente \emph{lideri}.
 \item Pentru fiecare document care nu este lider, afl'a care este cel mai "apropiat" lider.
@@ -798,7 +799,7 @@ Folosirea liderilor ale'si aleator pentru grupare este rapid'a 'si probabilitate
 	\label{fig:cp}
 \end{figure}
 
-Varia'tii ale acestei metode introduc parametrii adi'tionali $b_1$ 'si $b_2$, 'intregi pozitivi. 'In faza de preprocesare se ata'sez'a fiecare adept la cei mai apropia'ti $b_1$ lideri. La procesul de c'autare se consider'a cei mai apropia'ti $b_2$ lideri de interogarea $q$. Schema de mai sus corespunde cazului $b_1=b_2=1$. Cre'sterea celor doi parametri duce la cre'sterea 'sanselor de a g'asi $K$ documente care sa fac'a parte din $top-K$, dar necesit'a mai multe computa'tii.
+Varia'tii ale acestei metode introduc parametrii adi'tionali $b_1$ 'si $b_2$, 'intregi pozitivi. 'In faza de preprocesare se ata'sez'a fiecare adept la cei mai apropia'ti $b_1$ lideri. La procesul de c'autare se consider'a cei mai apropia'ti $b_2$ lideri de interogarea $q$. Schema de mai sus corespunde cazului $b_1=b_2=1$. Cre'sterea celor doi parametri duce la cre'sterea 'sanselor de a g'asi $K$ documente care sa fac'a parte din $top \mhyphen K$, dar necesit'a mai multe computa'tii.
 
 
 \section{Modelul probabilistic}
@@ -945,12 +946,12 @@ A'sadar, $p_t = s/S$ 'si $u_t = (df_t-s)/(N-S)$ 'si
 c_t = K(N,df_t,S,s) = \log{\frac{s/(S-s)}{(df_t-s)/((N-df_t)-(S-s))}}.
 \label{eq:ct}
 \end{equation}
-Pentru a evita posibilitatea apari'tiei de zerouri (de exemplu, toate sau niciun document relevan con'tine un anumit termen) se adaug'a $\frac{1}{2}$ la fiecare dintre cele 4 cantit'a'ti 'si apoi se ajusteaz'a totalurile (N + 2). Ca urmare avem:
+Pentru a evita posibilitatea apari'tiei de zerouri (de exemplu, un anumit termen este con'tinut fie de toate, fie de niciun document relevant) se adaug'a $\frac{1}{2}$ la fiecare dintre cele 4 cantit'a'ti 'si apoi se ajusteaz'a totalurile (N + 2). Ca urmare avem:
 \begin{equation}
 \hat{c_t} = K(N,df_t,S,s) = \log{\frac{(s+\frac{1}{2})/(S-s+\frac{1}{2})}{(df_t-s+\frac{1}{2})/(N-df_t-S+s+\frac{1}{2})}}.
 \label{eq:ct1}
 \end{equation}
-Ad'ugarea valorii $\frac{1}{2}$ este o form'a simpl'a de \emph{uniformizare}.
+Ad'augarea valorii $\frac{1}{2}$ este o form'a simpl'a de \emph{uniformizare}.
 
 \subsubsection{Estim'ari practice}
 Sub asum'tia c'a documentele relevante reprezint'a un procent infim din colec'tie, este plauzibil'a aproximarea statisticilor pentru documentele nerelevante cu statisticile pe 'intreaga colec'tie. Ca urmare, $u_t$ (probabilitatea ca un document nerelevant s'a con'tin'a termenul t pentru o interogare) poate fi aproximat cu $df_t/N$ 'si:
@@ -968,6 +969,7 @@ Tehnica de aproximare din ecua'tia \ref{eq:assum} nu poate fi usor extins'a la d
 \end{enumerate}
 
 \subsection{Okapi BM25}
+\label{ss:bm25}
 Metodele probabiliste sunt unele din cele mai vechi modele formale 'in RI. 'Inc'a din 1970 erau privite ca o oportunitate pentru a pune bazele teoretice 'in RI 'si, odat'a cu "rena'sterea" modelelor probabiliste 'in lingvistica computa'tional'a 'in anii 1990, aceast'a oportunitate s'a 'intors iar metodele probabiliste reprezint'a unul dintre subiectele cele mai discutate subiecte 'in materie de RI. Ob'tinerea unor aproxim'ari rezonabile ale probabilit'a'tilor necesare pentru un model RI probabilistic este posibil'a, dar necesit'a prezum'tii majore. 'In modelul BIM acestea sunt:
 \begin{itemize}
 	\item o reprezentare boolean'a a documentelor, interog'arilor, relevan'tei
@@ -1017,7 +1019,7 @@ Formulele BM25 de ponderare a termenilor au fost folosite cu succes pe o varieta
 Este dificil, dac'a nu imposibil, s'a se prezic'a performan'ta unui model de reg'asire 'intr-un mod analitic. 'In continuare voi prezenta o abordare \emph{axiomatic'a} ce poate fi folosit'a la proiectarea de noi modele de ierarhizare 'in reg'asirea informa'tiei bazate pe modelarea direct'a a relevan'tei cu constr'jngeri de reg'asire formalizate definite la nivelul termenilor. Ideea de baz'a a acestei abord'ari este c'autare 'intr-un spa'tiu de func'tii candidat a unei func'tii care satisface un set de constr'jngeri(\emph{axiome}) de reg'asire. Pentru a defini spa'tiul de func'tii, se va defini o func'tie de reg'asire 'in mod inductiv 'si se va descompune 'in trei componente.
 'In \cite{AXIOM} s-a constatat c'a euristicile intuitive de reg'asire pot fi formal definite ca axiome 'si c'a performan'ta empiric'a a unei func'tii de ierarhizare este legat'a str'jns de c'jt de bine sunt sunt satisf'acute aceste constr'jngeri.
 
-Pentru a defini un model axiomatic pentru RI, trebuie s'a se defineasc'a un \emph{spa'tiu de c'autare} ale poten'tialelor func'tii 'si un set de \emph{constr'jngeri de reg'asire} pe care orice func'tie rezonabil'a trebuie s'a le satisac'a. Asum'tia este c'a dac'a o func'tie satisface toate constr'jngerile, atunci are toate 'sansele s'a aib'a rezultate forte bune 'in practic'a. Spa'tiul de c'autare trebuie s'a fie destul de mare 'inc'jt s'a cuprind'a func'tii "bune", 'si suficient de mic pentru o c'autare.
+Pentru a defini un model axiomatic pentru RI, trebuie s'a se defineasc'a un \emph{spa'tiu de c'autare} ale poten'tialelor func'tii 'si un set de \emph{constr'jngeri de reg'asire} pe care orice func'tie rezonabil'a trebuie s'a le satisfac'a. Asum'tia este c'a dac'a o func'tie satisface toate constr'jngerile, atunci are toate 'sansele s'a aib'a rezultate forte bune 'in practic'a. Spa'tiul de c'autare trebuie s'a fie destul de mare 'inc'jt s'a cuprind'a func'tii "bune", 'si suficient de mic pentru o c'autare.
 
 \subsection{Spa'tiul func'tiilor}
 Din moment ce o func'tie de reg'asire este definit'a pe un document 'si o interogare, trebuie, mai 'int'ji, s'a se defineasc'a documentele 'si interog'arile. P'astr'jnd perspectiva metodelor curente de ierarhizare, documentele 'si interog'arile vor fi v'azute ca "bag of words". 
@@ -1065,7 +1067,7 @@ $\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \notin Q, S(Q, D \cup 
 $\forall Q,D \mbox{ si } \forall d \in T, \mbox{ daca } d \in Q, \delta_d(d, D, Q) > \delta_d(d, D \cup \{d\}, Q)$, unde $\delta_d(d, D, Q) = S(Q, D \cup \{d\}) - S(Q,D)$. Aceast'a constr'jngere asigur'a c'a cantitatea de cre'stere a scorului prin ad'augarea unui termen $d$ din interogare 'in document trebuie s'a se mic'soreze pe m'asur'a ce se adaug'a mai mul'ti termeni.
 
 \subsection{Modelarea func'tiilor}
-Pentru a ob'tine o rela'tie 'intre func'tiile de reg'asire deja existente 'si noul model axiomatic, au fost rescrise mai c'jteva din aceastea folosind schema inductiv'a prezentat'a mai sus. 'In continuare este prezentat'a rescrierea formulei \emph{Okapi BM25}.
+Pentru a ob'tine o rela'tie 'intre func'tiile de reg'asire deja existente 'si noul model axiomatic, au fost rescrise c'jteva din aceastea folosind schema inductiv'a prezentat'a mai sus. 'In continuare este prezentat'a rescrierea formulei \emph{Okapi BM25}.
 
 Okapi define'ste scorul 'intre o interogare 'si un document astfel:
 \[
@@ -1165,7 +1167,7 @@ Candida'tii sunt apoi sorta'ti 'in ordinea descresc'atoare a acestui scor.
 \end{table}
 
 \section{Agregarea Distan't'a-Rang}
-Urm'atoarea abordare se bazeaz'a pe folosirea unei m'asuri de \emph{distan't'a} (sau similaritate) 'intre ierarhii. Pa'sii aceste abord'ari sunt simpli: mai 'intai sunt date ierarhiile care trebuiesc combinate, apoi se define'ste o dinstan't'a 'intre o pereche de ierarhii, urm'jnd s'a se caute o ierarhizare care are proprietatea c'a minimizeaz'a distan'tele de la ea la fiecare dintre ierarhiile date. Privit'a printr-o perspectiv'a geometric'a, acest'a problem'a se reduce la g'asirea punctului median al multisetului de ierarhii. De aceea aceste tipuri de agreg'ari se mai numesc 'si ierarhiz'ari mediene.
+Urm'atoarea abordare se bazeaz'a pe folosirea unei m'asuri de \emph{distan't'a} (sau similaritate) 'intre ierarhii. Pa'sii acestei abord'ari sunt simpli: mai 'intai sunt date ierarhiile care trebuiesc combinate, apoi se define'ste o dinstan't'a 'intre o pereche de ierarhii, urm'jnd s'a se caute o ierarhizare care are proprietatea c'a minimizeaz'a distan'tele de la ea la fiecare dintre ierarhiile date. Privit'a printr-o perspectiv'a geometric'a, acest'a problem'a se reduce la g'asirea punctului median al multisetului de ierarhii. De aceea aceste tipuri de agreg'ari se mai numesc 'si ierarhiz'ari mediene.
 
 Problemele care trebuiesc adresate 'in continuare sunt: \emph{cum s'a se defineasc'a distant'a 'intre ierarhii} 'si \emph{ce algoritm trebuie folosit pentru a calcula 'in mod eficient agregarea?}
 
@@ -1227,13 +1229,13 @@ A=\{(i_1,...,i_n)|(i_k \neq i_j \forall k \neq j), (1 \leq i_j \leq n), \mbox{ s
 Solu'tia clasic'a a acestei probleme este \emph{Algoritmul Ungar} a c'arui prezentare nu 'tine de scopul acestei lucr'ari.
 
 \chapter{Studiu comparativ}
-'In cadrul acestei lucr'ari, ca parte practic'a, am testat 'si comparat performan'tele c'jtorva metode de ierarhizare prezentate 'in capitolele anterioare: \emph{VSM}, \emph{BM25} 'si \emph{F2EXP}. De asemenea, am implementat 'si testat o metod'a euristic'a cu scopul de a mic'sora timpul de c'autare; este vorba de \emph{Cluster pruning}. Am implementat dou'a tehnici de agregare (cele dou'a prezentate 'in capitolul anterior) cu scopul de a combina rezultatele ob'tinute cu cele trei func'tii de reg'asire. Rezultatele testelor sunt prezentate 'in ultima sec'tiune a acestui capitol.
+'In cadrul acestei lucr'ari, ca parte practic'a, am testat 'si comparat performan'tele c'jtorva metode de ierarhizare prezentate 'in capitolele anterioare: \emph{VSM}, \emph{BM25} 'si \emph{F2EXP}. De asemenea, am implementat 'si testat o metod'a euristic'a cu scopul de a mic'sora timpul de c'autare; este vorba de \emph{cluster pruning}. Am implementat dou'a tehnici de agregare (cele dou'a prezentate 'in capitolul anterior) cu scopul de a combina rezultatele ob'tinute cu cele trei func'tii de reg'asire. Rezultatele testelor sunt prezentate 'in ultima sec'tiune a acestui capitol.
 
 Pentru a implementa 'si testa aceste tehnici, am dezvoltat un "framework" de test folosind diverse unelte prezentate 'in sec'tiunea imediat urm'atoare. De asemenea, corpusurile de test sunt prezentate tot aici.
 
 \section{Unelte}
 \subsection{Apache Lucene}
-\emph{Apache Lucene} este o bibliotec'a software performant'a de reg'asirea informa'tiei scris'a 'in 'intregime 'in \emph{Java} 'si distribuit'a gratuit sub licen'ta \emph{open-source} \emph{Apache}. Pachetul \emph{Lucene} este folosit cu succes de o foarte multe companii software 'in produse at'jt comerciale c'jt 'si open-source, printre ele num'ar'jndu-se site-ul \emph{Wikipedia} 'si mediul integrat de dezvoltare \emph{Eclipse IDE}.
+\emph{Apache Lucene} este o bibliotec'a software performant'a de reg'asirea informa'tiei scris'a 'in 'intregime 'in \emph{Java}\cite{LUC} 'si distribuit'a gratuit sub licen'ta \emph{open-source} \emph{Apache}. Pachetul \emph{Lucene} este folosit cu succes de foarte multe companii software 'in produse at'jt comerciale c'jt 'si open-source, printre ele num'ar'jndu-se site-ul \emph{Wikipedia} 'si mediul integrat de dezvoltare \emph{Eclipse IDE}.
 
 'In contextul lucr'arii actuale, \emph{Lucene} a fost folosit pentru a testa 'si compara diverse metode de ierarhizare, 'si, ca urmare, voi prezenta 'in continuare metoda implicit'a pe care \emph{Lucene} o folo'ste la ierarhizarea documentelor.
 
@@ -1245,7 +1247,7 @@ Pentru a implementa 'si testa aceste tehnici, am dezvoltat un "framework" de tes
 
 Scorul documentului d pentru interogarea q este dat de \emph{similaritatea cosinus} pentru vectorii de ponderi V(q) 'si V(d):
 \[
-cos-sim(q, d) = \frac{V(q)V(d)}{|V(q)||V(d)|},
+cos \mhyphen sim(q, d) = \frac{V(q)V(d)}{|V(q)||V(d)|},
 \]
 unde num'aratorul reprezint'a produsul scalar, iar numitorul, produsul normelor euclidiene. Ecuatia poate fi v'azut'a si ca produsul scalar dintre cei doi vectori normaliza'ti.
 
@@ -1301,11 +1303,12 @@ Proiectul \emph{Lucene Java} con'tine 'si un "spa'tiu de lucru" numit \emph{Luce
 Printre contribu'tiile din acest set de pachete se afl'a pachetul \emph{analyzers} ce con'tine o multitudine de analizoare (componente de preprocesare a textului: liste de stop, stemmer-e) 'si pachetul \emph{benchmark}. Pachetul \emph{benchmark} con'tine unelte pentru testarea 'si evaluarea lui \emph{Lucene} folosind corpusuri standard. 'In spe'ta, subpachetul \emph{quality} este folosit la rularea unui set de interog'ari 'in format standard (de exemplu TREC) pe un index de documente 'si la calcularea unor m'asuri de evaluare a sistemului.
 
 \subsection{Proiectul Apache Open Relevance (ORP)}
+\label{ss:orp}
 Proiectul \emph{ORP (Open Relevance Project)} este un sub-proiect Lucene care are scopul de a construi materiale pentru evaluarea relevan'tei 'in reg'asirea informa'tiei(de asemenea, \emph{Machine Learning} 'si \emph{Procesarea limbajului natural}) urm'jnd ca acestea s'a fie distribuite sub licen't'a open-source\cite{ORP}. Aceste materiale sunt compuse din colec'tii de documente, unul sau mai multe seturi de interog'ari 'si judec'a'ti de relevan't'a pentru fiecare set.
 
 'In timp ce \emph{TREC} 'si alte conferin'te pun la dispozi'tie corpusuri, seturi de interog'ari 'si judec'a'ti de relevan't'a, niciuna dintre ele nu face acest lucru 'in mod "gratuit" 'si "deschis". Intrarea 'in posesia unei astfel de colec'tii implic'a de obicei, o sum'a de bani, semnarea unui contract 'si livrarea prin po'st'a.
 
-'In momentul de fa't'a \emph{ORP} pune la dispozi'tie trei corpusuri de test: \emph{Ohsumed}, \emph{Hamshahri} 'si \emph{Tempo}. ORP con'tine o serie de scripturi \emph{ant} (\url{http://ant.apache.org/}) 'si adaptoarea (programe Java) folsite pentru a desc'arca de pe Internet respectiv converti formatele originale ale acestor colec'tii la un format standard (TREC). 'In continuare voi prezenta fiecare dintre aceste colec'tii.
+'In momentul de fa't'a \emph{ORP} pune la dispozi'tie trei corpusuri de test: \emph{Ohsumed}, \emph{Hamshahri} 'si \emph{Tempo}. ORP con'tine o serie de scripturi \emph{ant} (\url{http://ant.apache.org/}) 'si adaptoare (programe Java) folosite pentru a desc'arca de pe Internet respectiv converti formatele originale ale acestor colec'tii la un format standard (TREC). 'In continuare voi prezenta fiecare dintre aceste colec'tii.
 
 \subsubsection{Ohsumed}
 Aceast corpus este versiunea folosit'a la \emph{TREC-9 filtering track}. Corpusul poate fi ob'tinut de la adresa \url{http://trec.nist.gov/data/t9_filtering.html}.
@@ -1319,7 +1322,7 @@ Colec'tia pune la dispozi'tie trei seturi diferite de topicuri(interog'ari):
 	\item un subset de 500 de termeni \emph{MeSH} (MSH-SMP)
 \end{enumerate}
 
-(*)\emph{MeSH} este vocabularul "controlat" al Bibliotecii Na'tionale de Medicin'a a Statelor Unite folosit la indexarea articolelor pentru MEDLINE. Terminologia MeSh asigur'a un mod consistent de a reg'asi informa'tie care poate folosi termninologii diferite pentru acelea'si concepte.
+(*)\emph{MeSH} este vocabularul "controlat" al Bibliotecii Na'tionale de Medicin'a a Statelor Unite folosit la indexarea articolelor pentru MEDLINE. Terminologia MeSH asigur'a un mod consistent de a reg'asi informa'tie care poate folosi termninologii diferite pentru acelea'si concepte.
 
 \subsubsection{Hamshahri}
 Corpusul \emph{Hamshahri} con'tine documente de 'stiri din ziarul on-line 'in limba persan'a \emph{Hamshahri} (\url{http://www.hamshahrionline.ir/}). Colec'tia se g'ase'ste la adresa \url{http://ece.ut.ac.ir/dbrg/Hamshahri/} 'si con'tine documente din 1996 p'jn'a 'in 2002, acoperind 82 de categorii diferite (politic'a, literatur'a, art'a, etc.).
@@ -1367,7 +1370,7 @@ Folosire:
 \texttt{trec\_eval [-h] [-q] [-a] [-o] [-c] [-l<num>] [-N<num>] [-M<num>] [-Ua<num>] [-Ub<num>] [-Uc<num>] [-Ud<num>] [-T] trec\_rel\_file trec\_top\_file}
 \end{quote}
 
-Exist'a o sumedenie de op'tiuni care pot fi specificate la rulare \emph{trec\_eval}.
+Exist'a mai multe op'tiuni care pot fi specificate la o rulare \emph{trec\_eval}. 'In continuare sunt prezentate o parte din ele.
 \begin{itemize}
 	\item[] -h: printeaz'a mesajul de help 'si termin'a
 	\item[] -q: pe l'jng'a sumarul evalu'arilor, printeaz'a rezultatele pentru evaluarea fiec'arei interog'ari
@@ -1435,8 +1438,9 @@ P1000 & Precizia dup'a 1000 documente reg'asite
 Pachetul \emph{/contrib/benchmark/quality} nu a fost de ajuns pentru a automatiza procesul de testare 'si a extrage statisticile pe care le-am considerat necesare. Ca urmare, am dezvoltat un "framework", folosind c'jteva unelte (majoritatea sunt descrise mai sus), care are urm'atoarele facilit'a'ti:
 \begin{enumerate}
 \item se pot ad'aug'a colec'tii de test compuse din: un set de documente, seturi de interog'ari 'si relevan'te (standardul TREC);
-\item se pot implementa metode de ierarhizare ca extensii la \emph{Lucene} dup'a un anumit standard;
+\item se pot implementa metode de ierarhizare ca extensii la \emph{Lucene} dup'a o anumit'a conven'tie;
 \item se poate rula un test al unei metode pe un anumit corpus, cu diverse op'tiuni (setul de interog'ari, c'jmpurile interog'arii, \emph{liste de stop/stemmer}, etc.);
+\item se poate folosi o metod'a de agregare pentru a combina rezultatele mai multor tehnici de ierarhizare;
 \item dup'a testarea mai multor metode de ierarhizare pe un anumit corpus, se poate compila un raport al rezultatelor, compus dintr-un tabel cu diferite m'asur'atori calculate de \emph{trec\_eval} 'si un grafic al preciziei interpolate 'in 11 puncte de recall; raportul are scopul de a facilita compararea rezultatelor diverselor metode implementate.
 \end{enumerate}
 
@@ -1473,10 +1477,12 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \section{Rezultate}
 
 \subsection{VSM, BM25 'si F2EXP}
+Cele trei func'tii de reg'asire au avut rezultate destul de apropiate, dar \emph{F2EXP} tinde s'a aib'a rezultate mai bune dec'jt celelalte dou'a func'tii candidat. 'In figurile \ref{fig:res1}, \ref{fig:res2} 'si \ref{fig:res3} se pot compara rezultatele pe cele trei corpusuri. Sigurul corpus la care \emph{BM25} a avut rezultate pu'tin mai bune dec'jt celelalte metode a fost corpusul indonezian \emph{Tempo}.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.54]{ohs1-t.png}
-\caption{Rezultate Lucene VSM, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed} primul set de interog'ari, folosind doar c'jmpul \emph{Title}}
+\caption{Rezultate Lucene VSM, F2EXP 'si BM25 la rularea pe corpusul \emph{Oshumed} primul set de interog'ari, folosind doar c'jmpul \emph{Title} (interog'ari "scurte")}
 \label{fig:res1}
 \end{figure}
 
@@ -1494,13 +1500,15 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \label{fig:res3}
 \end{figure}
 
+'In figura \ref{fig:res4} sunt prezentate rezultatele pe setul 2 de interog'ari a corpusului persan \emph{Hamshahri} pentru interog'ari formate doar din titlu 'si interog'ari formate din titlu 'si sec'tiunea \emph{narrative}. Interog'arile "scurte" au rezultate mai bune. 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=.54]{ham2-td-vs-t.png}
-\caption{Interog'ari lungi 'si interog'ari scurte (titlu + descriere 'si titlu), setul doi de interog'ari, corpus \emph{Hamshahri}}
+\includegraphics[scale=.54]{ham2-tn-vs-t.png}
+\caption{Interog'ari "lungi" 'si interog'ari "scurte" (titlu + descriere 'si titlu), setul doi de interog'ari, corpus \emph{Hamshahri}}
 \label{fig:res4}
 \end{figure}
 
+Figura \ref{fig:res5} compar'a rezultatele interog'arilor \emph{MeSH} (vezi sec'tiunea \ref{ss:orp}) cu rezultatele interog'arilor formate din descrieri am'anun'tite. Datorit'a standardului MeSH, primele au rezultate mult mai bune.
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.53]{ohs2-MeSH-t-vs-d.png}
@@ -1508,8 +1516,12 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \label{fig:res5}
 \end{figure}
 \clearpage
+Concluzia ultimelor dou'a experimente este c'a interog'arile care con'tin doar cuvintele esen'tiale au rezultate mult mai bune.
+
 
 \subsection{Preprocesarea textului}
+'In continuare voi prezenta rezultatele testelor efectuate folosind liste de stop 'si stemmer-e pentru colec'tiile \emph{Hamshahri} (\ref{fig:res6}) 'si \emph{Ohsumed} (\ref{fig:res7}). La primul corpus rezultatele celor trei func'tii cresc similar (nu difer'a 'in func'tie de metoda de ierarhizare) fa'ta de rezultatele ini'tiale. Dar, 'in mod ciudat, pe corpusul englez, rezultatele sunt mai slabe dec'jt cele ini'tiale.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.54]{ham1-sim-vs-per.png}
@@ -1542,6 +1554,12 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \clearpage
 
 \subsection{'Imbun'at'a'tirea performan'telor}
+Ini'tial, BM25 a avut rezultate destul de slabe fa't'a de metoda implicit'a lucene bazat'a pe VSM. Pentru a rectifica acest lucru am f'acut dou'a ajust'ari.
+\begin{enumerate}
+	\item ajustarea formulei \emph{idf} astfel 'inc'jt s'a se evite rezultatele negative 'si denaturarea scorului adun'jnd \emph{1} la cantitatea logaritmat'a (vezi sec'tiunea \ref{ss:bm25} 'si figura \ref{fig:res11} pentru rezultate); aceast'a anomalie apare doar la interog'arile mai lungi, care au 'sanse mai mari s'a con'tin'a termeni care apar 'in multe documente;
+	\item folosirea componentei \emph{coord()} descris'a 'in sec'tiunea care trateaz'a modul de ob'tinere a scorului de similaritate folosit de \emph{Lucene}; aceast'a component'a aduce o cre'stere destul de mare a calit'a'tii rezultatelor a'sa cum se observ'a in figura \ref{fig:res10}.
+\end{enumerate}
+
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.49]{osh1-bm25-coord.png}
@@ -1558,6 +1576,8 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \clearpage
 
 \subsection{Agregare}
+Metodele de agregare nu au avut rezultate notabile pe cele trei corpusuri.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=.53]{tem-t-agg.png}
@@ -1573,14 +1593,11 @@ Procesele de \emph{indexare, testare, raportare, vizualizare index} sunt automat
 \end{figure}
 
 
-%de scris despre coord (overlap, ovelapmax)
-%de scris despre bm25 idf+1
-%de scris ca la persian rezultate mai bune pt T fata de TD(depinde si de interogari)
-%cluster pruning foarte praf...poate fi imbunatatit?
-%seturile de interogari
+
+
+
 \begin{thebibliography}{9}
-	%TODO: 2 puncte Schutze
-	\bibitem{MAN} Christopher D. Manning, Prabhakar Raghavan and Hinrich Schutze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
+	\bibitem{MAN} Christopher D. Manning, Prabhakar Raghavan and Hinrich Sch\"utze, \emph{Introduction to Information Retrieval}, Cambridge University Press. 2008.
 	\bibitem{GROSS}David A. Grossman, Ophir Frieder , \emph{Information retrieval: algorithms and heuristics, 2nd Edition} 
 	\bibitem{SE} \url{http://www.search-engines-book.com/}
 	\bibitem{IRWIKI} \url{http://en.wikipedia.org/wiki/Information_retrieval}

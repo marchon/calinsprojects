@@ -64,7 +64,7 @@ public class AggregatorImpl implements Aggregator {
 		return result;
 	}
 	
-	private int ord(int[] sigma, int x) {
+	private int ord(int[] sigma, int length, int x) {
 		//sigma are intotdeuna marimea universului
 		//pentru ca este o mapare a id-ului unui obiect
 		//la pozitia 'in ierarhie
@@ -73,30 +73,30 @@ public class AggregatorImpl implements Aggregator {
 		
 		//ord(x) este definit ca |len(sigma) - sigma(x)|
 		//TODO: tine lungimea ierarhiei separat
-		int ret = sigma.length - sigma[x] - 1;
+		int ret = length - sigma[x] - 1;
 		ret = ret < 0? 0 : ret;
 		return ret;
 	}
 	
-	private int delta(int[] sigma, int[] tau) {
-		int s = 0;
-		for (int x = 0; x < sigma.length; x++) {
-			s += Math.abs(ord(sigma, x) - ord(tau, x));
-		}
-		return s;
-	}
+//	private int delta(int[] sigma, int[] tau) {
+//		int s = 0;
+//		for (int x = 0; x < sigma.length; x++) {
+//			s += Math.abs(ord(sigma, x) - ord(tau, x));
+//		}
+//		return s;
+//	}
+//	
+//	private int delta(int[] sigma, int[][] Tau) {
+//		int s = 0;
+//		
+//		for (int i = 0; i < Tau.length; i++) {
+//			s += delta(sigma, Tau[i]);
+//		}
+//		
+//		return s;
+//	}
 	
-	private int delta(int[] sigma, int[][] Tau) {
-		int s = 0;
-		
-		for (int i = 0; i < Tau.length; i++) {
-			s += delta(sigma, Tau[i]);
-		}
-		
-		return s;
-	}
-	
-	private int[] taggregate(int[][] sigmaRankings, int t) {
+	private int[] taggregate(int[][] sigmaRankings, int[] lengths, int t) {
 		int n = sigmaRankings[0].length;
 		double[][] D = new double[n][n];
 
@@ -105,7 +105,7 @@ public class AggregatorImpl implements Aggregator {
 			for (int j = 0; j < n; j++) {
 				int sum = 0;
 				for (int i = 0; i < sigmaRankings.length; i++) {
-					int ord = ord(sigmaRankings[i], k);
+					int ord = ord(sigmaRankings[i], lengths[i], k);
 					if (j < t)
 						ord = j - ord;
 					sum += Math.abs(ord);
@@ -138,7 +138,10 @@ public class AggregatorImpl implements Aggregator {
 //		System.out.println(Arrays.toString(universe));
 		
 		int[][] sigmaRankings = buildSigmaRankings(rankings, universeMap);
-		
+		int[] lengths = new int[rankings.length];
+		for (int i = 0; i < lengths.length; i++) {
+			lengths[i] = rankings[i].length;
+		}
 
 		int max = rankings[0].length;
 
@@ -149,7 +152,7 @@ public class AggregatorImpl implements Aggregator {
 
 		int t = Math.min(max, universe.length);
 		
-		int[] best = taggregate(sigmaRankings, t);
+		int[] best = taggregate(sigmaRankings, lengths, t);
 //		int bestDist = Integer.MAX_VALUE;
 //		for (int t = 1; t <= universe.length; t++) {
 //			int[] aggreg = taggregate(sigmaRankings, t);
@@ -193,13 +196,15 @@ public class AggregatorImpl implements Aggregator {
 		AggregatorImpl rda = new AggregatorImpl();
 
 		String[][] rankings = new String[][]{
-				{"1", "2", "3"},
-				{"3", "4"},
-				{"1", "3", "2", "4"}
-//				{"b", "a", "c", "e"},
-//				{"d", "e", "c", "a"},
-//				{"a", "b", "e", "c"},
-//				{"b", "a", "d", "e"}
+//				{"1", "2", "3"},
+//				{"3", "4"},
+//				{"1", "3", "2", "4"}
+				{"d", "e", "a", "c", "h", "b"},
+				{"c", "h", "e", "d", "f", "g"},
+				{"a", "b", "c"},
+				{"g", "b", "h", "e", "a", "c"},
+				{"b", "a", "e", "c"},
+				{"h", "g", "d", "a", "b"}
 		};
 
 		System.out.println(Arrays.toString(rda.aggregate(rankings)));

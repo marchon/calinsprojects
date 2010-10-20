@@ -1,10 +1,10 @@
 <config>
 
-	<slideshow effect="???" pics="dog.jpg|cersetor.jpg|peisaj.jpg" />
+	<slideshow effect="" pics="dog.jpg|cersetor.jpg|peisaj.jpg" />
 	
 	<menu>
-		<item name="portofolio" title="this is my portofolio" page="portofolioPage"/>
-		<item name="info" title="about me" page="infoPage"/>
+		<item name="portofolio" tooltip="this is my portofolio" page="portofolioPage"/>
+		<item name="info" tooltip="about me" page="infoPage"/>
 	</menu>
 	
 	<pages>

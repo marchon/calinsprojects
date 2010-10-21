@@ -1,6 +1,6 @@
 <config>
 
-	<slideshow effect="" pics="dog.jpg|cersetor.jpg|peisaj.jpg" />
+	<slideshow effect="" pics="dog.jpg|cersetor.jpg|peisaj.jpg" transition="random/sequence" delay="400"/>
 	
 	<menu>
 		<item name="portofolio" tooltip="this is my portofolio" page="portofolioPage"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" applicationComplete="application1_applicationCompleteHandler(event)" xmlns:view="ro.calin.view.*">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" applicationComplete="application1_applicationCompleteHandler(event)" xmlns:view="ro.calin.view.*" xmlns:model="ro.calin.model.*">
 	<s:states>
 		<s:State name="slideshow"/>
 		<s:State name="inapp"/>
@@ -15,6 +15,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.controller.CSlideShower;
 			import ro.calin.model.MSlideShower;
 			
 			[Bindable] private var products:ArrayCollection;
@@ -44,6 +45,7 @@
 			}
 			
 			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|");
+			var slController:CSlideShower = new CSlideShower(slModel, true, 1500);
 		]]>
 	</fx:Script>
 	
@@ -53,5 +55,6 @@
 						fault="faultHandler(event)"/>
 	</fx:Declarations>
 	
-	<view:SlideShower model="{slModel}" random="false" delay="1500" />
+	
+	<view:SlideShower model="{slModel}" controller="{slController}" />
 </s:Application>

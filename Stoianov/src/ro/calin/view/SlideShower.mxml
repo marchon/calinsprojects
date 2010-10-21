@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -10,12 +10,7 @@
 			import ro.calin.model.MSlideShower;
 			
 			[Bindable] public var model:MSlideShower;
-			[Bindable] public var random:Boolean;
-			[Bindable] public var delay:int;
-
-			protected function init(event:FlexEvent):void {
-				var controller:CSlideShower = new CSlideShower(model, random, delay);
-			}
+			[Bindable] public var controller:CSlideShower;
 
 		]]>
 	</fx:Script>

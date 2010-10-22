@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 horizontalAlign="center" verticalAlign="middle" creationComplete="init(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -12,11 +13,24 @@
 			[Bindable] public var model:MSlideShower;
 			[Bindable] public var controller:CSlideShower;
 
+			protected function init(event:FlexEvent):void
+			{
+				//if pics have different resolution we must scale at each change
+				
+				//solutions
+				//1. the slideshow images are defined diferently(other pic folder, larger images)
+				//2. all the images will be sufficiently large
+				
+//				var scale:int = this.width/img.width + 1;
+//				img.scaleX = scale;
+//				img.scaleY = scale;
+			}
+
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
-	<mx:Image source="{model.image}" />
-</s:Group>
+	<mx:Image id="img" source="{model.image}" />
+</mx:VBox>

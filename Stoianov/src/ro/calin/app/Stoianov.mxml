@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" applicationComplete="application1_applicationCompleteHandler(event)" xmlns:view="ro.calin.view.*" xmlns:model="ro.calin.model.*">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
+			   applicationComplete="application1_applicationCompleteHandler(event)" 
+			   xmlns:view="ro.calin.view.*" xmlns:model="ro.calin.model.*" >
 	<s:states>
 		<s:State name="slideshow"/>
 		<s:State name="inapp"/>
@@ -17,6 +19,7 @@
 			
 			import ro.calin.controller.CSlideShower;
 			import ro.calin.model.MSlideShower;
+			import ro.calin.skin.ButtonSkin1;
 			
 			[Bindable] private var products:ArrayCollection;
 			
@@ -44,8 +47,8 @@
 				//srv.send();
 			}
 			
-			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|");
-			var slController:CSlideShower = new CSlideShower(slModel, true, 1500);
+			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|", true, 1500);
+			var slController:CSlideShower = new CSlideShower(slModel);
 		]]>
 	</fx:Script>
 	
@@ -55,6 +58,14 @@
 						fault="faultHandler(event)"/>
 	</fx:Declarations>
 	
-	
-	<view:SlideShower model="{slModel}" controller="{slController}" />
+	<view:SlideShower model="{slModel}" controller="{slController}" width="100%" height="100%" backgroundColor="black"/>
+	<mx:LinkBar color="0x0050AA" horizontalAlign="center" width="100%" fontWeight="bold" dropShadowVisible="true" 
+				horizontalCenter="0" y="500" contentBackgroundColor="#000000">
+		<mx:dataProvider>
+			<fx:String>portofolio</fx:String>
+			<fx:String>info</fx:String>
+			<fx:String>links</fx:String>
+		</mx:dataProvider>
+	</mx:LinkBar>
+	<s:Button verticalCenter="0" horizontalCenter="0" skinClass="ro.calin.skin.ButtonSkin1" click="trace('I\'ve been clicked!')" focusIn="trace('focus...on me?')" /> 
 </s:Application>

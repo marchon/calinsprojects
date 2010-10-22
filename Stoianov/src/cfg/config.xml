@@ -2,6 +2,8 @@
 
 	<slideshow effect="" pics="dog.jpg|cersetor.jpg|peisaj.jpg" transition="random/sequence" delay="400"/>
 	
+	<!-- 
+	hardcode menu for now
 	<menu>
 		<item name="portofolio" tooltip="this is my portofolio" page="portofolioPage"/>
 		<item name="info" tooltip="about me" page="infoPage"/>
@@ -11,11 +13,12 @@
 		<page id="portofolioPage" name="portofolio" contentType="static" contentId="hcPortofolio" />
 		<page id="infoPage" name="info" contentType="dynamic">
 			<text>
-			<!-- how about describing the look and feel??? -->
+				how about describing the look and feel???		
 				My name is Gigi, I am a photographer.
 			</text>
 		</page>
 	</pages>
+	-->
 
 	<!-- too many pics would make this file big
 		 could have a xml for each category and point to it from here

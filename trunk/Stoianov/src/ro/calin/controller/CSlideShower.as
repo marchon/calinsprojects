@@ -7,23 +7,20 @@ package ro.calin.controller
 
 	public class CSlideShower
 	{
-		public function CSlideShower(model:MSlideShower, random:Boolean, delay:int)
+		public function CSlideShower(model:MSlideShower)
 		{
 			_model = model;
-			_random = random;
 			
 			timerHandler(null);
-			var timer:Timer = new Timer(delay);
+			var timer:Timer = new Timer(_model.delay);
 			timer.addEventListener(TimerEvent.TIMER, timerHandler);
 			timer.start();
 		}
 		
 		private var _model:MSlideShower;
-		private var _random:Boolean;
 		
 		private function timerHandler(e:TimerEvent):void {
-			trace('timerHandler');
-			if(_random) {
+			if(_model.random) {
 				var ind:int;
 				do {
 					ind = Math.floor(Math.random() * _model.images.length);

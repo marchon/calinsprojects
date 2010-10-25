@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
 			   applicationComplete="application1_applicationCompleteHandler(event)" 
-			   xmlns:view="ro.calin.view.*" >
+			   xmlns:view="ro.calin.view.*" initialize="application1_initializeHandler(event)">
 	
 	<s:states>
 		<s:State name="slideshow"/>
@@ -29,6 +29,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import ro.calin.controller.CSlideShower;
+			import ro.calin.event.MenuEvent;
 			import ro.calin.model.MSlideShower;
 			
 			import spark.effects.easing.Power;
@@ -60,12 +61,29 @@
 				//srv.send();
 			}
 			
-			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|", true, 1500);
+			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|", true, 2000);
 			var slController:CSlideShower = new CSlideShower(slModel);
 
 			protected function viewChangedHandler(event:IndexChangeEvent):void
 			{
 				trace(event);
+			}
+
+			protected function application1_initializeHandler(event:FlexEvent):void
+			{
+				addEventListener(MenuEvent.MENU_ITEM_CLICK, function(event:MenuEvent):void {
+					if(currentState == "slideshow") {
+						slController.pause();
+						currentState = "inapp";
+					}
+				});
+				
+				addEventListener(MenuEvent.MENU_LABEL_CLICK, function(event:MenuEvent):void {
+					if(currentState == "inapp") {
+						currentState = "slideshow";
+						slController.resume();
+					}
+				});
 			}
 
 		]]>
@@ -89,7 +107,7 @@
 				<fx:String>portofolio</fx:String>
 				<fx:String>contact</fx:String>
 				<fx:String>info</fx:String>
-				<fx:String>links1</fx:String>
+				<fx:String>links</fx:String>
 			</s:ArrayCollection>
 		</view:menuEntries>
 	</view:Menu>

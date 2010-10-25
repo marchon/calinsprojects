@@ -5,6 +5,7 @@
 		 horizontalAlign="center" verticalAlign="middle" creationComplete="init(event)">
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import ro.calin.controller.CSlideShower;
@@ -26,10 +27,24 @@
 //				img.scaleY = scale;
 			}
 
+			protected var lastImage:BitmapData = null; 
+			protected function img_completeHandler(event:Event):void
+			{
+				var currentImage:BitmapData = Bitmap(img.content).bitmapData;
+				if(lastImage != null) {
+					xFade.stop();
+					xFade.bitmapFrom = lastImage;
+					xFade.bitmapTo = currentImage;
+					xFade.play();
+				}
+				
+				lastImage = currentImage;
+			}
+
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:CrossFade id="xFade" target="{img}" duration="1000" />
 	</fx:Declarations>
 	
 	<mx:Image id="img" source="{model.image}" />

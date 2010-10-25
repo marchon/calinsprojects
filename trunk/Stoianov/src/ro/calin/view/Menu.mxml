@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" verticalAlign="middle">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			
+			import ro.calin.event.MenuEvent;
+			
+			import spark.components.Button;
+			
 			[Bindable]public var menuEntries:ArrayCollection;
+			
+			public function itemClickHandler(event:MouseEvent):void {
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, (event.target as Button).label, true));	
+			}
+
+			protected function labelClickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_LABEL_CLICK, "", true));
+			}
+
 		]]>
 	</fx:Script>
-	
-	<s:Label text="Numele meu" fontFamily="Comic Sans MS" fontSize="24" paddingRight="200"/>
-	<s:DataGroup dataProvider="{menuEntries}">
+	<!--use spark components, move visuals to skin-->
+	<mx:Spacer width="15%" />
+	<s:Label text="Numele meu" fontFamily="Comic Sans MS" 
+			 fontSize="24" useHandCursor="true" buttonMode="true" click="labelClickHandler(event)"/>
+	<mx:Spacer width="50%" />
+	<s:DataGroup dataProvider="{menuEntries}" >
 		<s:layout>
 			<s:HorizontalLayout gap="10" />
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
 				<s:ItemRenderer>
-					<fx:Script>
-						<![CDATA[
-							import mx.controls.Alert;
-							import mx.core.FlexGlobals;
-							
-							import spark.components.Application;
-							override public function set data(value:Object):void {
-								super.data = value;
-								
-								if (data == null) // a renderer's data is set to null when it goes out of view
-									return;
-								
-								link.label = value as String;
-							}
-							protected function onClickHandler(event:MouseEvent):void {
-								//externalize this component and use events to transmit clicks
-								if((FlexGlobals.topLevelApplication as Application).currentState == "slideshow") {
-									(FlexGlobals.topLevelApplication as Application).currentState  = "inapp";
-								}
-							}
-						]]>
-					</fx:Script>
-					<s:Button id="link" skinClass="ro.calin.skin.LinkButtonSkin" click="onClickHandler(event);"/>
+					<s:Button id="link" skinClass="ro.calin.skin.LinkButtonSkin" label="{data}"
+							  click="outerDocument.itemClickHandler(event);" 
+							  useHandCursor="true" buttonMode="true"/>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>

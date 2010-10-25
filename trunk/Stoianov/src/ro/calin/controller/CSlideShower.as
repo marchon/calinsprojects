@@ -12,12 +12,13 @@ package ro.calin.controller
 			_model = model;
 			
 			timerHandler(null);
-			var timer:Timer = new Timer(_model.delay);
-			timer.addEventListener(TimerEvent.TIMER, timerHandler);
-			timer.start();
+			_timer = new Timer(_model.delay);
+			_timer.addEventListener(TimerEvent.TIMER, timerHandler);
+			//_timer.start();
 		}
 		
 		private var _model:MSlideShower;
+		private var _timer:Timer;
 		
 		private function timerHandler(e:TimerEvent):void {
 			if(_model.random) {
@@ -33,6 +34,14 @@ package ro.calin.controller
 			}
 			
 			_model.image = _model.images[_model.current];
+		}
+		
+		public function pause():void {
+			_timer.stop();
+		}
+		
+		public function resume():void {
+			_timer.start();
 		}
 	}
 }

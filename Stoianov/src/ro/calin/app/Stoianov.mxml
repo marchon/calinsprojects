@@ -13,8 +13,8 @@
 	<s:transitions>
 		<s:Transition id="trans">
 			<s:Parallel>
-				<s:Move target="{menu}" duration="800" yTo="0" easer="{powerEasing}"/>
-				<s:Move target="{slider}" duration="800" yTo="{-slider.height}" easer="{powerEasing}"/>
+				<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
+				<s:Move target="{slider}" duration="800" easer="{powerEasing}"/>
 			</s:Parallel>
 		</s:Transition>
 	</s:transitions>
@@ -82,50 +82,15 @@
 	<view:SlideShower id="slider" y.slideshow="0" y.inapp="{-slider.height}" model="{slModel}" controller="{slController}" width="100%" height="100%" backgroundColor="red">
 	</view:SlideShower>
 	
-	<mx:HBox id="menu" width="100%" height="40" y.slideshow="500"
+	<view:Menu id="menu" width="100%" height="40" y.slideshow="500" y.inapp="0"
 			 color="white" backgroundColor="black">
-		<s:Label text="Numele meu" fontFamily="Comic Sans MS" fontSize="24" paddingRight="200"/>
-		<s:DataGroup>
-			<s:layout>
-				<s:HorizontalLayout gap="10" />
-			</s:layout>
-			<s:dataProvider>
-				<s:ArrayCollection>
-					<fx:String>portofolio</fx:String>
-					<fx:String>contact</fx:String>
-					<fx:String>info</fx:String>
-					<fx:String>links</fx:String>
-				</s:ArrayCollection>
-			</s:dataProvider>
-			<s:itemRenderer>
-				<fx:Component>
-					<s:ItemRenderer>
-						<fx:Script>
-							<![CDATA[
-								import mx.controls.Alert;
-								import mx.core.FlexGlobals;
-								
-								import spark.components.Application;
-								override public function set data(value:Object):void {
-									super.data = value;
-									
-									if (data == null) // a renderer's data is set to null when it goes out of view
-										return;
-									
-									link.label = value as String;
-								}
-								public function onClickHandler(event:MouseEvent) {
-									//externalize this component and use events to transmit clicks
-									if((FlexGlobals.topLevelApplication as Application).currentState == "slideshow") {
-										(FlexGlobals.topLevelApplication as Application).currentState  = "inapp";
-									}
-								}
-							]]>
-						</fx:Script>
-						<s:Button id="link" skinClass="ro.calin.skin.LinkButtonSkin" click="onClickHandler(event);"/>
-					</s:ItemRenderer>
-				</fx:Component>
-			</s:itemRenderer>
-		</s:DataGroup>
-	</mx:HBox>
+		<view:menuEntries>
+			<s:ArrayCollection>
+				<fx:String>portofolio</fx:String>
+				<fx:String>contact</fx:String>
+				<fx:String>info</fx:String>
+				<fx:String>links1</fx:String>
+			</s:ArrayCollection>
+		</view:menuEntries>
+	</view:Menu>
 </s:Application>

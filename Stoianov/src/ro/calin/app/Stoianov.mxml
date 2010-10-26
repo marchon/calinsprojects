@@ -145,7 +145,7 @@
 	
 	<!--stop updating the model when this is hidden-->
 	<view:SlideShower id="slider" y.slideshow="0" y.inapp="{-slider.height}" model="{slModel}" controller="{slController}" 
-					  width="100%" height="100%" backgroundColor="red">
+					  width="100%" height="100%" backgroundColor="gray">
 	</view:SlideShower>
 	
 	<view:Menu id="menu" width="100%" height="40" y.slideshow="500" y.inapp="0"
@@ -160,7 +160,7 @@
 		</view:menuEntries>
 	</view:Menu>
 	
-	<view:PictureViewer id="viewer" width="100%" height="100%" backgroundColor="green"
+	<view:PictureViewer id="viewer" width="100%" height="100%" backgroundColor="gray"
 						x="0" y.inapp="40" images="{imgs}">
 	</view:PictureViewer>
 </s:Application>

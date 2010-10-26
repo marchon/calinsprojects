@@ -14,33 +14,33 @@
 		]]>
 	</fx:Script>
 	
-	<s:Scroller width="100%" height="420">
-		<s:DataGroup dataProvider="{images}">
-			<s:layout>
-				<s:HorizontalLayout gap="20" />
-			</s:layout>
-			<s:itemRenderer>
-				<fx:Component>
-					<s:ItemRenderer>
-						<fx:Script>
-							<![CDATA[
-								import mx.events.FlexEvent;
+	<s:DataGroup id="category" dataProvider="{images}" width="100%" height="100%">
+		<s:layout>
+			<s:HorizontalLayout gap="20" />
+		</s:layout>
+		<s:itemRenderer>
+			<fx:Component>
+				<s:ItemRenderer>
+					<fx:Script>
+						<![CDATA[
+							import mx.events.FlexEvent;
 
-								protected function img_creationCompleteHandler(event:FlexEvent):void
-								{
-									trace(img.height);
-									var scale:Number = 400 / img.height;
-									img.scaleX = img.scaleY = scale;
-								}
+							protected function img_creationCompleteHandler(event:FlexEvent):void
+							{
+								var scale:Number = 400 / img.height;
+								img.scaleX = img.scaleY = scale;
+							}
 
-							]]>
-						</fx:Script>
-						<mx:Image id="img" source="{data.url}" toolTip="{data.desc}" 
-								  creationComplete="img_creationCompleteHandler(event)"/>
-					</s:ItemRenderer>
-				</fx:Component>
-			</s:itemRenderer>
-		</s:DataGroup>
-	</s:Scroller>
+						]]>
+					</fx:Script>
+					<mx:Image id="img" source="{data.url}" toolTip="{data.desc}" 
+							  creationComplete="img_creationCompleteHandler(event)" 
+							  useHandCursor="true" buttonMode="true" click="img.scaleX *= 1.5; img.scaleY *= 1.5"/>	
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:DataGroup>
+	
+	<s:HScrollBar viewport="{category}" width="100%" />
 	
 </mx:VBox>

@@ -25,7 +25,7 @@
 		 on the other hand, this would require many server requests -->
 	<categories>
 		<category name="street" description="pictures on the street">
-			<pic name="dog barking" description="bla bla" filename="dog.jpg"/>
+			<pic name="dog barking" desc="bla bla" filename="data/1.jpg"/>
 			<pic name="begger warming up" filename="cersetor.jpg">
 				This is a picture I bla bla bla....
 			</pic>

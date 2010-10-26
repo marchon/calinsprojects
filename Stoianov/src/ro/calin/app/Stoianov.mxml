@@ -130,6 +130,16 @@
 				//Alert.show(screen.height.toString() + ", " + screen.width.toString());
 			}
 
+			private var imgs:ArrayCollection = new ArrayCollection(
+				new Array(
+					{url:"data/1.jpg", desc:"This is the first pic"}, 
+					{url:"data/2.jpg", desc:"This is the second pic"},
+					{url:"data/3.jpg", desc:"This is the third pic"},
+					{url:"data/4.jpg", desc:"This is the fourth pic"},
+					{url:"data/5.jpg", desc:"This is the fifth pic"}
+				)
+			);
+
 		]]>
 	</fx:Script>
 	
@@ -151,6 +161,6 @@
 	</view:Menu>
 	
 	<view:PictureViewer id="viewer" width="100%" height="100%" backgroundColor="green"
-						x="0" y.inapp="40">
+						x="0" y.inapp="40" images="{imgs}">
 	</view:PictureViewer>
 </s:Application>

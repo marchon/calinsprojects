@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
 			   applicationComplete="application1_applicationCompleteHandler(event)" 
-			   xmlns:view="ro.calin.view.*" initialize="application1_initializeHandler(event)">
+			   xmlns:view="ro.calin.view.*" initialize="application1_initializeHandler(event)" resize="application1_resizeHandler(event)">
 	
 	<s:states>
 		<s:State name="slideshow"/>
@@ -11,20 +11,46 @@
 	</s:states>
 	
 	<s:transitions>
-		<s:Transition id="trans">
-			<s:Parallel>
-				<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
-				<s:Move target="{slider}" duration="800" easer="{powerEasing}"/>
-			</s:Parallel>
+		<s:Transition id="trans1" fromState="slideshow" toState="inapp">
+			<s:Sequence>
+				<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="540"/>
+				<s:Parallel>
+					<s:Move target="{viewer}" duration="800" easer="{powerEasing}"/>
+					<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
+					<s:Move target="{slider}" duration="800" easer="{powerEasing}" 
+							effectEnd="move1_effectEndHandler(event)" effectStart="move1_effectStartHandler(event)"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition id="trans2" fromState="inapp" toState="slideshow">
+			<s:Sequence>
+				<s:Parallel>
+					<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="540"/>
+					<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
+					<s:Move target="{slider}" duration="800" easer="{powerEasing}" 
+							effectEnd="move1_effectEndHandler(event)" effectStart="move1_effectStartHandler(event)"/>
+				</s:Parallel>
+				<s:Move target="{viewer}" duration="800" easer="{powerEasing}"/>
+			</s:Sequence>
 		</s:Transition>
 	</s:transitions>
+	
+	<fx:Declarations>
+		<s:Power id="powerEasing" exponent="6"/>
+		
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:HTTPService id="srv" url="cfg/config.xml" result="resultHandler(event)"
+						fault="faultHandler(event)"/>
+	</fx:Declarations>
 	
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.events.EffectEvent;
 			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
@@ -59,15 +85,12 @@
 			{
 				//Alert.show("Complete app");
 				//srv.send();
+				
+				viewer.y = screen.height;
 			}
 			
 			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|", true, 2000);
 			var slController:CSlideShower = new CSlideShower(slModel);
-
-			protected function viewChangedHandler(event:IndexChangeEvent):void
-			{
-				trace(event);
-			}
 
 			protected function application1_initializeHandler(event:FlexEvent):void
 			{
@@ -86,18 +109,33 @@
 				});
 			}
 
+
+			protected function move1_effectEndHandler(event:EffectEvent):void
+			{
+				if(currentState == "inapp") {
+					slider.visible = false;
+				}
+			}
+
+			protected function move1_effectStartHandler(event:EffectEvent):void
+			{
+				if(currentState == "slideshow") {
+					slider.visible = true;
+				}
+			}
+
+
+			protected function application1_resizeHandler(event:ResizeEvent):void
+			{
+				//Alert.show(screen.height.toString() + ", " + screen.width.toString());
+			}
+
 		]]>
 	</fx:Script>
 	
-	<fx:Declarations>
-		<s:Power id="powerEasing" exponent="6"/>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<mx:HTTPService id="srv" url="cfg/config.xml" result="resultHandler(event)"
-						fault="faultHandler(event)"/>
-	</fx:Declarations>
-	
 	<!--stop updating the model when this is hidden-->
-	<view:SlideShower id="slider" y.slideshow="0" y.inapp="{-slider.height}" model="{slModel}" controller="{slController}" width="100%" height="100%" backgroundColor="red">
+	<view:SlideShower id="slider" y.slideshow="0" y.inapp="{-slider.height}" model="{slModel}" controller="{slController}" 
+					  width="100%" height="100%" backgroundColor="red">
 	</view:SlideShower>
 	
 	<view:Menu id="menu" width="100%" height="40" y.slideshow="500" y.inapp="0"
@@ -111,4 +149,8 @@
 			</s:ArrayCollection>
 		</view:menuEntries>
 	</view:Menu>
+	
+	<view:PictureViewer id="viewer" width="100%" height="100%" backgroundColor="green"
+						x="0" y.inapp="40">
+	</view:PictureViewer>
 </s:Application>

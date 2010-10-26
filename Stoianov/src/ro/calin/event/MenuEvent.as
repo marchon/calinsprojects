@@ -5,8 +5,8 @@ package ro.calin.event
 	[Bindable]
 	public class MenuEvent extends Event
 	{
-		public static var MENU_ITEM_CLICK:String = "mic";
-		public static var MENU_LABEL_CLICK:String = "mlc";
+		public static const MENU_ITEM_CLICK:String = "mic";
+		public static const MENU_LABEL_CLICK:String = "mlc";
 		
 		public function MenuEvent(type:String, option:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

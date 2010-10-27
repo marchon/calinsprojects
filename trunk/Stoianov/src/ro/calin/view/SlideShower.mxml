@@ -9,10 +9,13 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			
 			import ro.calin.controller.CSlideShower;
 			import ro.calin.model.MSlideShower;
+			
+			import spark.components.Application;
 			
 			[Bindable] public var model:MSlideShower;
 			[Bindable] public var controller:CSlideShower;
@@ -34,14 +37,28 @@
 			protected function img_completeHandler(event:Event):void
 			{
 				var currentImage:BitmapData = Bitmap(img.content).bitmapData;
-				if(lastImage != null) {
+				/*if(lastImage != null) {
 					xFade.stop();
 					xFade.bitmapFrom = lastImage;
 					xFade.bitmapTo = currentImage;
 					xFade.play();
 				}
 				
-				lastImage = currentImage;
+				lastImage = currentImage;*/
+				
+				var screen:Rectangle = Application(FlexGlobals.topLevelApplication).screen;
+				
+				var dh:Number = Math.abs(screen.height - currentImage.height);
+				var dw:Number = Math.abs(screen.width - currentImage.width);
+				
+				var scale:Number;
+				if(dh < dw) {
+					scale = screen.height / currentImage.height;
+				} else {
+					scale = screen.width / currentImage.width;
+				}
+				trace(currentImage.width + ', ' + currentImage.height + ', ' + scale);
+				img.scaleX = img.scaleY = scale;
 			}
 
 		]]>
@@ -50,5 +67,6 @@
 		<s:CrossFade id="xFade" target="{img}" duration="1000" />
 	</fx:Declarations>
 	
-	<mx:Image horizontalCenter="0" verticalCenter="0" id="img" source="{model.image}" />
+	<mx:Image horizontalCenter="0" verticalCenter="0" id="img"
+			  source="{model.image}" complete="img_completeHandler(event)" click="controller.next()"/>
 </s:Group>

@@ -14,7 +14,7 @@ package ro.calin.controller
 			timerHandler(null);
 			_timer = new Timer(_model.delay);
 			_timer.addEventListener(TimerEvent.TIMER, timerHandler);
-			_timer.start();
+			//_timer.start();
 		}
 		
 		private var _model:MSlideShower;
@@ -42,6 +42,10 @@ package ro.calin.controller
 		
 		public function resume():void {
 			_timer.start();
+		}
+		
+		public function next():void {
+			timerHandler(null);
 		}
 	}
 }

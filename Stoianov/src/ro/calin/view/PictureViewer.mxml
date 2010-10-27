@@ -28,6 +28,7 @@
 							protected function img_creationCompleteHandler(event:FlexEvent):void
 							{
 								var scale:Number = 400 / img.height;
+								trace(scale);
 								img.scaleX = img.scaleY = scale;
 								//use s:group instead of hbox??
 							}

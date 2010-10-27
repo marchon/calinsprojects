@@ -3,7 +3,8 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
 			   applicationComplete="application1_applicationCompleteHandler(event)" 
-			   xmlns:view="ro.calin.view.*" initialize="application1_initializeHandler(event)" resize="application1_resizeHandler(event)">
+			   xmlns:view="ro.calin.view.*" initialize="application1_initializeHandler(event)" 
+			   resize="application1_resizeHandler(event)" backgroundColor="gray">
 	
 	<s:states>
 		<s:State name="slideshow"/>
@@ -13,24 +14,24 @@
 	<s:transitions>
 		<s:Transition id="trans1" fromState="slideshow" toState="inapp">
 			<s:Sequence>
-				<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="540"/>
+				<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="{menuPos + menu.height}" effectStart="showViewer()"/>
 				<s:Parallel>
-					<s:Move target="{viewer}" duration="800" easer="{powerEasing}"/>
+					<s:Move target="{viewer}" duration="800" easer="{powerEasing}" />
 					<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
 					<s:Move target="{slider}" duration="800" easer="{powerEasing}" 
-							effectEnd="move1_effectEndHandler(event)" effectStart="move1_effectStartHandler(event)"/>
+							effectEnd="hideSlider()"/>
 				</s:Parallel>
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition id="trans2" fromState="inapp" toState="slideshow">
 			<s:Sequence>
 				<s:Parallel>
-					<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="540"/>
+					<s:Move target="{viewer}" duration="800" easer="{powerEasing}" yTo="{menuPos + menu.height}" />
 					<s:Move target="{menu}" duration="800" easer="{powerEasing}"/>
 					<s:Move target="{slider}" duration="800" easer="{powerEasing}" 
-							effectEnd="move1_effectEndHandler(event)" effectStart="move1_effectStartHandler(event)"/>
+							effectStart="showSlider()"/>
 				</s:Parallel>
-				<s:Move target="{viewer}" duration="800" easer="{powerEasing}"/>
+				<s:Move target="{viewer}" duration="800" easer="{powerEasing}" effectEnd="hideViewer()"/>
 			</s:Sequence>
 		</s:Transition>
 	</s:transitions>
@@ -79,14 +80,14 @@
 				Alert.show(event.fault.faultDetail, "Error");
 			}
 			
-			
+			[Bindable]private var menuPos:Number;
 
 			protected function application1_applicationCompleteHandler(event:FlexEvent):void
 			{
 				//Alert.show("Complete app");
 				//srv.send();
-				
 				viewer.y = screen.height;
+				menuPos = menu.y = screen.height * .7;
 			}
 			
 			private var slModel:MSlideShower = new MSlideShower("data", "1.jpg|2.jpg|3.jpg|4.jpg|5.jpg", "|", true, 2000);
@@ -110,24 +111,34 @@
 			}
 
 
-			protected function move1_effectEndHandler(event:EffectEvent):void
+			protected function hideSlider():void
 			{
-				if(currentState == "inapp") {
-					slider.visible = false;
-				}
+				slider.visible = false;
 			}
 
-			protected function move1_effectStartHandler(event:EffectEvent):void
+			protected function showSlider():void
 			{
-				if(currentState == "slideshow") {
-					slider.visible = true;
-				}
+				slider.visible = true;
+			}
+			
+			protected function showViewer():void
+			{
+				viewer.visible = true;
+			}
+			
+			
+			protected function hideViewer():void
+			{
+				viewer.visible = false;
 			}
 
 
 			protected function application1_resizeHandler(event:ResizeEvent):void
 			{
-				//Alert.show(screen.height.toString() + ", " + screen.width.toString());
+				if(screen != null) {
+					viewer.y = screen.height;
+					menuPos = menu.y = screen.height * .7;
+				}
 			}
 
 			private var imgs:ArrayCollection = new ArrayCollection(
@@ -145,10 +156,10 @@
 	
 	<!--stop updating the model when this is hidden-->
 	<view:SlideShower id="slider" y.slideshow="0" y.inapp="{-slider.height}" model="{slModel}" controller="{slController}" 
-					  width="100%" height="100%" backgroundColor="gray">
+					  width="100%" height="100%" >
 	</view:SlideShower>
 	
-	<view:Menu id="menu" width="100%" height="40" y.slideshow="500" y.inapp="0"
+	<view:Menu id="menu" width="100%" height="40" y.inapp="0"
 			 color="white" backgroundColor="black">
 		<view:menuEntries>
 			<s:ArrayCollection>
@@ -160,7 +171,7 @@
 		</view:menuEntries>
 	</view:Menu>
 	
-	<view:PictureViewer id="viewer" width="100%" height="100%" backgroundColor="gray"
-						x="0" y.inapp="40" images="{imgs}">
+	<view:PictureViewer id="viewer" width="100%" height="100%"
+						x="0" y.inapp="40" images="{imgs}" backgroundColor="red" visible="false">
 	</view:PictureViewer>
 </s:Application>

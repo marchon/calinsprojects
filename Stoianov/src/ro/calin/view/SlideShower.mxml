@@ -24,24 +24,32 @@
 			protected function init(event:FlexEvent):void
 			{
 				ChangeWatcher.watch(model, "image", img_completeHandler);
-				img.source = model.image;
+				//img.source = model.image;
 			}
 
 			protected var lastImage:BitmapData = null; 
 			protected function img_completeHandler(event:Event):void
 			{
-				img.source = model.image;
-				var currentImage:BitmapData = Bitmap(img.content).bitmapData;
-				/*if(lastImage != null) {
-					xFade.stop();
-					xFade.bitmapFrom = lastImage;
-					xFade.bitmapTo = currentImage;
-					xFade.play();
-				}
+				var ldr:Loader = new Loader();
 				
-				lastImage = currentImage;*/
+				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{
+//					var currentImage:BitmapData = Bitmap(e.currentTarget.content).bitmapData;
+//					xFade.stop();
+//					if(lastImage != null) {
+//						xFade.bitmapFrom = lastImage;
+//					}
+//					xFade.bitmapTo = currentImage;
+//					xFade.play();
+//					
+//					lastImage = currentImage;
+					img.source = e.currentTarget.content;
+				});
 				
-				var w:Number = Application(FlexGlobals.topLevelApplication).width;
+				trace(encodeURI(model.image));
+				ldr.load(new URLRequest(encodeURI(model.image)));
+				
+				
+				/*var w:Number = Application(FlexGlobals.topLevelApplication).width;
 				var h:Number = Application(FlexGlobals.topLevelApplication).height;
 
 				var dh:Number = Math.abs(h - currentImage.height);
@@ -54,7 +62,7 @@
 					scale = screen.width / currentImage.width;
 				}
 				img.scaleX = img.scaleY = scale;
-				trace(img.x, img.y);
+				trace(img.x, img.y);*/
 			}
 		]]>
 	</fx:Script>
@@ -62,5 +70,5 @@
 		<s:CrossFade id="xFade" target="{img}" duration="1000" />
 	</fx:Declarations>
 	
-	<mx:Image id="img" click="controller.next()" verticalCenter="0" horizontalCenter="0"/>
+	<mx:Image id="img" verticalCenter="0" horizontalCenter="0"/>
 </s:Group>

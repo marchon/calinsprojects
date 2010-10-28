@@ -8,6 +8,7 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import mx.binding.utils.ChangeWatcher;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
@@ -22,20 +23,14 @@
 
 			protected function init(event:FlexEvent):void
 			{
-				//if pics have different resolution we must scale at each change
-				
-				//solutions
-				//1. the slideshow images are defined diferently(other pic folder, larger images)
-				//2. all the images will be sufficiently large
-				
-//				var scale:int = this.width/img.width + 1;
-//				img.scaleX = scale;
-//				img.scaleY = scale;
+				ChangeWatcher.watch(model, "image", img_completeHandler);
+				img.source = model.image;
 			}
 
 			protected var lastImage:BitmapData = null; 
 			protected function img_completeHandler(event:Event):void
 			{
+				img.source = model.image;
 				var currentImage:BitmapData = Bitmap(img.content).bitmapData;
 				/*if(lastImage != null) {
 					xFade.stop();
@@ -46,10 +41,11 @@
 				
 				lastImage = currentImage;*/
 				
-				var screen:Rectangle = Application(FlexGlobals.topLevelApplication).screen;
-				
-				var dh:Number = Math.abs(screen.height - currentImage.height);
-				var dw:Number = Math.abs(screen.width - currentImage.width);
+				var w:Number = Application(FlexGlobals.topLevelApplication).width;
+				var h:Number = Application(FlexGlobals.topLevelApplication).height;
+
+				var dh:Number = Math.abs(h - currentImage.height);
+				var dw:Number = Math.abs(w - currentImage.width);
 				
 				var scale:Number;
 				if(dh < dw) {
@@ -57,16 +53,14 @@
 				} else {
 					scale = screen.width / currentImage.width;
 				}
-				trace(currentImage.width + ', ' + currentImage.height + ', ' + scale);
 				img.scaleX = img.scaleY = scale;
+				trace(img.x, img.y);
 			}
-
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<s:CrossFade id="xFade" target="{img}" duration="1000" />
 	</fx:Declarations>
 	
-	<mx:Image horizontalCenter="0" verticalCenter="0" id="img"
-			  source="{model.image}" complete="img_completeHandler(event)" click="controller.next()"/>
+	<mx:Image id="img" click="controller.next()" verticalCenter="0" horizontalCenter="0"/>
 </s:Group>

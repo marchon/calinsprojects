@@ -11,6 +11,7 @@
 			import mx.binding.utils.ChangeWatcher;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.events.EffectEvent;
 			import mx.events.FlexEvent;
 			
 			import ro.calin.controller.CSlideShower;
@@ -27,26 +28,31 @@
 				//img.source = model.image;
 			}
 
-			protected var lastImage:BitmapData = null; 
+			protected var lastImage:Bitmap = null; 
 			protected function img_completeHandler(event:Event):void
 			{
 				var ldr:Loader = new Loader();
 				
 				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{
-//					var currentImage:BitmapData = Bitmap(e.currentTarget.content).bitmapData;
-//					xFade.stop();
-//					if(lastImage != null) {
-//						xFade.bitmapFrom = lastImage;
-//					}
-//					xFade.bitmapTo = currentImage;
-//					xFade.play();
-//					
-//					lastImage = currentImage;
-					img.source = e.currentTarget.content;
+					var bmp:Bitmap = ( e.target as LoaderInfo ).content as Bitmap;
+					
+					//fout.stop();
+					if(lastImage != null) {
+						//xFade.bitmapFrom = lastImage;
+						fout.play();
+						lastImage = bmp;
+					} else {
+						lastImage = bmp;
+						fadeIn(null);
+					}
+					//xFade.bitmapTo = bmp.bitmapData;
+					//xFade.play();
+					
+					
+//					img.source = bmp;
 				});
 				
-				trace(encodeURI(model.image));
-				ldr.load(new URLRequest(encodeURI(model.image)));
+				ldr.load(new URLRequest(encodeURI(model.image)), new JPEGLoaderContext());
 				
 				
 				/*var w:Number = Application(FlexGlobals.topLevelApplication).width;
@@ -64,9 +70,19 @@
 				img.scaleX = img.scaleY = scale;
 				trace(img.x, img.y);*/
 			}
+
+			protected function fadeIn(event:EffectEvent):void
+			{
+				img.source = lastImage;
+				fin.play();
+			}
+
 		]]>
 	</fx:Script>
 	<fx:Declarations>
+		<s:Fade alphaFrom="1" alphaTo="0" id="fout" target="{img}" duration="300" effectEnd="fadeIn(event)"/>
+		<s:Fade alphaFrom="0" alphaTo="1" id="fin" target="{img}" duration="300"/>
+
 		<s:CrossFade id="xFade" target="{img}" duration="1000" />
 	</fx:Declarations>
 	

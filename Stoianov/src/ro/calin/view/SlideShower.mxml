@@ -6,6 +6,15 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="flipped"/>
+	</s:states>
+	<s:transitions>
+		<s:Transition>
+			<s:CrossFade id="xFade" target="{holder}" duration="700" />
+		</s:Transition>
+	</s:transitions>
 	<fx:Script>
 		<![CDATA[
 			import mx.binding.utils.ChangeWatcher;
@@ -28,63 +37,51 @@
 				//img.source = model.image;
 			}
 
-			protected var lastImage:Bitmap = null; 
 			protected function img_completeHandler(event:Event):void
 			{
 				var ldr:Loader = new Loader();
 				
 				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{
-					var bmp:Bitmap = ( e.target as LoaderInfo ).content as Bitmap;
+					var loaderInfo:LoaderInfo = LoaderInfo(e.target);
 					
-					//fout.stop();
-					if(lastImage != null) {
-						//xFade.bitmapFrom = lastImage;
-						fout.play();
-						lastImage = bmp;
+					var w:Number = screen.width;
+					var h:Number = screen.height;
+					
+					var dh:Number = Math.abs(h - loaderInfo.height);
+					var dw:Number = Math.abs(w - loaderInfo.width);
+
+					var scale:Number;
+					if(dh < dw) {
+						scale = h / loaderInfo.height;
 					} else {
-						lastImage = bmp;
-						fadeIn(null);
+						scale = w / loaderInfo.width;
 					}
-					//xFade.bitmapTo = bmp.bitmapData;
-					//xFade.play();
+					//width or height could be smaller
+					var bitmapData:BitmapData = new BitmapData(w, h, false, 0xFFFFFF);
 					
-					
-//					img.source = bmp;
+					var m:Matrix = new Matrix();
+					m.scale(scale, scale);
+					//m.translate();
+					bitmapData.draw(loaderInfo.loader, m);
+					trace(scale, bitmapData.width, bitmapData.height);
+
+					if(currentState == "default") {
+						img2.source = bitmapData;
+						currentState = "flipped";
+					} else {
+						img1.source = bitmapData;
+						currentState = "default";
+					}
 				});
 				
-				ldr.load(new URLRequest(encodeURI(model.image)), new JPEGLoaderContext());
-				
-				
-				/*var w:Number = Application(FlexGlobals.topLevelApplication).width;
-				var h:Number = Application(FlexGlobals.topLevelApplication).height;
-
-				var dh:Number = Math.abs(h - currentImage.height);
-				var dw:Number = Math.abs(w - currentImage.width);
-				
-				var scale:Number;
-				if(dh < dw) {
-					scale = screen.height / currentImage.height;
-				} else {
-					scale = screen.width / currentImage.width;
-				}
-				img.scaleX = img.scaleY = scale;
-				trace(img.x, img.y);*/
-			}
-
-			protected function fadeIn(event:EffectEvent):void
-			{
-				img.source = lastImage;
-				fin.play();
+				ldr.load(new URLRequest(encodeURI(model.image)));
 			}
 
 		]]>
 	</fx:Script>
-	<fx:Declarations>
-		<s:Fade alphaFrom="1" alphaTo="0" id="fout" target="{img}" duration="300" effectEnd="fadeIn(event)"/>
-		<s:Fade alphaFrom="0" alphaTo="1" id="fin" target="{img}" duration="300"/>
 
-		<s:CrossFade id="xFade" target="{img}" duration="1000" />
-	</fx:Declarations>
-	
-	<mx:Image id="img" verticalCenter="0" horizontalCenter="0"/>
+	<s:Group id="holder">
+		<s:BitmapImage id="img1" visible="true" visible.flipped="false" smooth="true"/>
+		<s:BitmapImage id="img2" visible="false" visible.flipped="true" smooth="true"/>
+	</s:Group>
 </s:Group>

@@ -47,23 +47,29 @@
 					var w:Number = screen.width;
 					var h:Number = screen.height;
 					
-					var dh:Number = Math.abs(h - loaderInfo.height);
-					var dw:Number = Math.abs(w - loaderInfo.width);
-
-					var scale:Number;
-					if(dh < dw) {
-						scale = h / loaderInfo.height;
-					} else {
-						scale = w / loaderInfo.width;
-					}
-					//width or height could be smaller
-					var bitmapData:BitmapData = new BitmapData(w, h, false, 0xFFFFFF);
+					var dh:Number = loaderInfo.height - h; 
+					var dw:Number = loaderInfo.width - w;
 					
-					var m:Matrix = new Matrix();
-					m.scale(scale, scale);
-					//m.translate();
-					bitmapData.draw(loaderInfo.loader, m);
-					trace(scale, bitmapData.width, bitmapData.height);
+					var bitmapData:BitmapData = new BitmapData(w, h, false, 0x000000);
+					
+					if(dh > 0 && dw > 0) {
+						var scale:Number;
+						
+						//width or height could be smaller
+						
+						
+						var m:Matrix = new Matrix();
+//						m.scale(scale, scale);
+						bitmapData.draw(loaderInfo.loader, m, null, null, null, true);
+						
+						trace(scale,loaderInfo.width, bitmapData.width, loaderInfo.height, bitmapData.height);
+					} else {
+						trace("Picture has dimensions smaller then screen size. Do nothing");
+						//i think the best solution is to scale to the smallest dim
+						//as to fit entirely in the screen(this is if one of the dims is bigger then the screen)
+						//and center the image
+						bitmapData.draw(loaderInfo.loader, m, null, null, null, true);
+					}
 
 					if(currentState == "default") {
 						img2.source = bitmapData;
@@ -79,7 +85,6 @@
 
 		]]>
 	</fx:Script>
-
 	<s:Group id="holder">
 		<s:BitmapImage id="img1" visible="true" visible.flipped="false" smooth="true"/>
 		<s:BitmapImage id="img2" visible="false" visible.flipped="true" smooth="true"/>

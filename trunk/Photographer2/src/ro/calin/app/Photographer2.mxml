@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import ro.calin.component.skin.MenuSkin;
+			import ro.calin.event.MenuEvent;
+
+			protected function configService_resultHandler(event:ResultEvent):void
+			{
+				menu.entries = event.result.config.menu.entry;
+			}
+
+			protected function configService_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("Error getting configuration!!!");
+			}
+
+
+			protected function menu_itemClickHandler(event:MenuEvent):void
+			{
+				//Alert.show("Item clicked:" + event.item.label);
+			}
+
+
+			protected function menu_logoClickHandler(event:MenuEvent):void
+			{
+				//Alert.show("Logo click.");
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
+					   fault="configService_faultHandler(event)" />
+	</fx:Declarations>
+	<s:applicationComplete>
+		<![CDATA[
+			configService.send();
+		]]>
+	</s:applicationComplete>
+	
+	<mx:Image source="data/1.jpg" />
+	<component:Menu id="menu" skinClass="ro.calin.component.skin.MenuSkin" 
+					logoSource="logo.png" 
+					itemClick="menu_itemClickHandler(event)" 
+					logoClick="menu_logoClickHandler(event)"
+					width="100%" y="600"/>
+</s:Application>

@@ -24,17 +24,41 @@
 
 			protected function menu_itemClickHandler(event:MenuEvent):void
 			{
-				//Alert.show("Item clicked:" + event.item.label);
+				if(event.item.type == "parent") {
+					if(event.item.label == "gallery") {
+						currentState = "gallerystate";
+						viewer.source = ["data/2.jpg",
+										"data/3.jpg",
+										"data/4.jpg",
+										"data/5.jpg"];
+					} else {
+						currentState = "pagestate";
+					}
+				}
 			}
 
 
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
-				//Alert.show("Logo click.");
+				currentState = "menustate";
+				viewer.source = ["data/1.jpg"];
 			}
 
 		]]>
 	</fx:Script>
+	
+	<s:states>
+		<s:State name="menustate"/>
+		<s:State name="pagestate"/>
+		<s:State name="gallerystate"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition toState="*">
+			<s:Move target="{menu}" duration="300"/>
+		</s:Transition>
+	</s:transitions>
+	
 	<fx:Declarations>
 		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
 					   fault="configService_faultHandler(event)" />
@@ -49,10 +73,6 @@
 		<component:source>
 			<fx:Array>
 				<fx:String>data/1.jpg</fx:String>
-				<fx:String>data/2.jpg</fx:String>
-				<fx:String>data/3.jpg</fx:String>
-				<fx:String>data/4.jpg</fx:String>
-				<fx:String>data/5.jpg</fx:String>
 			</fx:Array>
 		</component:source>
 	</component:PictureViewer>
@@ -61,6 +81,6 @@
 					logoSource="logo.png" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
-					width="100%" y="600"/>
+					width="100%" y.menustate="{this.height * .7}" y.pagestate="0" y.gallerystate="{this.height - menu.height}"/>
 	
 </s:Application>

@@ -45,10 +45,22 @@
 		]]>
 	</s:applicationComplete>
 	
-	<mx:Image source="data/1.jpg" />
+	<component:PictureViewer id="viewer" skinClass="ro.calin.component.skin.PictureViewerSkin" width="100%" height="100%">
+		<component:source>
+			<fx:Array>
+				<fx:String>data/1.jpg</fx:String>
+				<fx:String>data/2.jpg</fx:String>
+				<fx:String>data/3.jpg</fx:String>
+				<fx:String>data/4.jpg</fx:String>
+				<fx:String>data/5.jpg</fx:String>
+			</fx:Array>
+		</component:source>
+	</component:PictureViewer>
+	
 	<component:Menu id="menu" skinClass="ro.calin.component.skin.MenuSkin" 
 					logoSource="logo.png" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
 					width="100%" y="600"/>
+	
 </s:Application>

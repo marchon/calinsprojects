@@ -17,13 +17,24 @@
 	name=thumbnailStrip, type=spark.components.DataGroup, required=true
 	-->
 	
-	<s:DataGroup id="thumbnailStrip" height="{hostComponent.height}" width="100%">
+	<s:DataGroup id="thumbnailStrip" height="100%" width="100%">
 		<s:layout>
 			<s:VerticalLayout gap="5" />
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
-				<mx:Image source="{data.img}" width="100%" />
+				<mx:Image source="{data.img}" width="100%">
+					<fx:Script>
+						<![CDATA[
+							import event.CategoryEvent;
+						]]>
+					</fx:Script>
+					<mx:click>
+						<![CDATA[
+							dispatchEvent(new CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, data, true));
+						]]>
+					</mx:click>
+				</mx:Image>
 			</fx:Component>
 		</s:itemRenderer>
 	</s:DataGroup>

@@ -1,5 +1,7 @@
 package components
 {
+	import event.CategoryEvent;
+	
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
@@ -9,6 +11,7 @@ package components
 	
 	[SkinState("idle")]
 	[SkinState("sliding")]
+	[Event(name="categItemClick", type="event.CategoryEvent")]
 	public class CategoryViewer extends SkinnableComponent
 	{
 		[SkinPart(required="true")]
@@ -54,17 +57,11 @@ package components
 			}
 		}
 		
-		private function thumbnailStrip_mouseMoveHandler(event:MouseEvent):void {
-			/*if(_lastStageY != -1) {
-				var delta:Number = (event.stageY - _lastStageY);
-				thumbnailStrip.verticalScrollPosition += delta;
-			}
-			
-			_lastStageY = event.stageY;*/
+		private function thumbnailStrip_mouseMoveHandler(evt:MouseEvent):void {
+			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
 			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
 			
-			thumbnailStrip.verticalScrollPosition = fr * event.stageY - fr * this.y;
-			trace(thumbnailStrip.y);
+			thumbnailStrip.verticalScrollPosition = fr * evt.stageY - fr * this.y;
 		}
 	}
 }

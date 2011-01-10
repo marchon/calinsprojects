@@ -1,4 +1,4 @@
-package event
+package ro.calin.event
 {
 	import flash.events.Event;
 	

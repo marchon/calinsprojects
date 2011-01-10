@@ -1,6 +1,6 @@
-package components
+package ro.calin.component
 {
-	import event.CategoryEvent;
+	import ro.calin.event.CategoryEvent;
 	
 	import flash.events.MouseEvent;
 	

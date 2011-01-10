@@ -4,7 +4,7 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("components.CategoryViewer")]
+		[HostComponent("ro.calin.component.CategoryViewer")]
 	</fx:Metadata>
 	
 	<!-- states -->
@@ -19,19 +19,19 @@
 	
 	<s:DataGroup id="thumbnailStrip" height="100%" width="100%">
 		<s:layout>
-			<s:VerticalLayout gap="5" />
+			<s:VerticalLayout gap="0" />
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
-				<mx:Image source="{data.img}" width="100%">
+				<mx:Image source="{data.coverPic}" width="100%" mouseOver="scaleX=scaleY=1.1" mouseOut="scaleX=scaleY=1.0">
 					<fx:Script>
 						<![CDATA[
-							import event.CategoryEvent;
+							import ro.calin.event.CategoryEvent;
 						]]>
 					</fx:Script>
 					<mx:click>
 						<![CDATA[
-							dispatchEvent(new CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, data, true));
+							dispatchEvent(new ro.calin.event.CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, data, true));
 						]]>
 					</mx:click>
 				</mx:Image>

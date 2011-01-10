@@ -1,3 +1,5 @@
+<!-- remember to change http cache settings -->
+
 <config>
 	<menu>
 		<entry type="parent" label="gallery">
@@ -30,11 +32,31 @@
 	</menu>
 	
 	<categories>
-		<category label="cars" coverPic="???" descriptions="my photos with cars">
-			<subcategory label="nice cars" coverPic="pic001.jpeg" descriptions="these are a bunch of nice cars">
-				<pic name="a nice car" description="guess what?? this is a nice car" url="nice_car01.jpeg"/>
-				<pic name="another nice car" description="guess what?? this is another nice car" url="nice_car02.jpeg"/>
-			</subcategory>
+		<category label="cars" descriptions="my photos with cars">
+			<subcategory coverPic="data/thumb/1.jpg" descriptions="desc1" />
+			<subcategory coverPic="data/thumb/2.jpg" descriptions="desc2" />
+			<subcategory coverPic="data/thumb/3.jpg" descriptions="desc3" />
+			<subcategory coverPic="data/thumb/4.jpg" descriptions="desc4" />
+			<subcategory coverPic="data/thumb/5.jpg" descriptions="desc5" />
+			<subcategory coverPic="data/thumb/6.jpg" descriptions="desc4" />
+			<subcategory coverPic="data/thumb/7.jpg" descriptions="desc5" />
+			<subcategory coverPic="data/thumb/8.jpg" descriptions="desc1" />
+			<subcategory coverPic="data/thumb/9.jpg" descriptions="desc2" />
+			<subcategory coverPic="data/thumb/10.jpg" descriptions="desc3" />
+			<subcategory coverPic="data/thumb/11.jpg" descriptions="desc4" />
+			<subcategory coverPic="data/thumb/12.jpg" descriptions="desc5" />
+<!--			<subcategory label="nice cars" coverPic="thumb/1.jpg" descriptions="these are a bunch of nice cars">-->
+<!--				<pic name="a nice car" description="guess what?? this is a nice car" url="nice_car01.jpeg"/>-->
+<!--				<pic name="another nice car" description="guess what?? this is another nice car" url="nice_car02.jpeg"/>-->
+<!--			</subcategory>-->
+		</category>
+		
+		<category label="sky" descriptions="my photos with cars">
+			<subcategory coverPic="data/thumb/8.jpg" descriptions="desc1" />
+			<subcategory coverPic="data/thumb/9.jpg" descriptions="desc2" />
+			<subcategory coverPic="data/thumb/10.jpg" descriptions="desc3" />
+			<subcategory coverPic="data/thumb/11.jpg" descriptions="desc4" />
+			<subcategory coverPic="data/thumb/12.jpg" descriptions="desc5" />
 		</category>
 	</categories>
 </config>

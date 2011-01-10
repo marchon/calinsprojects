@@ -8,7 +8,7 @@ package ro.calin.component
 	
 	import ro.calin.event.MenuEvent;
 	
-	import spark.components.ButtonBar;
+	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.IndexChangeEvent;
 
@@ -22,7 +22,7 @@ package ro.calin.component
 		public var logo:Image;
 		
 		[SkinPart(required="true")]
-		public var bar:ButtonBar;
+		public var bar:DataGroup;
 		
 		private var _entries:ArrayCollection;
 		
@@ -30,10 +30,7 @@ package ro.calin.component
 		
 		private var _isMainMenu:Boolean = true;
 		
-		private var _mainMenuIndex:Number = -1;
-		
-		public function Menu()
-		{
+		public function Menu() {
 		}
 		
 		public function get entries():ArrayCollection {return _entries;}
@@ -41,7 +38,7 @@ package ro.calin.component
 			if(_entries == value) return;
 			
 			_entries = value;
-			populateBarWithCurrentEntries(_entries);
+			bar.dataProvider = _entries;
 		}
 		
 		public function get logoSource():String {return _logoSource;}
@@ -52,18 +49,6 @@ package ro.calin.component
 			if(logo) {
 				logo.source = value;
 			}			
-		}
-		
-		private function populateBarWithCurrentEntries(entries:ArrayCollection) : void {
-			if(bar && entries) {
-				var curEntries:ArrayList = new ArrayList();
-				for(var i:int = 0; i < entries.length; i++) {
-					curEntries.addItem(entries[i].label);
-				}
-				
-				bar.dataProvider = curEntries;
-				bar.selectedIndex = -1;
-			}
 		}
 		
 		override protected function getCurrentSkinState() : String {
@@ -81,8 +66,8 @@ package ro.calin.component
 				logo.addEventListener(MouseEvent.CLICK, logo_clickHandler);
 			}
 			if (instance == bar) {
-				populateBarWithCurrentEntries(_entries);
-				bar.addEventListener(IndexChangeEvent.CHANGE, buttonBar_changeHandler);
+				bar.dataProvider = _entries;
+				bar.addEventListener(MenuEvent.MENU_ITEM_CLICK, buttonBar_changeHandler);
 			}
 		}
 		
@@ -93,13 +78,13 @@ package ro.calin.component
 				logo.removeEventListener(MouseEvent.CLICK, logo_clickHandler);
 			}
 			if (instance == bar) {
-				bar.removeEventListener(IndexChangeEvent.CHANGE, buttonBar_changeHandler);
+				bar.removeEventListener(MenuEvent.MENU_ITEM_CLICK, buttonBar_changeHandler);
 			}
 		}
 		
 		private function logo_clickHandler(event:MouseEvent) : void {
 			if(!_isMainMenu) {
-				populateBarWithCurrentEntries(_entries);
+				bar.dataProvider = _entries;
 				_isMainMenu = true;
 				invalidateSkinState();
 			}
@@ -107,27 +92,16 @@ package ro.calin.component
 			dispatchEvent(new MenuEvent(MenuEvent.MENU_LOGO_CLICK));
 		}
 	
-		private function buttonBar_changeHandler(event:IndexChangeEvent) : void {
-			var index:Number = event.newIndex;
-			if(index == -1) return;
-			
-			var selected:Object;
+		private function buttonBar_changeHandler(evt:MenuEvent) : void {
+			var selected:Object = evt.item;
 			if(_isMainMenu) {
 				//we are in main menu and a button has been clicked
-				_mainMenuIndex = index;
-				
-				selected = _entries[index];
 				if(selected.type == "parent") {
-					populateBarWithCurrentEntries(selected.subentry);
+					bar.dataProvider = selected.subentry;
 					_isMainMenu = false;
 					invalidateSkinState();
 				}
-			} else {
-				//we are in a submenu
-				selected = _entries[_mainMenuIndex].subentry[index];
 			}
-			
-			dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, selected));
 		}
 	}
 }

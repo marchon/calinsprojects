@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.CategoryViewer")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="idle" />
+		<s:State name="sliding" />
+	</s:states>
+	
+	<!-- SkinParts
+	name=thumbnailStrip, type=spark.components.DataGroup, required=true
+	-->
+	
+	<s:DataGroup id="thumbnailStrip" height="{hostComponent.height}" width="100%">
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		<s:itemRenderer>
+			<fx:Component>
+				<mx:Image source="{data.img}" width="100%" />
+			</fx:Component>
+		</s:itemRenderer>
+	</s:DataGroup>
+</s:Skin>

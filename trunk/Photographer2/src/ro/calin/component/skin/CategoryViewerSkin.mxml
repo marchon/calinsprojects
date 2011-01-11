@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx">
+		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:component="ro.calin.component.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("ro.calin.component.CategoryViewer")]
@@ -17,24 +17,16 @@
 	name=thumbnailStrip, type=spark.components.DataGroup, required=true
 	-->
 	
-	<s:DataGroup id="thumbnailStrip" height="100%" width="100%">
+	<!--need to adjust height to match the maximum scale amount-->
+	<s:DataGroup id="thumbnailStrip" height="100%" width="{128 * 1.2}">
 		<s:layout>
-			<s:VerticalLayout gap="0" />
+			<s:VerticalLayout gap="-1" horizontalAlign="center"/>
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
-				<mx:Image source="{data.coverPic}" width="100%" mouseOver="scaleX=scaleY=1.1" mouseOut="scaleX=scaleY=1.0">
-					<fx:Script>
-						<![CDATA[
-							import ro.calin.event.CategoryEvent;
-						]]>
-					</fx:Script>
-					<mx:click>
-						<![CDATA[
-							dispatchEvent(new ro.calin.event.CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, data, true));
-						]]>
-					</mx:click>
-				</mx:Image>
+				<s:ItemRenderer>
+					<component:Category categoryData="{data}" skinClass="ro.calin.component.skin.CategorySkin"/>
+				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>
 	</s:DataGroup>

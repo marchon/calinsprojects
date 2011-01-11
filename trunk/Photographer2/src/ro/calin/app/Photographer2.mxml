@@ -93,6 +93,6 @@
 					width="100%" y.menustate="{this.height * .7}" y.pagestate="0" y.gallerystate="{this.height - menu.height}"/>
 	
 	<component:CategoryViewer id="catViewer" skinClass="ro.calin.component.skin.CategoryViewerSkin" visible="false"
-							  y="0" height="{this.height - menu.height}"/>
+							  y="0" height="{this.height - menu.height}" x="50"/>
 	
 </s:Application>

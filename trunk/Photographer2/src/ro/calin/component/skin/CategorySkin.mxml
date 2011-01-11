@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("ro.calin.component.Category")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition>
+			<s:Scale target="{image}" duration="200"/>
+		</s:Transition>
+	</s:transitions>
+	
+	<mx:Image id="image" width="128" scaleX.hovered="1.2" scaleY.hovered="1.2"/>
+</s:Skin>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx">
+		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:component="ro.calin.component.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("ro.calin.component.Menu")]
@@ -34,6 +34,8 @@
 					<s:ItemRenderer>
 						<fx:Script>
 							<![CDATA[
+								import mx.controls.Alert;
+								
 								import ro.calin.event.MenuEvent;
 								
 								//hack to get rid of grey shade
@@ -42,14 +44,15 @@
 								}
 							]]>
 						</fx:Script>
-						<s:Button width="200" height="50"
-								  skinClass="ro.calin.component.skin.MenuButtonSkin" label="{data.label}">
-							<s:click>
+						<component:MenuButton id="button" width="200" height="50" 
+								aniColor="{(data.color? parseInt(data.color, 16) : 0x00ff00) as uint}"
+								skinClass="ro.calin.component.skin.MenuButtonSkin" label="{data.label}">
+							<component:click>
 								<![CDATA[
 									dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, data, true));
 								]]>
-							</s:click>
-						</s:Button>
+							</component:click>
+						</component:MenuButton>
 					</s:ItemRenderer>
 				</fx:Component>
 			</s:itemRenderer>

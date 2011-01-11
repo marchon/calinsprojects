@@ -15,9 +15,18 @@
 	
 	<s:transitions>
 		<s:Transition>
-			<s:Scale target="{image}" duration="200"/>
+			<s:Parallel>
+				<s:Scale target="{image}" duration="200"/>
+				<s:Fade target="{image}" duration="200"/>
+			</s:Parallel>	
 		</s:Transition>
+		
 	</s:transitions>
 	
-	<mx:Image id="image" width="128" scaleX.hovered="1.2" scaleY.hovered="1.2"/>
+	<s:Rect width="128" height="100%">
+		<s:fill>
+			<s:SolidColor color="black"/>
+		</s:fill>
+	</s:Rect>
+	<mx:Image id="image" width="128" scaleX.hovered="1.2" scaleY.hovered="1.2" alpha="0.5" alpha.hovered="1.0"/>
 </s:Skin>

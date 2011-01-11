@@ -2,14 +2,14 @@
 
 <config>
 	<menu>
-		<entry type="parent" label="gallery">
+		<entry type="parent" label="gallery" color="0xff00ff">
 			<subentry type="category" label="cars" />
 			<subentry type="category" label="sky" />
 			<subentry type="category" label="nude" />
 			<subentry type="category" label="animals" />
 			<subentry type="category" label="people" />
 		</entry>
-		<entry type="parent" label="info">
+		<entry type="parent" label="info" color="0xff0000">
 			<subentry type="page" label="about">
 				<content>
 					<!-- taguri de formatare??? -->
@@ -28,7 +28,7 @@
 				</content>
 			</subentry>
 		</entry>
-		<entry type="link" label="blog" url="http://prinochiimei.wordpress.com" />
+		<entry type="link" label="blog" url="http://prinochiimei.wordpress.com" color="0x0000ff"/>
 	</menu>
 	
 	<categories>

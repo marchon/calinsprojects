@@ -94,4 +94,5 @@
 	
 	<component:CategoryViewer id="catViewer" skinClass="ro.calin.component.skin.CategoryViewerSkin" visible="false"
 							  y="0" height="{this.height - menu.height}"/>
+	
 </s:Application>

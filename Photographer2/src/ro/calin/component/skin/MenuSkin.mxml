@@ -35,9 +35,14 @@
 						<fx:Script>
 							<![CDATA[
 								import ro.calin.event.MenuEvent;
+								
+								//hack to get rid of grey shade
+								override protected function get hovered():Boolean {
+									return false;
+								}
 							]]>
 						</fx:Script>
-						<s:Button width="200" height="50" 
+						<s:Button width="200" height="50"
 								  skinClass="ro.calin.component.skin.MenuButtonSkin" label="{data.label}">
 							<s:click>
 								<![CDATA[

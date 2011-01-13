@@ -25,7 +25,7 @@
 		<s:itemRenderer>
 			<fx:Component>
 				<s:ItemRenderer>
-					<component:Category categoryData="{data}" skinClass="ro.calin.component.skin.CategorySkin"/>
+					<component:Category categoryData="{data}" skinClass="ro.calin.component.skin.CategorySkin" buttonMode="true"/>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>

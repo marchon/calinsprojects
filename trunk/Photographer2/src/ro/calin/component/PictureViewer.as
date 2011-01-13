@@ -12,7 +12,13 @@ package ro.calin.component
 	public class PictureViewer extends SkinnableComponent
 	{
 		[SkinPart(required="true")]
-		public var picture:Image;
+		public var picture1:Image;
+		
+		[SkinPart(required="true")]
+		public var picture2:Image;
+		
+		private var _currentPicture:Image;
+		private var _outsidePicture:Image;
 		
 		[SkinPart(required="true")]
 		public var leftButton:Button;
@@ -39,8 +45,8 @@ package ro.calin.component
 			_source = value;
 			
 			_current = 0;
-			if(picture) {
-				picture.source = _source[_current];
+			if(_currentPicture) {
+				_currentPicture.source = _source[_current];
 			}
 			
 			if(_source.length > 1) hasLeftRight = true;
@@ -58,10 +64,15 @@ package ro.calin.component
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance);
 			
-			if(instance == picture) {
+			if(instance == picture1) {
 				if(_source) {
-					picture.source = _source[_current];
+					picture1.source = _source[_current];
+					_currentPicture = picture1;
 				}
+			}
+			
+			if(instance == picture2) {
+				_outsidePicture = picture2;
 			}
 			
 			if(instance == leftButton) {
@@ -90,7 +101,11 @@ package ro.calin.component
 			if(_current == -1) {
 				_current = _source.length - 1;
 			}
-			picture.source = _source[_current];
+			
+			_outsidePicture.source = _source[_current];
+			
+			_isChanging = true;
+			invalidateSkinState();
 		}
 		
 		private function rightButton_clickHandler(event:MouseEvent) : void {
@@ -98,7 +113,7 @@ package ro.calin.component
 			if(_current == _source.length) {
 				_current = 0;
 			}
-			picture.source = _source[_current];
+			picture1.source = _source[_current];
 		}
 	}
 }

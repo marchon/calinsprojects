@@ -10,6 +10,7 @@
 			
 			import ro.calin.component.skin.MenuSkin;
 			import ro.calin.event.MenuEvent;
+			import ro.calin.utils.SWFProfiler;
 			
 			private var config:Object = null;
 
@@ -78,6 +79,7 @@
 	</fx:Declarations>
 	<s:applicationComplete>
 		<![CDATA[
+			SWFProfiler.init(stage, this);
 			configService.send();
 		]]>
 	</s:applicationComplete>

@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500">
+		xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500" xmlns:utils="ro.calin.utils.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("ro.calin.component.PictureViewer")]
 	</fx:Metadata>
-	<s:states>
-		<s:State name="normal" />
-		<s:State name="changing" />
-	</s:states>
 	
-	<s:transitions>
-		<s:Transition>
-			<s:Move targets="{[picture1, picture2]}" xBy="{-hostComponent.width}" />
-		</s:Transition>
-	</s:transitions>
-	
-	<mx:Image id="picture1" />
-	<mx:Image id="picture2" x.normal="{hostComponent.width}" />
+	<utils:ImageCache id="picture1" />
+	<utils:ImageCache id="picture2" />
 	<s:Button id="leftButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
 			  verticalCenter="0" left="0" visible="{hostComponent.hasLeftRight}" buttonMode="true"/>
 	<s:Button id="rightButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 

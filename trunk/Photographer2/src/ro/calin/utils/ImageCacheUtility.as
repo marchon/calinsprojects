@@ -22,11 +22,17 @@ package ro.calin.utils
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.controls.Image;
+	import mx.core.FlexGlobals;
+	import mx.rpc.events.HeaderEvent;
+	
+	import spark.components.Application;
 	
 	public class ImageCacheUtility
 	{
@@ -34,6 +40,9 @@ package ro.calin.utils
 		
 		private var imageDictionary:ArrayCollection = new ArrayCollection();
 		private var _cacheLimit:Number = 50;
+		private var _app:Application = (FlexGlobals.topLevelApplication as Application);
+		private var _aw:Number = _app.width;
+		private var _ah:Number = _app.height;
 		
 		public function set cacheLimit(num:Number):void
 		{
@@ -59,7 +68,7 @@ package ro.calin.utils
 			return imageCache;
 	  	}
 	
-		public function cacheImage(id:String, source:Image):void
+		public function cacheImage(id:String, source:Image):*
 		{
 			for each ( var newObj:Object in imageDictionary)
 			{
@@ -71,6 +80,8 @@ package ro.calin.utils
 			obj.data = bd;
 			imageDictionary.addItem(obj);
 			checkLimit();
+			
+			return new Bitmap(bd);
 		}
 		
 		public function loadImage(id:String):*
@@ -85,13 +96,43 @@ package ro.calin.utils
 			return id;
 		}
 		
+		//http://www.flexer.info/2008/10/16/how-to-crop-and-resize-an-image-used-as-background-for-canvas/
 		private function getBitmapData( target : Image ) : BitmapData
 	   	{
-	   		var bd : BitmapData = new BitmapData( target.contentWidth, target.contentHeight);
-	    	var m : Matrix = new Matrix();
-			//http://www.flexer.info/2008/10/16/how-to-crop-and-resize-an-image-used-as-background-for-canvas/
-	    	bd.draw( target, m );
-	    	return bd;
+			var w:Number = target.contentWidth;
+			var h:Number = target.contentHeight;
+			var dw:Number = w - _aw;
+			var dh:Number = h - _ah;
+			
+			var scale:Number = 1;
+			var clipRect:Rectangle = null;
+			
+			if(dh > 0 && dw > 0) {
+				//case 1 - bigger on bolth: scale on smallest, then crop on the other
+				if(dh > dw) {
+					//scale on height
+					scale = _aw / w;
+					clipRect = new Rectangle(0, (h * scale - _ah) / 2, _aw, _ah);
+				} else {
+					scale = _ah / h;
+					clipRect = new Rectangle((w * scale - _aw) / 2, 0, _aw, _ah);
+				}
+			} else if(dh > 0) {
+				//case 2 - bigger just on height: scale on height, center on horiz
+			} else if(dw > 0) {
+				//case 3 - bigger just on width: scale on width, center on vert
+			} else {
+				//case 4 - smaller: center on both
+			}
+			
+			var m : Matrix = new Matrix();
+			m.scale(scale, scale);
+			var bd : BitmapData = new BitmapData(w * scale, h * scale, false, 0x000000);
+			bd.draw( (target.content as Bitmap).bitmapData, m, null, null, null, true);
+			var bd2 : BitmapData = new BitmapData(_aw, _ah, false, 0x000000);
+			bd2.copyPixels(bd, clipRect, new Point(0, 0));
+			
+	    	return bd2;
 	   	}
 	   	
 	   	public function clear():void

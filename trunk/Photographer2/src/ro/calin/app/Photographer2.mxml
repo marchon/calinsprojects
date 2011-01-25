@@ -55,7 +55,7 @@
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
 				currentState = "menustate";
-				viewer.source = ["data/1.jpg"];
+				viewer.source = ["data/back2.jpg"];
 			}
 
 		]]>
@@ -87,7 +87,7 @@
 	<component:PictureViewer id="viewer" skinClass="ro.calin.component.skin.PictureViewerSkin" width="100%" height="100%">
 		<component:source>
 			<fx:Array>
-				<fx:String>data/1.jpg</fx:String>
+				<fx:String>data/back2.jpg</fx:String>
 			</fx:Array>
 		</component:source>
 	</component:PictureViewer>

@@ -36,6 +36,7 @@ package ro.calin.utils
 		private var imageCache:ImageCacheUtility = ImageCacheUtility.getInstance();
 		private var _sourceURL:String = "";
 		private var _cacheLimit:Number = 50;
+//		private var _sourceSetterCalled
 		
 		public function get cacheLimit():Number
 		{
@@ -81,11 +82,10 @@ package ro.calin.utils
 		{
 			if (LoaderInfo(event.target).loader != contentHolder)
 				return;
-			
+			//this is ugly, refactor
 			if(_sourceURL != ""){
-				imageCache.cacheImage(_sourceURL, this); 
+				super.source = imageCache.cacheImage(_sourceURL, this); 
 			}
-			
 			//var smoothLoader:Loader = event.target.loader as Loader;
            // var smoothImage:Bitmap = smoothLoader.content as Bitmap;
            // 	smoothImage.smoothing = true;

@@ -105,32 +105,44 @@ package ro.calin.utils
 			var dh:Number = h - _ah;
 			
 			var scale:Number = 1;
-			var clipRect:Rectangle = null;
-			
+			var sourceRect:Rectangle = null;
+			var destPoint:Point = new Point(0, 0);
 			if(dh > 0 && dw > 0) {
 				//case 1 - bigger on bolth: scale on smallest, then crop on the other
 				if(dh > dw) {
-					//scale on height
+					//scale on width, because it's smaller
 					scale = _aw / w;
-					clipRect = new Rectangle(0, (h * scale - _ah) / 2, _aw, _ah);
+					sourceRect = new Rectangle(0, (h * scale - _ah) / 2, _aw, _ah);
 				} else {
+					//scale on height
 					scale = _ah / h;
-					clipRect = new Rectangle((w * scale - _aw) / 2, 0, _aw, _ah);
+					sourceRect = new Rectangle((w * scale - _aw) / 2, 0, _aw, _ah);
 				}
 			} else if(dh > 0) {
 				//case 2 - bigger just on height: scale on height, center on horiz
+				scale = _ah / h;
+				destPoint.x = (_aw - w * scale) / 2;
 			} else if(dw > 0) {
 				//case 3 - bigger just on width: scale on width, center on vert
+				scale = _aw / w;
+				destPoint.y = (_ah - h * scale) / 2;
 			} else {
 				//case 4 - smaller: center on both
+				destPoint.x = (_aw - w) / 2;
+				destPoint.y = (_ah - h) / 2;
 			}
 			
 			var m : Matrix = new Matrix();
-			m.scale(scale, scale);
-			var bd : BitmapData = new BitmapData(w * scale, h * scale, false, 0x000000);
-			bd.draw( (target.content as Bitmap).bitmapData, m, null, null, null, true);
+			if(scale != 1) m.scale(scale, scale);
+			if(sourceRect == null) sourceRect = new Rectangle(0, 0, w * scale, h * scale);
+			
+			//scale
+			var bd : BitmapData = new BitmapData(w * scale, h * scale);
+			bd.draw((target.content as Bitmap).bitmapData, m, null, null, null, true);
+			
+			//crop and center
 			var bd2 : BitmapData = new BitmapData(_aw, _ah, false, 0x000000);
-			bd2.copyPixels(bd, clipRect, new Point(0, 0));
+			bd2.copyPixels(bd, sourceRect, destPoint);
 			
 	    	return bd2;
 	   	}

@@ -30,7 +30,15 @@ package ro.calin.utils
 	import mx.core.mx_internal;
 	
 	use namespace mx_internal;
-	
+	/*
+	 * TODO: 
+	 *    1. move func from cacheimage util here
+	 *    2. expose props to control caching(true) and img processing(false, need w and h)\
+	 *    3. maybe externalize img processing to a image processor
+				interface ImgProc {
+					bitmapData process(bitmapData)
+				}
+	*/
 	public class ImageCache extends Image
 	{
 		private var imageCache:ImageCacheUtility = ImageCacheUtility.getInstance();

@@ -25,6 +25,7 @@ package ro.calin.utils
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.system.LoaderContext;
+	import flash.system.System;
 	
 	import mx.controls.Image;
 	import mx.core.mx_internal;
@@ -38,6 +39,13 @@ package ro.calin.utils
 				interface ImgProc {
 					bitmapData process(bitmapData)
 				}
+		  4. when you request an image from the cache, if it's already loaded, move that
+			image in front(this way, the most accessed will stay in the cache)
+			OR 
+			(more complicated)**use a priority queue ordered by number of requests,
+			keep a number of pics loaded(let's say 50) but keep the evidence(number of reqests) for
+			each requeste url(or maybe x times more that image data kept in mem), 
+			even if the image is deleted from the cache
 	*/
 	public class ImageCache extends Image
 	{

@@ -4,6 +4,6 @@ package ro.calin.utils
 
 	public interface BitmapProcessor
 	{
-		public function process(bitmapData:BitmapData):BitmapData;		
+		function process(bitmapData:BitmapData):BitmapData;		
 	}
 }

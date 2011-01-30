@@ -18,7 +18,7 @@
 	-->
 	
 	<!--need to adjust height to match the maximum scale amount-->
-	<s:DataGroup id="thumbnailStrip" height="100%" width="{128 * 1.2}" >
+	<s:DataGroup id="thumbnailStrip" height="100%" width="{220 * 1.2}" >
 		<s:layout>
 			<s:VerticalLayout gap="-1" horizontalAlign="center"/>
 		</s:layout>

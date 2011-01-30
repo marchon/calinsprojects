@@ -52,11 +52,10 @@
 		</category>
 		
 		<category label="sky" descriptions="my photos with cars">
-			<subcategory coverPic="data/thumb/8.jpg" descriptions="desc1" />
-			<subcategory coverPic="data/thumb/9.jpg" descriptions="desc2" />
-			<subcategory coverPic="data/thumb/10.jpg" descriptions="desc3" />
-			<subcategory coverPic="data/thumb/11.jpg" descriptions="desc4" />
-			<subcategory coverPic="data/thumb/12.jpg" descriptions="desc5" />
+			<subcategory coverPic="data/thumb/cat10.jpg" descriptions="desc1" />
+			<subcategory coverPic="data/thumb/cat4.jpg" descriptions="desc2" />
+			<subcategory coverPic="data/thumb/cat8.jpg" descriptions="desc3" />
+			<subcategory coverPic="data/thumb/cat9.jpg" descriptions="desc4" />
 		</category>
 	</categories>
 </config>

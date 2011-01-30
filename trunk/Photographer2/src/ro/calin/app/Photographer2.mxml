@@ -34,7 +34,14 @@
 						viewer.source = ["data/2.jpg",
 										"data/3.jpg",
 										"data/4.jpg",
-										"data/5.jpg"];
+										"data/5.jpg",
+										"data/1 (1).jpg","data/1 (2).jpg","data/1 (3).jpg","data/1 (4).jpg",
+										"data/1 (5).jpg","data/1 (6).jpg","data/1 (7).jpg","data/1 (8).jpg",
+										"data/1 (10).jpg","data/1 (11).jpg","data/1 (12).jpg","data/1 (13).jpg",
+										"data/1 (15).jpg","data/1 (16).jpg","data/1 (17).jpg","data/1 (18).jpg",
+										"data/1 (20).jpg","data/1 (21).jpg","data/1 (22).jpg","data/1 (23).jpg",
+										"data/1 (25).jpg","data/1 (26).jpg","data/1 (27).jpg","data/1 (28).jpg",
+										"data/IMG_8507.jpg"];
 					} else {
 						currentState = "pagestate";
 					}
@@ -93,7 +100,7 @@
 	</component:PictureViewer>
 	
 	<component:Menu id="menu" skinClass="ro.calin.component.skin.MenuSkin" 
-					logoSource="logo.png" 
+					logoSource="logo.jpg" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
 					width="100%" y.menustate="{this.height * .7}" 

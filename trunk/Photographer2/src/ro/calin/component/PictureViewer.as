@@ -3,9 +3,13 @@ package ro.calin.component
 	import flash.events.MouseEvent;
 	
 	import mx.controls.Image;
+	import mx.core.FlexGlobals;
 	
-	import ro.calin.utils.ImageCache;
+	import ro.calin.utils.BitmapProcessor;
+	import ro.calin.utils.CacheableImage;
+	import ro.calin.utils.ScaleCropBitmapProcessor;
 	
+	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.effects.Move;
@@ -15,10 +19,10 @@ package ro.calin.component
 	public class PictureViewer extends SkinnableComponent
 	{
 		[SkinPart(required="true")]
-		public var picture1:ImageCache;
+		public var picture1:CacheableImage;
 		
 		[SkinPart(required="true")]
-		public var picture2:ImageCache;
+		public var picture2:CacheableImage;
 		
 		[SkinPart(required="true")]
 		public var leftButton:Button;
@@ -37,10 +41,15 @@ package ro.calin.component
 		
 		private var _moveAnim:Move;
 		
+		private var _bitmapProcessor:BitmapProcessor;
+		
 		public function PictureViewer()
 		{
 			super();
 			_moveAnim = new Move();
+			
+			var app:Application = (FlexGlobals.topLevelApplication as Application);
+			_bitmapProcessor = new ScaleCropBitmapProcessor(app.width, app.height);
 		}
 		
 		public function get source():Array {return _source;}
@@ -62,6 +71,7 @@ package ro.calin.component
 			super.partAdded(partName, instance);
 			
 			if(instance == picture1) {
+				picture1.bitmapProcessor = _bitmapProcessor;
 				if(_source) {
 					picture1.source = _source[_current];
 				}
@@ -69,6 +79,7 @@ package ro.calin.component
 			}
 			
 			if(instance == picture2) {
+				picture2.bitmapProcessor = _bitmapProcessor;
 				_outsidePicture = picture2;
 			}
 			

@@ -7,12 +7,6 @@
 		[HostComponent("ro.calin.component.Menu")]
 	</fx:Metadata>
 	
-	<!-- states -->
-	<s:states>
-		<s:State name="mainmenu" />
-		<s:State name="submenu" />
-	</s:states>
-	
 	<!-- SkinParts
 	name=logo, type=mx.controls.Image, required=false
 	name=bar, type=spark.components.ButtonBar, required=true
@@ -45,13 +39,7 @@
 							]]>
 						</fx:Script>
 						<component:MenuButton id="button" width="200" height="50" buttonMode="true"
-								aniColor="{(data.color? parseInt(data.color, 16) : 0x00ff00) as uint}"
-								skinClass="ro.calin.component.skin.MenuButtonSkin" label="{data.label}">
-							<component:click>
-								<![CDATA[
-									dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, data, true));
-								]]>
-							</component:click>
+								entry="{data}" skinClass="ro.calin.component.skin.MenuButtonSkin">
 						</component:MenuButton>
 					</s:ItemRenderer>
 				</fx:Component>

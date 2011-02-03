@@ -4,10 +4,13 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayList;
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.component.model.MenuEntryModel;
+			import ro.calin.component.model.MenuModel;
 			import ro.calin.component.skin.MenuSkin;
 			import ro.calin.event.MenuEvent;
 			import ro.calin.utils.SWFProfiler;
@@ -17,7 +20,28 @@
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
 				config = event.result.config;
-				menu.entries = config.menu.entry;
+				//(data.color? parseInt(data.color, 16) : 0x00ff00) as uint
+				//menu.entries = config.menu.entry;
+				var model:MenuModel = new MenuModel();
+				model.entries = new ArrayList([
+					new MenuEntryModel("gallery", 0xff00ff, null, new ArrayList([
+						new MenuEntryModel("cars", 0x1200ff),
+						new MenuEntryModel("sky", 0x1200ff),
+						new MenuEntryModel("nude", 0x1200ff),
+						new MenuEntryModel("porn", 0x1200ff),
+					])),
+					new MenuEntryModel("info", 0x1200ff),
+					new MenuEntryModel("contact", 0x123456),
+					new MenuEntryModel("friends", 0xff0000),
+					new MenuEntryModel("test", 0xff00ff, null, new ArrayList([
+						new MenuEntryModel("test1", 0xff00ff, null, new ArrayList([
+							new MenuEntryModel("test3", 0xff00ff),
+							new MenuEntryModel("test4", 0xff00ff)
+						])),
+						new MenuEntryModel("test2", 0xff00ff)
+					])),
+				]);
+				menu.model = model;
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
@@ -28,8 +52,8 @@
 
 			protected function menu_itemClickHandler(event:MenuEvent):void
 			{
-				if(event.item.type == "parent") {
-					if(event.item.label == "gallery") {
+				if(currentState == "menustate") {
+					if(event.entry.label == "gallery") {
 						currentState = "gallerystate";
 						viewer.source = ["data/2.jpg",
 										"data/3.jpg",
@@ -47,7 +71,7 @@
 					}
 				} else if(currentState == "gallerystate") {
 					var x:Number = 0;
-					if(event.item.label == "sky") x = 1;
+					if(event.entry.label == "sky") x = 1;
 					catViewer.categories = config.categories.category[x].subcategory;
 					catViewer.height=Math.min(this.height - menu.height, catViewer.categories.length * 96);
 					catViewer.visible = true;

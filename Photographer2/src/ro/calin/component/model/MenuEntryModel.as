@@ -2,6 +2,12 @@ package ro.calin.component.model
 {
 	import mx.collections.ArrayList;
 
+	/**
+	 * The model for the menu component.
+	 * Besides the usual properties, it contains a
+	 * generic object to hold various data if needed 
+	 * and a list of subentries.
+	 * */
 	public class MenuEntryModel
 	{
 		public var label:String;

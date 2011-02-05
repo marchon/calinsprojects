@@ -17,12 +17,24 @@ package ro.calin.component
 
 	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
 	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
+	
+	/**
+	 * Component that represents a menu with potential submenus.
+	 * When a menu item is clicked, the corresponding submenu replaces
+	 * the current menu.
+	 * */
 	public class Menu extends SkinnableComponent
 	{
 		[SkinPart(required="false")]
+		/**
+		 * Image logo.
+		 * */
 		public var logo:Image;
 		
 		[SkinPart(required="true")]
+		/**
+		 * Groups togheter the menu buttons.
+		 * */
 		public var bar:DataGroup;
 		
 		[Bindable]
@@ -34,13 +46,24 @@ package ro.calin.component
 		[Bindable]
 		public var menuAlpha:Number = 0.5;
 		
+		/**
+		 * The model of this menu.
+		 * */
 		private var _model:MenuModel;
 		
+		/**
+		 * Source for the logo image.
+		 * */
 		private var _logoSource:String;
 		
+		/**
+		 * Stack used to keep track of the submenus,
+		 * so that we can return to previous submenu/menu.
+		 * */
 		private var _menuState:Array = [];
 		
 		public function Menu() {
+			//set the default skin class
 			setStyle("skinClass", MenuSkin);
 		}
 		
@@ -50,6 +73,7 @@ package ro.calin.component
 			
 			_model = value;
 			
+			//go to the first set of entries
 			if(bar) {
 				pushMenu(_model.entries);
 			}
@@ -65,6 +89,9 @@ package ro.calin.component
 			}			
 		}
 		
+		/**
+		 * Update the button bar and push this list in the stack.
+		 * */
 		private function pushMenu(entries:ArrayList):void {
 			if(entries) {
 				bar.dataProvider = entries;
@@ -73,6 +100,9 @@ package ro.calin.component
 			}
 		}
 		
+		/**
+		 * Get back to previous list of items.
+		 * */
 		private function popMenu():void {
 			//don't pop first entry
 			if(_menuState.length > 1) {
@@ -83,6 +113,10 @@ package ro.calin.component
 			}
 		}
 
+		/**
+		 * Called when the skin is applied.
+		 * Do initialization stuff for visual components and add event listeners.
+		 * */
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance); 
 			if (instance == logo) {
@@ -97,6 +131,9 @@ package ro.calin.component
 			}
 		}
 		
+		/**
+		 * Called when???
+		 * */
 		override protected function partRemoved(partName:String, instance: Object) : void {
 			super.partRemoved(partName, instance);
 			
@@ -108,11 +145,22 @@ package ro.calin.component
 			}
 		}
 		
+		/**
+		 * When logo is clicked, pop the current menu and dispatch an event.
+		 * 
+		 * TODO: what happens if no logo has been specified?
+		 * should have a default back button or smfn
+		 * */
 		private function logo_clickHandler(event:MouseEvent) : void {
 			popMenu();
 			dispatchEvent(new MenuEvent(MenuEvent.MENU_LOGO_CLICK));
 		}
 	
+		/**
+		 * Push the submenu for the clicked item.
+		 * The event is already a menu event dispatched in MenuButton component,
+		 * and it bubbles, so no need to dispatch again.
+		 * */
 		private function buttonBar_changeHandler(evt:MenuEvent) : void {
 			var selected:MenuEntryModel = evt.entry;
 			pushMenu(selected.entries);

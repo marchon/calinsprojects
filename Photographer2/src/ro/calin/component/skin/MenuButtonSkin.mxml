@@ -69,7 +69,8 @@
 			 textAlign="center"
 			 verticalAlign="middle"
 			 maxDisplayedLines="1"
-			 horizontalCenter="0" verticalCenter="1" fontSize="30" color="white"
+			 horizontalCenter="0" verticalCenter="1" fontSize="{hostComponent.entry.fontSize}" 
+			 color="{hostComponent.entry.fontColor}"
 			 left="10" right="10" top="2" bottom="2">
 	</s:Label>
     

@@ -8,14 +8,15 @@ package ro.calin.component
 	
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
-	import ro.calin.event.MenuEvent;
+	import ro.calin.component.skin.MenuSkin;
+	import ro.calin.component.event.MenuEvent;
 	
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.IndexChangeEvent;
 
-	[Event(name="itemClick", type="ro.calin.event.MenuEvent")]
-	[Event(name="logoClick", type="ro.calin.event.MenuEvent")]
+	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
+	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
 	public class Menu extends SkinnableComponent
 	{
 		[SkinPart(required="false")]
@@ -24,6 +25,15 @@ package ro.calin.component
 		[SkinPart(required="true")]
 		public var bar:DataGroup;
 		
+		[Bindable]
+		public var buttonWidth:Number = 200;
+		
+		[Bindable]
+		public var menuColor:Number = 0x000000;
+		
+		[Bindable]
+		public var menuAlpha:Number = 0.5;
+		
 		private var _model:MenuModel;
 		
 		private var _logoSource:String;
@@ -31,6 +41,7 @@ package ro.calin.component
 		private var _menuState:Array = [];
 		
 		public function Menu() {
+			setStyle("skinClass", MenuSkin);
 		}
 		
 		public function get model():MenuModel {return _model;}

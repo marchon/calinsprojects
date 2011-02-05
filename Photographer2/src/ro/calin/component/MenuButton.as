@@ -3,7 +3,7 @@ package ro.calin.component
 	import flash.events.MouseEvent;
 	
 	import ro.calin.component.model.MenuEntryModel;
-	import ro.calin.event.MenuEvent;
+	import ro.calin.component.event.MenuEvent;
 	
 	import spark.components.Button;
 	

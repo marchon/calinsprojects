@@ -12,9 +12,9 @@
 	name=bar, type=spark.components.ButtonBar, required=true
 	-->
 	
-	<s:Rect width="100%" height="50" alpha="0.5">
+	<s:Rect width="100%" height="100%" alpha="{hostComponent.menuAlpha}">
 		<s:fill>
-			<s:SolidColor color="black"/>
+			<s:SolidColor color="{hostComponent.menuAlpha}"/>
 		</s:fill>
 	</s:Rect>
 	<s:HGroup>
@@ -30,7 +30,7 @@
 							<![CDATA[
 								import mx.controls.Alert;
 								
-								import ro.calin.event.MenuEvent;
+								import ro.calin.component.event.MenuEvent;
 								
 								//hack to get rid of grey shade
 								override protected function get hovered():Boolean {
@@ -38,8 +38,9 @@
 								}
 							]]>
 						</fx:Script>
-						<component:MenuButton id="button" width="200" height="50" buttonMode="true"
-								entry="{data}" skinClass="ro.calin.component.skin.MenuButtonSkin">
+						<component:MenuButton id="button" width="{outerDocument.hostComponent.buttonWidth}" 
+											  height="{outerDocument.hostComponent.height}" buttonMode="true"
+											entry="{data}" skinClass="ro.calin.component.skin.MenuButtonSkin">
 						</component:MenuButton>
 					</s:ItemRenderer>
 				</fx:Component>

@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-
-    ADOBE SYSTEMS INCORPORATED
-    Copyright 2008 Adobe Systems Incorporated
-    All Rights Reserved.
-
-    NOTICE: Adobe permits you to use, modify, and distribute this file
-    in accordance with the terms of the license agreement accompanying it.
-
--->
-
-<!--- The default skin class for the Spark Button component.  
-
-       @see spark.components.Button
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
--->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
 			 xmlns:s="library://ns.adobe.com/flex/spark" 
              xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
@@ -28,9 +7,6 @@
     <!-- host component -->
     <fx:Metadata>
         <![CDATA[ 
-        /** 
-         * @copy spark.skins.spark.ApplicationSkin#hostComponent
-         */
         [HostComponent("ro.calin.component.MenuButton")]
         ]]>
     </fx:Metadata>
@@ -43,6 +19,7 @@
         <s:State name="disabled" />
     </s:states>
     
+	<!-- Transitions for the cool animations. -->
 	<s:transitions>
 		<s:Transition toState="over" autoReverse="true">
 			<s:Move target="{overFill}" duration="200"/>
@@ -52,12 +29,14 @@
 		</s:Transition>
 	</s:transitions>
 	
+	<!-- Layer 1: thin gray line to the right -->
 	<s:Rect right="0" width="0.5" top="0" bottom="0">
 		<s:fill>
 			<s:SolidColor color="gray" alpha="0.5"/>
 		</s:fill>
 	</s:Rect>
 	
+	<!-- Layer 2: colored rectagle for animation -->
 	<s:Rect id="overFill" y="{hostComponent.height}" y.over="0"  
 			width="100%" height="100%">
 		<s:fill>
@@ -65,13 +44,9 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:Label id="labelDisplay"
-			 textAlign="center"
-			 verticalAlign="middle"
-			 maxDisplayedLines="1"
+	<!-- Layer 3: The actuall label. -->
+	<s:Label id="labelDisplay" textAlign="center" verticalAlign="middle" maxDisplayedLines="1"
 			 horizontalCenter="0" verticalCenter="1" fontSize="{hostComponent.entry.fontSize}" 
-			 color="{hostComponent.entry.fontColor}"
-			 left="10" right="10" top="2" bottom="2">
-	</s:Label>
+			 color="{hostComponent.entry.fontColor}" left="10" right="10" top="2" bottom="2" />
     
 </s:SparkSkin>

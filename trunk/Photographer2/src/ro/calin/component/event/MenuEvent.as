@@ -5,6 +5,10 @@ package ro.calin.component.event
 	import ro.calin.component.model.MenuEntryModel;
 	
 	[Bindable]
+	/**
+	 * Event for the menu component.
+	 * Can hold a reference to a menu entry.
+	 * */
 	public class MenuEvent extends Event
 	{
 		public static const MENU_ITEM_CLICK:String = "itemClick";
@@ -12,7 +16,8 @@ package ro.calin.component.event
 		
 		public var entry:MenuEntryModel;
 		
-		public function MenuEvent(type:String, entry:MenuEntryModel=null, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function MenuEvent(type:String, entry:MenuEntryModel=null, 
+								  bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			this.entry = entry;

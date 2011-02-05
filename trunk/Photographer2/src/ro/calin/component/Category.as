@@ -4,7 +4,7 @@ package ro.calin.component
 	
 	import mx.controls.Image;
 	
-	import ro.calin.event.CategoryEvent;
+	import ro.calin.component.event.CategoryEvent;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	

@@ -12,7 +12,7 @@
 			import ro.calin.component.model.MenuEntryModel;
 			import ro.calin.component.model.MenuModel;
 			import ro.calin.component.skin.MenuSkin;
-			import ro.calin.event.MenuEvent;
+			import ro.calin.component.event.MenuEvent;
 			import ro.calin.utils.SWFProfiler;
 			
 			private var config:Object = null;
@@ -36,7 +36,7 @@
 					new MenuEntryModel("test", 0xff00ff, null, new ArrayList([
 						new MenuEntryModel("test1", 0xff00ff, null, new ArrayList([
 							new MenuEntryModel("test3", 0xff00ff),
-							new MenuEntryModel("test4", 0xff00ff)
+							new MenuEntryModel("test4", 0xff00ff, null, null, 0xff0000, 10)
 						])),
 						new MenuEntryModel("test2", 0xff00ff)
 					])),
@@ -123,11 +123,11 @@
 		</component:source>
 	</component:PictureViewer>
 	
-	<component:Menu id="menu" skinClass="ro.calin.component.skin.MenuSkin" 
+	<component:Menu id="menu"
 					logoSource="logo.jpg" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
-					width="100%" y.menustate="{this.height * .7}" 
+					width="100%" buttonWidth="200" y.menustate="{this.height * .7}" 
 					y.pagestate="0" y.gallerystate="{this.height - menu.height}"/>
 	
 	<component:CategoryViewer id="catViewer" skinClass="ro.calin.component.skin.CategoryViewerSkin" visible="false"

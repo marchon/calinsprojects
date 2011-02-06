@@ -1,48 +1,50 @@
 package ro.calin.component
 {
-	import ro.calin.component.event.CategoryEvent;
-	
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
 	
+	import ro.calin.component.event.CategoryEvent;
+	import ro.calin.component.model.CategoryViewerModel;
+	import ro.calin.component.skin.CategoryViewerSkin;
+	
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	
-	[SkinState("idle")]
-	[SkinState("sliding")]
 	[Event(name="categItemClick", type="event.CategoryEvent")]
 	public class CategoryViewer extends SkinnableComponent
 	{
 		[SkinPart(required="true")]
 		public var thumbnailStrip:DataGroup;
 		
-		private var _categories:ArrayCollection;
+		public var thumbnailWidth:Number = 100;
+		public var scale:Number = 1;
 		
-		public function set categories(value:ArrayCollection):void {
-			_categories = value;
+		private var _model:CategoryViewerModel;
+		
+		public function CategoryViewer() {
+			setStyle("skinClass", CategoryViewerSkin);
+		}
+		
+		public function set model(value:CategoryViewerModel):void {
+			_model = value;
 			
 			if(thumbnailStrip != null) {
-				thumbnailStrip.dataProvider = _categories;
+				thumbnailStrip.dataProvider = _model.subcategories;
+				thumbnailStrip.verticalScrollPosition = 0;
 			}
 		}
 		
-		public function get categories():ArrayCollection {
-			return _categories;
-		}
-		
-		private var _lastStageY:Number = -1;
-		
-		public function CategoryViewer()
-		{
+		public function get model():CategoryViewerModel {
+			return _model;
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void {
 			super.partAdded(partName, instance);
 			
 			if(instance == thumbnailStrip) {
-				if(_categories != null) {
-					thumbnailStrip.dataProvider = _categories;
+				if(_model != null) {
+					thumbnailStrip.dataProvider = _model.subcategories;
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
 				thumbnailStrip.clipAndEnableScrolling = true;
@@ -61,6 +63,7 @@ package ro.calin.component
 			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
 			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
 			
+			//magical voodoo math stuff
 			thumbnailStrip.verticalScrollPosition = fr * evt.stageY - fr * this.y;
 		}
 	}

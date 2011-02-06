@@ -4,12 +4,13 @@ package ro.calin.component
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	import mx.controls.Image;
 	
+	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.skin.MenuSkin;
-	import ro.calin.component.event.MenuEvent;
 	
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
@@ -92,7 +93,7 @@ package ro.calin.component
 		/**
 		 * Update the button bar and push this list in the stack.
 		 * */
-		private function pushMenu(entries:ArrayList):void {
+		private function pushMenu(entries:IList):void {
 			if(entries) {
 				bar.dataProvider = entries;
 				_menuState.push(entries);

@@ -5,31 +5,37 @@ package ro.calin.component
 	import mx.controls.Image;
 	
 	import ro.calin.component.event.CategoryEvent;
+	import ro.calin.component.model.SubcategoryModel;
+	import ro.calin.component.skin.SubcategorySkin;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	[SkinState("normal")]
 	[SkinState("hovered")]
-	public class Category extends SkinnableComponent
+	public class Subcategory extends SkinnableComponent
 	{
 		[SkinPart(required="true")]
 		public var image:Image;
 		
-		private var _categoryData:Object;
+		public var thumbnailWidth:Number = 100;
+		public var scale:Number = 1;
+		
+		private var _model:SubcategoryModel;
 		
 		private var _isHovered:Boolean = false;
 		
-		public function Category()
-		{
-			super();
+		public function Subcategory() {
+			setStyle("skinClass", SubcategorySkin);
 		}
 		
-		public function get categoryData():Object {return _categoryData;}
-		public function set categoryData(value:Object):void {
-			if(_categoryData == value) return;
+		public function get model():SubcategoryModel {return _model;}
+		public function set model(value:SubcategoryModel):void {
+			if(_model == value) return;
 			
-			_categoryData = value;
-			image.source = _categoryData.coverPic;
+			_model = value;
+			if(image) {
+				image.source = _model.pic;
+			}
 		}
 		
 		override protected function getCurrentSkinState() : String {
@@ -44,7 +50,10 @@ package ro.calin.component
 			super.partAdded(partName, instance); 
 			
 			if(instance == image) {
-				if(_categoryData) image.source == _categoryData.coverPic;
+				if(_model) {
+					image.source == _model.pic;	
+				}
+				
 				image.addEventListener(MouseEvent.ROLL_OVER, image_rollOver);
 				image.addEventListener(MouseEvent.ROLL_OUT, image_rollOut);
 				image.addEventListener(MouseEvent.CLICK, image_click);
@@ -72,7 +81,7 @@ package ro.calin.component
 		}
 		
 		private function image_click(evt:MouseEvent):void {
-			dispatchEvent(new CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, _categoryData, true));
+			dispatchEvent(new CategoryEvent(CategoryEvent.CATEG_ITEM_CLICK, _model, true));
 		}
 	}
 }

@@ -4,7 +4,7 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("ro.calin.component.Category")]
+		[HostComponent("ro.calin.component.Subcategory")]
 	</fx:Metadata>
 	
 	<!-- states -->
@@ -16,17 +16,22 @@
 	<s:transitions>
 		<s:Transition>
 			<s:Parallel>
-				<s:Scale target="{image}" duration="200"/>
+				<s:Scale targets="{[back, image]}" duration="200"/>
 				<s:Fade target="{image}" duration="200"/>
 			</s:Parallel>	
 		</s:Transition>
-		
 	</s:transitions>
 	
-	<s:Rect width="220" height="100%">
+	<s:Rect id="back" width="{hostComponent.thumbnailWidth}" 
+			height="100%" scaleX.hovered="{hostComponent.scale}" 
+			scaleY.hovered="{hostComponent.scale}">
 		<s:fill>
 			<s:SolidColor color="black"/>
 		</s:fill>
 	</s:Rect>
-	<mx:Image id="image" width="220" scaleX.hovered="1.2" scaleY.hovered="1.2" alpha="0.5" alpha.hovered="1.0"/>
+	
+	<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
+			  height="100%" scaleX.hovered="{hostComponent.scale}" 
+			  scaleY.hovered="{hostComponent.scale}" 
+			  alpha="0.3" alpha.hovered="1.0"/>
 </s:Skin>

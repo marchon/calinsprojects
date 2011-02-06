@@ -1,6 +1,6 @@
 package ro.calin.component.model
 {
-	import mx.collections.ArrayList;
+	import mx.collections.IList;
 
 	/**
 	 * The model for the menu component. 
@@ -8,7 +8,7 @@ package ro.calin.component.model
 	 * */
 	public class MenuModel
 	{
-		public var entries:ArrayList;
+		public var entries:IList;
 		
 		public function MenuModel()
 		{

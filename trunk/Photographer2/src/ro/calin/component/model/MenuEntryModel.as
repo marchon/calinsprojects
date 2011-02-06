@@ -1,6 +1,7 @@
 package ro.calin.component.model
 {
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
 
 	/**
 	 * The model for the menu component.
@@ -17,10 +18,10 @@ package ro.calin.component.model
 		
 		public var extra:Object;
 		
-		public var entries:ArrayList;
+		public var entries:IList;
 		
 		public function MenuEntryModel(label:String=null, color:uint=0, extra:Object=null, 
-									   entries:ArrayList=null, fontColor:uint=0xffffff, 
+									   entries:IList=null, fontColor:uint=0xffffff, 
 									   fontSize:Number=30)
 		{
 			this.label = label;

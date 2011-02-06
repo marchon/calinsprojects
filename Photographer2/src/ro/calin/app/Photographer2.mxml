@@ -9,10 +9,12 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.component.event.MenuEvent;
+			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.MenuEntryModel;
 			import ro.calin.component.model.MenuModel;
+			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.component.skin.MenuSkin;
-			import ro.calin.component.event.MenuEvent;
 			import ro.calin.utils.SWFProfiler;
 			
 			private var config:Object = null;
@@ -72,8 +74,27 @@
 				} else if(currentState == "gallerystate") {
 					var x:Number = 0;
 					if(event.entry.label == "sky") x = 1;
-					catViewer.categories = config.categories.category[x].subcategory;
-					catViewer.height=Math.min(this.height - menu.height, catViewer.categories.length * 96);
+					
+					//config.categories.category[x].subcategory;
+					
+					var model:CategoryViewerModel = new CategoryViewerModel();
+					
+					model.subcategories = new ArrayList();
+					var sm:SubcategoryModel = new SubcategoryModel();
+					sm.pic = "data/thumb/cat10.jpg";
+					model.subcategories.addItem(sm);
+					sm = new SubcategoryModel();
+					sm.pic = "data/thumb/cat4.jpg";
+					model.subcategories.addItem(sm);
+					sm = new SubcategoryModel();
+					sm.pic = "data/thumb/cat8.jpg";
+					model.subcategories.addItem(sm);
+					sm = new SubcategoryModel();
+					sm.pic = "data/thumb/cat9.jpg";
+					model.subcategories.addItem(sm);
+					
+					catViewer.model = model; 
+					catViewer.height=Math.min(this.height - menu.height, model.subcategories.length * 119);
 					catViewer.visible = true;
 					
 					catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
@@ -130,7 +151,7 @@
 					width="100%" buttonWidth="200" y.menustate="{this.height * .7}" 
 					y.pagestate="0" y.gallerystate="{this.height - menu.height}"/>
 	
-	<component:CategoryViewer id="catViewer" skinClass="ro.calin.component.skin.CategoryViewerSkin" visible="false"
-							  bottom="{menu.height}" x="100"/>
+	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
+							  thumbnailWidth="220" scale="1.2"/>
 	
 </s:Application>

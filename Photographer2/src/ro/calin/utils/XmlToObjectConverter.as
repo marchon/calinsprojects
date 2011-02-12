@@ -1,0 +1,80 @@
+package 
+{
+	import flash.utils.Dictionary;
+	import flash.utils.describeType;
+	import flash.utils.getQualifiedClassName;
+	
+	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+
+	public class XmlToObjectConverter
+	{
+		public function XmlToObjectConverter() {
+			throw new Error("Cannot instantiate.");
+		}
+		
+		public static function convert(xml:XML, map:Object):* {
+			var name:String = xml.name().toString();
+			var clazz:Class = map[name];
+			
+			if(clazz == null){
+				throw new Error("No mapping for [" + name + "].");
+			}
+			
+			
+			var obj:Object = new clazz();
+		
+			for each(var attr:XML in xml.attributes()) {
+				var key:String = attr.name().toString();
+				
+				if(!obj.hasOwnProperty(key)) {
+					throw new Error("Object [" + name + "] has no such property [" + key + "].");
+				}
+				
+				//apparently conversion to simple types works automatically
+				obj[key] = attr.toString();
+			}
+			
+			//assume all the children corespond to the same object
+			var children:XMLList = xml.children();
+
+			if(children.length() > 0) {
+				for each (var child:XML in children) {
+					key = child.name().toString();
+					
+					if(!obj.hasOwnProperty(key)) {
+						throw new Error("Object [" + name + "] has no such property [" + key + "].");
+					}
+					
+					var arrayChildren:XMLList = child.children();
+					
+					if(arrayChildren.length() == 0) {
+						//no array, just an object
+						obj[key] = convert(child, map);
+					} else {
+						//array of objects
+						var array:Array = new Array();
+						for each (var arrayChild:XML in arrayChildren) {
+							var childObj:Object = convert(arrayChild, map);
+							array.push(childObj);
+						}
+						
+						//types of lists
+						var type:String = describeType(obj).variable.(@name == key)[0].@type;
+						if(type == "Array") {
+							obj[key] = array;
+						} else if(type == "mx.collections::ArrayList") {
+							obj[key] = new ArrayList(array);
+						} else if(type == "mx.collections::ArrayCollection") {
+							obj[key] = new ArrayCollection(array);
+						} else {
+							throw new Error("Property [" + key + "] is not an array type.");
+						}
+					}
+				}
+			}
+				
+			return obj;
+		}
+	}
+}

@@ -9,9 +9,5 @@ package ro.calin.component.model
 	public class MenuModel
 	{
 		public var entries:IList;
-		
-		public function MenuModel()
-		{
-		}
 	}
 }

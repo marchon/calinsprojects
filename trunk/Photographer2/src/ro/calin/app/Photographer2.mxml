@@ -9,6 +9,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.app.model.AppModel;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.MenuEntryModel;
@@ -16,34 +17,21 @@
 			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.component.skin.MenuSkin;
 			import ro.calin.utils.SWFProfiler;
+			import ro.calin.utils.XmlToObjectConverter;
 			
-			private var config:Object = null;
+			private var model:AppModel = null;
+			private static var mappings:Object = {
+				config:AppModel,
+				menu:"menuModel",
+				menumodel:MenuModel,
+				entry:MenuEntryModel,
+				url:"extra"
+			};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
-				config = event.result.config;
-				//(data.color? parseInt(data.color, 16) : 0x00ff00) as uint
-				//menu.entries = config.menu.entry;
-				var model:MenuModel = new MenuModel();
-				model.entries = new ArrayList([
-					new MenuEntryModel("gallery", 0xff00ff, null, new ArrayList([
-						new MenuEntryModel("cars", 0x1200ff),
-						new MenuEntryModel("sky", 0x1200ff),
-						new MenuEntryModel("nude", 0x1200ff),
-						new MenuEntryModel("porn", 0x1200ff),
-					])),
-					new MenuEntryModel("info", 0x1200ff),
-					new MenuEntryModel("contact", 0x123456),
-					new MenuEntryModel("friends", 0xff0000),
-					new MenuEntryModel("test", 0xff00ff, null, new ArrayList([
-						new MenuEntryModel("test1", 0xff00ff, null, new ArrayList([
-							new MenuEntryModel("test3", 0xff00ff),
-							new MenuEntryModel("test4", 0xff00ff, null, null, 0xff0000, 10)
-						])),
-						new MenuEntryModel("test2", 0xff00ff)
-					])),
-				]);
-				menu.model = model;
+				model = XmlToObjectConverter.convert(XML(event.result), mappings);
+				menu.model = model.menuModel;
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
@@ -127,7 +115,7 @@
 	
 	<fx:Declarations>
 		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
-					   fault="configService_faultHandler(event)" />
+					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
 	</fx:Declarations>
 	<s:applicationComplete>
 		<![CDATA[

@@ -1,4 +1,4 @@
-package 
+package ro.calin.utils
 {
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
@@ -14,6 +14,11 @@ package
 		}
 		
 		public static function convert(xml:XML, map:Object):* {
+			//handle a simple text node
+			if(xml.nodeKind() == "text") {
+				return xml.toString();
+			}
+			
 			var name:String = xml.name().toString();
 			var clazz:Class = map[name];
 			
@@ -23,12 +28,14 @@ package
 			
 			
 			var obj:Object = new clazz();
-		
+			
 			for each(var attr:XML in xml.attributes()) {
 				var key:String = attr.name().toString();
 				
 				if(!obj.hasOwnProperty(key)) {
-					throw new Error("Object [" + name + "] has no such property [" + key + "].");
+					var key1:String = map[key];
+					if(key1 == null || !obj.hasOwnProperty(key = key1))
+						throw new Error("Object [" + name + "] has no such property [" + key + "].");
 				}
 				
 				//apparently conversion to simple types works automatically
@@ -37,20 +44,22 @@ package
 			
 			//assume all the children corespond to the same object
 			var children:XMLList = xml.children();
-
+			
 			if(children.length() > 0) {
 				for each (var child:XML in children) {
 					key = child.name().toString();
 					
 					if(!obj.hasOwnProperty(key)) {
-						throw new Error("Object [" + name + "] has no such property [" + key + "].");
+						key1 = map[key];
+						if(key1 == null || !obj.hasOwnProperty(key = key1))
+							throw new Error("Object [" + name + "] has no such property [" + key + "].");
 					}
 					
 					var arrayChildren:XMLList = child.children();
 					
-					if(arrayChildren.length() == 0) {
+					if(arrayChildren.length() == 1) {
 						//no array, just an object
-						obj[key] = convert(child, map);
+						obj[key] = convert(arrayChildren[0], map);
 					} else {
 						//array of objects
 						var array:Array = new Array();
@@ -63,7 +72,7 @@ package
 						var type:String = describeType(obj).variable.(@name == key)[0].@type;
 						if(type == "Array") {
 							obj[key] = array;
-						} else if(type == "mx.collections::ArrayList") {
+						} else if(type == "mx.collections::ArrayList"  || type == "mx.collections::IList") {
 							obj[key] = new ArrayList(array);
 						} else if(type == "mx.collections::ArrayCollection") {
 							obj[key] = new ArrayCollection(array);
@@ -73,7 +82,7 @@ package
 					}
 				}
 			}
-				
+			
 			return obj;
 		}
 	}

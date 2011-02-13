@@ -11,25 +11,13 @@ package ro.calin.component.model
 	 * */
 	public class MenuEntryModel
 	{
-		public var label:String;
-		public var color:uint;
-		public var fontColor:uint;
-		public var fontSize:Number;
+		public var label:String = "noname";
+		public var color:uint = 0x000000;
+		public var fontColor:uint = 0xffffff;
+		public var fontSize:Number = 30;
 		
-		public var extra:Object;
+		public var extra:Object = null;
 		
-		public var entries:IList;
-		
-		public function MenuEntryModel(label:String=null, color:uint=0, extra:Object=null, 
-									   entries:IList=null, fontColor:uint=0xffffff, 
-									   fontSize:Number=30)
-		{
-			this.label = label;
-			this.color = color;
-			this.fontColor = fontColor;
-			this.fontSize = fontSize;
-			this.extra = extra;
-			this.entries = entries;
-		}
+		public var entries:IList = null;
 	}
 }

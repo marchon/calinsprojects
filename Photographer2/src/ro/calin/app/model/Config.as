@@ -1,11 +1,13 @@
 package ro.calin.app.model
 {
+	import mx.collections.IList;
+	
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.MenuModel;
 
-	public class AppModel
+	public class Config
 	{
-		public var menuModel:MenuModel;
-		/*var categoryViewerModel:CategoryViewerModel;*/
+		public var menu:MenuModel;
+		public var categories:IList;
 	}
 }

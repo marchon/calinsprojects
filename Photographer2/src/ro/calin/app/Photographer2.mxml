@@ -9,7 +9,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import ro.calin.app.model.AppModel;
+			import ro.calin.app.model.Config;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.MenuEntryModel;
@@ -19,19 +19,30 @@
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
-			private var model:AppModel = null;
+			private var config:Config = null;
 			private static var mappings:Object = {
-				config:AppModel,
-				menu:"menuModel",
+				/**Object mapping*/
+				config:Config,
+				
 				menumodel:MenuModel,
 				entry:MenuEntryModel,
-				url:"extra"
+				
+				categorymodel: CategoryViewerModel,
+				subcategory: SubcategoryModel,
+				
+				/**Property mapping for attrs that do not match props*/
+				url:"extra",
+				
+				category: "categoryViewerModel",
+				catname: "extra"
 			};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
-				model = XmlToObjectConverter.convert(XML(event.result), mappings);
-				menu.model = model.menuModel;
+				config = XmlToObjectConverter.convert(XML(event.result), mappings);
+				menu.model = config.menu;
+				//hardcoded
+				catViewer.model = CategoryViewerModel(config.categories.getItemAt(0));
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
@@ -59,30 +70,8 @@
 					} else {
 						currentState = "pagestate";
 					}
-				} else if(currentState == "gallerystate") {
-					var x:Number = 0;
-					if(event.entry.label == "sky") x = 1;
-					
-					//config.categories.category[x].subcategory;
-					
-					var model:CategoryViewerModel = new CategoryViewerModel();
-					
-					model.subcategories = new ArrayList();
-					var sm:SubcategoryModel = new SubcategoryModel();
-					sm.pic = "data/thumb/cat10.jpg";
-					model.subcategories.addItem(sm);
-					sm = new SubcategoryModel();
-					sm.pic = "data/thumb/cat4.jpg";
-					model.subcategories.addItem(sm);
-					sm = new SubcategoryModel();
-					sm.pic = "data/thumb/cat8.jpg";
-					model.subcategories.addItem(sm);
-					sm = new SubcategoryModel();
-					sm.pic = "data/thumb/cat9.jpg";
-					model.subcategories.addItem(sm);
-					
-					catViewer.model = model; 
-					catViewer.height=Math.min(this.height - menu.height, model.subcategories.length * 119);
+				} else if(currentState == "gallerystate") {				
+					catViewer.height = Math.min(this.height - menu.height, catViewer.model.subcategories.length * 119);
 					catViewer.visible = true;
 					
 					catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{

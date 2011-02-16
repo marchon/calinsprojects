@@ -9,5 +9,7 @@ package ro.calin.component.model
 	public class CategoryViewerModel
 	{
 		public var subcategories:IList;
+		
+		public var extra:Object;
 	}
 }

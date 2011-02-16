@@ -1,0 +1,12 @@
+*make it work
+
+1. finish xml - model mappings
+	1.1 link menu with categories
+	1.2 link subcategory with list of pictures
+2. clean main mxml
+3. implement details view for subcategories
+4. implement ScaleCropBitmapProcessor from last talk with gandac
+5. refactor and comment all code
+6. pic transition with loading
+7. other details like about, friends, and so on...
+8. that's it for now :D

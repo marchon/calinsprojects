@@ -34,7 +34,7 @@ package ro.calin.component
 			
 			_model = value;
 			if(image) {
-				image.source = _model.pic;
+				image.source = _model.picUrl;
 			}
 		}
 		
@@ -51,7 +51,7 @@ package ro.calin.component
 			
 			if(instance == image) {
 				if(_model) {
-					image.source == _model.pic;	
+					image.source == _model.picUrl;	
 				}
 				
 				image.addEventListener(MouseEvent.ROLL_OVER, image_rollOver);

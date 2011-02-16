@@ -6,12 +6,10 @@ package ro.calin.component.model
 	 * */
 	public class SubcategoryModel
 	{
-		public var pic:String;
-		public var name:String;
-		public var description:String;
+		public var picUrl:String;
+		public var name:String = "noname";
+		public var description:String = "nodesc";
 		
-		public function SubcategoryModel()
-		{
-		}
+		public var extra:Object = null;
 	}
 }

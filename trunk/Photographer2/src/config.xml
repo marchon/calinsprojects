@@ -2,60 +2,54 @@
 
 <config>
 	<menu>
-		<entry type="parent" label="gallery" color="0xff00ff">
-			<subentry type="category" label="cars" />
-			<subentry type="category" label="sky" />
-			<subentry type="category" label="nude" />
-			<subentry type="category" label="animals" />
-			<subentry type="category" label="people" />
-		</entry>
-		<entry type="parent" label="info" color="0xff0000">
-			<subentry type="page" label="about">
-				<content>
-					<!-- taguri de formatare??? -->
-					Salut,
-					Ma numesc Marius Stoianov si voi fi gazda dumneavoastra in aceasta seara.
-				</content>
-			</subentry>
-			<subentry type="page" label="contact">
-				<content>
-					id de mess: cyklonb21
-				</content>
-			</subentry>
-			<subentry type="page" label="prieteni">
-				<content>
-					gigel costica
-				</content>
-			</subentry>
-		</entry>
-		<entry type="link" label="blog" url="http://prinochiimei.wordpress.com" color="0x0000ff"/>
+		<menumodel>
+			<entries>
+				<entry label="gallery" color="0xff00ff">
+					<entries>
+						<entry label="cars" color="0xff00ff"/>
+						<entry label="sky" color="0x123423"/>
+						<entry label="nude" color="0xff00ff"/>
+						<entry label="animals" color="0xfaaaaa"/>
+						<entry label="people" color="0xff00ff"/>
+					</entries>
+				</entry>
+				<entry label="info" color="0xff0000">
+					<entries>
+						<entry label="about">
+							<extra>
+								<!-- taguri de formatare??? -->
+								Salut,
+								Ma numesc Marius Stoianov si voi fi gazda dumneavoastra in aceasta seara.
+							</extra>
+						</entry>
+						<entry label="contact">
+							<extra>
+								id de mess: cyklonb21
+							</extra>
+						</entry>
+						<entry label="prieteni">
+							<extra>
+								gigel costica
+							</extra>
+						</entry>
+					</entries>
+				</entry>
+				<entry label="blog" url="http://prinochiimei.wordpress.com"/>
+			</entries>
+		</menumodel>
 	</menu>
 	
 	<categories>
-		<category label="cars" descriptions="my photos with cars">
-			<subcategory coverPic="data/thumb/1.jpg" descriptions="desc1" />
-			<subcategory coverPic="data/thumb/2.jpg" descriptions="desc2" />
-			<subcategory coverPic="data/thumb/3.jpg" descriptions="desc3" />
-			<subcategory coverPic="data/thumb/4.jpg" descriptions="desc4" />
-			<subcategory coverPic="data/thumb/5.jpg" descriptions="desc5" />
-			<subcategory coverPic="data/thumb/6.jpg" descriptions="desc4" />
-			<subcategory coverPic="data/thumb/7.jpg" descriptions="desc5" />
-			<subcategory coverPic="data/thumb/8.jpg" descriptions="desc1" />
-			<subcategory coverPic="data/thumb/9.jpg" descriptions="desc2" />
-			<subcategory coverPic="data/thumb/10.jpg" descriptions="desc3" />
-			<subcategory coverPic="data/thumb/11.jpg" descriptions="desc4" />
-			<subcategory coverPic="data/thumb/12.jpg" descriptions="desc5" />
-<!--			<subcategory label="nice cars" coverPic="thumb/1.jpg" descriptions="these are a bunch of nice cars">-->
-<!--				<pic name="a nice car" description="guess what?? this is a nice car" url="nice_car01.jpeg"/>-->
-<!--				<pic name="another nice car" description="guess what?? this is another nice car" url="nice_car02.jpeg"/>-->
-<!--			</subcategory>-->
-		</category>
-		
-		<category label="sky" descriptions="my photos with cars">
-			<subcategory coverPic="data/thumb/cat10.jpg" descriptions="desc1" />
-			<subcategory coverPic="data/thumb/cat4.jpg" descriptions="desc2" />
-			<subcategory coverPic="data/thumb/cat8.jpg" descriptions="desc3" />
-			<subcategory coverPic="data/thumb/cat9.jpg" descriptions="desc4" />
+		<category catname="art">
+			<categorymodel>
+				<subcategories>
+					<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" />
+					<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" />
+					<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" />
+					<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" />
+				</subcategories>
+			</categorymodel>
 		</category>
 	</categories>
+	
 </config>

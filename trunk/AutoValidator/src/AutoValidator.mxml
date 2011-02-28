@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import test.ValidableEntity;
+			[Bindable]
+			private var v:ValidableEntity = new ValidableEntity();
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout />
+	</s:layout>
+	<s:TextInput text="@{v.field1}" />
+	<s:Label color="red" text="{v.getError('field1')}" />
+	<s:TextInput text="@{v.field2}" />
+	<s:Label color="red" text="{v.getError('field2')}" />
+	<s:TextInput text="@{v.field3}" />
+	<s:Label color="red" text="{v.getError('field3')}" />
+</s:Application>

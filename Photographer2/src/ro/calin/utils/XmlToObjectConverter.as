@@ -57,7 +57,11 @@ package ro.calin.utils
 					
 					var arrayChildren:XMLList = child.children();
 					
-					if(arrayChildren.length() == 1) {
+					var type:String = describeType(obj).variable.(@name == key)[0].@type;
+					
+					if(arrayChildren.length() == 1 && type != "Array"
+						&& type != "mx.collections::IList" && type != "mx.collections::ArrayList" &&
+						type != "mx.collections::ArrayCollection") {
 						//no array, just an object
 						obj[key] = convert(arrayChildren[0], map);
 					} else {
@@ -69,7 +73,6 @@ package ro.calin.utils
 						}
 						
 						//types of lists
-						var type:String = describeType(obj).variable.(@name == key)[0].@type;
 						if(type == "Array") {
 							obj[key] = array;
 						} else if(type == "mx.collections::ArrayList"  || type == "mx.collections::IList") {

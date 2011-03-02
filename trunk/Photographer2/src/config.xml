@@ -41,14 +41,12 @@
 	
 	<categories>
 		<category catname="art">
-			<categorymodel>
-				<subcategories>
-					<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" />
-					<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" />
-					<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" />
-					<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" />
-				</subcategories>
-			</categorymodel>
+			<subcategories>
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" />
+				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" />
+				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" />
+				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" />
+			</subcategories>
 		</category>
 	</categories>
 	

@@ -27,13 +27,12 @@
 				menumodel:MenuModel,
 				entry:MenuEntryModel,
 				
-				categorymodel: CategoryViewerModel,
+				category: CategoryViewerModel,
 				subcategory: SubcategoryModel,
 				
 				/**Property mapping for attrs that do not match props*/
 				url:"extra",
 				
-				category: "categoryViewerModel",
 				catname: "extra"
 			};
 

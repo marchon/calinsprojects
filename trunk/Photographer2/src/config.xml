@@ -6,11 +6,11 @@
 			<entries>
 				<entry label="gallery" color="0xff00ff">
 					<entries>
-						<entry label="cars" color="0xff00ff"/>
-						<entry label="sky" color="0x123423"/>
-						<entry label="nude" color="0xff00ff"/>
-						<entry label="animals" color="0xfaaaaa"/>
-						<entry label="people" color="0xff00ff"/>
+						<entry label="cars" color="0xff00ff" catname="art"/>
+						<entry label="sky" color="0x123423" catname="art"/>
+						<entry label="nude" color="0xff00ff" catname="art"/>
+						<entry label="animals" color="0xfaaaaa" catname="commercial"/>
+						<entry label="people" color="0xff00ff" catname="commercial"/>
 					</entries>
 				</entry>
 				<entry label="info" color="0xff0000">
@@ -46,6 +46,15 @@
 				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" />
 				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" />
 				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" />
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" />
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" />
+			</subcategories>
+		</category>
+		
+		<category catname="commercial">
+			<subcategories>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" />
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" />
 			</subcategories>
 		</category>
 	</categories>

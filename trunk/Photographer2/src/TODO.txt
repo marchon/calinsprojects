@@ -1,5 +1,5 @@
 1. finish xml - model mappings
-	1.1 link menu with categories
+	1.1 fix error for CatViewer when change from small list to big list (nullp at CategoryViewer#34)
 	1.2 link subcategory with list of pictures
 2. clean main mxml
 3. implement details view for subcategories

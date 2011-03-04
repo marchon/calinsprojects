@@ -1,6 +1,6 @@
 1. finish xml - model mappings
-	1.1 fix error for CatViewer when change from small list to big list (nullp at CategoryViewer#34)
-	1.2 link subcategory with list of pictures
+	1.1 link subcategory with list of pictures
+	1.2 make subcat list apear where it should(menu item cliked)
 2. clean main mxml
 3. implement details view for subcategories
 4. implement ScaleCropBitmapProcessor from last talk with gandac

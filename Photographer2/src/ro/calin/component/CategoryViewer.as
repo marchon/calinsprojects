@@ -31,7 +31,6 @@ package ro.calin.component
 			
 			if(thumbnailStrip != null) {
 				thumbnailStrip.dataProvider = _model.subcategories;
-				thumbnailStrip.verticalScrollPosition = 0;
 			}
 		}
 		
@@ -45,6 +44,7 @@ package ro.calin.component
 			if(instance == thumbnailStrip) {
 				if(_model != null) {
 					thumbnailStrip.dataProvider = _model.subcategories;
+					thumbnailStrip.verticalScrollPosition = 0;
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
 				thumbnailStrip.clipAndEnableScrolling = true;

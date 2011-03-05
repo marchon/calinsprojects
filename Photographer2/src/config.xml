@@ -6,11 +6,11 @@
 			<entries>
 				<entry label="gallery" color="0xff00ff">
 					<entries>
-						<entry label="cars" color="0xff00ff" catname="art"/>
-						<entry label="sky" color="0x123423" catname="art"/>
-						<entry label="nude" color="0xff00ff" catname="art"/>
-						<entry label="animals" color="0xfaaaaa" catname="commercial"/>
-						<entry label="people" color="0xff00ff" catname="commercial"/>
+						<entry label="cars" color="0xff00ff" key="art"/>
+						<entry label="sky" color="0x123423" key="art"/>
+						<entry label="nude" color="0xff00ff" key="art"/>
+						<entry label="animals" color="0xfaaaaa" key="commercial"/>
+						<entry label="people" color="0xff00ff" key="commercial"/>
 					</entries>
 				</entry>
 				<entry label="info" color="0xff0000">
@@ -40,9 +40,9 @@
 	</menu>
 	
 	<categories>
-		<category catname="art">
+		<category key="art">
 			<subcategories>
-				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" />
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" key="artset1"/>
 				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" />
 				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" />
 				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" />
@@ -51,12 +51,32 @@
 			</subcategories>
 		</category>
 		
-		<category catname="commercial">
+		<category key="commercial">
 			<subcategories>
 				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" />
 				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" />
 			</subcategories>
 		</category>
 	</categories>
+	
+	<defaultpictureset key="selection" />
+	
+	<picturesets>
+		<pictureset key="selection">
+			<pictures>
+				<picture url="data/1.jpg" />
+				<picture url="data/2.jpg" />
+				<picture url="data/3.jpg" />
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="artset1">
+			<pictures>
+				<picture url="data/pic1.jpg" />
+				<picture url="data/pic2.jpg" />
+				<picture url="data/pic2.jpg" />
+			</pictures>
+		</pictureset>
+	</picturesets>
 	
 </config>

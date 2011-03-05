@@ -5,6 +5,8 @@ package ro.calin.component
 	import mx.controls.Image;
 	import mx.core.FlexGlobals;
 	
+	import ro.calin.component.model.PictureViewerModel;
+	import ro.calin.component.skin.PictureViewerSkin;
 	import ro.calin.utils.BitmapProcessor;
 	import ro.calin.utils.CacheableImage;
 	import ro.calin.utils.ScaleCropBitmapProcessor;
@@ -36,7 +38,7 @@ package ro.calin.component
 		private var _currentPicture:Image;
 		private var _outsidePicture:Image;
 		
-		private var _source:Array;
+		private var _model:PictureViewerModel;
 		private var _current:Number = 0;
 		
 		private var _moveAnim:Move;
@@ -46,24 +48,28 @@ package ro.calin.component
 		public function PictureViewer()
 		{
 			super();
+			
+			//set the default skin class
+			setStyle("skinClass", PictureViewerSkin);
+			
 			_moveAnim = new Move();
 			
 			var app:Application = (FlexGlobals.topLevelApplication as Application);
 			_bitmapProcessor = new ScaleCropBitmapProcessor(app.width, app.height);
 		}
 		
-		public function get source():Array {return _source;}
-		public function set source(value:Array):void {
+		public function get model():PictureViewerModel {return _model;}
+		public function set model(value:PictureViewerModel):void {
 			//another anim should not start if one is currently in progres, maybe queue just one..
-			_source = value;
+			_model = value;
 			
 			_current = 0;
 			if(_currentPicture) {
-				_outsidePicture.source = _source[_current];
+				_outsidePicture.source = _model.pictures[_current].url;
 				slideUp();
 			}
 			
-			if(_source.length > 1) hasLeftRight = true;
+			if(_model.pictures.length > 1) hasLeftRight = true;
 			else hasLeftRight = false;
 		}
 		
@@ -72,8 +78,8 @@ package ro.calin.component
 			
 			if(instance == picture1) {
 				picture1.bitmapProcessor = _bitmapProcessor;
-				if(_source) {
-					picture1.source = _source[_current];
+				if(_model) {
+					picture1.source = _model.pictures[_current].url;
 				}
 				_currentPicture = picture1;
 			}
@@ -107,19 +113,19 @@ package ro.calin.component
 		private function leftButton_clickHandler(event:MouseEvent) : void {
 			_current--;
 			if(_current == -1) {
-				_current = _source.length - 1;
+				_current = _model.pictures.length - 1;
 			}
 			
-			_outsidePicture.source = _source[_current];
+			_outsidePicture.source = _model.pictures[_current].url;
 			slideLeft();
 		}
 		
 		private function rightButton_clickHandler(event:MouseEvent) : void {
 			_current++;
-			if(_current == _source.length) {
+			if(_current == _model.pictures.length) {
 				_current = 0;
 			}
-			_outsidePicture.source = _source[_current];
+			_outsidePicture.source = _model.pictures[_current].url;
 			slideRight();
 		}
 		

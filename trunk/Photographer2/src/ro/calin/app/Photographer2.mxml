@@ -14,6 +14,8 @@
 			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.MenuEntryModel;
 			import ro.calin.component.model.MenuModel;
+			import ro.calin.component.model.PictureModel;
+			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.component.skin.MenuSkin;
 			import ro.calin.utils.SWFProfiler;
@@ -21,7 +23,7 @@
 			
 			private var config:Config = null;
 			private static var mappings:Object = {
-				/**Object mapping*/
+				/*Object mapping*/
 				config:Config,
 				
 				menumodel:MenuModel,
@@ -30,16 +32,19 @@
 				category: CategoryViewerModel,
 				subcategory: SubcategoryModel,
 				
-				/**Property mapping for attrs that do not match props*/
-				url: "extra",
+				pictureset: PictureViewerModel,
+				picture: PictureModel,
 				
-				catname: "extra"
+				/*Property mapping for attrs that do not match props*/
+				url: "extra",
+				key: "extra"
 			};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
 				config = XmlToObjectConverter.convert(XML(event.result), mappings);
 				menu.model = config.menu;
+				viewer.model = config.picturesets.getItemAt(0) as PictureViewerModel;
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
@@ -88,7 +93,6 @@
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
 				currentState = "menustate";
-				viewer.source = ["data/back2.jpg"];
 			}
 
 		]]>
@@ -117,22 +121,15 @@
 		]]>
 	</s:applicationComplete>
 	
-	<component:PictureViewer id="viewer" skinClass="ro.calin.component.skin.PictureViewerSkin" width="100%" height="100%">
-		<component:source>
-			<fx:Array>
-				<fx:String>data/back2.jpg</fx:String>
-			</fx:Array>
-		</component:source>
-	</component:PictureViewer>
+	<component:PictureViewer id="viewer" width="100%" height="100%" />
 	
-	<component:Menu id="menu"
-					logoSource="logo.jpg" 
+	<component:Menu id="menu" logoSource="logo.jpg" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
 					width="100%" buttonWidth="200" y.menustate="{this.height * .7}" 
-					y.pagestate="0" y.gallerystate="{this.height - menu.height}"/>
+					y.pagestate="0" y.gallerystate="{this.height - menu.height}" />
 	
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
-							  thumbnailWidth="220" scale="1.2"/>
+							  thumbnailWidth="220" scale="1.2" />
 	
 </s:Application>

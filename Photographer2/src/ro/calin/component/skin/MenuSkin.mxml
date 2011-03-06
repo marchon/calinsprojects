@@ -45,7 +45,7 @@
 						<!-- Contains only a MenuButton component. -->
 						<component:MenuButton id="button" width="{outerDocument.hostComponent.buttonWidth}" 
 											  height="{outerDocument.hostComponent.height}" buttonMode="true"
-											  entry="{data}" />
+											  entry="{data}" buttonIndex="{itemIndex}"/>
 					</s:ItemRenderer>
 				</fx:Component>
 			</s:itemRenderer>

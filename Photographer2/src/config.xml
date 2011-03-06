@@ -8,7 +8,6 @@
 					<entries>
 						<entry label="cars" color="0xff00ff" key="art"/>
 						<entry label="sky" color="0x123423" key="art"/>
-						<entry label="nude" color="0xff00ff" key="art"/>
 						<entry label="animals" color="0xfaaaaa" key="commercial"/>
 						<entry label="people" color="0xff00ff" key="commercial"/>
 					</entries>
@@ -48,6 +47,12 @@
 				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" key="set1"/>
 				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" key="set3"/>
 				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" key="set2"/>
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb7" description="thumb1" key="set1"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="thumb8" description="thumb2" key="set2"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="thumb9" description="thumb3" key="set3"/>
+				<subcategory picUrl="data/thumb/4.jpg" name="thumb10" description="thumb4" key="set1"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb11" description="thumb5" key="set3"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" key="set2"/>
 			</subcategories>
 		</category>
 		
@@ -58,8 +63,6 @@
 			</subcategories>
 		</category>
 	</categories>
-	
-<!--	<defaultpictureset key="selection" />-->
 	
 	<picturesets>
 		<pictureset key="selection">

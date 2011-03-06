@@ -1,11 +1,8 @@
-1. finish xml - model mappings
-	1.1 defaultset for random pics(see comment in config.xml)
-	1.2 make subcat list apear where it should(menu item cliked)
 2. clean main mxml
-3. implement ScaleCropBitmapProcessor from last talk with gandac
-4. implement details view for subcategories
-5. refactor and comment all code
-6. pic transition with loading
-7. other details like about, friends, and so on...
-8. rethink/refactor xml convertor
+3. rethink/refactor xml convertor (get type from prop type, not map)
+4. implement ScaleCropBitmapProcessor from last talk with gandac
+5. implement details view for subcategories
+6. refactor and comment all code
+7. pic transition with loading
+8. other details like about, friends, and so on...
 9. left/right buttons

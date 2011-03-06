@@ -10,6 +10,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import ro.calin.app.model.Config;
+			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.MenuEntryModel;
@@ -95,6 +96,20 @@
 				currentState = "menustate";
 			}
 
+
+			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
+			{
+				var picset:String = event.subcategory.extra as String;
+				//TODO: optimize this lookup with a hashmap or smfn
+				for (var i:int = 0; i < config.picturesets.length; i++) {
+					var model:PictureViewerModel = config.picturesets.getItemAt(i) as PictureViewerModel;
+					if(model.extra as String == picset) {
+						viewer.model = model;
+						break;
+					}
+				}
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -130,6 +145,6 @@
 					y.pagestate="0" y.gallerystate="{this.height - menu.height}" />
 	
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
-							  thumbnailWidth="220" scale="1.2" />
+							  thumbnailWidth="220" scale="1.2" categItemClick="catViewer_categItemClickHandler(event)"/>
 	
 </s:Application>

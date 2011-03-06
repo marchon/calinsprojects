@@ -11,7 +11,8 @@ package ro.calin.component.event
 		
 		public var subcategory:SubcategoryModel;
 		
-		public function CategoryEvent(type:String, subcategory:SubcategoryModel=null, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function CategoryEvent(type:String, subcategory:SubcategoryModel=null, 
+									  bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			this.subcategory = subcategory;

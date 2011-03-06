@@ -11,7 +11,7 @@ package ro.calin.component
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	
-	[Event(name="categItemClick", type="event.CategoryEvent")]
+	[Event(name="categItemClick", type="ro.calin.component.event.CategoryEvent")]
 	public class CategoryViewer extends SkinnableComponent
 	{
 		[SkinPart(required="true")]

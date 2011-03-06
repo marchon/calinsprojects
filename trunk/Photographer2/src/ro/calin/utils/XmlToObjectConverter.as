@@ -13,6 +13,8 @@ package ro.calin.utils
 			throw new Error("Cannot instantiate.");
 		}
 		
+		
+		//TODO: get the type from object property type, not the map
 		public static function convert(xml:XML, map:Object):* {
 			//handle a simple text node
 			if(xml.nodeKind() == "text") {
@@ -33,8 +35,7 @@ package ro.calin.utils
 				var key:String = attr.name().toString();
 				
 				if(!obj.hasOwnProperty(key)) {
-					var key1:String = map[key];
-					if(key1 == null || !obj.hasOwnProperty(key = key1))
+					if(map[key] == null || !obj.hasOwnProperty(key = map[key]))
 						throw new Error("Object [" + name + "] has no such property [" + key + "].");
 				}
 				
@@ -50,8 +51,7 @@ package ro.calin.utils
 					key = child.name().toString();
 					
 					if(!obj.hasOwnProperty(key)) {
-						key1 = map[key];
-						if(key1 == null || !obj.hasOwnProperty(key = key1))
+						if(map[key] == null || !obj.hasOwnProperty(key = map[key]))
 							throw new Error("Object [" + name + "] has no such property [" + key + "].");
 					}
 					

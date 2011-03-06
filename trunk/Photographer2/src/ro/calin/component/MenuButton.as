@@ -19,6 +19,8 @@ package ro.calin.component
 		 * */
 		private var _entry:MenuEntryModel;
 		
+		public var buttonIndex:int; 
+		
 		[Bindable]
 		public function get entry():MenuEntryModel {return _entry;}
 		public function set entry(value:MenuEntryModel):void {
@@ -38,7 +40,7 @@ package ro.calin.component
 			
 			//when clicked, trigger a menu event with this entry
 			addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, _entry, true));
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, _entry, buttonIndex, true));
 			});
 		}
 	}

@@ -10,7 +10,5 @@ package ro.calin.app.model
 		public var menu:MenuModel;
 		public var categories:IList /*of CategoryViewerModel*/;
 		public var picturesets:IList /*of PictureViewerModel*/; 
-		
-		public var defaultpictureset:Object = {key: ""};
 	}
 }

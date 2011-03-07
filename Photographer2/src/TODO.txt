@@ -1,8 +1,8 @@
-2. clean main mxml
-3. rethink/refactor xml convertor (get type from prop type, not map)
-4. implement ScaleCropBitmapProcessor from last talk with gandac
-5. implement details view for subcategories
-6. refactor and comment all code
-7. pic transition with loading
-8. other details like about, friends, and so on...
-9. left/right buttons
+1. rethink/refactor xml convertor (get type from prop type, not map)
+	1.1. finish new algorithm(add metadata to lists) + test(probably won't work, have to provide classes)
+2. implement ScaleCropBitmapProcessor from last talk with gandac
+3. implement details view for subcategories
+4. refactor and comment all code
+5. pic transition with loading
+6. other details like about, friends, and so on...
+7. left/right buttons

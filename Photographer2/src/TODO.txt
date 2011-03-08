@@ -1,5 +1,4 @@
-1. rethink/refactor xml convertor (get type from prop type, not map)
-	1.1. finish new algorithm(add metadata to lists) + test(probably won't work, have to provide classes)
+1. use new xml convertor
 2. implement ScaleCropBitmapProcessor from last talk with gandac
 3. implement details view for subcategories
 4. refactor and comment all code

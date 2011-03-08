@@ -7,6 +7,7 @@ package ro.calin.utils
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
+	import mx.utils.ObjectUtil;
 
 	public class XmlToObjectConverter
 	{
@@ -90,7 +91,7 @@ package ro.calin.utils
 			return obj;
 		}
 		
-		private static function convertToObject(node:XML, object:Object):void {
+		public static function convertToObject(node:XML, object:Object):void {
 			
 			//1. for each attribute, set the corresponding property
 			for each(var attr:XML in node.attributes()) {
@@ -121,8 +122,15 @@ package ro.calin.utils
 				
 				if(type == "Array" || type == "mx.collections::ArrayList"  || 
 				   type == "mx.collections::IList" || type == "mx.collections::ArrayCollection") {
-					//TODO:get it from metadata
-					var elemType:Class = Object; 
+
+					var classInfo:Object = ObjectUtil.getClassInfo(object);
+					var elemType:* = null;
+					if((elemType = (classInfo["metadata"][key]["Listof"]["type"] as String)) == null) {
+						throw new Error("You must provide element type for property [" + key + "].");
+					}
+					
+					elemType = getDefinitionByName(elemType) as Class;
+					
 					var elements:Array = [];
 					
 					for each (var nephew:XML in child.children()) {
@@ -139,9 +147,9 @@ package ro.calin.utils
 						object[key] = new ArrayCollection(elements);
 					}
 				} else {
-					//TODO: probably won't work cuz we need to import
-					//see if 'package.path::ClassName' works
-					object[key] = new getDefinitionByName(type);
+					//TODO: contrary to popular belief, this works, see if it breaks in other cases
+					var clazz:Class = getDefinitionByName(type) as Class;
+					object[key] = new clazz();
 					convertToObject(child, object[key]);
 				}
 			}

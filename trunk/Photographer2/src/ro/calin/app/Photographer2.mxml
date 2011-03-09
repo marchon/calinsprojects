@@ -4,7 +4,6 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -13,39 +12,16 @@
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.CategoryViewerModel;
-			import ro.calin.component.model.MenuEntryModel;
-			import ro.calin.component.model.MenuModel;
-			import ro.calin.component.model.PictureModel;
 			import ro.calin.component.model.PictureViewerModel;
-			import ro.calin.component.model.SubcategoryModel;
-			import ro.calin.component.skin.MenuSkin;
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
 			private var config:Config = null;
-			private static var mappings:Object = {
-				/*Object mapping*/
-				config:Config,
-				
-				menumodel:MenuModel,
-				entry:MenuEntryModel,
-				
-				category: CategoryViewerModel,
-				subcategory: SubcategoryModel,
-				
-				pictureset: PictureViewerModel,
-				picture: PictureModel,
-				
-				dummy: Object,
-				
-				/*Property mapping for attrs that do not match props*/
-				url: "extra",
-				key: "extra"
-			};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
-				config = XmlToObjectConverter.convert(XML(event.result), mappings);
+				config = new Config();
+				XmlToObjectConverter.convertToObject(XML(event.result), config);
 				menu.model = config.menu;
 				setPictureList("selection");
 			}

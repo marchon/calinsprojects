@@ -2,70 +2,67 @@
 
 <config>
 	<menu>
-		<menumodel>
-			<entries>
-				<entry label="gallery" color="0xff00ff">
-					<entries>
-						<entry label="cars" color="0xff00ff" key="art"/>
-						<entry label="sky" color="0x123423" key="art"/>
-						<entry label="animals" color="0xfaaaaa" key="commercial"/>
-						<entry label="people" color="0xff00ff" key="commercial"/>
-					</entries>
-				</entry>
-				<entry label="info" color="0xff0000">
-					<entries>
-						<entry label="about">
-							<extra>
-								<!-- taguri de formatare??? -->
-								Salut,
-								Ma numesc Marius Stoianov si voi fi gazda dumneavoastra in aceasta seara.
-							</extra>
-						</entry>
-						<entry label="contact">
-							<extra>
-								id de mess: cyklonb21
-							</extra>
-						</entry>
-						<entry label="prieteni">
-							<extra>
-								gigel costica
-							</extra>
-						</entry>
-					</entries>
-				</entry>
-				<entry label="blog" url="http://prinochiimei.wordpress.com"/>
-			</entries>
-		</menumodel>
+		<entries>
+			<entry label="gallery" color="0xff00ff">
+				<entries>
+					<entry label="cars" color="0xff00ff" extra="art"/>
+					<entry label="sky" color="0x123423" extra="art"/>
+					<entry label="animals" color="0xfaaaaa" extra="commercial"/>
+					<entry label="people" color="0xff00ff" extra="commercial"/>
+				</entries>
+			</entry>
+			<entry label="info" color="0xff0000">
+				<entries>
+					<entry label="about">
+<!--						<extra>-->
+<!--							Salut,-->
+<!--							Ma numesc Marius Stoianov si voi fi gazda dumneavoastra in aceasta seara.-->
+<!--						</extra>-->
+					</entry>
+					<entry label="contact">
+<!--						<extra>-->
+<!--							id de mess: cyklonb21-->
+<!--						</extra>-->
+					</entry>
+					<entry label="prieteni">
+<!--						<extra>-->
+<!--							gigel costica-->
+<!--						</extra>-->
+					</entry>
+				</entries>
+			</entry>
+			<entry label="blog" extra="http://prinochiimei.wordpress.com" />
+		</entries>
 	</menu>
 	
 	<categories>
-		<category key="art">
+		<category extra="art">
 			<subcategories>
-				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" key="set1"/>
-				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" key="set2"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" key="set3"/>
-				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" key="set1"/>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" key="set3"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" key="set2"/>
-				<subcategory picUrl="data/thumb/1.jpg" name="thumb7" description="thumb1" key="set1"/>
-				<subcategory picUrl="data/thumb/2.jpg" name="thumb8" description="thumb2" key="set2"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="thumb9" description="thumb3" key="set3"/>
-				<subcategory picUrl="data/thumb/4.jpg" name="thumb10" description="thumb4" key="set1"/>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb11" description="thumb5" key="set3"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" key="set2"/>
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" extra="set1"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" extra="set2"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" extra="set3"/>
+				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" extra="set1"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="set3"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="set2"/>
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb7" description="thumb1" extra="set1"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="thumb8" description="thumb2" extra="set2"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="thumb9" description="thumb3" extra="set3"/>
+				<subcategory picUrl="data/thumb/4.jpg" name="thumb10" description="thumb4" extra="set1"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb11" description="thumb5" extra="set3"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" extra="set2"/>
 			</subcategories>
 		</category>
 		
-		<category key="commercial">
+		<category extra="commercial">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" key="set4"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" key="set5"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="set4"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="set5"/>
 			</subcategories>
 		</category>
 	</categories>
 	
 	<picturesets>
-		<pictureset key="selection">
+		<pictureset extra="selection">
 			<pictures>
 				<picture url="data/1.jpg" />
 				<picture url="data/2.jpg" />
@@ -73,7 +70,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset key="set1">
+		<pictureset extra="set1">
 			<pictures>
 				<picture url="data/1 (1).jpg" />
 				<picture url="data/1 (2).jpg" />
@@ -83,7 +80,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset key="set2">
+		<pictureset extra="set2">
 			<pictures>
 				<picture url="data/1 (6).jpg" />
 				<picture url="data/1 (7).jpg" />
@@ -93,7 +90,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset key="set3">
+		<pictureset extra="set3">
 			<pictures>
 				<picture url="data/1 (11).jpg" />
 				<picture url="data/1 (12).jpg" />
@@ -103,7 +100,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset key="set4">
+		<pictureset extra="set4">
 			<pictures>
 				<picture url="data/1 (16).jpg" />
 				<picture url="data/1 (17).jpg" />
@@ -111,7 +108,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset key="set5">
+		<pictureset extra="set5">
 			<pictures>
 				<picture url="data/1 (19).jpg" />
 				<picture url="data/1 (20).jpg" />

@@ -5,6 +5,7 @@ package ro.calin.component
 	import mx.controls.Image;
 	import mx.core.FlexGlobals;
 	
+	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.skin.PictureViewerSkin;
 	import ro.calin.utils.BitmapProcessor;
@@ -65,7 +66,7 @@ package ro.calin.component
 			
 			_current = 0;
 			if(_currentPicture) {
-				_outsidePicture.source = _model.pictures[_current].url;
+				_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 				slideUp();
 			}
 			
@@ -79,7 +80,7 @@ package ro.calin.component
 			if(instance == picture1) {
 				picture1.bitmapProcessor = _bitmapProcessor;
 				if(_model) {
-					picture1.source = _model.pictures[_current].url;
+					picture1.source = PictureModel(_model.pictures[_current]).url;
 				}
 				_currentPicture = picture1;
 			}
@@ -116,7 +117,7 @@ package ro.calin.component
 				_current = _model.pictures.length - 1;
 			}
 			
-			_outsidePicture.source = _model.pictures[_current].url;
+			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 			slideLeft();
 		}
 		
@@ -125,7 +126,7 @@ package ro.calin.component
 			if(_current == _model.pictures.length) {
 				_current = 0;
 			}
-			_outsidePicture.source = _model.pictures[_current].url;
+			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 			slideRight();
 		}
 		

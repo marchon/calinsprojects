@@ -8,6 +8,7 @@ package ro.calin.component.model
 	 * */
 	public class MenuModel
 	{
+		[Listof(type="ro.calin.component.model.MenuEntryModel")]
 		public var entries:IList;
 		public var extra:Object;
 	}

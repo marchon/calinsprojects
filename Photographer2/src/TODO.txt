@@ -1,4 +1,4 @@
-1. use new xml convertor
+1. xml->object: implement maps for nodes with key attribute(should specify in metadata it should be a map)
 2. implement ScaleCropBitmapProcessor from last talk with gandac
 3. implement details view for subcategories
 4. refactor and comment all code

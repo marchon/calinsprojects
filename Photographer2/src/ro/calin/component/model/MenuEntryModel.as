@@ -18,6 +18,7 @@ package ro.calin.component.model
 		
 		public var extra:Object = null;
 		
+		[Listof(type="ro.calin.component.model.MenuEntryModel")]
 		public var entries:IList = null;
 	}
 }

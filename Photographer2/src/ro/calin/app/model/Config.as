@@ -8,7 +8,11 @@ package ro.calin.app.model
 	public class Config
 	{
 		public var menu:MenuModel;
-		public var categories:IList /*of CategoryViewerModel*/;
-		public var picturesets:IList /*of PictureViewerModel*/; 
+		
+		[Listof(type="ro.calin.component.model.CategoryViewerModel")]
+		public var categories:IList;
+		
+		[Listof(type="ro.calin.component.model.PictureViewerModel")]
+		public var picturesets:IList; 
 	}
 }

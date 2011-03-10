@@ -17,76 +17,55 @@ public class ObjectConverterTest {
         ObjectConverter.convert(null, null);
     }
     
-    @Test
-    public void testBasicCase() {
-        class A {
-            public int a;
+    public static class A1 {
+        private int a;
+        private boolean b;
+
+        public boolean isB() {
+            return b;
         }
-        
-        class B {
-            public int a;
+
+        public void setB(boolean b) {
+            this.b = b;
         }
-        
-        final A a = new A();
-        a.a = 5;
-        
-        final B b = new B();
-        b.a = 0;
-        
-        ObjectConverter.convert(a, b);
-        
-        assertEquals(a.a, b.a);
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+    }
+    
+    public static class B1 {
+        private int a;
+        private boolean b;
+
+        public boolean isB() {
+            return b;
+        }
+
+        public void setB(boolean b) {
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
     }
     
     @Test
-    public void testBasicCaseWithSettersAndGetters() {
-        class A {
-            private int a;
-            private boolean b;
-
-            public boolean isB() {
-                return b;
-            }
-
-            public void setB(boolean b) {
-                this.b = b;
-            }
-
-            public int getA() {
-                return a;
-            }
-
-            public void setA(int a) {
-                this.a = a;
-            }
-        }
-        
-        class B {
-            private int a;
-            private boolean b;
-
-            public boolean isB() {
-                return b;
-            }
-
-            public void setB(boolean b) {
-                this.b = b;
-            }
-
-            public int getA() {
-                return a;
-            }
-
-            public void setA(int a) {
-                this.a = a;
-            }
-        }
-        
-        final A a = new A();
+    public void testBasicCase() {
+        final A1 a = new A1();
         a.a = 5;
         a.b = true;
         
-        final B b = new B();
+        final B1 b = new B1();
         b.a = 0;
         b.b = false;
         
@@ -96,35 +75,91 @@ public class ObjectConverterTest {
         assertEquals(a.isB(), b.isB());
     }
     
+    public static class A2 {
+        private int a;
+        private String b;
+        private Date c;
+        private Integer d;
+		public int getA() {
+			return a;
+		}
+		public void setA(int a) {
+			this.a = a;
+		}
+		public String getB() {
+			return b;
+		}
+		public void setB(String b) {
+			this.b = b;
+		}
+		public Date getC() {
+			return c;
+		}
+		public void setC(Date c) {
+			this.c = c;
+		}
+		public Integer getD() {
+			return d;
+		}
+		public void setD(Integer d) {
+			this.d = d;
+		}
+    }
+    
+    public static class B2 {
+        @Convert(exclude=true)
+        private int a;
+        
+        private String b;
+        
+        @Convert(group="g1")
+        private Date c;
+        
+        @Convert(group="g2")
+        private Integer d;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
+
+		public String getB() {
+			return b;
+		}
+
+		public void setB(String b) {
+			this.b = b;
+		}
+
+		public Date getC() {
+			return c;
+		}
+
+		public void setC(Date c) {
+			this.c = c;
+		}
+
+		public Integer getD() {
+			return d;
+		}
+
+		public void setD(Integer d) {
+			this.d = d;
+		}
+    }
+    
     @Test
     public void testExcludeAndGrouping() {
-        class A {
-            public int a;
-            public String b;
-            public Date c;
-            public Integer d;
-        }
-        
-        class B {
-            @Convert(exclude=true)
-            public int a;
-            
-            public String b;
-            
-            @Convert(group="g1")
-            public Date c;
-            
-            @Convert(group="g2")
-            public Integer d;
-        }
-        
-        final A a = new A();
+        final A2 a = new A2();
         a.a = 5;
         a.b = "test";
         a.c = new Date();
         a.d = 10;
         
-        final B b = new B();
+        final B2 b = new B2();
         b.a = 0;
         b.b = "test";
         //b.c = null; default

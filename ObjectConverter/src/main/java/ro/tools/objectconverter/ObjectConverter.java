@@ -1,8 +1,11 @@
 package ro.tools.objectconverter;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * Copies property values from one object to another.
@@ -84,122 +89,8 @@ public class ObjectConverter {
         return convertorClass.newInstance();
     }
     
-    /**
-     * Capitalizes <code>name</code> and prepends <code>prefix</code> to it.
-     * 
-     * @param prefix
-     * @param name
-     * @return
-     */
-    private static String createJavaBeanMethod(String prefix, String name) {
-        final StringBuffer methodName = new StringBuffer(prefix);
-        methodName.append(name);
-        methodName.setCharAt(prefix.length(), (char)(methodName.charAt(prefix.length()) + ('A' - 'a')));
-        
-        return methodName.toString();
-    }
-    
-    /**
-     * Returns the setter method that corresponds to the specified field.
-     * 
-     * @param field
-     * @param clazz
-     * @return
-     * @throws NoSuchMethodException
-     */
-    private static Method getSetterMethodForField(Field field, Class<?> clazz) throws NoSuchMethodException {
-        return clazz.getMethod(createJavaBeanMethod("set", field.getName()), field.getType());
-    }
-    
-    /**
-     * Returns the getter method that corresponds to the specified field.
-     * 
-     * @param field
-     * @param clazz
-     * @return
-     * @throws NoSuchMethodException
-     */
-    private static Method getGetterMethodForField(Field field, Class<?> clazz) throws NoSuchMethodException {
-        
-        Method m = null;
-        
-        try {
-            m = clazz.getMethod(createJavaBeanMethod("get", field.getName()));
-        } catch (NoSuchMethodException e) {
-            //try "is" for boolean
-            m = clazz.getMethod(createJavaBeanMethod("is", field.getName()));
-        }
-        
-        return m;
-    }
-    
-    /**
-     * Gets the value of a specified field for a specified instance.
-     * It first tries using a getter.
-     * 
-     * @param field
-     * @param instance
-     * @return
-     */
-    private static Object getFieldValue(Field field, Object instance) {
-        try {
-            try {
-                final Method getterMethod = getGetterMethodForField(field, instance.getClass());
-                return getterMethod.invoke(instance);
-            } catch (NoSuchMethodException e) {
-                //no getter, try directly
-                // TODO: log it
-                
-                if (!Modifier.isPublic(field.getModifiers())) {
-                    field.setAccessible(true);
-                }
-                return field.get(instance);
-            }
-        } catch (Exception e) {
-            throw new ConverterException("Cannot get field.", e);
-        }
-    }
-    
-    /**
-     * Sets the value of a specified field for a specified instance.
-     * It first tries using a setter.
-     * 
-     * @param field
-     * @param instance
-     * @param value
-     */
-    private static void setFieldValue(Field field, Object instance, Object value) {
-        try {
-            try {
-                final Method setterMethod = getSetterMethodForField(field, instance.getClass());
-                setterMethod.invoke(instance, value);
-            } catch (NoSuchMethodException e) {
-                //no setter, try directly
-                // TODO: log it
-                if (!Modifier.isPublic(field.getModifiers())) {
-                    field.setAccessible(true);
-                }
-                field.set(instance, value);
-            }
-        } catch (Exception e) {
-            throw new ConverterException("Cannot set field.", e);
-        }
-    }
-    
-    /**
-     * @param clazz
-     * @return all the fields, including those in super classes
-     */
-    private static Collection<Field> getAllDeclaredFields(Class<?> clazz) {
-        final Set<Field> fields = new HashSet<Field>();
-        do {
-            //TODO: should handle SecurityManager
-            final List<Field> subset = Arrays.asList(clazz.getDeclaredFields());
-            fields.addAll(subset);
-            clazz = clazz.getSuperclass();
-        } while(clazz != Object.class);
-        
-        return fields;
+    private static Convert getAnnotation(Class<?> clazz, String fieldName) throws SecurityException, NoSuchFieldException {
+    	return clazz.getDeclaredField(fieldName).getAnnotation(Convert.class);
     }
     
     /**
@@ -233,23 +124,22 @@ public class ObjectConverter {
             throw new ConverterException("No null parameters.");
         }
         
-        final Class<?> sourceClass = source.getClass();
-        final Class<?> destClass = destination.getClass();
-        
         final List<String> groupList = Arrays.asList(groups);
         
         //loop through all destination properties
-        for (Field destField : getAllDeclaredFields(destClass)) {
+        //TODO: implement reverse: loop through all props of src if src is annotated
+        //with reverse
+        for (PropertyDescriptor destPd : PropertyUtils.getPropertyDescriptors(source)) {
             
-            //exclude wired stuff (i guess for inner classes)???
-            if(destField.getName().startsWith("this$")) continue;
+            //exclude inner classes back refs
+            if(destPd.getName().equals("class")) continue;
             
-            //leave statics alone
-            if (Modifier.isStatic(destField.getModifiers())) {
-                continue;
-            }
-
-            final Convert metadata = destField.getAnnotation(Convert.class);
+            Convert metadata = null;
+			try {
+				metadata = getAnnotation(destination.getClass(), destPd.getName());
+			} catch (Exception e) {
+				//TODO: log it, an maybe handle Security exception
+			}
             
             //defaults
             String mapping = "";
@@ -280,29 +170,20 @@ public class ObjectConverter {
             if(!"".equals(group) && !groupList.contains(group)) continue;
             
             //map to a prop with same name if not specified
-            if("".equals(mapping)) mapping = destField.getName();
+            if("".equals(mapping)) mapping = destPd.getName();
             
-            Field sourceField = null;
-            Class<?> currClass = sourceClass;
+            PropertyDescriptor srcPd = null;
+			try {
+				srcPd = PropertyUtils.getPropertyDescriptor(source, mapping);
+			} catch (Exception e) {
+				//TODO: don't care, just log
+			}
             
-            //search in all class tree, stop at object
-            //TODO: support interfaces???
-            do {
-                try {
-                    //TODO: should handle SecurityManager
-                    sourceField = currClass.getDeclaredField(mapping);
-                    break;
-                } catch (NoSuchFieldException e) {
-                    //try to find it in the superclass
-                    currClass = currClass.getSuperclass();
-                }
-            } while(currClass != Object.class);
-            
-            //no such field, log and skip, nothing to convert from
-            if(sourceField == null) continue;
+            //no such property, log and skip, nothing to convert from
+            if(srcPd == null) continue;
             
             try {
-                Object valueToBeConverted = getFieldValue(sourceField, source);
+                Object valueToBeConverted = PropertyUtils.getProperty(source, srcPd.getName()); 
                 
                 //nothing to convert for this field
                 if (valueToBeConverted == null) continue;
@@ -318,16 +199,17 @@ public class ObjectConverter {
                 //else if collection, convert recursively each member
                 //TODO: handle arrays and hashmaps
                 } else if(valueToBeConverted instanceof Collection && type.length > 0) {
-                    Object destCollection = getFieldValue(destField, destination);
+                    Object destCollection = PropertyUtils.getProperty(destination, destPd.getName()); 
+                    
                     if(destCollection == null) {
                         //1. try to instantiate
                         //2. if abstract or interface try HashSet if subclass of Set, or ArrayList otherwise
                         //TODO: can we do better?
                         try {
-                            destCollection = destField.getType().newInstance();
+                            destCollection = destPd.getPropertyType().newInstance();
                         } catch (InstantiationException e) {
                             //revert to set or list(for now)
-                            if(Set.class.isAssignableFrom(destField.getType())) {
+                            if(Set.class.isAssignableFrom(destPd.getPropertyType())) {
                                 destCollection = new HashSet();
                             } else {
                                 destCollection = new ArrayList();
@@ -338,18 +220,18 @@ public class ObjectConverter {
                     convert((Collection)valueToBeConverted, (Collection)destCollection, type[0], groups);
                     valueToBeConverted = destCollection;
                 //else if not directly assignable, convert recursively
-                } else if(!typesConvertable(sourceField.getType(), destField.getType())){
-                    Object destObj = getFieldValue(destField, destination);
+                } else if(!typesConvertable(srcPd.getPropertyType(), destPd.getPropertyType())){
+                    Object destObj = PropertyUtils.getProperty(destination, destPd.getName());
                     if(destObj == null) {
                         //try to instantiate the field type, if we cannot, try the provided type, if exists
                         try {
-                            destObj = destField.getType().newInstance();
+                            destObj = destPd.getPropertyType().newInstance();
                         } catch (InstantiationException e) {
                             if(type.length > 0) {
                                 destObj = type[0].newInstance();
                             } else {
                                 throw new ConverterException("Cannot instantiate field " + 
-                                        destField.getName() + ". Please provide a type.");
+                                        destPd.getName() + ". Please provide a type.");
                             }
                         }
                     }
@@ -359,10 +241,9 @@ public class ObjectConverter {
                 } else {/*nothing to be transformed*/}
                 
                 //copy the, now converted, value
-                setFieldValue(destField, destination, valueToBeConverted);
-                
+                PropertyUtils.setProperty(destination, destPd.getName(), valueToBeConverted);
             } catch (Exception e) {
-                throw new ConverterException("Error converting field " + destField, e);
+                throw new ConverterException("Error converting field " + destPd.getName(), e);
             } 
         }
     }

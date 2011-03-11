@@ -4,7 +4,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -546,5 +550,47 @@ public class ObjectConverterTest {
         
         assertEquals(a.arr[0].a, b.arr[0].a);
         assertEquals(a.arr[1].a, b.arr[1].a);
+    }
+    
+    public static class A12 {
+    	private Set<EmbedA8> arr;
+
+		public Set<EmbedA8> getArr() {
+			return arr;
+		}
+
+		public void setArr(Set<EmbedA8> arr) {
+			this.arr = arr;
+		}
+    }
+    
+    public static class B12 {
+    	@Convert(type=EmbedB8.class)
+    	private List<EmbedB8> arr;
+
+		public List<EmbedB8> getArr() {
+			return arr;
+		}
+
+		public void setArr(List<EmbedB8> arr) {
+			this.arr = arr;
+		}
+    }
+    
+    @Test
+    public void testObjectConversionWithCollection() {
+    	final A12 a = new A12();
+    	EmbedA8 ea1 = new EmbedA8();
+    	ea1.a = 11;
+    	EmbedA8 ea2 = new EmbedA8();
+    	ea2.a = 11; //set is not ordered, use same value
+        a.arr = new HashSet<EmbedA8>(Arrays.asList(new EmbedA8[]{ea1, ea2}));
+        
+        final B12 b = new B12();
+        
+        ObjectConverter.convert(a, b);
+        
+        assertEquals(11, b.arr.get(0).a);
+        assertEquals(11, b.arr.get(1).a);
     }
 }

@@ -66,7 +66,9 @@ public class ObjectConverter {
      * @param destType
      * @return
      */
-    private static boolean typesConvertable(Class<?> srcType, Class<?> destType) {
+    private static boolean areTypesConvertable(Class<?> srcType, Class<?> destType) {
+    	System.out.println(srcType.getName() + " -> " + destType.getName());
+    	
         if (destType.isAssignableFrom(srcType))
             return true;
 
@@ -107,7 +109,7 @@ public class ObjectConverter {
      *              <li>2.4. else, if types are compatible, just assign object referenced by src prop to dest prop</li>
      *              <li>2.5. else, if types are not compatible do:
      *                  <ul>
-     *                      <li>2.5.1. if types are some kind of list, apply the algorithm from {@link ObjectConverter#convert(Collection, Collection, Class, String...)}}</li>
+     *                      <li>2.5.1. if types are some kind of lists, apply this algorithm for each element</li>
      *                      <li>2.5.2. else, if references are of different types, apply this algorithm recursively on the objects</li>
      *                  </ul>
      *              </li>
@@ -197,59 +199,26 @@ public class ObjectConverter {
                     if(convertorInstance != null) {
                         valueToBeConverted = convertorInstance.convert(valueToBeConverted);
                     }
-                //else, go recursively, depending on type
-                } else {
-                	//TODO: NEED ALGORITHM REFACTORING
-                	//get destination object
-                	Object destObject = PropertyUtils.getProperty(destination, destPd.getName());
-                	
-                	//try to create, if null, depending on specified type
-                	if(destObject == null) {
-                		try {
-                        	destObject = destPd.getPropertyType().newInstance();
-                        } catch (InstantiationException e) {
-                        	//didn't work(interface, abstract, etc.), try workarounds
-                        	
-                        	if(valueToBeConverted.getClass().isArray() && type.length > 0) {
-                        		destObject = Array.newInstance(type[0], Array.getLength(valueToBeConverted));
-                        	} else if(valueToBeConverted instanceof Collection && type.length > 0) {
-                                //if abstract or interface try HashSet if subclass of Set, or ArrayList otherwise
-                                //TODO: can we do better?
-                                if(Set.class.isAssignableFrom(destPd.getPropertyType())) {
-                                	destObject = new HashSet();
-                                } else {
-                                	destObject = new ArrayList();
-                                }
-                        	} else if(valueToBeConverted instanceof Map && type.length > 1) {
-                        		//try HashMap
-                            	destObject = new HashMap();
-                        	} else if(!typesConvertable(srcPd.getPropertyType(), destPd.getPropertyType()) && type.length > 0){
-                            	destObject = type[0].newInstance();
-                        	}
-                        }
-                        
-                        if(destObject == null) {
-                    		throw new ConverterException("Cannot instantiate field " + 
-                                    destPd.getName() + ". Please provide a type.");
-                    	}
-                	}
-                	
-                	//recursively convert properties from source to dest
-                	if(valueToBeConverted.getClass().isArray() && type.length > 0) {
-                    	convert((Object[])valueToBeConverted, (Object[])destObject, type[0], groups);
-                    	valueToBeConverted = destObject;
-                    } else if(valueToBeConverted instanceof Collection && type.length > 0) {
-                        convert((Collection)valueToBeConverted, (Collection)destObject, type[0], groups);
-                        valueToBeConverted = destObject;
-                    } else if(valueToBeConverted instanceof Map && type.length > 1) {
-                        convert((HashMap)valueToBeConverted, (HashMap)destObject, type[0], type[1], groups);
-                        valueToBeConverted = destObject;
-                    } else if(!typesConvertable(srcPd.getPropertyType(), destPd.getPropertyType())){
-                        convert(valueToBeConverted, destObject, groups);
-                        valueToBeConverted = destObject;
-					}
-                	//else {nothing to be transformed}
+                //else if they cannot be assigned by default, go recursively, depending on type(Array, collection, map, normal object)
+                } else if(valueToBeConverted.getClass().isArray() && type.length > 0) {
+            		Object[] destArray = (Object[])getOrCreateObjectProperty(valueToBeConverted, destination, destPd, type);
+                	convert((Object[])valueToBeConverted, (Object[])destArray, type[0], groups);
+                	valueToBeConverted = destArray;
+                } else if(valueToBeConverted instanceof Collection && type.length > 0) {
+                	Collection destCollection = (Collection)getOrCreateObjectProperty(valueToBeConverted, destination, destPd, type);
+                    convert((Collection)valueToBeConverted, (Collection)destCollection, type[0], groups);
+                    valueToBeConverted = destCollection;
+                } else if(valueToBeConverted instanceof Map && type.length > 1) {
+                	Map destMap = (Map)getOrCreateObjectProperty(valueToBeConverted, destination, destPd, type);
+                    convert((HashMap)valueToBeConverted, (HashMap)destMap, type[0], type[1], groups);
+                    valueToBeConverted = destMap;
+                } else if(!areTypesConvertable(srcPd.getPropertyType(), destPd.getPropertyType())) {
+                	Object destObject = getOrCreateObjectProperty(valueToBeConverted, destination, destPd, type);
+                	//this does not necessarily require a type
+                    convert(valueToBeConverted, destObject, groups);
+                    valueToBeConverted = destObject;
 				}
+                //else {nothing to be transformed}
                 
                 //copy the, now converted, value
                 PropertyUtils.setProperty(destination, destPd.getName(), valueToBeConverted);
@@ -260,10 +229,56 @@ public class ObjectConverter {
     }
     
     /**
+     * Helper. Get destination property or create the object if null.
+     */
+    private static Object getOrCreateObjectProperty(Object valueToBeConverted, Object destination, 
+    		PropertyDescriptor destPd, Class<?>... type) 
+    throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+    	Object destObject = PropertyUtils.getProperty(destination, destPd.getName());
+    	
+    	//try to create, if null, depending on specified type
+    	if(destObject == null) {
+    		try {
+            	destObject = destPd.getPropertyType().newInstance();
+            } catch (InstantiationException e) {
+            	//didn't work(interface, abstract, etc.), try workarounds
+            	
+            	//don't bother if type is not specified in annotation
+            	if(type.length > 0) {
+                	if(valueToBeConverted.getClass().isArray()) {
+                		destObject = Array.newInstance(type[0], Array.getLength(valueToBeConverted));
+                	} else if(valueToBeConverted instanceof Collection) {
+                        //if abstract or interface try HashSet if subclass of Set, or ArrayList otherwise
+                        //TODO: can we do better?
+                        if(Set.class.isAssignableFrom(destPd.getPropertyType())) {
+                        	destObject = new HashSet();
+                        } else {
+                        	destObject = new ArrayList();
+                        }
+                	} else if(valueToBeConverted instanceof Map && type.length > 1) {
+                		//try HashMap
+                    	destObject = new HashMap();
+                	} else {
+                    	destObject = type[0].newInstance();
+                	}
+            	}
+            }
+            
+            if(destObject == null) {
+        		throw new ConverterException("Cannot instantiate field " + 
+                        destPd.getName() + ". Please provide a type.");
+        	}
+    	}
+    	
+    	return destObject;
+	}
+
+	/**
      * Applies method {@link ObjectConverter#convert(Object, Object, String...)} 
      * for each reference in srcCollection and a new object.
      * The destination object is instantiated and it is of type {@code destType}.
      * Assumes the destination collection is empty(clears it if not).
+     * TODO: handle simple types??? just copy references?
      * 
      * @param srcCollection
      * @param destCollection
@@ -279,6 +294,7 @@ public class ObjectConverter {
         while (srcIt.hasNext()) {
             Object destObj;
             try {
+            	//TODO, maybe if it is null, reference should be copied
                 destObj = destType.newInstance();
             } catch (Exception e) {
                 throw new ConverterException("Error instantiating object of type " + destType.getName(), e);
@@ -293,6 +309,7 @@ public class ObjectConverter {
      * for each reference in srcArray and a new object.
      * The destination object is instantiated and it is of type {@code destType}.
      * Assumes the destination array is of equal size with source array.
+     * TODO: handle simple types???
      * 
      * @param srcArray
      * @param destArray
@@ -322,6 +339,8 @@ public class ObjectConverter {
      * The destination key-value pair objects are instantiated and they are of type
      * {@code destKeyType} and {@code destValueType}.
      * Assumes the destination map is empty(clears it if not).
+     * 
+     * TODO: handle simple types???
      * 
      * @param srcMap
      * @param destMap

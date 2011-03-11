@@ -23,7 +23,7 @@
 				config = new Config();
 				XmlToObjectConverter.convertToObject(XML(event.result), config);
 				menu.model = config.menu;
-				setPictureList("selection");
+				viewer.model = config.picturesets["selection"];
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
@@ -42,21 +42,7 @@
 					}
 				} else if(currentState == "gallerystate") {
 					var catname:String = event.entry.extra as String;
-					var found:Boolean = false;
-					
-					//TODO: optimize this lookup with a hashmap or smfn
-					for (var i:int = 0; i < config.categories.length; i++) {
-						var model:CategoryViewerModel = config.categories.getItemAt(i) as CategoryViewerModel;
-						if(model.extra as String == catname) {
-							found = true;
-							catViewer.model = model;
-							break;
-						}
-					}
-					
-					if(!found) {
-						throw new Error("Bad category name.");
-					}
+					catViewer.model =  config.categories[catname];
 					
 					catViewer.height = Math.min(this.height - menu.height, 
 						catViewer.model.subcategories.length * 119);
@@ -76,25 +62,12 @@
 				currentState = "menustate";
 			}
 
-
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
 				var picset:String = event.subcategory.extra as String;
-				//TODO: optimize this lookup with a hashmap or smfn
-				setPictureList(picset);
+				viewer.model = config.picturesets[picset];
 				catViewer.visible = false;
 			}
-			
-			private function setPictureList(picset:String):void {
-				for (var i:int = 0; i < config.picturesets.length; i++) {
-					var model:PictureViewerModel = config.picturesets.getItemAt(i) as PictureViewerModel;
-					if(model.extra as String == picset) {
-						viewer.model = model;
-						break;
-					}
-				}
-			}
-
 		]]>
 	</fx:Script>
 	

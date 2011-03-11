@@ -20,6 +20,11 @@ package flexUnitTests
 						<embed embdA="1.2" />
 						<embed embdA="1.3" />
 					</embeds>
+					<map>
+						<embed key="e1" embdA="1.1" />
+						<embed key="e2" embdA="1.2" />
+						<embed key="e3" embdA="1.3" />
+					</map>
 				  </test>;
 		}
 		
@@ -38,6 +43,10 @@ package flexUnitTests
 			Assert.assertEquals(1.1, (obj.embeds.getItemAt(0) as TestEmbedded).embdA);
 			Assert.assertEquals(1.2, (obj.embeds.getItemAt(1) as TestEmbedded).embdA);
 			Assert.assertEquals(1.3, (obj.embeds.getItemAt(2) as TestEmbedded).embdA);
+			
+			Assert.assertEquals(1.1, (obj.map["e1"] as TestEmbedded).embdA);
+			Assert.assertEquals(1.2, (obj.map["e2"] as TestEmbedded).embdA);
+			Assert.assertEquals(1.3, (obj.map["e3"] as TestEmbedded).embdA);
 		}
 	}
 }

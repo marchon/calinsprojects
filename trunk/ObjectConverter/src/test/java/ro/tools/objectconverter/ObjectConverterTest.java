@@ -180,21 +180,37 @@ public class ObjectConverterTest {
         assertEquals(-5, b.d.intValue());
     }
 
+    public static class A3 {
+        private int differentName;
+
+		public int getDifferentName() {
+			return differentName;
+		}
+
+		public void setDifferentName(int differentName) {
+			this.differentName = differentName;
+		}
+    }
+    
+    public static class B3 {
+        @Convert(mapping="differentName")
+        private int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
+    }
+    
     @Test
     public void testMappingToDifferentFieldName() {
-        class A {
-            public int differentName;
-        }
-        
-        class B {
-            @Convert(mapping="differentName")
-            public int a;
-        }
-        
-        final A a = new A();
+        final A3 a = new A3();
         a.differentName = 5;
         
-        final B b = new B();
+        final B3 b = new B3();
         b.a = 0;
         
         ObjectConverter.convert(a, b);
@@ -202,45 +218,69 @@ public class ObjectConverterTest {
         assertEquals(a.differentName, b.a);
     }
     
+    
+    public static abstract class SuperSuperA4 {
+        private int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
+    }
+    
+    public static abstract class SuperA4 extends SuperSuperA4 {
+    }
+    public static class A4 extends SuperA4 {
+    }
+    
+    public static class B4 {
+    	private int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
+    }
     @Test
     public void testCopyFieldFromSuperclassDefinition() {
-        abstract class SuperSuperA {
-            public int a;
-        }
+        final A4 a = new A4();
+        a.setA(5);
         
-        abstract class SuperA extends SuperSuperA {
-        }
-        class A extends SuperA {
-        }
-        
-        class B {
-            public int a;
-        }
-        
-        final A a = new A();
-        a.a = 5;
-        
-        final B b = new B();
+        final B4 b = new B4();
         b.a = 0;
         
         ObjectConverter.convert(a, b);
         
-        assertEquals(a.a, b.a);
+        assertEquals(a.getA(), b.a);
+    }
+    
+    public static abstract class SuperSuperA5 {}
+    public static abstract class SuperA5 extends SuperSuperA5 {}
+    public static class A5 extends SuperA5 {}
+    
+    public static class B5 {
+        private int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
     }
     
     @Test
     public void testNoSuchFieldFoundInClassHierarchy() {
-        abstract class SuperSuperA {}
-        abstract class SuperA extends SuperSuperA {}
-        class A extends SuperA {}
+        final A5 a = new A5();
         
-        class B {
-            public int a;
-        }
-        
-        final A a = new A();
-        
-        final B b = new B();
+        final B5 b = new B5();
         b.a = 0;
         
         ObjectConverter.convert(a, b);
@@ -248,38 +288,72 @@ public class ObjectConverterTest {
         assertEquals(0, b.a);
     }
     
+    public static class A6 {
+        byte[] a;
+
+		public byte[] getA() {
+			return a;
+		}
+
+		public void setA(byte[] a) {
+			this.a = a;
+		}
+    }
+    
+    public static class B6 {
+        @Convert(convertor=Object.class)
+        String a;
+
+		public String getA() {
+			return a;
+		}
+
+		public void setA(String a) {
+			this.a = a;
+		}
+    }
+    
     @Test(expected=ConverterException.class)
     public void testBadConverter() {
-        class A {
-            byte[] a;
-        }
         
-        class B {
-            @Convert(convertor=Object.class)
-            String a;
-        }
         
-        final A a = new A();
-        final B b = new B();
+        final A6 a = new A6();
+        final B6 b = new B6();
         
         ObjectConverter.convert(a, b);
     }
     
+    
+    public static class A7 {
+        @Convert(convertor=StringToByteArrayConverter.class)
+        byte[] a;
+
+		public byte[] getA() {
+			return a;
+		}
+
+		public void setA(byte[] a) {
+			this.a = a;
+		}
+    }
+    
+    public static class B7 {
+        @Convert(convertor=ByteArrayToStringConverter.class)
+        String a;
+
+		public String getA() {
+			return a;
+		}
+
+		public void setA(String a) {
+			this.a = a;
+		}
+    }
     @Test
     public void testConvertorIsApplied() {
-        class A {
-            @Convert(convertor=StringToByteArrayConverter.class)
-            byte[] a;
-        }
-        
-        class B {
-            @Convert(convertor=ByteArrayToStringConverter.class)
-            String a;
-        }
-        
-        final A a = new A();
+        final A7 a = new A7();
         a.a = "test".getBytes();
-        final B b = new B();
+        final B7 b = new B7();
         
         ObjectConverter.convert(a, b);
         
@@ -291,88 +365,143 @@ public class ObjectConverterTest {
         assertArrayEquals("tset".getBytes(), a.a);
     }
     
-    public static interface InterfEmbedB {
-        int getA();
+    public static class EmbedA8 {
+        int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
     }
     
-    public static class EmbedB implements InterfEmbedB {
+    public static class A8 {
+        private EmbedA8 ea = new EmbedA8();
+
+		public EmbedA8 getEa() {
+			return ea;
+		}
+
+		public void setEa(EmbedA8 ea) {
+			this.ea = ea;
+		}
+    }
+    
+    public static interface InterfEmbedB8 {
+        int getA();
+        void setA(int a);
+    }
+    
+    public static class EmbedB8 implements InterfEmbedB8 {
         int a;
 
         @Override
         public int getA() {
             return a;
         }
+
+        @Override
+		public void setA(int a) {
+			this.a = a;
+		}
+    }
+    
+    public static class B8 {
+        @Convert(mapping="ea")
+        private EmbedB8 eb;
+
+		public EmbedB8 getEb() {
+			return eb;
+		}
+
+		public void setEb(EmbedB8 eb) {
+			this.eb = eb;
+		}
     }
     
     @Test
     public void testRecursiveConversion() {
-        class EmbedA {
-            int a;
-        }
-        
-        class A {
-            EmbedA ea = new EmbedA();
-        }
-        
-        class B {
-            @Convert(mapping="ea")
-            EmbedB eb;
-        }
-        
-        final A a = new A();
+        final A8 a = new A8();
         a.ea.a = 5;
         
-        final B b = new B();
+        final B8 b = new B8();
         
         ObjectConverter.convert(a, b);
         
         assertEquals(a.ea.a, b.eb.a);
     }
     
+    public static class EmbedA9 {
+        int a;
+
+		public int getA() {
+			return a;
+		}
+
+		public void setA(int a) {
+			this.a = a;
+		}
+    }
+    
+    public static class A9 {
+        EmbedA9 ea = new EmbedA9();
+
+		public EmbedA9 getEa() {
+			return ea;
+		}
+
+		public void setEa(EmbedA9 ea) {
+			this.ea = ea;
+		}
+    }
+    
+    public static class B9 {
+        @Convert(mapping="ea", type=EmbedB8.class)
+        InterfEmbedB8 eb;
+
+		public InterfEmbedB8 getEb() {
+			return eb;
+		}
+
+		public void setEb(InterfEmbedB8 eb) {
+			this.eb = eb;
+		}
+    }
+    
     @Test
     public void testRecursiveConversionWithUninstantiableField() {
-        class EmbedA {
-            int a;
-        }
-        
-        class A {
-            EmbedA ea = new EmbedA();
-        }
-        
-        class B {
-            @Convert(mapping="ea", type=EmbedB.class)
-            InterfEmbedB eb;
-        }
-        
-        final A a = new A();
+        final A9 a = new A9();
         a.ea.a = 5;
         
-        final B b = new B();
+        final B9 b = new B9();
         
         ObjectConverter.convert(a, b);
         
         assertEquals(a.ea.a, b.eb.getA());
     }
     
+     
+    public static class B10 {
+        @Convert(mapping="ea")
+        InterfEmbedB8 eb;
+
+		public InterfEmbedB8 getEb() {
+			return eb;
+		}
+
+		public void setEb(InterfEmbedB8 eb) {
+			this.eb = eb;
+		}
+    }
+    
     @Test(expected=ConverterException.class)
     public void testRecursiveConversionWithUninstantiableFieldErrorIfTypeNotProvidedInAnnotation() {
-        class EmbedA {
-            int a;
-        }
-        
-        class A {
-            EmbedA ea = new EmbedA();
-        }
-        
-        class B {
-            @Convert(mapping="ea")
-            InterfEmbedB eb;
-        }
-        
-        final A a = new A();
+        final A9 a = new A9();
         a.ea.a = 5;
         
-        final B b = new B();
+        final B10 b = new B10();
         
         ObjectConverter.convert(a, b);
     }

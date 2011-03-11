@@ -24,15 +24,14 @@ import org.apache.commons.beanutils.PropertyUtils;
  * 
  * TODO:
  *  <ul>
- *      <li>1. investigate potential usage of BeanUtils</li>
- *      <li>2. handle arrays and hash maps</li>
- *      <li>3. handle reverse mapping, in which the metadata is provided in the source field</li>  
- *      <li>4. add logging</li>
- *      <li>5. finish unit testing</li>
- *      <li>6. test with SecurityManager (getDeclaredFields() throws SecurityError)</li>
- *      <li>7. cache instances of converter implementations</li>
- *      <li>8. try to get source fields from parent interfaces (it supports just abstract)</li>
- *      <li>9. better support for collections(see notes)</li>
+ *      <li>1. handle arrays and hash maps</li>
+ *      <li>2. handle reverse mapping, in which the metadata is provided in the source field</li>  
+ *      <li>3. add logging</li>
+ *      <li>4. finish unit testing</li>
+ *      <li>5. test with SecurityManager (getDeclaredFields() throws SecurityError)</li>
+ *      <li>6. cache instances of converter implementations</li>
+ *      <li>7. try to get source fields from parent interfaces (it supports just abstract)</li>
+ *      <li>8. better support for collections(see notes)</li>
  *  </ul>
  */
 public class ObjectConverter {
@@ -129,7 +128,7 @@ public class ObjectConverter {
         //loop through all destination properties
         //TODO: implement reverse: loop through all props of src if src is annotated
         //with reverse
-        for (PropertyDescriptor destPd : PropertyUtils.getPropertyDescriptors(source)) {
+        for (PropertyDescriptor destPd : PropertyUtils.getPropertyDescriptors(destination)) {
             
             //exclude inner classes back refs
             if(destPd.getName().equals("class")) continue;

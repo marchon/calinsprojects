@@ -505,4 +505,46 @@ public class ObjectConverterTest {
         
         ObjectConverter.convert(a, b);
     }
+    
+    public static class A11 {
+    	private EmbedA8[] arr;
+
+		public EmbedA8[] getArr() {
+			return arr;
+		}
+
+		public void setArr(EmbedA8[] arr) {
+			this.arr = arr;
+		}
+    }
+    
+    public static class B11 {
+    	@Convert(type=EmbedB8.class)
+    	private EmbedB8[] arr;
+
+		public EmbedB8[] getArr() {
+			return arr;
+		}
+
+		public void setArr(EmbedB8[] arr) {
+			this.arr = arr;
+		}
+    }
+    
+    @Test
+    public void testObjectConversionWithArray() {
+    	final A11 a = new A11();
+    	EmbedA8 ea1 = new EmbedA8();
+    	ea1.a = 11;
+    	EmbedA8 ea2 = new EmbedA8();
+    	ea2.a = 12;
+        a.arr = new EmbedA8[]{ea1, ea2};
+        
+        final B11 b = new B11();
+        
+        ObjectConverter.convert(a, b);
+        
+        assertEquals(a.arr[0].a, b.arr[0].a);
+        assertEquals(a.arr[1].a, b.arr[1].a);
+    }
 }

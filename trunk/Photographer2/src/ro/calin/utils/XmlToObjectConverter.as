@@ -7,6 +7,7 @@ package ro.calin.utils
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
+	import mx.messaging.management.Attribute;
 	import mx.utils.ObjectUtil;
 
 	public class XmlToObjectConverter
@@ -29,6 +30,7 @@ package ro.calin.utils
 				object[key] = attr.toString();
 			}
 			
+			//TODO: update for map
 			//2. for each child, get corresponding property by name
 			//	2.1. if property is a list type
 			//		2.1.1. get type from metadata of property
@@ -43,12 +45,15 @@ package ro.calin.utils
 				}
 				
 				var type:String = describeType(object).variable.(@name == key)[0].@type;
+				var classInfo:Object = ObjectUtil.getClassInfo(object);
 				
 				if(type == "Array" || type == "mx.collections::ArrayList"  || 
 				   type == "mx.collections::IList" || type == "mx.collections::ArrayCollection") {
-
-					var classInfo:Object = ObjectUtil.getClassInfo(object);
 					var elemType:* = null;
+					if(classInfo["metadata"][key]["Listof"] == null) {
+						throw new Error("You must provide element type Metadata(Listof) for property [" + key + "].");
+					}
+					
 					if((elemType = (classInfo["metadata"][key]["Listof"]["type"] as String)) == null) {
 						throw new Error("You must provide element type for property [" + key + "].");
 					}
@@ -72,6 +77,31 @@ package ro.calin.utils
 					} else if(type == "mx.collections::ArrayCollection") {
 						object[key] = new ArrayCollection(elements);
 					}
+				} else if(type == "Object" && classInfo["metadata"][key]["Mapof"] != null) {
+					//build a map
+					var keyAttrName:String = classInfo["metadata"][key]["Mapof"]["key"];
+					elemType = null;
+					if((elemType = (classInfo["metadata"][key]["Mapof"]["type"] as String)) == null) {
+						throw new Error("You must provide element type for property [" + key + "].");
+					}
+					
+					//BE CAREFULL, THE COMPILATION UNIT MUST BE INCLUDED BY THE COMPILER
+					//SO BE SURE TO REFFERENCE IT SOMEWARE(THE STRING METADATA IS NOT A REFFERENCE)
+					elemType = getDefinitionByName(elemType) as Class;
+					
+					var map:Object = {};
+					
+					for each (nephew in child.children()) {
+						var mapKey:String = nephew.attribute(keyAttrName)[0].toString();
+						delete nephew.attribute(keyAttrName)[0];
+						
+						element = new elemType;
+						convertToObject(nephew, element);
+						
+						map[mapKey] = element;
+					}
+					
+					object[key] = map;
 				} else {
 					//TODO: contrary to popular belief, this works, see if it breaks in other cases
 					var clazz:Class = getDefinitionByName(type) as Class;

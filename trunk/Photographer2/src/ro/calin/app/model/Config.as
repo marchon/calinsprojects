@@ -9,10 +9,10 @@ package ro.calin.app.model
 	{
 		public var menu:MenuModel;
 		
-		[Listof(type="ro.calin.component.model.CategoryViewerModel")]
-		public var categories:IList;
+		[Mapof(key="key", type="ro.calin.component.model.CategoryViewerModel")]
+		public var categories:Object;
 		
-		[Listof(type="ro.calin.component.model.PictureViewerModel")]
-		public var picturesets:IList; 
+		[Mapof(key="key", type="ro.calin.component.model.PictureViewerModel")]
+		public var picturesets:Object; 
 	}
 }

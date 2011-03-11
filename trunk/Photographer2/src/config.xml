@@ -36,7 +36,7 @@
 	</menu>
 	
 	<categories>
-		<category extra="art">
+		<category key="art">
 			<subcategories>
 				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" extra="set1"/>
 				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" extra="set2"/>
@@ -53,7 +53,7 @@
 			</subcategories>
 		</category>
 		
-		<category extra="commercial">
+		<category key="commercial">
 			<subcategories>
 				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="set4"/>
 				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="set5"/>
@@ -62,7 +62,7 @@
 	</categories>
 	
 	<picturesets>
-		<pictureset extra="selection">
+		<pictureset key="selection">
 			<pictures>
 				<picture url="data/1.jpg" />
 				<picture url="data/2.jpg" />
@@ -70,7 +70,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset extra="set1">
+		<pictureset key="set1">
 			<pictures>
 				<picture url="data/1 (1).jpg" />
 				<picture url="data/1 (2).jpg" />
@@ -80,7 +80,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset extra="set2">
+		<pictureset key="set2">
 			<pictures>
 				<picture url="data/1 (6).jpg" />
 				<picture url="data/1 (7).jpg" />
@@ -90,7 +90,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset extra="set3">
+		<pictureset key="set3">
 			<pictures>
 				<picture url="data/1 (11).jpg" />
 				<picture url="data/1 (12).jpg" />
@@ -100,7 +100,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset extra="set4">
+		<pictureset key="set4">
 			<pictures>
 				<picture url="data/1 (16).jpg" />
 				<picture url="data/1 (17).jpg" />
@@ -108,7 +108,7 @@
 			</pictures>
 		</pictureset>
 		
-		<pictureset extra="set5">
+		<pictureset key="set5">
 			<pictures>
 				<picture url="data/1 (19).jpg" />
 				<picture url="data/1 (20).jpg" />

@@ -10,5 +10,8 @@ package flexUnitTests
 		
 		[Listof(type="flexUnitTests.TestEmbedded")]
 		public var embeds:IList;
+		
+		[Mapof(key="key", type="flexUnitTests.TestEmbedded")]
+		public var map:Object;
 	}
 }

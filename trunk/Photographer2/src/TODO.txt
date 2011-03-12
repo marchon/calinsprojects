@@ -1,7 +1,7 @@
-1. xml->object: implement maps for nodes with key attribute(should specify in metadata it should be a map)
-2. implement ScaleCropBitmapProcessor from last talk with gandac
-3. implement details view for subcategories
-4. refactor and comment all code
-5. pic transition with loading
-6. other details like about, friends, and so on...
-7. left/right buttons
+implement details view for subcategories
+train gandac to configure app, and test it
+refactor and comment all code
+pic transition with loading
+other details like about, friends, and so on...
+left/right buttons
+deal with resizing and odd resolutions(create new ScaleCropBitmapProcessor and flush cache each time???) 

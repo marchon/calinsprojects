@@ -26,7 +26,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * 
  * TODO:
  *  <ul>
- *      <li>1. handle arrays and hash maps</li>
+ *      <li>1. arrays and collections and maps of simple objects</li>
  *      <li>2. handle reverse mapping, in which the metadata is provided in the source field</li>  
  *      <li>3. add logging</li>
  *      <li>4. finish unit testing</li>

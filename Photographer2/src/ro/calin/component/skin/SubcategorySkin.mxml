@@ -30,8 +30,22 @@
 		</s:fill>
 	</s:Rect>
 	
-	<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
-			  height="100%" scaleX.hovered="{hostComponent.scale}" 
-			  scaleY.hovered="{hostComponent.scale}" 
-			  alpha="0.3" alpha.hovered="1.0"/>
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
+				  height="100%" scaleX.hovered="{hostComponent.scale}" 
+				  scaleY.hovered="{hostComponent.scale}" 
+				  alpha="0.3" alpha.hovered="1.0" />
+		
+		<s:Group>
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="left" />
+			</s:layout>
+			<!--LIMITED BY PARENT COMPONENT WIDTH, SEE CATEGORY VIEWER SKIN-->
+			<s:Label id="subcatName" color="red"/>
+			<s:Label id="subcatDesc" color="red"/>
+		</s:Group>
+	</s:Group>
 </s:Skin>

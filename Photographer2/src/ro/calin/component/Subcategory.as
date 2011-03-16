@@ -8,6 +8,7 @@ package ro.calin.component
 	import ro.calin.component.model.SubcategoryModel;
 	import ro.calin.component.skin.SubcategorySkin;
 	
+	import spark.components.Label;
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	[SkinState("normal")]
@@ -16,6 +17,12 @@ package ro.calin.component
 	{
 		[SkinPart(required="true")]
 		public var image:Image;
+		
+		[SkinPart(required="true")]
+		public var subcatName:Label;
+		
+		[SkinPart(required="true")]
+		public var subcatDesc:Label;
 		
 		public var thumbnailWidth:Number = 100;
 		public var scale:Number = 1;
@@ -35,6 +42,12 @@ package ro.calin.component
 			_model = value;
 			if(image) {
 				image.source = _model.picUrl;
+			}
+			if(subcatName) {
+				subcatName.text = _model.name;
+			}
+			if(subcatDesc) {
+				subcatDesc.text = _model.description;
 			}
 		}
 		
@@ -57,6 +70,12 @@ package ro.calin.component
 				image.addEventListener(MouseEvent.ROLL_OVER, image_rollOver);
 				image.addEventListener(MouseEvent.ROLL_OUT, image_rollOut);
 				image.addEventListener(MouseEvent.CLICK, image_click);
+			}
+			if(instance == subcatName && _model) {
+				subcatName.text = _model.name;
+			}
+			if(instance == subcatDesc && _model) {
+				subcatDesc.text = _model.description;
 			}
 		}
 		

@@ -7,8 +7,8 @@ package ro.calin.component.model
 	public class SubcategoryModel
 	{
 		public var picUrl:String;
-		public var name:String = "noname";
-		public var description:String = "nodesc";
+		public var name:String;
+		public var description:String;
 		
 		public var extra:Object = null;
 	}

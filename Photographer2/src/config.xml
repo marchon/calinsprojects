@@ -38,8 +38,8 @@
 	<categories>
 		<category key="art">
 			<subcategories>
-				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="thumb1" extra="set1"/>
-				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="thumb2" extra="set2"/>
+				<subcategory picUrl="data/thumb/1.jpg" name="thumb1" description="mata pe gheata" extra="set1"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="thumb2" description="bla bla bla..." extra="set2"/>
 				<subcategory picUrl="data/thumb/3.jpg" name="thumb3" description="thumb3" extra="set3"/>
 				<subcategory picUrl="data/thumb/4.jpg" name="thumb4" description="thumb4" extra="set1"/>
 				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="set3"/>

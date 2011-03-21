@@ -1,4 +1,7 @@
-implement details view for subcategories
+read about positioning and anim: 
+	http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf633a0-7fff.html
+	http://www.adobe.com/devnet/flex/articles/flex4_effects_pt1.html
+implement details view for subcategories (font, colors, reverse resize)
 train gandac to configure app, and test it
 refactor and comment all code
 pic transition with loading

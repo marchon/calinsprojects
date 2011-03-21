@@ -51,6 +51,10 @@ package ro.calin.component
 			}
 		}
 		
+		public function get leftMargin():Number {
+			return (scale - 1) * thumbnailWidth / 2;
+		}
+		
 		override protected function getCurrentSkinState() : String {
 			if(_isHovered) {
 				return "hovered";

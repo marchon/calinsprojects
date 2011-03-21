@@ -16,36 +16,46 @@
 	<s:transitions>
 		<s:Transition>
 			<s:Parallel>
-				<s:Scale targets="{[back, image]}" duration="200"/>
-				<s:Fade target="{image}" duration="200"/>
+				<s:Scale targets="{[back, image]}" duration="300"/>
+				<s:Move target="{subcategory}" duration="300" />
+				<s:Fade target="{image}" duration="300"/>
+				
+				<!--not doing reverse-->
+				<s:Resize target="{details}" duration="400" />
+				<!--<s:Animate target="{details}" duration="400">
+					
+				</s:Animate>-->
 			</s:Parallel>	
 		</s:Transition>
 	</s:transitions>
 	
-	<s:Rect id="back" width="{hostComponent.thumbnailWidth}" 
-			height="100%" scaleX.hovered="{hostComponent.scale}" 
-			scaleY.hovered="{hostComponent.scale}">
-		<s:fill>
-			<s:SolidColor color="black"/>
-		</s:fill>
-	</s:Rect>
-	
-	<s:Group>
-		<s:layout>
-			<s:HorizontalLayout verticalAlign="middle"/>
-		</s:layout>
-		<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
-				  height="100%" scaleX.hovered="{hostComponent.scale}" 
-				  scaleY.hovered="{hostComponent.scale}" 
-				  alpha="0.3" alpha.hovered="1.0" />
+	<s:Group id="subcategory" x.normal="{hostComponent.leftMargin}" x.hovered="0">
 		
+		<!-- BUGS bunny -->
+		<s:Rect id="back" width="{hostComponent.thumbnailWidth}" 
+				height="100%" scaleX.hovered="{hostComponent.scale}" 
+				scaleY.hovered="{hostComponent.scale}">
+			<s:fill>
+				<s:SolidColor color="black"/>
+			</s:fill>
+		</s:Rect>
 		<s:Group>
 			<s:layout>
-				<s:VerticalLayout horizontalAlign="left" />
+				<s:HorizontalLayout verticalAlign="middle"/>
 			</s:layout>
-			<!--LIMITED BY PARENT COMPONENT WIDTH, SEE CATEGORY VIEWER SKIN-->
-			<s:Label id="subcatName" color="red"/>
-			<s:Label id="subcatDesc" color="red"/>
+			
+			<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
+					  height="100%" scaleX.hovered="{hostComponent.scale}" 
+					  scaleY.hovered="{hostComponent.scale}" 
+					  alpha="0.3" alpha.hovered="1.0" />
+			
+			<s:Group id="details" width.normal="0" width.hovered="{hostComponent.thumbnailWidth}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="left" />
+				</s:layout>
+				<s:Label id="subcatName" color="white"/>
+				<s:Label id="subcatDesc" color="white"/>
+			</s:Group>
 		</s:Group>
 	</s:Group>
 </s:Skin>

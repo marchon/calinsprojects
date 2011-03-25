@@ -47,13 +47,14 @@
 					  scaleY.hovered="{hostComponent.scale}" 
 					  alpha="0.3" alpha.hovered="1.0" />
 			
-			<s:Group id="details" width.normal="0" width.hovered="{hostComponent.thumbnailWidth}">
+			<s:Group id="details" includeInLayout.normal="false" visible.normal="false"
+					 width.normal="0" width.hovered="{hostComponent.thumbnailWidth}">
 				<s:layout>
 					<s:VerticalLayout horizontalAlign="left" />
 				</s:layout>
 				
-				<s:Label id="subcatName" color="green"/>
-				<s:Label id="subcatDesc" color="white"/>
+				<s:Label id="subcatName" color="white" fontSize="20"/>
+				<s:Label id="subcatDesc" color="white" fontSize="10"/>
 			</s:Group>
 		</s:Group>
 	</s:Group>

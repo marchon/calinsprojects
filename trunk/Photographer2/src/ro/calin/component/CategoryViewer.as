@@ -61,6 +61,8 @@ package ro.calin.component
 		
 		private function thumbnailStrip_mouseMoveHandler(evt:MouseEvent):void {
 			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
+			var h:Number = this.height;
+			var y:Number = this.y;
 			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
 			
 			//magical voodoo math stuff

@@ -31,9 +31,7 @@
 	
 	<s:Group id="subcategory" x.normal="{hostComponent.leftMargin}" x.hovered="0">
 		
-		<!-- BUGS bunny -->
-		<s:Rect id="back" width="{hostComponent.thumbnailWidth}" 
-				height="100%" scaleX.hovered="{hostComponent.scale}" 
+		<s:Rect id="back" width="100%" height="100%" scaleX.hovered="{hostComponent.scale}" 
 				scaleY.hovered="{hostComponent.scale}">
 			<s:fill>
 				<s:SolidColor color="black"/>
@@ -53,7 +51,8 @@
 				<s:layout>
 					<s:VerticalLayout horizontalAlign="left" />
 				</s:layout>
-				<s:Label id="subcatName" color="white"/>
+				
+				<s:Label id="subcatName" color="green"/>
 				<s:Label id="subcatDesc" color="white"/>
 			</s:Group>
 		</s:Group>

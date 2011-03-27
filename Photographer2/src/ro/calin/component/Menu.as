@@ -42,7 +42,7 @@ package ro.calin.component
 		public var buttonWidth:Number = 200;
 		
 		[Bindable]
-		public var menuColor:Number = 0x000000;
+		public var menuColor:Number = 0x333333;
 		
 		[Bindable]
 		public var menuAlpha:Number = 0.5;

@@ -26,8 +26,12 @@ package ro.calin.utils
 			var scale:Number = 1;
 			var sourceRect:Rectangle = null;
 			var destPoint:Point = new Point(0, 0);
-			if(dh > 1 && dw > 1) {
-				//case 1 - bigger on bolth: scale on smallest, then crop on the other
+			if(w/h >= 1.85) {
+				//case 1: panafuckingramic, scale on width, center on vert
+				scale = _aw / w;
+				destPoint.y = (_ah - h * scale) / 2;
+			} else if(dh > 1 && dw > 1) {
+				//case 2 - bigger on bolth: scale on smallest, then crop on the other
 				if(dh > dw) {
 					//scale on width, because it's smaller
 					scale = _aw / w;
@@ -38,15 +42,15 @@ package ro.calin.utils
 					sourceRect = new Rectangle((w * scale - _aw) / 2, 0, _aw, _ah);
 				}
 			} else if(dh > 1) {
-				//case 2 - bigger just on height: scale on height, center on horiz
+				//case 3 - bigger just on height: scale on height, center on horiz
 				scale = _ah / h;
 				destPoint.x = (_aw - w * scale) / 2;
 			} else if(dw > 1) {
-				//case 3 - bigger just on width: scale on width, center on vert
+				//case 4 - bigger just on width: scale on width, center on vert
 				scale = _aw / w;
 				destPoint.y = (_ah - h * scale) / 2;
 			} else {
-				//case 4 - smaller: center on both
+				//case 5 - smaller: center on both
 				destPoint.x = (_aw - w) / 2;
 				destPoint.y = (_ah - h) / 2;
 			}

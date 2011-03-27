@@ -1,9 +1,11 @@
-read about positioning and anim: 
-	http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf633a0-7fff.html
-	http://www.adobe.com/devnet/flex/articles/flex4_effects_pt1.html
 train gandac to configure app, and test it
 refactor and comment all code
 pic transition with loading
 other details like about, friends, and so on...
 left/right buttons
-deal with resizing and odd resolutions(create new ScaleCropBitmapProcessor and flush cache each time???) 
+fix catview bugs
+deal with resizing and odd resolutions(flush cache)
+delay at moving cursor out of catview
+read about positioning and anim: 
+	http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf633a0-7fff.html
+	http://www.adobe.com/devnet/flex/articles/flex4_effects_pt1.html

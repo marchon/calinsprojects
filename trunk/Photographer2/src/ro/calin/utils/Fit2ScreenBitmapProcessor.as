@@ -27,9 +27,9 @@ package ro.calin.utils
 			var sourceRect:Rectangle = null;
 			var destPoint:Point = new Point(0, 0);
 			
-			//magic ratio, if bigger consider it panoramic
+			//magic ratio
 			if(w/h <= 1.85) {
-				//scale on height
+				//not panoramic, scale on height
 				scale = _ah / h;
 				
 				if(w * scale > _aw) {
@@ -40,7 +40,7 @@ package ro.calin.utils
 					destPoint.x = (_aw - w * scale) / 2;
 				}
 			} else {
-				//scale on width, center on vert
+				//panoramic, scale on width, center on vert
 				scale = _aw / w;
 				destPoint.y = (_ah - h * scale) / 2;
 			}

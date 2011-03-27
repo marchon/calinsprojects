@@ -11,6 +11,7 @@ package ro.calin.component
 	import ro.calin.utils.BitmapProcessor;
 	import ro.calin.utils.CacheableImage;
 	import ro.calin.utils.Fit2ScreenBitmapProcessor;
+	import ro.calin.utils.ScaleCropBitmapProcessor;
 	
 	import spark.components.Application;
 	import spark.components.Button;
@@ -56,7 +57,7 @@ package ro.calin.component
 			_moveAnim = new Move();
 			
 			var app:Application = (FlexGlobals.topLevelApplication as Application);
-			_bitmapProcessor = new Fit2ScreenBitmapProcessor(app.width, app.height);
+			_bitmapProcessor = new ScaleCropBitmapProcessor(app.width, app.height);
 		}
 		
 		public function get model():PictureViewerModel {return _model;}

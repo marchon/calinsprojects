@@ -7,6 +7,7 @@
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectUtil;
 			
 			import ro.calin.app.model.Config;
 			import ro.calin.component.event.CategoryEvent;
@@ -21,14 +22,16 @@
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
 				config = new Config();
+				
 				XmlToObjectConverter.convertToObject(XML(event.result), config);
+				
 				menu.model = config.menu;
 				viewer.model = config.picturesets["selection"];
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("Error getting configuration!!!");
+				Alert.show(ObjectUtil.toString(event.fault));
 			}
 
 

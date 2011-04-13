@@ -17,9 +17,6 @@ package ro.calin.utils
 		}
 		
 		public static function convertToObject(node:XML, object:Object):void {
-			
-			trace(ObjectUtil.toString(node));
-			trace(ObjectUtil.toString(object));
 			//1. for each attribute, set the corresponding property
 			for each(var attr:XML in node.attributes()) {
 				var key:String = attr.name().toString();

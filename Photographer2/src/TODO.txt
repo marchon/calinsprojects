@@ -1,6 +1,3 @@
-fix problem with crossdomain by using release build and fixing xmlconvertor error(maybe revert to xml)
-train gandac to configure app, and test it
-investigate and replace xmlconvertor to plain xml
 refactor and comment all code
 pic transition with loading
 other details like about, friends, and so on...

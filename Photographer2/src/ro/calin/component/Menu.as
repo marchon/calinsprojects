@@ -16,14 +16,14 @@ package ro.calin.component
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.IndexChangeEvent;
 
-	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
-	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
-	
 	/**
 	 * Component that represents a menu with potential submenus.
 	 * When a menu item is clicked, the corresponding submenu replaces
 	 * the current menu.
 	 * */
+	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
+	[Event(name="itemHover", type="ro.calin.component.event.MenuEvent")]
+	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
 	public class Menu extends SkinnableComponent
 	{
 		[SkinPart(required="false")]

@@ -1,5 +1,3 @@
-random selection on nongallery screens
-categs on hover not click
 refactor and comment all code + organize project with maven
 pic transition with loading + cache all pics in a subcateg
 left/right buttons

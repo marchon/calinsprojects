@@ -12,6 +12,7 @@ package ro.calin.component.event
 	public class MenuEvent extends Event
 	{
 		public static const MENU_ITEM_CLICK:String = "itemClick";
+		public static const MENU_ITEM_HOVER:String = "itemHover";
 		public static const MENU_LOGO_CLICK:String = "logoClick";
 		
 		public var entry:MenuEntryModel;

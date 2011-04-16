@@ -62,6 +62,7 @@ package ro.calin.component
 		
 		public function get model():PictureViewerModel {return _model;}
 		public function set model(value:PictureViewerModel):void {
+			//TODO: handle null or empty values here???
 			//another anim should not start if one is currently in progres, maybe queue just one..
 			_model = value;
 			
@@ -119,7 +120,7 @@ package ro.calin.component
 			}
 			
 			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
-			slideLeft();
+			slideRight();
 		}
 		
 		private function rightButton_clickHandler(event:MouseEvent) : void {
@@ -128,7 +129,7 @@ package ro.calin.component
 				_current = 0;
 			}
 			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
-			slideRight();
+			slideLeft();
 		}
 		
 		private function slideLeft():void {

@@ -42,6 +42,10 @@ package ro.calin.component
 			addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
 				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, _entry, buttonIndex, true));
 			});
+			
+			addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void {
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_HOVER, _entry, buttonIndex, true));
+			});
 		}
 	}
 }

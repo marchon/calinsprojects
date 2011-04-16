@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*" xmlns:model="ro.calin.component.model.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -17,6 +17,8 @@
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
+			private static const WALLPAPERS:String = "WALLPAPERS"; 
+			
 			private var config:Config = null;
 
 			protected function configService_resultHandler(event:ResultEvent):void
@@ -26,14 +28,14 @@
 				XmlToObjectConverter.convertToObject(XML(event.result), config);
 				
 				menu.model = config.menu;
-				viewer.model = config.picturesets["selection"];
+				setPictureViewerRandomWallpaper();
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
-				Alert.show(ObjectUtil.toString(event.fault));
+				Alert.show("Connection error. Contact admin.");
+				trace(ObjectUtil.toString(event.fault));				
 			}
-
 
 			protected function menu_itemClickHandler(event:MenuEvent):void
 			{
@@ -43,7 +45,12 @@
 					} else {
 						currentState = "pagestate";
 					}
-				} else if(currentState == "gallerystate") {
+				} 
+			}
+
+			protected function menu_itemHoverHandler(event:MenuEvent):void
+			{
+				if(currentState == "gallerystate") {
 					var catname:String = event.entry.extra as String;
 					catViewer.model =  config.categories[catname];
 					
@@ -51,18 +58,22 @@
 						catViewer.model.subcategories.length * 119);
 					//why 271???
 					catViewer.x = 271 + 220 * event.buttonIndex;
+					
+					//TODO: use a nice fade in/out
 					catViewer.visible = true;
 					
+					//TODO: also be sure to hide it when the user rolls out the button/menubar(can be a little tricky)
 					catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
 						catViewer.visible = false;
 					});
 				}
 			}
-
-
+			
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
 				currentState = "menustate";
+				catViewer.visible = false;
+				setPictureViewerRandomWallpaper();
 			}
 
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
@@ -71,6 +82,15 @@
 				viewer.model = config.picturesets[picset];
 				catViewer.visible = false;
 			}
+			
+			private function setPictureViewerRandomWallpaper():void {
+				var walls:Array = (config.picturesets[WALLPAPERS] as PictureViewerModel).pictures;
+				var rand:int = Math.floor(Math.random() * walls.length);
+				wallpaperModel.pictures[0] = walls[rand];
+				viewer.model = wallpaperModel;
+			}
+
+
 		]]>
 	</fx:Script>
 	
@@ -89,9 +109,17 @@
 	<fx:Declarations>
 		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
 					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
+		
+		<model:PictureViewerModel id="wallpaperModel">
+			<model:pictures>
+				<fx:Array>
+				</fx:Array>
+			</model:pictures>
+		</model:PictureViewerModel>
 	</fx:Declarations>
 	<s:applicationComplete>
 		<![CDATA[
+			//TODO: remove this on production and check from time to time
 			SWFProfiler.init(stage, this);
 			configService.send();
 		]]>
@@ -102,6 +130,7 @@
 	<component:Menu id="menu" logoSource="logo.jpg" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
+					itemHover="menu_itemHoverHandler(event)"
 					width="100%" buttonWidth="220" y.menustate="{this.height * .7}" 
 					y.pagestate="0" y.gallerystate="{this.height - menu.height}" />
 	

@@ -1,7 +1,9 @@
-refactor and comment all code
-pic transition with loading
-other details like about, friends, and so on...
+random selection on nongallery screens
+categs on hover not click
+refactor and comment all code + organize project with maven
+pic transition with loading + cache all pics in a subcateg
 left/right buttons
+other details like about, friends, and so on...
 fix catview bugs
 deal with resizing and odd resolutions(flush cache)
 delay at moving cursor out of catview

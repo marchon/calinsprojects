@@ -51,15 +51,7 @@ package ro.calin.utils
 		 * Maximum number of bitmaps to be kept in the cache.
 		 * Default: 50.
 		 */ 
-		private static var _cacheLimit:Number = 50;
-		
-		public static function set cacheLimit(num:Number):void {
-			_cacheLimit = num;
-		}
-		
-		public static function get cacheLimit():Number {
-			return _cacheLimit;
-		}
+		public static var cacheLimit:Number = 50;
 		
 		/**
 		 * Clears all the cached images.
@@ -70,54 +62,30 @@ package ro.calin.utils
 		}
 		
 		/**
-		 * Boolean flag that indicates if this instance
-		 * caches loaded bitmaps.
-		 * Default: true.
-		 */
-		private var _cacheBitmap:Boolean = true;
-		
-		/**
 		 * An instance of a bitmap processor which will process
 		 * the bitmap before caching. If null, the bitmap won't
 		 * be processed.
 		 * Default: null.
 		 */
-		private var _bitmapProcessor:BitmapProcessor = null;
+		public var bitmapProcessor:BitmapProcessor = null;
 		
 		public function CacheableImage() {
 			super();
 		}
-		
-		public function set cacheBitmap(value:Boolean):void {
-			_cacheBitmap = value;
-		}
-		
-		public function get cacheBitmap():Boolean {
-			return _cacheBitmap;
-		}
-		
-		public function set bitmapProcessor(value:BitmapProcessor):void {
-			_bitmapProcessor = value;
-		}
-		
-		public function get bitmapProcessor():BitmapProcessor {
-			return _bitmapProcessor;
-		}
-		
+
 		/**
 		 * Overridden source setter, it first searches the cache
 		 * for the bitmap. If the cache contains the bitmap, it uses
 		 * that bitmap instead of requesting the image again.
 		 */
 		public override function set source(value:Object):void {
-			if(_cacheBitmap) {
-				if(value is String || value is Object){
-					value = searchCache(String(value));
-					
-					var lc:LoaderContext = new LoaderContext();
-					lc.checkPolicyFile = true;
-					super.loaderContext = lc;
-				}
+
+			if(value is String || value is Object){
+				value = searchCache(String(value));
+				
+				var lc:LoaderContext = new LoaderContext();
+				lc.checkPolicyFile = true;
+				super.loaderContext = lc;
 			}
 			
 			super.source = value;
@@ -129,15 +97,13 @@ package ro.calin.utils
 		 * replaces the source with the processed image.
 		 */
 		override mx_internal function contentLoaderInfo_completeEventHandler(event:Event):void {
-			if(_cacheBitmap) {
-				if (LoaderInfo(event.target).loader != contentHolder)
-					return;
-	
-				if(source is String && source != ""){
-					var b:Bitmap = processAndCacheImage(source as String);
-					if(_bitmapProcessor != null && b != null) {
-						super.source = b;  
-					}
+			if (LoaderInfo(event.target).loader != contentHolder)
+				return;
+
+			if(source is String && source != ""){
+				var b:Bitmap = processAndCacheImage(source as String);
+				if(bitmapProcessor != null && b != null) {
+					super.source = b;  
 				}
 			}
 			
@@ -170,7 +136,7 @@ package ro.calin.utils
 			obj.data = bd;
 			imageDictionary.addItem(obj);
 			
-			if(imageDictionary.length > _cacheLimit) {
+			if(imageDictionary.length > cacheLimit) {
 				imageDictionary.removeItemAt(0);
 			}
 			
@@ -217,8 +183,8 @@ package ro.calin.utils
 		 */
 		private function getProcessedBitmapData() : BitmapData {
 			var bd:BitmapData = (this.content as Bitmap).bitmapData;
-			if(_bitmapProcessor != null) {
-				bd = _bitmapProcessor.process(bd);
+			if(bitmapProcessor != null) {
+				bd = bitmapProcessor.process(bd);
 			} else {
 				//clone it, just to be sure
 				bd = bd.clone(); 

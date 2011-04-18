@@ -26,5 +26,20 @@
 			<type>2</type>
 			<location>E:/Servers/wamp/www/Photographer2</location>
 		</link>
+		<link>
+			<name>bin-release1</name>
+			<type>2</type>
+			<location>E:/Servers/wamp/www/Photographer2</location>
+		</link>
+		<link>
+			<name>bin-release2</name>
+			<type>2</type>
+			<location>E:/Servers/wamp/www/Photographer2</location>
+		</link>
+		<link>
+			<name>bin-release3</name>
+			<type>2</type>
+			<location>E:/Servers/wamp/www/Photographer2</location>
+		</link>
 	</linkedResources>
 </projectDescription>

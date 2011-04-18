@@ -1,10 +1,13 @@
-refactor and comment all code + organize project with maven
 pic transition with loading + cache all pics in a subcateg
+refactor and comment all code + organize project with maven
 left/right buttons
 other details like about, friends, and so on...
 fix catview bugs
 deal with resizing and odd resolutions(flush cache)
 delay at moving cursor out of catview
-read about positioning and anim: 
+
+
+
+docs to read:
 	http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf633a0-7fff.html
 	http://www.adobe.com/devnet/flex/articles/flex4_effects_pt1.html

@@ -1,9 +1,14 @@
 package ro.calin.component
 {
+	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
 	
 	import mx.controls.Image;
+	import mx.controls.ProgressBar;
 	import mx.core.FlexGlobals;
+	import mx.core.IVisualElement;
 	
 	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
@@ -15,12 +20,11 @@ package ro.calin.component
 	
 	import spark.components.Application;
 	import spark.components.Button;
+	import spark.components.Panel;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.effects.Move;
 	
-	///http://livedocs.adobe.com/flex/3/html/help.html?content=cursormgr_4.html
-	///http://userflex.wordpress.com/2008/07/28/image-caching/
-	public class PictureViewer extends SkinnableComponent
+	public class PictureViewer extends Panel
 	{
 		[SkinPart(required="true")]
 		public var picture1:CacheableImage;
@@ -33,6 +37,9 @@ package ro.calin.component
 		
 		[SkinPart(required="true")]
 		public var rightButton:Button;
+		
+//		[SkinPart(required="true")]
+		public var progressBar:ProgressBar;
 		
 		[Bindable]
 		public var hasLeftRight:Boolean = true;
@@ -62,7 +69,8 @@ package ro.calin.component
 		
 		public function get model():PictureViewerModel {return _model;}
 		public function set model(value:PictureViewerModel):void {
-			//TODO: handle null or empty values here???
+			if(value == null) return;
+		
 			//another anim should not start if one is currently in progres, maybe queue just one..
 			_model = value;
 			
@@ -74,6 +82,8 @@ package ro.calin.component
 			
 			if(_model.pictures.length > 1) hasLeftRight = true;
 			else hasLeftRight = false;
+			
+//			triggerImageSetLoading();
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void { 
@@ -112,6 +122,44 @@ package ro.calin.component
 				rightButton.removeEventListener(MouseEvent.CLICK, rightButton_clickHandler);
 			}
 		}
+		
+		private function triggerImageSetLoading() : void {
+//			progressBar.visible = true;
+			bytesLoaded = 0;
+			bytesTotal = 0;
+			for each(var pic:PictureModel in _model.pictures) {
+				var loader:CacheableImage = new CacheableImage();
+				loader.bitmapProcessor = _bitmapProcessor;
+				loader.source = pic.url;
+				loader.visible = false;
+				this.addElement(loader);
+				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+				loader.addEventListener(Event.COMPLETE, completeHandler);
+			}		
+		}
+		
+		private var bytesLoaded:uint;
+		private var bytesTotal:uint;
+		private var reg:Array = [];
+		private function progressHandler(e:ProgressEvent):void {
+			//add bytes total for all
+			if(reg.indexOf(e.currentTarget) < 0) {
+				bytesTotal += e.bytesTotal;
+				reg.push(e.currentTarget);
+			}
+			
+			bytesLoaded += e.bytesLoaded;
+			
+			progressBar.setProgress(bytesLoaded, bytesTotal);
+			progressBar.visible = bytesLoaded <= bytesTotal;
+		}
+		
+		private function completeHandler(e:Event):void {
+			reg.splice(reg.indexOf(e.currentTarget), 1);
+			this.removeElement(e.currentTarget as IVisualElement);
+			if(reg.length == 0) progressBar.visible = false;
+		}
+		
 		
 		private function leftButton_clickHandler(event:MouseEvent) : void {
 			_current--;
@@ -156,6 +204,15 @@ package ro.calin.component
 			_outsidePicture.x = 0;
 			_outsidePicture.y = this.height;
 			_moveAnim.yBy = -this.height;
+			performSlide();
+		}
+		
+		private function slideDown():void {
+			if(_moveAnim.isPlaying) return;
+			
+			_outsidePicture.x = 0;
+			_outsidePicture.y = -this.height;
+			_moveAnim.yBy = this.height;
 			performSlide();
 		}
 		

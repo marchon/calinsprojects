@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:component="ro.calin.component.*" xmlns:model="ro.calin.component.model.*">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" 
+			   minHeight="600" xmlns:component="ro.calin.component.*" 
+			   xmlns:model="ro.calin.component.model.*" xmlns:appmodel="ro.calin.app.model.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -12,56 +14,85 @@
 			import ro.calin.app.model.Config;
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
-			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
-			private static const WALLPAPERS:String = "WALLPAPERS"; 
+			/**
+			 * Name of special pictureset which contains 
+			 * references to pictures to be shown when not on gallery.
+			 */
+			private static const WALLPAPERS:String = "WALLPAPERS";
 			
-			private var config:Config = null;
-
+			
+			/**
+			 * Called when config xml is received.
+			 * Populate config from that.
+			 */ 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
+				var configXml:XML = XML(event.result);
 				config = new Config();
 				
-				XmlToObjectConverter.convertToObject(XML(event.result), config);
+				XmlToObjectConverter.convertToObject(configXml, config);
 				
 				menu.model = config.menu;
 				setPictureViewerRandomWallpaper();
 			}
-
+			
+			/**
+			 * Called when error occured in getting conf xml.
+			 * Show error popup.
+			 */ 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("Connection error. Contact admin.");
+				Alert.show("Connection error. Contact admin at calin014@gmail.com.");
 				trace(ObjectUtil.toString(event.fault));				
 			}
+			
+			
 
+			
+			/**
+			 * Called when item in menu is clicked.
+			 * Change the state of app to gallery or page, depending on the clicked item.
+			 */
 			protected function menu_itemClickHandler(event:MenuEvent):void
 			{
 				if(currentState == "menustate") {
+					//TODO: externalize and don't use label
+					//could specify direction to move or smfn
 					if(event.entry.label == "gallery") {
 						currentState = "gallerystate";
 					} else {
-						currentState = "pagestate";
+						currentState = "textstate";
 					}
 				} 
 			}
 
+			/**
+			 * Called when an item from the menu is hovered.
+			 * Display the category control for the category represented by this item.
+			 */
 			protected function menu_itemHoverHandler(event:MenuEvent):void
 			{
 				if(currentState == "gallerystate") {
+					//the category reference is stored as "extra" in the menuentry entry model
 					var catname:String = event.entry.extra as String;
 					catViewer.model =  config.categories[catname];
 					
+					//dimension and position
+					//if more thumbs then the screen can fit, height is screen height
+					//else, height is determined by nb of pics and pic height.
+					//TODO: externalize hardcoded values
 					catViewer.height = Math.min(this.height - menu.height, 
 						catViewer.model.subcategories.length * 119);
-					//why 271???
 					catViewer.x = 271 + 220 * event.buttonIndex;
 					
 					//TODO: use a nice fade in/out
 					catViewer.visible = true;
 					
+					//hide when user move mouse away from category
 					//TODO: also be sure to hide it when the user rolls out the button/menubar(can be a little tricky)
 					catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
 						catViewer.visible = false;
@@ -69,6 +100,10 @@
 				}
 			}
 			
+			/**
+			 * Called when clicked on menu logo.
+			 * Go back to menu state and randomize wallpaper.
+			 */
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
 				currentState = "menustate";
@@ -76,13 +111,26 @@
 				setPictureViewerRandomWallpaper();
 			}
 
+			
+			
+			/**
+			 * Called when clicked on subactegory.
+			 * Hide category control and change picture viewer pics.
+			 */
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
+				//pictureset reference is held in "extra" field of subcateg model
 				var picset:String = event.subcategory.extra as String;
 				viewer.model = config.picturesets[picset];
+				
 				catViewer.visible = false;
 			}
 			
+			
+		
+			/**
+			 * Randomizes over wallpaper pictureset.
+			 */
 			private function setPictureViewerRandomWallpaper():void {
 				var walls:Array = (config.picturesets[WALLPAPERS] as PictureViewerModel).pictures;
 				var rand:int = Math.floor(Math.random() * walls.length);
@@ -95,8 +143,14 @@
 	</fx:Script>
 	
 	<s:states>
+		<!-- TODO: make states more general!!! middle, up, down; control actions depending menu metadata from the model -->
+		<!--Menu is in the middle, random wallpaper.-->
 		<s:State name="menustate"/>
-		<s:State name="pagestate"/>
+		
+		<!--Menu is up, text can be shown.-->
+		<s:State name="textstate"/>
+		
+		<!--Menu is down, -->
 		<s:State name="gallerystate"/>
 	</s:states>
 	
@@ -107,9 +161,14 @@
 	</s:transitions>
 	
 	<fx:Declarations>
+		<!-- This service requests the xml config. -->
 		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
 					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
 		
+		<!-- Store the model in memory. -->
+		<appmodel:Config id="config" />
+		
+		<!-- Modified each time to contain only one pic, the current wallpaper. -->
 		<model:PictureViewerModel id="wallpaperModel">
 			<model:pictures>
 				<fx:Array>
@@ -117,24 +176,27 @@
 			</model:pictures>
 		</model:PictureViewerModel>
 	</fx:Declarations>
+	
 	<s:applicationComplete>
 		<![CDATA[
-			//TODO: remove this on production and check from time to time
+			//TODO: use more often, find a way to remove on prod
 			SWFProfiler.init(stage, this);
+		
+			//get the config xml
 			configService.send();
 		]]>
 	</s:applicationComplete>
 	
-	<component:PictureViewer id="viewer" width="100%" height="100%" />
 	
+	<!--This is the whole app(3 components): menu, picture viewer, category viewer-->
+	<component:PictureViewer id="viewer" width="100%" height="100%" />
 	<component:Menu id="menu" logoSource="logo.jpg" 
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
 					itemHover="menu_itemHoverHandler(event)"
 					width="100%" buttonWidth="220" y.menustate="{this.height * .7}" 
-					y.pagestate="0" y.gallerystate="{this.height - menu.height}" />
-	
+					y.textstate="0" y.gallerystate="{this.height - menu.height}" />
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
-							  thumbnailWidth="220" scale="1.2" categItemClick="catViewer_categItemClickHandler(event)"/>
-	
+							  thumbnailWidth="220" scale="1.2" 
+							  categItemClick="catViewer_categItemClickHandler(event)"/>
 </s:Application>

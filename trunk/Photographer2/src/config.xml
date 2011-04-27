@@ -67,7 +67,7 @@
 	</categories>
 	
 	<!-- SECTIUNEA LISTE DE POZE, FIECARE LISTA ARE UN ID DUPA CARE ESTE REFERIT -->
-	<!-- PRIMU CARE ARE key="selection" E ALA DEFAULT DE UNDE AR TREBUI SA IA CATE UNA RANDOM(TODO :p)-->
+	<!-- PRIMU CARE ARE key="selection" E ALA DEFAULT DE UNDE IA CATE UNA RANDOM-->
 	<!-- RESTU E EVIDENT. HAVE FUN -->
 	<picturesets>
 		<pictureset key="WALLPAPERS">

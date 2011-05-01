@@ -8,7 +8,7 @@ package ro.calin.component.event
 	/**
 	 * Event for the menu component.
 	 * Can hold a reference to a menu entry.
-	 * */
+	 */
 	public class MenuEvent extends Event
 	{
 		public static const MENU_ITEM_CLICK:String = "itemClick";

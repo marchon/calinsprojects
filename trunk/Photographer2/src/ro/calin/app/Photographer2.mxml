@@ -190,11 +190,11 @@
 	
 	<!--This is the whole app(3 components): menu, picture viewer, category viewer-->
 	<component:PictureViewer id="viewer" width="100%" height="100%" />
-	<component:Menu id="menu" logoSource="logo.jpg" 
+	<component:Menu id="menu"
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"
 					itemHover="menu_itemHoverHandler(event)"
-					width="100%" buttonWidth="220" y.menustate="{this.height * .7}" 
+					width="100%" y.menustate="{this.height * .7}" 
 					y.textstate="0" y.gallerystate="{this.height - menu.height}" />
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
 							  thumbnailWidth="220" scale="1.2" 

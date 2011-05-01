@@ -19,6 +19,7 @@ package ro.calin.utils
 	 * //TODO: specify xmlattr-objprop mappings (now it's done by name)
 	 * //TODO: provide another mechanism to do list/map type specs, in order
 	 * to externalize this info from the model(annotations are in the model)
+	 * eg: wrapper around ObjectUtil.getClassInfo() and pass an object with info
 	 */
 	public class XmlToObjectConverter
 	{
@@ -78,7 +79,7 @@ package ro.calin.utils
 			//		2.1.2. for each child of this ch
 			//			2.1.2.1. convert recursivly to an instance of type and add it to the array
 			//	2.2. if property is a map type(is an object with Mapof metadata)
-			//		2.2.1. 
+			//		2.2.1. [same as list but one of attrs is key for map]
 			//	2.3. else(normal object) create object of that type and convert recursively
 			for each (var child:XML in node.children()) {
 				propertyName = child.name().toString();
@@ -87,7 +88,7 @@ package ro.calin.utils
 					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
 				}
 				
-				var type:String = describeType(object).variable.(@name == propertyName)[0].@type;
+				var type:String = getType(object, propertyName);
 				var classInfo:Object = ObjectUtil.getClassInfo(object);
 				
 				if(type == "Array" || type == "mx.collections::ArrayList"  || 
@@ -160,6 +161,13 @@ package ro.calin.utils
 					convertToObject(child, object[propertyName]);
 				}
 			}
+		}
+		
+		private static function getType(obj:Object, propertyName:String):String {
+			var typeInfo:XML = describeType(obj);
+			var propertyInfo:XMLList = typeInfo['variable'];
+			if(propertyInfo.length() == 0) propertyInfo = typeInfo['accessor']; //this is for bindables
+			return propertyInfo.(@name == propertyName)[0].@type;
 		}
 	}
 }

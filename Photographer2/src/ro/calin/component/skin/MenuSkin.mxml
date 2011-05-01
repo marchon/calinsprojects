@@ -13,16 +13,16 @@
 	-->
 	
 	<!-- Layer 1: background -->
-	<s:Rect width="100%" height="100%" alpha="{hostComponent.menuAlpha}">
+	<s:Rect width="100%" height="100%" alpha="{hostComponent.model.alpha}">
 		<s:fill>
-			<s:SolidColor color="{hostComponent.menuColor}"/>
+			<s:SolidColor color="{hostComponent.model.color}"/>
 		</s:fill>
 	</s:Rect>
 	
 	<!-- Layer 2: logo and button group -->
 	<s:HGroup>
 		<!-- Sublayer 2.1: image logo -->
-		<mx:Image id="logo" buttonMode="true"/>
+		<mx:Image id="logo" buttonMode="true" source="{hostComponent.model.logoUrl}"/>
 		
 		<!-- Sublayer 2.2: button grup -->
 		<s:DataGroup id="bar" width="100%" height="100%" verticalCenter="0">
@@ -43,7 +43,7 @@
 							]]>
 						</fx:Script>
 						<!-- Contains only a MenuButton component. -->
-						<component:MenuButton id="button" width="{outerDocument.hostComponent.buttonWidth}" 
+						<component:MenuButton id="button" width="{outerDocument.hostComponent.model.buttonWidth}" 
 											  height="{outerDocument.hostComponent.height}" buttonMode="true"
 											  entry="{data}" buttonIndex="{itemIndex}"/>
 					</s:ItemRenderer>

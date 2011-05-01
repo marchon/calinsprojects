@@ -20,7 +20,7 @@ package ro.calin.component
 	 * Component that represents a menu with potential submenus.
 	 * When a menu item is clicked, the corresponding submenu replaces
 	 * the current menu.
-	 * */
+	 */
 	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
 	[Event(name="itemHover", type="ro.calin.component.event.MenuEvent")]
 	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
@@ -38,24 +38,10 @@ package ro.calin.component
 		 * */
 		public var bar:DataGroup;
 		
-		[Bindable]
-		public var buttonWidth:Number = 200;
-		
-		[Bindable]
-		public var menuColor:Number = 0x333333;
-		
-		[Bindable]
-		public var menuAlpha:Number = 0.5;
-		
 		/**
 		 * The model of this menu.
 		 * */
 		private var _model:MenuModel;
-		
-		/**
-		 * Source for the logo image.
-		 * */
-		private var _logoSource:String;
 		
 		/**
 		 * Stack used to keep track of the submenus,
@@ -68,7 +54,12 @@ package ro.calin.component
 			setStyle("skinClass", MenuSkin);
 		}
 		
-		public function get model():MenuModel {return _model;}
+		[Bindable]
+		public function get model():MenuModel {
+			if(_model == null) _model = new MenuModel();
+			
+			return _model;
+		}
 		public function set model(value:MenuModel):void {
 			if(_model == value) return;
 			
@@ -78,16 +69,6 @@ package ro.calin.component
 			if(bar) {
 				pushMenu(_model.entries);
 			}
-		}
-		
-		public function get logoSource():String {return _logoSource;}
-		public function set logoSource(value:String):void {
-			if(value == _logoSource) return;
-			_logoSource = value;
-			
-			if(logo) {
-				logo.source = value;
-			}			
 		}
 		
 		/**
@@ -121,7 +102,6 @@ package ro.calin.component
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance); 
 			if (instance == logo) {
-				logo.source = _logoSource;
 				logo.addEventListener(MouseEvent.CLICK, logo_clickHandler);
 			}
 			if (instance == bar) {

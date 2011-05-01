@@ -2,8 +2,8 @@ package ro.calin.component.model
 {
 	/**
 	 * Model for the subcategory component.
-	 * Contains an image url, a name and a desc.
-	 * */
+	 * Contains an thumbnail url, a name and a desc.
+	 */
 	public class SubcategoryModel
 	{
 		public var picUrl:String;

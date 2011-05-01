@@ -5,7 +5,7 @@ package ro.calin.component.model
 	/**
 	 * Model for the category viewer.
 	 * Contains a list of subcategories.
-	 * */
+	 */
 	public class CategoryViewerModel
 	{
 		[Listof(type="ro.calin.component.model.SubcategoryModel")]

@@ -10,78 +10,128 @@ package ro.calin.utils
 	import mx.messaging.management.Attribute;
 	import mx.utils.ObjectUtil;
 
+	/**
+	 * Provides a convenient way of transforming data
+	 * in xml format to internal object in-memory representation.
+	 * It does this with the help of annotations on properties of
+	 * AS classes.
+	 * 
+	 * //TODO: specify xmlattr-objprop mappings (now it's done by name)
+	 * //TODO: provide another mechanism to do list/map type specs, in order
+	 * to externalize this info from the model(annotations are in the model)
+	 */
 	public class XmlToObjectConverter
 	{
 		public function XmlToObjectConverter() {
 			throw new Error("Cannot instantiate.");
 		}
 		
+		/**
+		 * Fills the object with the information in xml format provided
+		 * by node. It operates recursively and instantiates objects for
+		 * inner properties(the types are provided as annotations).
+		 * 
+		 * <elem attr1="val1">								elem:{
+		 * 	<innerelem1 attr1="val1"/>							attr1:'val1',
+		 * 	<innerlist1>										innerelem1:{attr1:'val1'},
+		 * 		<item1 a="b"/>										innerlist1:[
+		 * 		<item2 />											{a:'b'},
+		 * 	</innerlist1>					-----------\			{}
+		 *  <innermap1>						-----------/		],					
+		 * 		<item1 key="key1" d="e"/>							innermap1:{
+		 * 		<item2 key="key2"/>									key1: {d:'e'},	
+		 * 	</innermap1>											key2: {}												
+		 * </elem>												}
+		 * 													}
+		 * 
+		 * AS annotated class:
+		 * class Elem {
+		 * 	public var attr1:String;
+		 *  public var innerelem1:MyFancyClass; //which has a string attribute
+		 * 	
+		 *  [Listof(type="my.package.AnotherFancyClass")]
+		 *  public var innerlist1:Array; //or IList or ArrayCollection
+		 * 
+		 *  [Mapof(keyname="key", type="my.package.YetAnotherFancyClass")]
+		 *  public var innermap1:Object;
+		 * }
+		 */
 		public static function convertToObject(node:XML, object:Object):void {
+			
+			var propertyName:String = null;
+			
 			//1. for each attribute, set the corresponding property
 			for each(var attr:XML in node.attributes()) {
-				var key:String = attr.name().toString();
+				propertyName = attr.name().toString();
 				
-				if(!object.hasOwnProperty(key)) {
-					throw new Error("Object [" + object.toString() + "] has no such property [" + key + "].");
+				if(!object.hasOwnProperty(propertyName)) {
+					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
 				}
 				
 				//apparently conversion to simple types works automatically
-				object[key] = attr.toString();
+				object[propertyName] = attr.toString();
 			}
 			
-			//TODO: update for map
 			//2. for each child, get corresponding property by name
 			//	2.1. if property is a list type
 			//		2.1.1. get type from metadata of property
 			//		2.1.2. for each child of this ch
 			//			2.1.2.1. convert recursivly to an instance of type and add it to the array
-			//	2.2. else(normal object) create object of that type and convert recursively
+			//	2.2. if property is a map type(is an object with Mapof metadata)
+			//		2.2.1. 
+			//	2.3. else(normal object) create object of that type and convert recursively
 			for each (var child:XML in node.children()) {
-				key = child.name().toString();
+				propertyName = child.name().toString();
 				
-				if(!object.hasOwnProperty(key)) {
-					throw new Error("Object [" + object.toString() + "] has no such property [" + key + "].");
+				if(!object.hasOwnProperty(propertyName)) {
+					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
 				}
 				
-				var type:String = describeType(object).variable.(@name == key)[0].@type;
+				var type:String = describeType(object).variable.(@name == propertyName)[0].@type;
 				var classInfo:Object = ObjectUtil.getClassInfo(object);
 				
 				if(type == "Array" || type == "mx.collections::ArrayList"  || 
 				   type == "mx.collections::IList" || type == "mx.collections::ArrayCollection") {
 					var elemType:* = null;
-					if(classInfo["metadata"][key]["Listof"] == null) {
-						throw new Error("You must provide element type Metadata(Listof) for property [" + key + "].");
+					if(classInfo["metadata"][propertyName]["Listof"] == null) {
+						//["metadata"][x] represents the metadata of property x
+						throw new Error("You must provide element type Metadata(Listof) for property [" + propertyName + "].");
 					}
 					
-					if((elemType = (classInfo["metadata"][key]["Listof"]["type"] as String)) == null) {
-						throw new Error("You must provide element type for property [" + key + "].");
+					//get string repr of type from metadata
+					if((elemType = (classInfo["metadata"][propertyName]["Listof"]["type"] as String)) == null) {
+						throw new Error("You must provide element type for property [" + propertyName + "].");
 					}
 					
 					//BE CAREFULL, THE COMPILATION UNIT MUST BE INCLUDED BY THE COMPILER
 					//SO BE SURE TO REFFERENCE IT SOMEWARE(THE STRING METADATA IS NOT A REFFERENCE)
+					
+					//get the class from string repr
 					elemType = getDefinitionByName(elemType) as Class;
 					
 					var elements:Array = [];
 					
+					//for each child create a new object and convert recursivly
 					for each (var nephew:XML in child.children()) {
 						var element:Object = new elemType;
 						convertToObject(nephew, element);
 						elements.push(element);
 					}
 					
+					//set the array
 					if(type == "Array") {
-						object[key] = elements;
+						object[propertyName] = elements;
 					} else if(type == "mx.collections::ArrayList"  || type == "mx.collections::IList") {
-						object[key] = new ArrayList(elements);
+						object[propertyName] = new ArrayList(elements);
 					} else if(type == "mx.collections::ArrayCollection") {
-						object[key] = new ArrayCollection(elements);
+						object[propertyName] = new ArrayCollection(elements);
 					}
-				} else if(type == "Object" && classInfo["metadata"][key]["Mapof"] != null) {
-					//build a map
-					var keyAttrName:String = classInfo["metadata"][key]["Mapof"]["key"];
+				} else if(type == "Object" && classInfo["metadata"][propertyName]["Mapof"] != null) {
+					//build a map: same as for array, but use an object with keys
+					var keyAttrName:String = classInfo["metadata"][propertyName]["Mapof"]["keyname"];
 					elemType = null;
-					if((elemType = (classInfo["metadata"][key]["Mapof"]["type"] as String)) == null) {
-						throw new Error("You must provide element type for property [" + key + "].");
+					if((elemType = (classInfo["metadata"][propertyName]["Mapof"]["type"] as String)) == null) {
+						throw new Error("You must provide element type for property [" + propertyName + "].");
 					}
 					
 					//BE CAREFULL, THE COMPILATION UNIT MUST BE INCLUDED BY THE COMPILER
@@ -91,6 +141,8 @@ package ro.calin.utils
 					var map:Object = {};
 					
 					for each (nephew in child.children()) {
+						//do not consider the xml attribute specifying the key as an attribute of the object
+						//it needs to be deleted
 						var mapKey:String = nephew.attribute(keyAttrName)[0].toString();
 						delete nephew.attribute(keyAttrName)[0];
 						
@@ -100,12 +152,12 @@ package ro.calin.utils
 						map[mapKey] = element;
 					}
 					
-					object[key] = map;
+					object[propertyName] = map;
 				} else {
-					//TODO: contrary to popular belief, this works, see if it breaks in other cases
+					//get the type directly(no need to specify it in md)
 					var clazz:Class = getDefinitionByName(type) as Class;
-					object[key] = new clazz();
-					convertToObject(child, object[key]);
+					object[propertyName] = new clazz();
+					convertToObject(child, object[propertyName]);
 				}
 			}
 		}

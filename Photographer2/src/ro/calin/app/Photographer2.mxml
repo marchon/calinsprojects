@@ -60,7 +60,7 @@
 			protected function menu_itemClickHandler(event:MenuEvent):void
 			{
 				if(currentState == "menustate") {
-					//TODO: externalize and don't use label
+					//TODO: externalize and don't use label 
 					//could specify direction to move or smfn
 					if(event.entry.label == "gallery") {
 						currentState = "gallerystate";

@@ -1,8 +1,5 @@
 package ro.calin.app.model
 {
-	import mx.collections.IList;
-	
-	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.MenuModel;
 
 	/**
@@ -17,10 +14,10 @@ package ro.calin.app.model
 	{
 		public var menu:MenuModel;
 		
-		[Mapof(key="key", type="ro.calin.component.model.CategoryViewerModel")]
+		[Mapof(keyname="key", type="ro.calin.component.model.CategoryViewerModel")]
 		public var categories:Object;
 		
-		[Mapof(key="key", type="ro.calin.component.model.PictureViewerModel")]
+		[Mapof(keyname="key", type="ro.calin.component.model.PictureViewerModel")]
 		public var picturesets:Object; 
 	}
 }

@@ -1,6 +1,5 @@
 package ro.calin.component
 {
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
@@ -15,13 +14,11 @@ package ro.calin.component
 	import ro.calin.component.skin.PictureViewerSkin;
 	import ro.calin.utils.BitmapProcessor;
 	import ro.calin.utils.CacheableImage;
-	import ro.calin.utils.Fit2ScreenBitmapProcessor;
 	import ro.calin.utils.ScaleCropBitmapProcessor;
 	
 	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.Panel;
-	import spark.components.supportClasses.SkinnableComponent;
 	import spark.effects.Move;
 	
 	public class PictureViewer extends Panel

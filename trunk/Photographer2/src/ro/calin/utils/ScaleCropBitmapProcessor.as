@@ -5,9 +5,20 @@ package ro.calin.utils
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	/**
+	 * Processes bitmap data in the way described in 
+	 * process() method.
+	 */
 	public class ScaleCropBitmapProcessor implements BitmapProcessor
 	{
+		/**
+		 * Width of destination bitmap.
+		 */
 		private var _aw:Number;
+		
+		/**
+		 * Height of destination bitmap.
+		 */
 		private var _ah:Number;
 		
 		public function ScaleCropBitmapProcessor(width:Number, height:Number)
@@ -64,6 +75,7 @@ package ro.calin.utils
 			bd.draw(bitmapData, m, null, null, null, true);
 			
 			//crop and center
+			//TODO: externalize bg color???
 			var bd2 : BitmapData = new BitmapData(_aw, _ah, false, 0x000000);
 			bd2.copyPixels(bd, sourceRect, destPoint);
 			

@@ -43,7 +43,7 @@ package ro.calin.utils
 		/**
 		 * Static list of cached images. The actual bitmaps
 		 * are mapped by the image urls.
-		 * TODO: relpaced with an ordered map.
+		 * TODO: relpaced with an ordered map. 
 		 */
 		private static var imageDictionary:ArrayCollection = new ArrayCollection();
 		
@@ -100,9 +100,9 @@ package ro.calin.utils
 			if (LoaderInfo(event.target).loader != contentHolder)
 				return;
 
-			if(source is String && source != ""){
+			if(source is String && source != "") {
 				var b:Bitmap = processAndCacheImage(source as String);
-				if(bitmapProcessor != null && b != null) {
+				if(b != null) {
 					super.source = b;  
 				}
 			}
@@ -137,6 +137,7 @@ package ro.calin.utils
 			imageDictionary.addItem(obj);
 			
 			if(imageDictionary.length > cacheLimit) {
+				//0-back, lenght-1 - front
 				imageDictionary.removeItemAt(0);
 			}
 			
@@ -150,7 +151,7 @@ package ro.calin.utils
 		 * 
 		 * If a cached bitmap is found, the cached bitmap is moved
 		 * in front. This is done with the purpose of avoiding the
-		 * removal of frequently used cached data (if tha cache exceeds
+		 * removal of frequently used cached data (if the cache exceeds
 		 * a certain limit, items in the back get removed).
 		 * 
 		 * @return a bitmap or the passed in string
@@ -161,7 +162,7 @@ package ro.calin.utils
 			for(var i:int = 0; i < imageDictionary.length; i++) {
 				var obj:Object = imageDictionary[i];
 				if(obj.id == id) {
-					//move last accesed in front, 
+					//move last accesed in front(0-back, lenght-1 - front), 
 					//if it's not already there
 					if(i < imageDictionary.length - 1) {
 						imageDictionary.removeItemAt(i);

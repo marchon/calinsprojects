@@ -6,13 +6,13 @@ package ro.calin.component
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.skin.MenuButtonSkin;
 	
-	import spark.components.Button;
+	import spark.components.supportClasses.SkinnableComponent;
 	
 	/**
 	 * Menu button component.
 	 * Contains the model of the button and dispatches a menu event when clicked.
 	 * */
-	public class MenuButton extends Button
+	public class MenuButton extends SkinnableComponent
 	{
 		/**
 		 * The model.
@@ -22,13 +22,13 @@ package ro.calin.component
 		public var buttonIndex:int; 
 		
 		[Bindable]
-		public function get entry():MenuEntryModel {return _entry;}
+		public function get entry():MenuEntryModel {
+			if(_entry == null) _entry = new MenuEntryModel();
+			return _entry;
+		}
 		public function set entry(value:MenuEntryModel):void {
 			if(value == _entry) return;
 			_entry = value;
-			
-			//display the label
-			this.label = _entry.label;
 		}
 		
 		public function MenuButton()

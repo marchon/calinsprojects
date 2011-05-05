@@ -89,7 +89,7 @@ package ro.calin.component
 			//don't pop first entry
 			if(_menuState.length > 1) {
 				_menuState.pop();
-				var entries:ArrayList = _menuState[_menuState.length - 1];
+				var entries:ArrayList = _menuState[_menuState.length - 1]; //peek
 				bar.dataProvider = entries;
 				invalidateSkinState();
 			}
@@ -113,7 +113,7 @@ package ro.calin.component
 		}
 		
 		/**
-		 * Called when???
+		 * Called when skin is removed.
 		 * */
 		override protected function partRemoved(partName:String, instance: Object) : void {
 			super.partRemoved(partName, instance);

@@ -3,7 +3,7 @@
 <config>
 
 	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
-	<menu buttonWidth="200" color="0x333333" alpha="0.5" logoUrl="logo.jpg">
+	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg">
 		<entries>
 			<entry label="gallery" color="0xff00ff">
 				<entries>
@@ -17,7 +17,7 @@
 				<entries>
 					<entry label="blog">
 					</entry>
-					<entry label="contact">
+					<entry label="contact" imageUrl="data/thumb/fbl.png">
 					</entry>
 					<entry label="about">
 					</entry>

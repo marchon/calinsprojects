@@ -8,14 +8,13 @@ package ro.calin.component.model
 	[Bindable]
 	public class MenuModel
 	{
+		public var buttonWidth:Number = 100;
+		public var color:Number = 0x000000;
+		public var alpha:Number = 1;
+		public var logoUrl:String = "logo.jpg";
+		
 		[Listof(type="ro.calin.component.model.MenuEntryModel")]
 		public var entries:IList;
 		public var extra:Object;
-		
-		public var buttonWidth:Number = 1;
-		public var color:Number = 1;
-		public var alpha:Number = 1;
-		
-		public var logoUrl:String;
 	}
 }

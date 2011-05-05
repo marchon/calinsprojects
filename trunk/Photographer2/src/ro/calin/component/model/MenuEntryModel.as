@@ -9,9 +9,11 @@ package ro.calin.component.model
 	 * generic object to hold various data if needed 
 	 * and a list of subentries.
 	 */
+	[Bindable]
 	public class MenuEntryModel
 	{
 		public var label:String = "noname";
+		public var imageUrl:String = null;
 		public var color:uint = 0x000000;
 		public var fontColor:uint = 0xffffff;
 		public var fontSize:Number = 30;

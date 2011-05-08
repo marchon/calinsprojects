@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" 
 			   minHeight="600" xmlns:component="ro.calin.component.*" 
-			   xmlns:model="ro.calin.component.model.*" xmlns:appmodel="ro.calin.app.model.*">
+			   xmlns:model="ro.calin.component.model.*" xmlns:appmodel="ro.calin.app.model.*" xmlns:utils="ro.calin.utils.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -189,7 +189,12 @@
 	
 	
 	<!--This is the whole app(3 components): menu, picture viewer, category viewer-->
-	<component:PictureViewer id="viewer" width="100%" height="100%" />
+	<component:PictureViewer id="viewer" width="100%" height="100%">
+		<component:bitmapProcessor>
+			<utils:ScaleCropBitmapProcessor width="{this.width}" height="{this.height}"/>
+		</component:bitmapProcessor>
+	</component:PictureViewer>
+	
 	<component:Menu id="menu"
 					itemClick="menu_itemClickHandler(event)" 
 					logoClick="menu_logoClickHandler(event)"

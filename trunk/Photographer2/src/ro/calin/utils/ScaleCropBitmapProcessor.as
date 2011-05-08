@@ -14,56 +14,53 @@ package ro.calin.utils
 		/**
 		 * Width of destination bitmap.
 		 */
-		private var _aw:Number;
+		public var width:Number;
 		
 		/**
 		 * Height of destination bitmap.
 		 */
-		private var _ah:Number;
+		public var height:Number;
 		
-		public function ScaleCropBitmapProcessor(width:Number, height:Number)
-		{
-			_aw = width;
-			_ah = height;
+		public function ScaleCropBitmapProcessor() {
 		}
 		
 		public function process(bitmapData:BitmapData):BitmapData
 		{
 			var w:Number = bitmapData.width;
 			var h:Number = bitmapData.height;
-			var dw:Number = w / _aw;
-			var dh:Number = h / _ah;
+			var dw:Number = w / width;
+			var dh:Number = h / height;
 			
 			var scale:Number = 1;
 			var sourceRect:Rectangle = null;
 			var destPoint:Point = new Point(0, 0);
 			if(w/h >= 1.85) {
 				//case 1: panafuckingramic, scale on width, center on vert
-				scale = _aw / w;
-				destPoint.y = (_ah - h * scale) / 2;
+				scale = width / w;
+				destPoint.y = (height - h * scale) / 2;
 			} else if(dh > 1 && dw > 1) {
 				//case 2 - bigger on bolth: scale on smallest, then crop on the other
 				if(dh > dw) {
 					//scale on width, because it's smaller
-					scale = _aw / w;
-					sourceRect = new Rectangle(0, (h * scale - _ah) / 2, _aw, _ah);
+					scale = width / w;
+					sourceRect = new Rectangle(0, (h * scale - height) / 2, width, height);
 				} else {
 					//scale on height
-					scale = _ah / h;
-					sourceRect = new Rectangle((w * scale - _aw) / 2, 0, _aw, _ah);
+					scale = height / h;
+					sourceRect = new Rectangle((w * scale - width) / 2, 0, width, height);
 				}
 			} else if(dh > 1) {
 				//case 3 - bigger just on height: scale on height, center on horiz
-				scale = _ah / h;
-				destPoint.x = (_aw - w * scale) / 2;
+				scale = height / h;
+				destPoint.x = (width - w * scale) / 2;
 			} else if(dw > 1) {
 				//case 4 - bigger just on width: scale on width, center on vert
-				scale = _aw / w;
-				destPoint.y = (_ah - h * scale) / 2;
+				scale = width / w;
+				destPoint.y = (height - h * scale) / 2;
 			} else {
 				//case 5 - smaller: center on both
-				destPoint.x = (_aw - w) / 2;
-				destPoint.y = (_ah - h) / 2;
+				destPoint.x = (width - w) / 2;
+				destPoint.y = (height - h) / 2;
 			}
 			
 			var m : Matrix = new Matrix();
@@ -76,7 +73,7 @@ package ro.calin.utils
 			
 			//crop and center
 			//TODO: externalize bg color???
-			var bd2 : BitmapData = new BitmapData(_aw, _ah, false, 0x000000);
+			var bd2 : BitmapData = new BitmapData(width, height, false, 0x000000);
 			bd2.copyPixels(bd, sourceRect, destPoint);
 			
 			return bd2;

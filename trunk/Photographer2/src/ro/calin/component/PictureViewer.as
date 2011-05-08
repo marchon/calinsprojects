@@ -21,11 +21,22 @@ package ro.calin.component
 	import spark.components.Panel;
 	import spark.effects.Move;
 	
+	/**
+	 * Component that provides posibility to slide through a set of pictures.
+	 */
 	public class PictureViewer extends Panel
 	{
+		/**
+		 * The first picture.
+		 * 
+		 * In order to make a slide we need two pics.
+		 */
 		[SkinPart(required="true")]
 		public var picture1:CacheableImage;
 		
+		/**
+		 * Second picture.
+		 */
 		[SkinPart(required="true")]
 		public var picture2:CacheableImage;
 		
@@ -36,20 +47,45 @@ package ro.calin.component
 		public var rightButton:Button;
 		
 //		[SkinPart(required="true")]
+		/**
+		 * The progress bar for the component.
+		 * TODO: load all pics at the beginning and show progress bar.
+		 */
 		public var progressBar:ProgressBar;
 		
 		[Bindable]
+		/**
+		 * This is auto set to false if the set contains only one pic
+		 */
 		public var hasLeftRight:Boolean = true;
 		
+		/**
+		 * Point to the picture currently on the screen.
+		 */
 		private var _currentPicture:Image;
+		
+		/**
+		 * Points to the image currently outside the screen.
+		 */
 		private var _outsidePicture:Image;
 		
 		private var _model:PictureViewerModel;
+		
+		/**
+		 * Index of the picture on the screen
+		 * in models set of urls.
+		 */
 		private var _current:Number = 0;
 		
+		/**
+		 * Used to slide.
+		 */
 		private var _moveAnim:Move;
 		
-		private var _bitmapProcessor:BitmapProcessor;
+		/**
+		 * Used to process the images before caching(CachableImage).
+		 */
+		public var bitmapProcessor:BitmapProcessor = null;
 		
 		public function PictureViewer()
 		{
@@ -59,16 +95,12 @@ package ro.calin.component
 			setStyle("skinClass", PictureViewerSkin);
 			
 			_moveAnim = new Move();
-			
-			var app:Application = (FlexGlobals.topLevelApplication as Application);
-			_bitmapProcessor = new ScaleCropBitmapProcessor(app.width, app.height);
 		}
 		
 		public function get model():PictureViewerModel {return _model;}
 		public function set model(value:PictureViewerModel):void {
 			if(value == null) return;
 		
-			//another anim should not start if one is currently in progres, maybe queue just one..
 			_model = value;
 			
 			_current = 0;
@@ -87,7 +119,7 @@ package ro.calin.component
 			super.partAdded(partName, instance);
 			
 			if(instance == picture1) {
-				picture1.bitmapProcessor = _bitmapProcessor;
+				picture1.bitmapProcessor = bitmapProcessor;
 				if(_model) {
 					picture1.source = PictureModel(_model.pictures[_current]).url;
 				}
@@ -95,7 +127,7 @@ package ro.calin.component
 			}
 			
 			if(instance == picture2) {
-				picture2.bitmapProcessor = _bitmapProcessor;
+				picture2.bitmapProcessor = bitmapProcessor;
 				_outsidePicture = picture2;
 			}
 			
@@ -120,44 +152,6 @@ package ro.calin.component
 			}
 		}
 		
-		private function triggerImageSetLoading() : void {
-//			progressBar.visible = true;
-			bytesLoaded = 0;
-			bytesTotal = 0;
-			for each(var pic:PictureModel in _model.pictures) {
-				var loader:CacheableImage = new CacheableImage();
-				loader.bitmapProcessor = _bitmapProcessor;
-				loader.source = pic.url;
-				loader.visible = false;
-				this.addElement(loader);
-				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-				loader.addEventListener(Event.COMPLETE, completeHandler);
-			}		
-		}
-		
-		private var bytesLoaded:uint;
-		private var bytesTotal:uint;
-		private var reg:Array = [];
-		private function progressHandler(e:ProgressEvent):void {
-			//add bytes total for all
-			if(reg.indexOf(e.currentTarget) < 0) {
-				bytesTotal += e.bytesTotal;
-				reg.push(e.currentTarget);
-			}
-			
-			bytesLoaded += e.bytesLoaded;
-			
-			progressBar.setProgress(bytesLoaded, bytesTotal);
-			progressBar.visible = bytesLoaded <= bytesTotal;
-		}
-		
-		private function completeHandler(e:Event):void {
-			reg.splice(reg.indexOf(e.currentTarget), 1);
-			this.removeElement(e.currentTarget as IVisualElement);
-			if(reg.length == 0) progressBar.visible = false;
-		}
-		
-		
 		private function leftButton_clickHandler(event:MouseEvent) : void {
 			_current--;
 			if(_current == -1) {
@@ -177,6 +171,8 @@ package ro.calin.component
 			slideLeft();
 		}
 		
+		
+		//TODO: another anim should not start if one is currently in progres, maybe queue just one..
 		private function slideLeft():void {
 			if(_moveAnim.isPlaying) return;
 			
@@ -226,5 +222,44 @@ package ro.calin.component
 			_moveAnim.xBy = 0;
 			_moveAnim.yBy = 0;
 		}
+		
+		
+		/*TODO: implement loading whole set at the beginning*/
+//		private function triggerImageSetLoading() : void {
+//			//			progressBar.visible = true;
+//			bytesLoaded = 0;
+//			bytesTotal = 0;
+//			for each(var pic:PictureModel in _model.pictures) {
+//				var loader:CacheableImage = new CacheableImage();
+//				loader.bitmapProcessor = bitmapProcessor;
+//				loader.source = pic.url;
+//				loader.visible = false;
+//				this.addElement(loader);
+//				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+//				loader.addEventListener(Event.COMPLETE, completeHandler);
+//			}		
+//		}
+//		
+//		private var bytesLoaded:uint;
+//		private var bytesTotal:uint;
+//		private var reg:Array = [];
+//		private function progressHandler(e:ProgressEvent):void {
+//			//add bytes total for all
+//			if(reg.indexOf(e.currentTarget) < 0) {
+//				bytesTotal += e.bytesTotal;
+//				reg.push(e.currentTarget);
+//			}
+//			
+//			bytesLoaded += e.bytesLoaded;
+//			
+//			progressBar.setProgress(bytesLoaded, bytesTotal);
+//			progressBar.visible = bytesLoaded <= bytesTotal;
+//		}
+//		
+//		private function completeHandler(e:Event):void {
+//			reg.splice(reg.indexOf(e.currentTarget), 1);
+//			this.removeElement(e.currentTarget as IVisualElement);
+//			if(reg.length == 0) progressBar.visible = false;
+//		}
 	}
 }

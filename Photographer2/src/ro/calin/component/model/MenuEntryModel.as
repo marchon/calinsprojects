@@ -12,7 +12,7 @@ package ro.calin.component.model
 	[Bindable]
 	public class MenuEntryModel
 	{
-		public var label:String = "noname";
+		public var label:String = null;
 		public var imageUrl:String = null;
 		public var color:uint = 0x000000;
 		public var fontColor:uint = 0xffffff;

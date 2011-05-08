@@ -39,7 +39,7 @@
 		</s:Rect>
 		<s:Group>
 			<s:layout>
-				<s:HorizontalLayout verticalAlign="middle"/>
+				<s:HorizontalLayout verticalAlign="top"/>
 			</s:layout>
 			
 			<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
@@ -50,9 +50,8 @@
 			<s:Group id="details" includeInLayout.normal="false" visible.normal="false"
 					 width.normal="0" width.hovered="{hostComponent.thumbnailWidth}">
 				<s:layout>
-					<s:VerticalLayout horizontalAlign="left" />
+					<s:VerticalLayout horizontalAlign="left" paddingTop="10" gap="8"/>
 				</s:layout>
-				
 				<s:Label id="subcatName" color="white" fontSize="20"/>
 				<s:Label id="subcatDesc" color="white" fontSize="10"/>
 			</s:Group>

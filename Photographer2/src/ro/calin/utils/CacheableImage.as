@@ -120,7 +120,7 @@ package ro.calin.utils
 		 */
 		private function processAndCacheImage(id:String):Bitmap
 		{
-			for each ( var newObj:Object in imageDictionary) {
+			for each (var newObj:Object in imageDictionary) {
 				//returns null if already cached, should not get here
 				//because the complete event is not triggered
 				//unless the image controll actually loads the

@@ -8,9 +8,9 @@
 			<entry label="gallery" color="0xff00ff">
 				<entries>
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
-					<entry label="art" color="0xff00ff" extra="art"/>
-					<entry label="comercial" color="0x123423" extra="commercial"/>
-					<entry label="cgi" color="0xfaaaaa" extra="cgi"/>
+					<entry label="art" color="0xff00ff" extra="category:art"/>
+					<entry label="comercial" color="0x123423" extra="category:commercial"/>
+					<entry label="cgi" color="0xfaaaaa" extra="category:cgi"/>
 				</entries>
 			</entry>
 			<entry label="info" color="0xff0000">
@@ -19,7 +19,7 @@
 					</entry>
 					<entry imageUrl="data/thumb/fbl.png">
 					</entry>
-					<entry label="about">
+					<entry label="about" extra="text:about">
 					</entry>
 					<entry label="friends">
 					</entry>
@@ -37,31 +37,31 @@
 				<!-- FIECARE CATEGORIE CONTINE MAI MULTE SUBCATEGORII, ADICA IMAGINI PE BANDA AIA -->
 				<!-- PICURL ESTE IMAGINEA CARE APARE PE BANDA SI EXTRA REFERA LISTA DE POZE(VEZI PICTURESETS) 
 					CARE SE INCARCA CAND DAI CLICK PE EA -->
-				<subcategory picUrl="data/thumb/2.jpg" name="abstract" description=" " extra="abs"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="studio" description="studio" extra="studio"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="portraits" description="Portraits" extra="portraits"/>
-				<subcategory picUrl="data/thumb/5.jpg" name="nude" description="" extra="nude"/>
-				<subcategory picUrl="data/thumb/self.jpg" name="self portaits" description="" extra="self"/>
-				<subcategory picUrl="data/thumb/street.jpg" name="street" description="thumb1" extra="street"/>
-				<subcategory picUrl="data/thumb/back.jpg" name="the backstage" description="" extra="backstage"/>
-				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="thumb3" extra="morbid"/>
-				<subcategory picUrl="data/thumb/ruins.jpg" name="ruins" description="" extra="ruins"/>
-				<subcategory picUrl="data/thumb/land.jpg" name="landscapes" description="" extra="land"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" extra="set2"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="abstract" description=" " extra="pictureset:abs"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="studio" description="studio" extra="pictureset:studio"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="portraits" description="Portraits" extra="pictureset:portraits"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="nude" description="" extra="pictureset:nude"/>
+				<subcategory picUrl="data/thumb/self.jpg" name="self portaits" description="" extra="pictureset:self"/>
+				<subcategory picUrl="data/thumb/street.jpg" name="street" description="thumb1" extra="pictureset:street"/>
+				<subcategory picUrl="data/thumb/back.jpg" name="the backstage" description="" extra="pictureset:backstage"/>
+				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="thumb3" extra="pictureset:morbid"/>
+				<subcategory picUrl="data/thumb/ruins.jpg" name="ruins" description="" extra="pictureset:ruins"/>
+				<subcategory picUrl="data/thumb/land.jpg" name="landscapes" description="" extra="pictureset:land"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" extra="pictureset:set2"/>
 			</subcategories>
 		</category>
 		
 		<category key="commercial">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" extra="sample"/>
-				<subcategory picUrl="data/thumb/jb.jpg" name="J&B" description="J&B Shaking the Dancefloor events" extra="jb"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" extra="bottle"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" extra="pictureset:sample"/>
+				<subcategory picUrl="data/thumb/jb.jpg" name="J&B" description="J&B Shaking the Dancefloor events" extra="pictureset:jb"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" extra="pictureset:bottle"/>
 			</subcategories>
 		</category>
 		<category key="cgi">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="set4"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="set5"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="pictureset:set4"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="pictureset:set5"/>
 			</subcategories>
 		</category>
 	</categories>
@@ -174,5 +174,14 @@
 			</pictures>
 		</pictureset>
 	</picturesets>
+	
+<!--	<textset>-->
+<!--		<text key="about" bgurl="data/m1.jpg">-->
+<!--			This is me. My name is Marius Stoianov, and I make high quality,-->
+<!--			state-of-the-art, premium, and only for YOU, out of the box,-->
+<!--			ready to use, and, above all, beautiful PHOTOS. -->
+<!--			If you don't like them, you can go f... yourself.-->
+<!--		</text>-->
+<!--	</textset>-->
 	
 </config>

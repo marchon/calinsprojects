@@ -70,6 +70,12 @@
 				} 
 			}
 
+			////////////////////////////////////////////////////////////
+			//TODO: process extra field and get the action from there
+			//split on ":" - first is link type, second is key
+			//eg.: category:art, text:about
+			////////////////////////////////////////////////////////////
+			
 			/**
 			 * Called when an item from the menu is hovered.
 			 * Display the category control for the category represented by this item.
@@ -78,7 +84,7 @@
 			{
 				if(currentState == "gallerystate") {
 					//the category reference is stored as "extra" in the menuentry entry model
-					var catname:String = event.entry.extra as String;
+					var catname:String = (event.entry.extra as String).substr("category:".length);
 					catViewer.model =  config.categories[catname];
 					
 					//dimension and position
@@ -120,7 +126,7 @@
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
 				//pictureset reference is held in "extra" field of subcateg model
-				var picset:String = event.subcategory.extra as String;
+				var picset:String = (event.subcategory.extra as String).substr("pictureset:".length);
 				viewer.model = config.picturesets[picset];
 				
 				catViewer.visible = false;

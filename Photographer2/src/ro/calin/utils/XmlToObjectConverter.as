@@ -82,6 +82,12 @@ package ro.calin.utils
 			//		2.2.1. [same as list but one of attrs is key for map]
 			//	2.3. else(normal object) create object of that type and convert recursively
 			for each (var child:XML in node.children()) {
+				if(child.hasSimpleContent()) {
+					//TODO: map to a property somehow
+					object["content"] = child.toString();
+					continue;
+				}
+				
 				propertyName = child.name().toString();
 				
 				if(!object.hasOwnProperty(propertyName)) {

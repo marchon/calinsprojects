@@ -5,7 +5,7 @@
 	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
 	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg">
 		<entries>
-			<entry label="gallery" color="0xff00ff">
+			<entry label="gallery" color="0xff00ff" extra="GALLERY">
 				<entries>
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
 					<entry label="art" color="0xff00ff" extra="category:art"/>
@@ -175,13 +175,15 @@
 		</pictureset>
 	</picturesets>
 	
-<!--	<textset>-->
-<!--		<text key="about" bgurl="data/m1.jpg">-->
-<!--			This is me. My name is Marius Stoianov, and I make high quality,-->
-<!--			state-of-the-art, premium, and only for YOU, out of the box,-->
-<!--			ready to use, and, above all, beautiful PHOTOS. -->
-<!--			If you don't like them, you can go f... yourself.-->
-<!--		</text>-->
-<!--	</textset>-->
+	<textset>
+		<text key="about" bgUrl="data/m1.jpg">
+			<![CDATA[
+				This is me. My name is Marius Stoianov, and I make high quality,
+				state-of-the-art, premium, and only for YOU, out of the box,
+				ready to use, and, above all, beautiful PHOTOS. 
+				If you don't like them, you can go f... yourself.
+			]]>
+		</text>
+	</textset>
 	
 </config>

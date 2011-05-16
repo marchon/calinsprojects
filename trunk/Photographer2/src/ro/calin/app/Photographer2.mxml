@@ -12,6 +12,7 @@
 			import mx.utils.ObjectUtil;
 			
 			import ro.calin.app.model.Config;
+			import ro.calin.app.model.TextModel;
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.PictureViewerModel;
@@ -23,6 +24,7 @@
 			 * references to pictures to be shown when not on gallery.
 			 */
 			private static const WALLPAPERS:String = "WALLPAPERS";
+			private static const GALLERY:String = "GALLERY";
 			
 			
 			/**
@@ -62,12 +64,19 @@
 				if(currentState == "menustate") {
 					//TODO: externalize and don't use label 
 					//could specify direction to move or smfn
-					if(event.entry.label == "gallery") {
+					if(event.entry.extra == GALLERY) {
 						currentState = "gallerystate";
 					} else {
 						currentState = "textstate";
 					}
-				} 
+				} else if(currentState = "textstate") {
+					var content:String = (event.entry.extra as String);
+					if(content.match("text:.*")) {
+						content = content.substr("text:".length);
+						
+						var text:TextModel = config.textset[content] as TextModel;
+					}
+				}
 			}
 
 			////////////////////////////////////////////////////////////

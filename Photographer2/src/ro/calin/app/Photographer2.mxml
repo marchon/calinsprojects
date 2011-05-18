@@ -6,15 +6,20 @@
 			   xmlns:model="ro.calin.component.model.*" xmlns:appmodel="ro.calin.app.model.*" xmlns:utils="ro.calin.utils.*">
 	<fx:Script>
 		<![CDATA[
+			import flash.net.navigateToURL;
+			
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.ObjectUtil;
 			
+			import org.hamcrest.mxml.object.Null;
+			
 			import ro.calin.app.model.Config;
 			import ro.calin.app.model.TextModel;
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
+			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.PictureModel;
 			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.utils.SWFProfiler;
@@ -25,7 +30,18 @@
 			 * references to pictures to be shown when not on gallery.
 			 */
 			private static const WALLPAPERS:String = "WALLPAPERS";
-			private static const GALLERY:String = "GALLERY";
+			
+			private static const MENU_ACTION_CLICK:String = "click";
+			private static const MENU_ACTION_HOVER:String = "hover";
+			
+			private static const MENU_ACTION_SLIDE:String = "slide";
+			private static const MENU_ACTION_SLIDE_UP:String = "up";
+			private static const MENU_ACTION_SLIDE_DOWN:String = "down";
+			private static const MENU_ACTION_SLIDE_MIDDLE:String = "middle";
+			
+			private static const MENU_ACTION_CATEG:String = "categ";
+			private static const MENU_ACTION_URL:String = "url";
+			private static const MENU_ACTION_TEXT:String = "text";
 			
 			
 			/**
@@ -53,74 +69,90 @@
 				trace(ObjectUtil.toString(event.fault));				
 			}
 			
-			
-
-			
 			/**
-			 * Called when item in menu is clicked.
-			 * Change the state of app to gallery or page, depending on the clicked item.
+			 * Processes a menu action that looks like this:
+			 * action = [slide|categ|url|text:value]
+			 * value = [up/down/middle|random_string]
+			 * 
 			 */
-			protected function menu_itemClickHandler(event:MenuEvent):void
-			{
-				if(currentState == "menustate") {
-					//TODO: externalize and don't use label 
-					//could specify direction to move or smfn
-					if(event.entry.extra == GALLERY) {
-						currentState = "gallerystate";
-					} else {
-						currentState = "textstate";
-					}
-				} else if(currentState = "textstate") {
-					var content:String = (event.entry.extra as String);
-					if(content && content.match("text:.*")) {
-						content = content.substr("text:".length);
-						
-						var textModel:TextModel = config.textset[content] as TextModel;
-						
+			protected function processMenuAction(action:Array, event:MenuEvent=null) : void {
+				if(!action || action.length != 2) throw new Error('Bad action.');
+				
+				switch(action[0]) {
+					case MENU_ACTION_SLIDE:
+						label.visible = false;
+						switch(action[1]) {
+							case MENU_ACTION_SLIDE_UP:
+								currentState = "menuTop";
+								break;
+							case MENU_ACTION_SLIDE_DOWN:
+								currentState = "menuBottom";
+								break;
+							case MENU_ACTION_SLIDE_MIDDLE:
+								currentState = "menuMiddle";
+								break;
+						}
+						break;
+					case MENU_ACTION_CATEG:
+						//TODO: externalize hardcoded values
+						if(event) showCategory(config.categories[action[1]], 271 + 220 * event.buttonIndex);
+						break;
+					case MENU_ACTION_TEXT:
+						var textModel:TextModel = config.textset[action[1]] as TextModel;
 						setPictureViewerWallpaper(textModel.bgUrl);
 						
 						//TODO: allow html(or anyother format) formatted text???
+						//TODO: set font/color/size / position???
 						label.text = textModel.content;
-						
-					} else {
-						label.text = "";
-					}
+						label.visible = true;
+						break;
+					case MENU_ACTION_URL:
+						navigateToURL(new URLRequest(action[1]));
+						break;
 				}
 			}
+			
+			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {
+				catViewer.model = model;
+				
+				//dimension and position
+				//if more thumbs then the screen can fit, height is screen height
+				//else, height is determined by nb of pics and pic height.
+				//TODO: externalize hardcoded values
+				catViewer.height = Math.min(this.height - menu.height, 
+					catViewer.model.subcategories.length * 119);
+				catViewer.x = x;
+				
+				//TODO: use a nice fade in/out
+				catViewer.visible = true;
+				
+				//hide when user move mouse away from category
+				//TODO: also be sure to hide it when the user rolls out the button/menubar(can be a little tricky)
+				catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
+					catViewer.visible = false;
+				});
+			}
 
-			////////////////////////////////////////////////////////////
-			//TODO: process extra field and get the action from there
-			//split on ":" - first is link type, second is key
-			//eg.: category:art, text:about
-			////////////////////////////////////////////////////////////
 			
 			/**
-			 * Called when an item from the menu is hovered.
-			 * Display the category control for the category represented by this item.
+			 * Called when item in menu is clicked or hovered.
+			 * Depending if action type corresponds with event type, it does something or not.
+			 * 
+			 * action_type = [click|hover:slide|categ|url|text:value]
 			 */
-			protected function menu_itemHoverHandler(event:MenuEvent):void
+			protected function menu_itemHandler(event:MenuEvent):void
 			{
-				if(currentState == "gallerystate") {
-					//the category reference is stored as "extra" in the menuentry entry model
-					var catname:String = (event.entry.extra as String).substr("category:".length);
-					catViewer.model =  config.categories[catname];
-					
-					//dimension and position
-					//if more thumbs then the screen can fit, height is screen height
-					//else, height is determined by nb of pics and pic height.
-					//TODO: externalize hardcoded values
-					catViewer.height = Math.min(this.height - menu.height, 
-						catViewer.model.subcategories.length * 119);
-					catViewer.x = 271 + 220 * event.buttonIndex;
-					
-					//TODO: use a nice fade in/out
-					catViewer.visible = true;
-					
-					//hide when user move mouse away from category
-					//TODO: also be sure to hide it when the user rolls out the button/menubar(can be a little tricky)
-					catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
-						catViewer.visible = false;
-					});
+				var action:* = (event.entry.extra as String);
+				
+				if(!action) return;
+				
+				//TODO: speparator char (url problems???)
+				action = action.split("`");
+				
+				if((action[0] == MENU_ACTION_CLICK && event.type == MenuEvent.MENU_ITEM_CLICK) ||
+					(action[0] == MENU_ACTION_HOVER && event.type == MenuEvent.MENU_ITEM_HOVER)) {
+					(action as Array).shift();
+					processMenuAction(action, event);
 				}
 			}
 			
@@ -130,7 +162,14 @@
 			 */
 			protected function menu_logoClickHandler(event:MenuEvent):void
 			{
-				currentState = "menustate";
+				var action:* = (config.menu.extra as String);
+				
+				if(!action) return;
+				
+				action = action.split("`");
+				(action as Array).shift();
+				processMenuAction(action);
+				
 				catViewer.visible = false;
 				setPictureViewerRandomWallpaper();
 			}
@@ -143,6 +182,7 @@
 			 */
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
+				//TODO: refactor here + config.xml
 				//pictureset reference is held in "extra" field of subcateg model
 				var picset:String = (event.subcategory.extra as String).substr("pictureset:".length);
 				picViewer.model = config.picturesets[picset];
@@ -172,15 +212,14 @@
 	</fx:Script>
 	
 	<s:states>
-		<!-- TODO: make states more general!!! middle, up, down; control actions depending menu metadata from the model -->
 		<!--Menu is in the middle, random wallpaper.-->
-		<s:State name="menustate"/>
+		<s:State name="menuMiddle"/>
 		
-		<!--Menu is up, text can be shown.-->
-		<s:State name="textstate"/>
+		<!--Menu is up.-->
+		<s:State name="menuTop"/>
 		
-		<!--Menu is down, -->
-		<s:State name="gallerystate"/>
+		<!--Menu is down. -->
+		<s:State name="menuBottom"/>
 	</s:states>
 	
 	<s:transitions>
@@ -224,15 +263,17 @@
 		</component:bitmapProcessor>
 	</component:PictureViewer>
 	
+	<s:Label id="label" visible="false" includeInLayout="{label.visible}" left="100" top="100"/>
+	
 	<component:Menu id="menu"
-					itemClick="menu_itemClickHandler(event)" 
+					itemClick="menu_itemHandler(event)" 
+					itemHover="menu_itemHandler(event)"
 					logoClick="menu_logoClickHandler(event)"
-					itemHover="menu_itemHoverHandler(event)"
-					width="100%" y.menustate="{this.height * .7}" 
-					y.textstate="0" y.gallerystate="{this.height - menu.height}" />
+					width="100%" y.menuMiddle="{this.height * .7}" 
+					y.menuTop="0" y.menuBottom="{this.height - menu.height}" />
+	
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
 							  thumbnailWidth="220" scale="1.2" 
 							  categItemClick="catViewer_categItemClickHandler(event)"/>
 	
-	<s:Label id="label" includeIn="textstate" left="100" top="100"/>
 </s:Application>

@@ -15,6 +15,7 @@
 			import ro.calin.app.model.TextModel;
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
+			import ro.calin.component.model.PictureModel;
 			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
@@ -71,10 +72,18 @@
 					}
 				} else if(currentState = "textstate") {
 					var content:String = (event.entry.extra as String);
-					if(content.match("text:.*")) {
+					if(content && content.match("text:.*")) {
 						content = content.substr("text:".length);
 						
-						var text:TextModel = config.textset[content] as TextModel;
+						var textModel:TextModel = config.textset[content] as TextModel;
+						
+						setPictureViewerWallpaper(textModel.bgUrl);
+						
+						//TODO: allow html(or anyother format) formatted text???
+						label.text = textModel.content;
+						
+					} else {
+						label.text = "";
 					}
 				}
 			}
@@ -136,7 +145,7 @@
 			{
 				//pictureset reference is held in "extra" field of subcateg model
 				var picset:String = (event.subcategory.extra as String).substr("pictureset:".length);
-				viewer.model = config.picturesets[picset];
+				picViewer.model = config.picturesets[picset];
 				
 				catViewer.visible = false;
 			}
@@ -150,7 +159,12 @@
 				var walls:Array = (config.picturesets[WALLPAPERS] as PictureViewerModel).pictures;
 				var rand:int = Math.floor(Math.random() * walls.length);
 				wallpaperModel.pictures[0] = walls[rand];
-				viewer.model = wallpaperModel;
+				picViewer.model = wallpaperModel;
+			}
+			
+			private function setPictureViewerWallpaper(url:String):void {
+				PictureModel(wallpaperModel.pictures[0]).url = url;
+				picViewer.model = wallpaperModel;
 			}
 
 
@@ -204,7 +218,7 @@
 	
 	
 	<!--This is the whole app(3 components): menu, picture viewer, category viewer-->
-	<component:PictureViewer id="viewer" width="100%" height="100%">
+	<component:PictureViewer id="picViewer" width="100%" height="100%">
 		<component:bitmapProcessor>
 			<utils:ScaleCropBitmapProcessor width="{this.width}" height="{this.height}"/>
 		</component:bitmapProcessor>
@@ -219,4 +233,6 @@
 	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
 							  thumbnailWidth="220" scale="1.2" 
 							  categItemClick="catViewer_categItemClickHandler(event)"/>
+	
+	<s:Label id="label" includeIn="textstate" left="100" top="100"/>
 </s:Application>

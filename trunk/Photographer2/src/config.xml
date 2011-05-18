@@ -3,29 +3,29 @@
 <config>
 
 	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
-	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg">
+	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" extra="click`slide`middle">
 		<entries>
-			<entry label="gallery" color="0xff00ff" extra="GALLERY">
+			<entry label="gallery" color="0xff00ff" extra="click`slide`down">
 				<entries>
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
-					<entry label="art" color="0xff00ff" extra="category:art"/>
-					<entry label="comercial" color="0x123423" extra="category:commercial"/>
-					<entry label="cgi" color="0xfaaaaa" extra="category:cgi"/>
+					<entry label="art" color="0xff00ff" extra="hover`categ`art"/>
+					<entry label="comercial" color="0x123423" extra="hover`categ`commercial"/>
+					<entry label="cgi" color="0xfaaaaa" extra="hover`categ`cgi"/>
 				</entries>
 			</entry>
-			<entry label="info" color="0xff0000">
+			<entry label="info" color="0xff0000" extra="click`slide`up">
 				<entries>
 					<entry label="blog">
 					</entry>
 					<entry imageUrl="data/thumb/fbl.png">
 					</entry>
-					<entry label="about" extra="text:about">
+					<entry label="about" extra="click`text`about">
 					</entry>
 					<entry label="friends">
 					</entry>
 				</entries>
 			</entry>
-			<entry label="share" extra="http://prinochiimei.wordpress.com" />
+			<entry label="share" extra="click`url`http://prinochiimei.wordpress.com" />
 		</entries>
 	</menu>
 	

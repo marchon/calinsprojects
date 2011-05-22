@@ -25,6 +25,8 @@
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
+			import spark.components.Label;
+			
 			/**
 			 * Name of special pictureset which contains 
 			 * references to pictures to be shown when not on gallery.
@@ -51,7 +53,6 @@
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
 				var configXml:XML = XML(event.result);
-				config = new Config();
 				
 				XmlToObjectConverter.convertToObject(configXml, config);
 				
@@ -78,9 +79,10 @@
 			protected function processMenuAction(action:Array, event:MenuEvent=null) : void {
 				if(!action || action.length != 2) throw new Error('Bad action.');
 				
+				if(textDisplay.parent != null) removeElement(textDisplay);
+				
 				switch(action[0]) {
 					case MENU_ACTION_SLIDE:
-						label.visible = false;
 						switch(action[1]) {
 							case MENU_ACTION_SLIDE_UP:
 								currentState = "menuTop";
@@ -98,13 +100,28 @@
 						if(event) showCategory(config.categories[action[1]], 271 + 220 * event.buttonIndex);
 						break;
 					case MENU_ACTION_TEXT:
+						//create a new one, otherwise the props would not get resetted
+						textDisplay = new Label();
+						
 						var textModel:TextModel = config.textset[action[1]] as TextModel;
 						setPictureViewerWallpaper(textModel.bgUrl);
 						
-						//TODO: allow html(or anyother format) formatted text???
-						//TODO: set font/color/size / position???
-						label.text = textModel.content;
-						label.visible = true;
+						textDisplay.text = textModel.content;
+						
+						for (var prop:String in textModel.style) {
+							try {
+								if(textDisplay.hasOwnProperty(prop)) {
+									textDisplay[prop] = textModel.style[prop];
+								} else {
+									textDisplay.setStyle(prop, textModel.style[prop]);
+								}
+							} catch(e:Error) {
+								trace("Error applying style " + prop, e);
+							}
+						}
+						
+						addElement(textDisplay);
+						
 						break;
 					case MENU_ACTION_URL:
 						navigateToURL(new URLRequest(action[1]));
@@ -147,7 +164,7 @@
 				if(!action) return;
 				
 				//TODO: speparator char (url problems???)
-				action = action.split("`");
+				action = action.split("//>");
 				
 				if((action[0] == MENU_ACTION_CLICK && event.type == MenuEvent.MENU_ITEM_CLICK) ||
 					(action[0] == MENU_ACTION_HOVER && event.type == MenuEvent.MENU_ITEM_HOVER)) {
@@ -166,7 +183,7 @@
 				
 				if(!action) return;
 				
-				action = action.split("`");
+				action = action.split("//>");
 				(action as Array).shift();
 				processMenuAction(action);
 				
@@ -236,6 +253,9 @@
 		<!-- Store the model in memory. -->
 		<appmodel:Config id="config" />
 		
+		<!-- Reference to a label used to display text -->
+		<s:Label id="textDisplay" />
+		
 		<!-- Modified each time to contain only one pic, the current wallpaper. -->
 		<model:PictureViewerModel id="wallpaperModel">
 			<model:pictures>
@@ -262,8 +282,6 @@
 			<utils:ScaleCropBitmapProcessor width="{this.width}" height="{this.height}"/>
 		</component:bitmapProcessor>
 	</component:PictureViewer>
-	
-	<s:Label id="label" visible="false" includeInLayout="{label.visible}" left="100" top="100"/>
 	
 	<component:Menu id="menu"
 					itemClick="menu_itemHandler(event)" 

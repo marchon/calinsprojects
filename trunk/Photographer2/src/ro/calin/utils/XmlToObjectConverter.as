@@ -65,11 +65,8 @@ package ro.calin.utils
 			for each(var attr:XML in node.attributes()) {
 				propertyName = attr.name().toString();
 				
-				if(!object.hasOwnProperty(propertyName)) {
-					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
-				}
-				
-				//apparently conversion to simple types works automatically
+				//if the property is not defined, just add it
+				//conversion to simple types works automat(g)ically
 				object[propertyName] = attr.toString();
 			}
 			
@@ -82,7 +79,7 @@ package ro.calin.utils
 			//		2.2.1. [same as list but one of attrs is key for map]
 			//	2.3. else(normal object) create object of that type and convert recursively
 			for each (var child:XML in node.children()) {
-				if(child.hasSimpleContent()) {
+				if(child.nodeKind() == "text") {
 					//TODO: map to a property somehow
 					object["content"] = child.toString();
 					continue;

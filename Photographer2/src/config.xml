@@ -3,6 +3,18 @@
 <config>
 
 	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
+	<!-- extra(soon to be action) specifies the types of actions 
+		it has the following format:
+		mouse_action//>action_type//>action_parameters
+		
+		mouse_action = click|hover
+		action_type = slide|categ|text|url
+		action_parameters 
+			- if action_type is slide: up|middle|donw
+			- if action_type is url: the link
+			- if action_type is categ: category key
+			- if action_type is text: text key (see bottom)
+	-->
 	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" extra="click//>slide//>middle">
 		<entries>
 			<entry label="gallery" color="0xff00ff" extra="click//>slide//>down">
@@ -15,17 +27,21 @@
 			</entry>
 			<entry label="info" color="0xff0000" extra="click//>slide//>up">
 				<entries>
-					<entry label="blog">
-					</entry>
-					<entry imageUrl="data/thumb/fbl.png">
-					</entry>
-					<entry label="about" extra="click//>text//>about">
-					</entry>
-					<entry label="friends" extra="click//>text//>friends">
-					</entry>
+					<entry label="blog" />
+					<entry label="contact" />
+					<entry label="about" extra="click//>text//>about" />
+					<entry label="friends" extra="click//>text//>friends" />
 				</entries>
 			</entry>
-			<entry label="share" extra="click//>url//>http://prinochiimei.wordpress.com" />
+			<entry label="share" extra="click//>slide//>up">
+				<entries>
+					<entry label="" imageUrl="data/thumb/fb.png" color="0xFFFFFF" extra="click//>url//>http://facebook.com"/>
+					<entry label="" imageUrl="data/thumb/digg.jpg"/>
+					<entry label="about" imageUrl="data/thumb/su.jpg"/>
+					<entry label="" imageUrl="data/thumb/tw.jpg"/>
+					<entry label="" imageUrl="data/thumb/gb.png" color="0xFFFFFF"/>
+				</entries>
+			</entry>
 		</entries>
 	</menu>
 	

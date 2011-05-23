@@ -5,7 +5,7 @@
 	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
 	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" extra="click//>slide//>middle">
 		<entries>
-			<entry label="gallery" color="0xff00ff" extra="click`slide`down">
+			<entry label="gallery" color="0xff00ff" extra="click//>slide//>down">
 				<entries>
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
 					<entry label="art" color="0xff00ff" extra="hover//>categ//>art"/>

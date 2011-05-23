@@ -58,7 +58,6 @@ package ro.calin.utils
 		 * }
 		 */
 		public static function convertToObject(node:XML, object:Object):void {
-			
 			var propertyName:String = null;
 			
 			//1. for each attribute, set the corresponding property
@@ -130,7 +129,11 @@ package ro.calin.utils
 					} else if(type == "mx.collections::ArrayCollection") {
 						object[propertyName] = new ArrayCollection(elements);
 					}
-				} else if(type == "Object" && classInfo["metadata"][propertyName]["Mapof"] != null) {
+				} else if(type == "Object" &&
+					//TODO: metadata will be null on release, refactor metadata fetching
+					classInfo["metadata"] && 
+					classInfo["metadata"][propertyName] && 
+					classInfo["metadata"][propertyName]["Mapof"]) {
 					//build a map: same as for array, but use an object with keys
 					var keyAttrName:String = classInfo["metadata"][propertyName]["Mapof"]["keyname"];
 					elemType = null;
@@ -160,6 +163,7 @@ package ro.calin.utils
 				} else {
 					//get the type directly(no need to specify it in md)
 					var clazz:Class = getDefinitionByName(type) as Class;
+
 					object[propertyName] = new clazz();
 					convertToObject(child, object[propertyName]);
 				}

@@ -9,6 +9,7 @@ package ro.calin.utils
 	import mx.collections.ArrayList;
 	import mx.messaging.management.Attribute;
 	import mx.utils.ObjectUtil;
+	import mx.utils.object_proxy;
 
 	/**
 	 * Provides a convenient way of transforming data
@@ -32,7 +33,8 @@ package ro.calin.utils
 		/**
 		 * Fills the object with the information in xml format provided
 		 * by node. It operates recursively and instantiates objects for
-		 * inner properties(the types are provided as annotations).
+		 * inner properties.
+		 * 
 		 * 
 		 * <elem attr1="val1">								elem:{
 		 * 	<innerelem1 attr1="val1"/>							attr1:'val1',
@@ -47,6 +49,9 @@ package ro.calin.utils
 		 * </elem>												}
 		 * 													}
 		 * 
+		 * Lists or Maps item types are provided as class metadata
+		 * or as an object which contains some mappings
+		 * 
 		 * AS annotated class:
 		 * class Elem {
 		 * 	public var attr1:String;
@@ -58,6 +63,16 @@ package ro.calin.utils
 		 *  [Mapof(keyname="key", type="my.package.YetAnotherFancyClass")]
 		 *  public var innermap1:Object;
 		 * }
+		 * 
+		 * Mapping object:
+		 * 
+		 * mappings = {
+		 * 		my.package.Elem : {
+		 * 			innerlist1 : ["Listof", AnotherFancyClass.class],
+		 * 			innermap1 : ["Mapof", "key", YetAnotherFancyClass.class]
+		 * 		}
+		 * }
+		 * 
 		 */
 		public function convertToObject(node:XML, object:Object):void {
 			var propertyName:String = null;
@@ -199,7 +214,12 @@ package ro.calin.utils
 			//returns string or class
 			
 			if(mappings) {
+				var cls:Class = getDefinitionByName(getQualifiedClassName(obj)) as Class;
+				if(mappings[cls] == null || mappings[cls][propertyName] == null ||
+					mappings[cls][propertyName][0] != "Listof")
+					return null;
 				
+				type = mappings[cls][propertyName][1];
 			}
 			
 			if(!type) {
@@ -220,7 +240,13 @@ package ro.calin.utils
 			var keyTypePair:Array = [null, null];
 			
 			if(mappings) {
+				var cls:Class = getDefinitionByName(getQualifiedClassName(obj)) as Class;
+				if(mappings[cls] == null || mappings[cls][propertyName] == null ||
+					mappings[cls][propertyName][0] != "Mapof")
+						return keyTypePair;
 				
+				keyTypePair[0] = mappings[cls][propertyName][1];
+				keyTypePair[1] = mappings[cls][propertyName][2];
 			}
 			
 			//try to get info from metadata

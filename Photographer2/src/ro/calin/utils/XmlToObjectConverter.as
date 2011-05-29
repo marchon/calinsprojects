@@ -23,8 +23,10 @@ package ro.calin.utils
 	 */
 	public class XmlToObjectConverter
 	{
-		public function XmlToObjectConverter() {
-			throw new Error("Cannot instantiate.");
+		private var mappings:Object;
+		
+		public function XmlToObjectConverter(mappings:Object = null) {
+			this.mappings = mappings;
 		}
 		
 		/**
@@ -57,7 +59,7 @@ package ro.calin.utils
 		 *  public var innermap1:Object;
 		 * }
 		 */
-		public static function convertToObject(node:XML, object:Object):void {
+		public function convertToObject(node:XML, object:Object):void {
 			var propertyName:String = null;
 			
 			//1. for each attribute, set the corresponding property
@@ -90,19 +92,13 @@ package ro.calin.utils
 					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
 				}
 				
-				var type:String = getType(object, propertyName);
-				var classInfo:Object = ObjectUtil.getClassInfo(object);
+				var type:String = getPropertyType(object, propertyName);
 				
-				if(type == "Array" || type == "mx.collections::ArrayList"  || 
-				   type == "mx.collections::IList" || type == "mx.collections::ArrayCollection") {
+				if(isArrayType(type)) {
 					var elemType:* = null;
-					if(classInfo["metadata"][propertyName]["Listof"] == null) {
-						//["metadata"][x] represents the metadata of property x
-						throw new Error("You must provide element type Metadata(Listof) for property [" + propertyName + "].");
-					}
 					
 					//get string repr of type from metadata
-					if((elemType = (classInfo["metadata"][propertyName]["Listof"]["type"] as String)) == null) {
+					if((elemType = getArrayItemType(object, propertyName)) == null) {
 						throw new Error("You must provide element type for property [" + propertyName + "].");
 					}
 					
@@ -110,7 +106,11 @@ package ro.calin.utils
 					//SO BE SURE TO REFFERENCE IT SOMEWARE(THE STRING METADATA IS NOT A REFFERENCE)
 					
 					//get the class from string repr
-					elemType = getDefinitionByName(elemType) as Class;
+					if(elemType is String) elemType = getDefinitionByName(elemType) as Class;
+					
+					if(!(elemType is Class)) {
+						throw new Error("Property type specified for items of [" + propertyName + "] is not valid: " + elemType);
+					}
 					
 					var elements:Array = [];
 					
@@ -122,28 +122,24 @@ package ro.calin.utils
 					}
 					
 					//set the array
-					if(type == "Array") {
-						object[propertyName] = elements;
-					} else if(type == "mx.collections::ArrayList"  || type == "mx.collections::IList") {
-						object[propertyName] = new ArrayList(elements);
-					} else if(type == "mx.collections::ArrayCollection") {
-						object[propertyName] = new ArrayCollection(elements);
-					}
-				} else if(type == "Object" &&
-					//TODO: metadata will be null on release, refactor metadata fetching
-					classInfo["metadata"] && 
-					classInfo["metadata"][propertyName] && 
-					classInfo["metadata"][propertyName]["Mapof"]) {
+					object[propertyName] = createProperListTypeFromArray(type, elements);
+				} else if(isMapType(object, propertyName, type)) {
 					//build a map: same as for array, but use an object with keys
-					var keyAttrName:String = classInfo["metadata"][propertyName]["Mapof"]["keyname"];
+					var keyTypePair:Array = getMapItemTypeAndKey(object, propertyName);
+					
+					var keyAttrName:String = keyTypePair[0];
 					elemType = null;
-					if((elemType = (classInfo["metadata"][propertyName]["Mapof"]["type"] as String)) == null) {
+					if((elemType = keyTypePair[1]) == null) {
 						throw new Error("You must provide element type for property [" + propertyName + "].");
 					}
 					
 					//BE CAREFULL, THE COMPILATION UNIT MUST BE INCLUDED BY THE COMPILER
 					//SO BE SURE TO REFFERENCE IT SOMEWARE(THE STRING METADATA IS NOT A REFFERENCE)
-					elemType = getDefinitionByName(elemType) as Class;
+					if(elemType is String) elemType = getDefinitionByName(elemType) as Class;
+					
+					if(!(elemType is Class)) {
+						throw new Error("Property type specified for items of [" + propertyName + "] is not valid: " + elemType);
+					}
 					
 					var map:Object = {};
 					
@@ -170,11 +166,77 @@ package ro.calin.utils
 			}
 		}
 		
-		private static function getType(obj:Object, propertyName:String):String {
+		private function isArrayType(type:String):Boolean {
+			return (type == "Array" || type == "mx.collections::ArrayList" || 
+				type == "mx.collections::IList" || type == "mx.collections::ArrayCollection");
+		}
+		
+		private function isMapType(obj:Object, propertyName:String, type:String):Boolean {
+			//is object and has map metadata
+			return type == "Object" && getMapItemTypeAndKey(obj, propertyName)[0];
+		}
+		
+		private function createProperListTypeFromArray(type:String, arr:*) : * {
+			if(type == "mx.collections::ArrayList"  || type == "mx.collections::IList") {
+				arr = new ArrayList(arr);
+			} else if(type == "mx.collections::ArrayCollection") {
+				arr = new ArrayCollection(arr);
+			}
+			
+			return arr;
+		}
+		
+		private function getPropertyType(obj:Object, propertyName:String):String {
+			//TODO: cache result??
 			var typeInfo:XML = describeType(obj);
 			var propertyInfo:XMLList = typeInfo['variable'];
 			if(propertyInfo.length() == 0) propertyInfo = typeInfo['accessor']; //this is for bindables
 			return propertyInfo.(@name == propertyName)[0].@type;
+		}
+		
+		private function getArrayItemType(obj:Object, propertyName:String):* {
+			var type:* = null;
+			//returns string or class
+			
+			if(mappings) {
+				
+			}
+			
+			if(!type) {
+				//try to get info from metadata on the object
+				var classInfo:Object = ObjectUtil.getClassInfo(obj);
+				if(classInfo["metadata"] == null || 
+					classInfo["metadata"][propertyName] == null ||
+					classInfo["metadata"][propertyName]["Listof"] == null) 
+						return null;
+				
+				type =  classInfo["metadata"][propertyName]["Listof"]["type"];
+			}
+			
+			return type;
+		}
+		
+		private function getMapItemTypeAndKey(obj:Object, propertyName:String):Array {
+			var keyTypePair:Array = [null, null];
+			
+			if(mappings) {
+				
+			}
+			
+			//try to get info from metadata
+			if(!keyTypePair[0]) {
+				var classInfo:Object = ObjectUtil.getClassInfo(obj);
+				if(classInfo["metadata"] == null || 
+					classInfo["metadata"][propertyName] == null ||
+					classInfo["metadata"][propertyName]["Mapof"] == null) 
+					return keyTypePair;
+				
+				keyTypePair[0] = classInfo["metadata"][propertyName]["Mapof"]["keyname"];
+				keyTypePair[1] = classInfo["metadata"][propertyName]["Mapof"]["type"];
+				
+			}
+			
+			return keyTypePair;
 		}
 	}
 }

@@ -7,14 +7,12 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:flexui="flexunit.flexui.*" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import org.flexunit.runner.Request;
 			import flexUnitTests.XmlToObjectConverterTest;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				
-				testsToRun.push(Request.methods(flexUnitTests.XmlToObjectConverterTest,["testConvertToObject"]));
+				testsToRun.push(flexUnitTests.XmlToObjectConverterTest);
 				return testsToRun;
 			}
 			

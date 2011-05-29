@@ -54,7 +54,9 @@
 			{
 				var configXml:XML = XML(event.result);
 				
-				XmlToObjectConverter.convertToObject(configXml, config);
+				var converter:XmlToObjectConverter = new XmlToObjectConverter();
+				
+				converter.convertToObject(configXml, config);
 				
 				menu.model = config.menu;
 				setPictureViewerRandomWallpaper();

@@ -25,6 +25,8 @@ package flexUnitTests
 						<embed key="e2" embdA="1.2" />
 						<embed key="e3" embdA="1.3" />
 					</map>
+				
+					<![CDATA[BLA BLA BLA]]>
 				  </test>;
 		}
 		
@@ -34,7 +36,9 @@ package flexUnitTests
 		{
 			var obj:TestObject = new TestObject();
 			
-			XmlToObjectConverter.convertToObject(xml, obj);
+			var converter:XmlToObjectConverter = new XmlToObjectConverter();
+			
+			converter.convertToObject(xml, obj);
 			
 			Assert.assertEquals(123, obj.a);
 			Assert.assertEquals("test", obj.b);
@@ -47,6 +51,8 @@ package flexUnitTests
 			Assert.assertEquals(1.1, (obj.map["e1"] as TestEmbedded).embdA);
 			Assert.assertEquals(1.2, (obj.map["e2"] as TestEmbedded).embdA);
 			Assert.assertEquals(1.3, (obj.map["e3"] as TestEmbedded).embdA);
+			
+			Assert.assertEquals("BLA BLA BLA", obj["content"]);
 		}
 	}
 }

@@ -11,7 +11,9 @@ package flexUnitTests
 		[Listof(type="flexUnitTests.TestEmbedded")]
 		public var embeds:IList;
 		
-		[Mapof(key="key", type="flexUnitTests.TestEmbedded")]
+		[Mapof(keyname="key", type="flexUnitTests.TestEmbedded")]
 		public var map:Object;
+		
+		public var content:String;
 	}
 }

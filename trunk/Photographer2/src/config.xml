@@ -202,7 +202,7 @@
 		
 		<text key="friends" bgUrl="data/m2.jpg">
 			<style bottom="30" right="50" color="0xabb103" 
-				fontSize="15" />
+				fontSize="15" backgroundColor="black" backgroundAlpha="0.5" />
 			<![CDATA[
 				 	I've been blessed with some of the best friends.
 				 Especially, my friend Calin, which is so fucking awsome.

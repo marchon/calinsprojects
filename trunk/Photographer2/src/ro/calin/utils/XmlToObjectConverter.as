@@ -13,20 +13,20 @@ package ro.calin.utils
 
 	/**
 	 * Provides a convenient way of transforming data
-	 * in xml format to internal object in-memory representation.
+	 * from xml format to internal object in-memory representation.
 	 * It does this with the help of annotations on properties of
 	 * AS classes.
 	 * 
-	 * //TODO: specify xmlattr-objprop mappings (now it's done by name)
-	 * //TODO: provide another mechanism to do list/map type specs, in order
-	 * to externalize this info from the model(annotations are in the model)
-	 * eg: wrapper around ObjectUtil.getClassInfo() and pass an object with info
 	 */
 	public class XmlToObjectConverter
 	{
-		private var mappings:Object;
+		/**
+		 * Contains adittional mapping info required
+		 * in transformation process. 
+		 */
+		private var mappings:Dictionary;
 		
-		public function XmlToObjectConverter(mappings:Object = null) {
+		public function XmlToObjectConverter(mappings:Dictionary = null) {
 			this.mappings = mappings;
 		}
 		
@@ -39,18 +39,18 @@ package ro.calin.utils
 		 * <elem attr1="val1">								elem:{
 		 * 	<innerelem1 attr1="val1"/>							attr1:'val1',
 		 * 	<innerlist1>										innerelem1:{attr1:'val1'},
-		 * 		<item1 a="b"/>										innerlist1:[
-		 * 		<item2 />											{a:'b'},
+		 * 		<item a="b"/>									innerlist1:[
+		 * 		<item />											{a:'b'},
 		 * 	</innerlist1>					-----------\			{}
 		 *  <innermap1>						-----------/		],					
-		 * 		<item1 key="key1" d="e"/>							innermap1:{
-		 * 		<item2 key="key2"/>									key1: {d:'e'},	
+		 * 		<item key="key1" d="e"/>						innermap1:{
+		 * 		<item key="key2"/>									key1: {d:'e'},	
 		 * 	</innermap1>											key2: {}												
 		 * </elem>												}
 		 * 													}
 		 * 
 		 * Lists or Maps item types are provided as class metadata
-		 * or as an object which contains some mappings
+		 * or as an object which contains some mappings.
 		 * 
 		 * AS annotated class:
 		 * class Elem {
@@ -65,7 +65,6 @@ package ro.calin.utils
 		 * }
 		 * 
 		 * Mapping object:
-		 * 
 		 * mappings = {
 		 * 		my.package.Elem : {
 		 * 			innerlist1 : ["Listof", AnotherFancyClass.class],
@@ -81,10 +80,15 @@ package ro.calin.utils
 			for each(var attr:XML in node.attributes()) {
 				propertyName = attr.name().toString();
 				
+				//see if it has alias
+				propertyName = getPropertyAlias(object, propertyName);
+				
 				//if the property is not defined, just add it
 				//conversion to simple types works automat(g)ically
 				object[propertyName] = attr.toString();
 			}
+			
+			//TODO: the algo might have been changed
 			
 			//2. for each child, get corresponding property by name
 			//	2.1. if property is a list type
@@ -102,6 +106,9 @@ package ro.calin.utils
 				}
 				
 				propertyName = child.name().toString();
+				
+				//see if it has alias
+				propertyName = getPropertyAlias(object, propertyName);
 				
 				if(!object.hasOwnProperty(propertyName)) {
 					throw new Error("Object [" + object.toString() + "] has no such property [" + propertyName + "].");
@@ -179,6 +186,13 @@ package ro.calin.utils
 					convertToObject(child, object[propertyName]);
 				}
 			}
+		}
+		
+		private function getPropertyAlias(obj:Object, name:String):String {
+			var cls:Class = getDefinitionByName(getQualifiedClassName(obj)) as Class;
+			if(mappings && mappings[cls] && mappings[cls]["aliases"] && mappings[cls]["aliases"][name])
+				name = mappings[cls]["aliases"][name];
+			return name;
 		}
 		
 		private function isArrayType(type:String):Boolean {

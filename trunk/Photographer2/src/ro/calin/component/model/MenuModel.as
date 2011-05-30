@@ -13,8 +13,8 @@ package ro.calin.component.model
 		public var alpha:Number = 1;
 		public var logoUrl:String = "logo.jpg";
 		
-		[Listof(type="ro.calin.component.model.MenuEntryModel")]
 		public var entries:IList;
+		
 		public var extra:Object;
 	}
 }

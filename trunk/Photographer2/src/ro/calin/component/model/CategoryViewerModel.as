@@ -8,7 +8,6 @@ package ro.calin.component.model
 	 */
 	public class CategoryViewerModel
 	{
-		[Listof(type="ro.calin.component.model.SubcategoryModel")]
 		public var subcategories:IList;
 		
 		public var extra:Object;

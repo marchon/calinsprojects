@@ -15,27 +15,27 @@
 			- if action_type is categ: category key
 			- if action_type is text: text key (see bottom)
 	-->
-	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" extra="click//>slide//>middle">
+	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" action="click//>slide//>middle">
 		<entries>
-			<entry label="gallery" color="0xff00ff" extra="click//>slide//>down">
+			<entry label="gallery" color="0xff00ff" action="click//>slide//>down">
 				<entries>
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
-					<entry label="art" color="0xff00ff" extra="hover//>categ//>art"/>
-					<entry label="comercial" color="0x123423" extra="hover//>categ//>commercial"/>
-					<entry label="cgi" color="0xfaaaaa" extra="hover//>categ//>cgi"/>
+					<entry label="art" color="0xff00ff" action="hover//>categ//>art"/>
+					<entry label="comercial" color="0x123423" action="hover//>categ//>commercial"/>
+					<entry label="cgi" color="0xfaaaaa" action="hover//>categ//>cgi"/>
 				</entries>
 			</entry>
-			<entry label="info" color="0xff0000" extra="click//>slide//>up">
+			<entry label="info" color="0xff0000" action="click//>slide//>up">
 				<entries>
 					<entry label="blog" />
 					<entry label="contact" />
-					<entry label="about" extra="click//>text//>about" />
-					<entry label="friends" extra="click//>text//>friends" />
+					<entry label="about" action="click//>text//>about" />
+					<entry label="friends" action="click//>text//>friends" />
 				</entries>
 			</entry>
-			<entry label="share" extra="click//>slide//>up">
+			<entry label="share" action="click//>slide//>up">
 				<entries>
-					<entry label="" imageUrl="data/thumb/fb.png" color="0xFFFFFF" extra="click//>url//>http://facebook.com"/>
+					<entry label="" imageUrl="data/thumb/fb.png" color="0xFFFFFF" action="click//>url//>http://facebook.com"/>
 					<entry label="" imageUrl="data/thumb/digg.jpg"/>
 					<entry label="about" imageUrl="data/thumb/su.jpg"/>
 					<entry label="" imageUrl="data/thumb/tw.jpg"/>
@@ -53,31 +53,31 @@
 				<!-- FIECARE CATEGORIE CONTINE MAI MULTE SUBCATEGORII, ADICA IMAGINI PE BANDA AIA -->
 				<!-- PICURL ESTE IMAGINEA CARE APARE PE BANDA SI EXTRA REFERA LISTA DE POZE(VEZI PICTURESETS) 
 					CARE SE INCARCA CAND DAI CLICK PE EA -->
-				<subcategory picUrl="data/thumb/2.jpg" name="abstract" description=" " extra="pictureset:abs"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="studio" description="studio" extra="pictureset:studio"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="portraits" description="Portraits" extra="pictureset:portraits"/>
-				<subcategory picUrl="data/thumb/5.jpg" name="nude" description="" extra="pictureset:nude"/>
-				<subcategory picUrl="data/thumb/self.jpg" name="self portaits" description="" extra="pictureset:self"/>
-				<subcategory picUrl="data/thumb/street.jpg" name="street" description="thumb1" extra="pictureset:street"/>
-				<subcategory picUrl="data/thumb/back.jpg" name="the backstage" description="" extra="pictureset:backstage"/>
-				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="thumb3" extra="pictureset:morbid"/>
-				<subcategory picUrl="data/thumb/ruins.jpg" name="ruins" description="" extra="pictureset:ruins"/>
-				<subcategory picUrl="data/thumb/land.jpg" name="landscapes" description="" extra="pictureset:land"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" extra="pictureset:set2"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="abstract" description=" " setref="abs"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="studio" description="studio" setref="studio"/>
+				<subcategory picUrl="data/thumb/3.jpg" name="portraits" description="Portraits" setref="portraits"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="nude" description="" setref="nude"/>
+				<subcategory picUrl="data/thumb/self.jpg" name="self portaits" description="" setref="self"/>
+				<subcategory picUrl="data/thumb/street.jpg" name="street" description="thumb1" setref="street"/>
+				<subcategory picUrl="data/thumb/back.jpg" name="the backstage" description="" setref="backstage"/>
+				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="thumb3" setref="morbid"/>
+				<subcategory picUrl="data/thumb/ruins.jpg" name="ruins" description="" setref="ruins"/>
+				<subcategory picUrl="data/thumb/land.jpg" name="landscapes" description="" setref="land"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" setref="set2"/>
 			</subcategories>
 		</category>
 		
 		<category key="commercial">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" extra="pictureset:sample"/>
-				<subcategory picUrl="data/thumb/jb.jpg" name="J&amp;B" description="J&amp;B Shaking the Dancefloor events" extra="pictureset:jb"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" extra="pictureset:bottle"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" setref="sample"/>
+				<subcategory picUrl="data/thumb/jb.jpg" name="J&amp;B" description="J&amp;B Shaking the Dancefloor events" setref="jb"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" setref="bottle"/>
 			</subcategories>
 		</category>
 		<category key="cgi">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" extra="pictureset:set4"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" extra="pictureset:set5"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" setref="set4"/>
+				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" setref="set5"/>
 			</subcategories>
 		</category>
 	</categories>

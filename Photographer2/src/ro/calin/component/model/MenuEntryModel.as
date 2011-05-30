@@ -18,9 +18,8 @@ package ro.calin.component.model
 		public var fontColor:uint = 0xffffff;
 		public var fontSize:Number = 30;
 		
-		public var extra:Object = null;
-		
-		[Listof(type="ro.calin.component.model.MenuEntryModel")]
 		public var entries:IList = null;
+		
+		public var extra:Object = null;
 	}
 }

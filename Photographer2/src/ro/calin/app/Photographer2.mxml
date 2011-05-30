@@ -20,8 +20,11 @@
 			import ro.calin.component.event.CategoryEvent;
 			import ro.calin.component.event.MenuEvent;
 			import ro.calin.component.model.CategoryViewerModel;
+			import ro.calin.component.model.MenuEntryModel;
+			import ro.calin.component.model.MenuModel;
 			import ro.calin.component.model.PictureModel;
 			import ro.calin.component.model.PictureViewerModel;
+			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.utils.SWFProfiler;
 			import ro.calin.utils.XmlToObjectConverter;
 			
@@ -45,16 +48,46 @@
 			private static const MENU_ACTION_URL:String = "url";
 			private static const MENU_ACTION_TEXT:String = "text";
 			
-			
 			/**
 			 * Called when config xml is received.
 			 * Populate config from that.
 			 */ 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
+				//populate the mappings
+				var mappings:Dictionary = new Dictionary();
+				mappings[Config] = {
+					categories: ["Mapof", "key", CategoryViewerModel],
+					picturesets: ["Mapof", "key", PictureViewerModel],
+					textset: ["Mapof", "key", TextModel]
+				};
+				mappings[CategoryViewerModel] = {
+					subcategories: ["Listof", SubcategoryModel]
+				};
+				mappings[MenuEntryModel] = {
+					entries: ["Listof", MenuEntryModel],
+					"aliases": {
+						"action": "extra"
+					}
+				};
+				mappings[MenuModel] = {
+					entries: ["Listof", MenuEntryModel],
+					"aliases": {
+						"action": "extra"
+					}
+				};
+				mappings[PictureViewerModel] = {
+					pictures: ["Listof", PictureModel]
+				};
+				mappings[SubcategoryModel] = {
+					"aliases": {
+						"setref": "extra"
+					}
+				}
+					
 				var configXml:XML = XML(event.result);
 				
-				var converter:XmlToObjectConverter = new XmlToObjectConverter();
+				var converter:XmlToObjectConverter = new XmlToObjectConverter(mappings);
 				
 				converter.convertToObject(configXml, config);
 				
@@ -201,15 +234,11 @@
 			 */
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
-				//TODO: refactor here + config.xml
-				//pictureset reference is held in "extra" field of subcateg model
-				var picset:String = (event.subcategory.extra as String).substr("pictureset:".length);
+				var picset:String = event.subcategory.extra as String;
 				picViewer.model = config.picturesets[picset];
 				
 				catViewer.visible = false;
 			}
-			
-			
 		
 			/**
 			 * Randomizes over wallpaper pictureset.

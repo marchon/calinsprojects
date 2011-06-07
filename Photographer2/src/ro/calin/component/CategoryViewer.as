@@ -11,14 +11,20 @@ package ro.calin.component
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	
+	/**
+	 * Component which can display a vertical thumbnail strip.
+	 * The viewport is limited to the height and it can be
+	 * scrolled by moving the mouse towords the components top
+	 * or bottom.
+	 */
 	[Event(name="categItemClick", type="ro.calin.component.event.CategoryEvent")]
 	public class CategoryViewer extends SkinnableComponent
 	{
+		/**
+		 * This is the group of thumbnails.
+		 */
 		[SkinPart(required="true")]
 		public var thumbnailStrip:DataGroup;
-		
-		public var thumbnailWidth:Number = 100;
-		public var scale:Number = 1;
 		
 		private var _model:CategoryViewerModel;
 		
@@ -26,6 +32,7 @@ package ro.calin.component
 			setStyle("skinClass", CategoryViewerSkin);
 		}
 		
+		[Bindable]
 		public function set model(value:CategoryViewerModel):void {
 			_model = value;
 			
@@ -35,6 +42,8 @@ package ro.calin.component
 		}
 		
 		public function get model():CategoryViewerModel {
+			if(_model == null) _model = new CategoryViewerModel();
+			
 			return _model;
 		}
 		

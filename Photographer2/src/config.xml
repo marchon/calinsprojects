@@ -46,7 +46,7 @@
 	</menu>
 	
 	<!-- SECTIUNEA CATEGORII, ADICA BENZILE ALEA CARE APAR CAND DAI CLICK PE BUTON IN MENIU -->
-	<categories>
+	<categories thumbWidth="220" scaleFrom="1.0" scaleTo="1.2">
 		<!-- KEY ESTE REFERIT IN MENIU -->
 		<category key="art">
 			<subcategories>

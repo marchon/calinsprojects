@@ -31,8 +31,9 @@
 	
 	<s:Group id="subcategory" x.normal="{hostComponent.leftMargin}" x.hovered="0">
 		
-		<s:Rect id="back" width="100%" height="100%" scaleX.hovered="{hostComponent.scale}" 
-				scaleY.hovered="{hostComponent.scale}">
+		<s:Rect id="back" width="100%" height="100%" 
+				scaleX.normal="{hostComponent.scaleFrom}" scaleY.normal="{hostComponent.scaleFrom}"
+				scaleX.hovered="{hostComponent.scaleTo}" scaleY.hovered="{hostComponent.scaleTo}">
 			<s:fill>
 				<s:SolidColor color="black"/>
 			</s:fill>
@@ -42,13 +43,13 @@
 				<s:HorizontalLayout verticalAlign="top"/>
 			</s:layout>
 			
-			<mx:Image id="image" width="{hostComponent.thumbnailWidth}" 
-					  height="100%" scaleX.hovered="{hostComponent.scale}" 
-					  scaleY.hovered="{hostComponent.scale}" 
-					  alpha="0.3" alpha.hovered="1.0" />
+			<mx:Image id="image" width="{hostComponent.thumbWidth}" 
+					  scaleX.normal="{hostComponent.scaleFrom}" scaleY.normal="{hostComponent.scaleFrom}"
+					  scaleX.hovered="{hostComponent.scaleTo}" scaleY.hovered="{hostComponent.scaleTo}" 
+					  height="100%" alpha="0.3" alpha.hovered="1.0" />
 			
 			<s:Group id="details" includeInLayout.normal="false" visible.normal="false"
-					 width.normal="0" width.hovered="{hostComponent.thumbnailWidth}">
+					 width.normal="0" width.hovered="{hostComponent.thumbWidth}">
 				<s:layout>
 					<s:VerticalLayout horizontalAlign="left" paddingTop="10" gap="8"/>
 				</s:layout>

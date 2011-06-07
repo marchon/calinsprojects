@@ -24,8 +24,9 @@ package ro.calin.component
 		[SkinPart(required="true")]
 		public var subcatDesc:Label;
 		
-		public var thumbnailWidth:Number = 100;
-		public var scale:Number = 1;
+		public var thumbWidth:Number;
+		public var scaleFrom:Number;
+		public var scaleTo:Number;
 		
 		private var _model:SubcategoryModel;
 		
@@ -52,7 +53,7 @@ package ro.calin.component
 		}
 		
 		public function get leftMargin():Number {
-			return (scale - 1) * thumbnailWidth / 2;
+			return (scaleFrom - 1) * thumbWidth / 2;
 		}
 		
 		override protected function getCurrentSkinState() : String {

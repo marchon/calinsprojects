@@ -25,7 +25,7 @@
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
-				<s:ItemRenderer >
+				<s:ItemRenderer>
 					<fx:Script>
 						<![CDATA[
 							//hack to get rid of grey shade artifact
@@ -35,8 +35,9 @@
 						]]>
 					</fx:Script>
 					<component:Subcategory model="{data}" buttonMode="true" 
-										thumbnailWidth="{outerDocument.hostComponent.thumbnailWidth}"
-										scale="{outerDocument.hostComponent.scale}"/>
+										thumbWidth="{outerDocument.hostComponent.model.thumbWidth}"
+										scaleFrom="{outerDocument.hostComponent.model.scaleFrom}"
+										scaleTo="{outerDocument.hostComponent.model.scaleTo}"/>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>

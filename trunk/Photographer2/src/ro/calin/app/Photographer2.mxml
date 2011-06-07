@@ -132,6 +132,8 @@
 						break;
 					case MENU_ACTION_CATEG:
 						//TODO: externalize hardcoded values
+						//in future we can specify individual button width,
+						//so it makes sense to calculate pos in menu component???()
 						if(event) showCategory(config.categories[action[1]], 271 + 220 * event.buttonIndex);
 						break;
 					case MENU_ACTION_TEXT:
@@ -321,8 +323,8 @@
 					width="100%" y.menuMiddle="{this.height * .7}" 
 					y.menuTop="0" y.menuBottom="{this.height - menu.height}" />
 	
-	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}" 
-							  thumbnailWidth="220" scale="1.2" 
+	<!--TODO: REMOVE HARDCODED WIDTH AND SCALE-->
+	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}"
 							  categItemClick="catViewer_categItemClickHandler(event)"/>
 	
 </s:Application>

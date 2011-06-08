@@ -36,12 +36,16 @@ package ro.calin.component
 		public function set model(value:CategoryViewerModel):void {
 			_model = value;
 			
+			//set the provider for the data group
 			if(thumbnailStrip != null) {
 				thumbnailStrip.dataProvider = _model.subcategories;
+				//TODO: exept!!!!!!!! if model is changed from small to big
+				thumbnailStrip.verticalScrollPosition = maxScroll();
 			}
 		}
 		
 		public function get model():CategoryViewerModel {
+			//create one to avoid npe in skin
 			if(_model == null) _model = new CategoryViewerModel();
 			
 			return _model;
@@ -53,7 +57,7 @@ package ro.calin.component
 			if(instance == thumbnailStrip) {
 				if(_model != null) {
 					thumbnailStrip.dataProvider = _model.subcategories;
-					thumbnailStrip.verticalScrollPosition = 0;
+					thumbnailStrip.verticalScrollPosition = maxScroll();
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
 				thumbnailStrip.clipAndEnableScrolling = true;
@@ -70,12 +74,18 @@ package ro.calin.component
 		
 		private function thumbnailStrip_mouseMoveHandler(evt:MouseEvent):void {
 			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
-			var h:Number = this.height;
-			var y:Number = this.y;
-			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
 			
-			//magical voodoo math stuff
-			thumbnailStrip.verticalScrollPosition = fr * evt.stageY - fr * this.y;
+			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
+			var scroll:Number = fr * evt.stageY - fr * this.y;
+			
+			var ms:Number = maxScroll();
+			if(scroll > ms) scroll = ms;
+			
+			thumbnailStrip.verticalScrollPosition = scroll;
 		}
+		
+		private function maxScroll():Number {
+			return thumbnailStrip.contentHeight - thumbnailStrip.height;
+		} 
 	}
 }

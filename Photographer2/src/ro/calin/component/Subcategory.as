@@ -53,7 +53,8 @@ package ro.calin.component
 		}
 		
 		public function get leftMargin():Number {
-			return (scaleFrom - 1) * thumbWidth / 2;
+			//TODO: cache this value, cuz it's constant for all???
+			return (scaleTo - scaleFrom) * thumbWidth / 2;
 		}
 		
 		override protected function getCurrentSkinState() : String {

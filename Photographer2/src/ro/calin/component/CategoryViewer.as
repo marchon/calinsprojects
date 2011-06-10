@@ -40,7 +40,7 @@ package ro.calin.component
 			if(thumbnailStrip != null) {
 				thumbnailStrip.dataProvider = _model.subcategories;
 				//TODO: exept!!!!!!!! if model is changed from small to big
-				thumbnailStrip.verticalScrollPosition = maxScroll();
+//				thumbnailStrip.verticalScrollPosition = maxScroll();
 			}
 		}
 		
@@ -57,7 +57,7 @@ package ro.calin.component
 			if(instance == thumbnailStrip) {
 				if(_model != null) {
 					thumbnailStrip.dataProvider = _model.subcategories;
-					thumbnailStrip.verticalScrollPosition = maxScroll();
+//					thumbnailStrip.verticalScrollPosition = maxScroll();
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
 				thumbnailStrip.clipAndEnableScrolling = true;

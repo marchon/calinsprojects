@@ -46,9 +46,9 @@
 	</menu>
 	
 	<!-- SECTIUNEA CATEGORII, ADICA BENZILE ALEA CARE APAR CAND DAI CLICK PE BUTON IN MENIU -->
-	<categories thumbWidth="220" scaleFrom="1.0" scaleTo="1.2">
+	<categories>
 		<!-- KEY ESTE REFERIT IN MENIU -->
-		<category key="art">
+		<category key="art" thumbWidth="220" scaleFrom="0.9" scaleTo="1.0">
 			<subcategories>
 				<!-- FIECARE CATEGORIE CONTINE MAI MULTE SUBCATEGORII, ADICA IMAGINI PE BANDA AIA -->
 				<!-- PICURL ESTE IMAGINEA CARE APARE PE BANDA SI EXTRA REFERA LISTA DE POZE(VEZI PICTURESETS) 
@@ -67,14 +67,14 @@
 			</subcategories>
 		</category>
 		
-		<category key="commercial">
+		<category key="commercial" thumbWidth="220" scaleFrom="0.9" scaleTo="1.0">
 			<subcategories>
 				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" setref="sample"/>
 				<subcategory picUrl="data/thumb/jb.jpg" name="J&amp;B" description="J&amp;B Shaking the Dancefloor events" setref="jb"/>
 				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" setref="bottle"/>
 			</subcategories>
 		</category>
-		<category key="cgi">
+		<category key="cgi" thumbWidth="220" scaleFrom="1.0" scaleTo="1.03">
 			<subcategories>
 				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" setref="set4"/>
 				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" setref="set5"/>

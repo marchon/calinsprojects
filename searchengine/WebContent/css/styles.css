@@ -1,0 +1,99 @@
+@CHARSET "ISO-8859-1";
+
+.Pages {
+	margin-bottom: 20px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.Paginator {
+	font-size: 12px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 10px;
+}
+
+.Paginator a, .Paginator a:link, .Paginator a:visited {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 1px solid #DDDDDD;
+	padding: 2px 6px;
+	text-decoration: none;
+	color: blue;
+}
+
+.Paginator .AtStart {
+	background: #FFFFFF none repeat scroll 0 0;
+	color: #AAAAAA;
+	margin-right: 20px;
+	padding: 2px 6px;
+}
+
+.Paginator .Prev {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 2px solid #DDDDDD;
+	margin-right: 20px;
+	padding: 2px 6px;
+}
+
+.Paginator .break {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: medium none;
+	padding: 2px 6px;
+	text-decoration: none;
+}
+
+.Paginator .Next {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 2px solid #DDDDDD;
+	margin-left: 20px;
+	padding: 2px 6px;
+}
+
+.Paginator .AtEnd {
+	background: #FFFFFF none repeat scroll 0 0;
+	color: #AAAAAA;
+	margin-left: 20px;
+	padding: 2px 6px;
+}
+
+.Paginator .this-page {
+	background: #FFFFFF none repeat scroll 0 0;
+	border-color: #999999;
+	color: #008000;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 2px 6px;
+	vertical-align: top;
+}
+
+.Paginator a:hover {
+	background: #0063DC none repeat scroll 0 0;
+	border-color: #003366;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+#searchQuery {
+	margin: auto;
+	width: 700px;
+	text-align: center;
+}
+
+#searchResults {
+	margin: auto;
+	width: 700px;
+}
+
+#resultList ul{
+	list-style-type: none;
+}
+
+#resultList .title {
+}
+
+#resultList .summary {
+	padding-left: 15px;
+}
+#resultList cite {
+	color: #008000;
+}

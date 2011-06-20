@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Talk_Client", "Talk_Client\Talk_Client.vcproj", "{5ED9716D-0778-41A7-8C57-60064A1E8E3A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Talk_Server", "Talk_Server\Talk_Server.vcproj", "{98E2D1AE-132F-4788-A76A-DFB02DD629F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5ED9716D-0778-41A7-8C57-60064A1E8E3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5ED9716D-0778-41A7-8C57-60064A1E8E3A}.Debug|Win32.Build.0 = Debug|Win32
+		{5ED9716D-0778-41A7-8C57-60064A1E8E3A}.Release|Win32.ActiveCfg = Release|Win32
+		{5ED9716D-0778-41A7-8C57-60064A1E8E3A}.Release|Win32.Build.0 = Release|Win32
+		{98E2D1AE-132F-4788-A76A-DFB02DD629F3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{98E2D1AE-132F-4788-A76A-DFB02DD629F3}.Debug|Win32.Build.0 = Debug|Win32
+		{98E2D1AE-132F-4788-A76A-DFB02DD629F3}.Release|Win32.ActiveCfg = Release|Win32
+		{98E2D1AE-132F-4788-A76A-DFB02DD629F3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

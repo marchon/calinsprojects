@@ -1,0 +1,92 @@
+﻿* 
+{
+	margin: 0;
+	padding: 0;
+}
+
+body 
+{
+	margin-top: 20px;
+	background: #36393D url(Images/body_back.gif) repeat-x;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #D1E9A3;
+	text-align:center;
+}
+a
+{
+    color: #BA3300;
+    margin: 10px;
+}
+a:hover
+{
+    text-decoration: none;
+}
+
+.signup
+{
+    background-color: #D6EBAD;
+    border: none;
+    color: #36393D;
+    margin: 110px auto;
+    width: 320px;
+}
+
+.caption
+{
+    width: 320px;
+    height: 50px;
+	padding: 0px 0px 0px 10px;
+	background: #BA3300 url(Images/autentificate_caption.gif) no-repeat;
+	font-size: 1.6em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: normal;
+	color: White;
+	text-align: left;
+}
+
+.text_box
+{
+    float: left;
+    display: inline; /*ie fix pt margini - ce kkt*/
+    width: 171px;
+    height: 26px;
+    
+    padding: 5px 0px 0px 0px;
+    
+	background: url(Images/text_box.gif) no-repeat top left;
+	margin-left: 10px;
+	text-align: left;
+}
+
+.text_box input
+{
+    width: 155px;
+    background: #FFFFFF;
+	border: none;
+	margin-left: 4px;
+}
+
+.submit_button
+{
+    width: 80px;
+    height: 26px;
+    border: solid 1px #BA3300;
+    background-color: #C7DCAE;
+    margin: 10px 30px;
+}
+
+.error_list
+{
+    text-align: center;
+    border: dotted 1px #BA3300;
+    width: 280px;
+}
+
+.failure_text
+{
+    color: #BA3300;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}

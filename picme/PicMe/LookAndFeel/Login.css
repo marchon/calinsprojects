@@ -1,0 +1,122 @@
+﻿* 
+{
+	margin: 0;
+	padding: 0;
+}
+
+body 
+{
+	margin-top: 20px;
+	background: #36393D url(Images/body_back.gif) repeat-x;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #D1E9A3;
+	text-align:center;
+}
+a
+{
+    color: #BA3300;
+    margin: 10px;
+}
+a:hover
+{
+    text-decoration: none;
+}
+
+.login
+{
+    background-color: #D6EBAD;
+    border: none;
+    color: #36393D;
+    margin: 110px auto;
+    width: 320px;
+}
+
+.caption
+{
+    height: 50px;
+	padding: 0px 0px 0px 10px;
+	background: #BA3300 url(Images/autentificate_caption.gif) no-repeat;
+	font-size: 1.6em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: normal;
+	color: White;
+	text-align: left;
+}
+
+.failure_text
+{
+    color: #BA3300;
+    width: 320px;
+    padding: 5px;
+    text-align: justify;
+}
+
+.text_box
+{
+    float: left;
+    display: inline; /*ie fix pt margini - ce kkt*/
+    width: 171px;
+    height: 26px;
+    
+    padding: 5px 0px 0px 0px;
+    
+	background: url(Images/text_box.gif) no-repeat top left;
+	margin-left: 10px;
+	text-align: left;
+}
+
+.text_box input
+{
+    width: 155px;
+    background: #FFFFFF;
+	border: none;
+	margin-left: 4px;
+}
+
+.dashed
+{
+    width: 175px;
+    border-style: dashed none dashed none;
+    border-width: 1px;
+    border-color: #BA3300;
+    margin: 10px;
+    padding: 5px 5px;
+}
+
+.submit_button
+{
+    width: 54px;
+    height: 26px;
+    border: solid 1px #BA3300;
+    background-color: #C7DCAE;
+    margin: 2px 30px;
+}
+
+.left_corner
+{
+    background: url(Images/round_corner_bottom_left.gif) no-repeat bottom left;
+    height: 60px;
+}
+
+.right_corner
+{
+    padding-top: 10px;
+    background: url(Images/round_corner_bottom_right.gif) no-repeat bottom right;
+    height: 50px;
+}
+.right_corner p
+{
+    font-size: medium;
+    font-weight: bold;
+}
+
+.pass_rec
+{
+    margin: 0px 30px;
+}
+
+.pass_rec hr
+{
+    margin: 10px 0px;
+}

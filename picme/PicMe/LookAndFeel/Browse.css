@@ -1,0 +1,94 @@
+﻿#Search
+{
+    width: 800px;
+    padding: 10px;
+    background-color: #26292D;
+    margin: 10px auto;
+    
+    border: solid 1px #16191D;    
+}
+h3
+{
+    font-size: 1.5em !important;
+}
+#Search div
+{
+    width: 400px;
+    margin: 5px auto;
+}
+
+#Search div .textbox
+{
+    width: 230px;
+    height: 20px;
+    border: solid 1px #16191D;
+}
+
+#Search .button
+{
+    margin-left: 35px;
+    height: 22px;
+    border: solid 1px #16191D;
+}
+
+#Search .radiobuttonlist
+{
+    margin-top: 10px;
+    color: white;
+}
+
+#GridView
+{
+    width: 800px;
+    margin: 0px auto;
+    text-align: center;
+}
+
+#GridView .Record
+{
+    width: 780px;
+    padding: 10px;
+    background-color: #26292D;
+    border: solid 1px #16191D;
+    margin: 10px auto;
+}
+
+#GridView .Record .Image
+{
+    padding-right: 20px;
+    border-right: solid 1px #16191D;
+    text-align: center;
+    width: 300px;
+}
+#GridView .Record .Info
+{
+    width: 250px;
+    text-align: left;
+    float: right;
+    display: inline;
+    margin-right: 175px;
+}
+#GridView .Record .Info .UploadDate
+{
+    font-size: 0.8em;
+}
+
+#GridView .Record .Info .User
+{
+    margin: 15px 0px;
+}
+#GridView .Record .Info .User .Avatar
+{
+    float: left;
+    display: inline;
+}
+#GridView .Record .Info .User p
+{
+    width: 170px;
+    margin-left: 60px;
+    font-size: 0.9em;
+}
+#GridView .Record .Info .Tags
+{
+    margin-top: 40px;
+}

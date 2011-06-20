@@ -1,0 +1,135 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- head -->
+<head runat="server">
+    <title>
+        Share A Pic
+    </title>
+    
+    <link href="LookAndFeel/Master.css" rel="stylesheet" type="text/css" />
+
+    <!-- head placeholder -->
+    <asp:ContentPlaceHolder id="HeadContentPlaceHolder" runat="server">
+    </asp:ContentPlaceHolder>
+    <!-- head placeholder -->
+    
+</head>
+<!-- head -->
+
+<!-- body -->
+<body id="BodyControl" runat="server">
+    <!-- main form -->
+    <form id="TheMainForm" runat="server" enctype="multipart/form-data">
+    
+        <!-- page header -->
+        <div id="header">
+        
+	        <div id="logo">
+		        <h1>Pic Me!</h1>
+	        </div>
+	        
+	        <div id="login_info">
+	            <asp:LoginView ID="login_view" runat="server">
+                    <AnonymousTemplate>
+                        <a href="CreateAccount.aspx">
+                            Create acount</a>&nbsp;|
+                        <asp:LoginStatus ID="login_status" runat="server" LogoutAction="Redirect" 
+                            LogoutPageUrl="~/Default.aspx" />
+                    </AnonymousTemplate>
+                    <LoggedInTemplate>
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="right" valign="bottom">
+                                     Welcome, 
+                                </td>
+                                <td rowspan="2" style="padding-left: 5px;">
+                                    <img id="img_avatar" runat="server" src="~/Avatars/default.gif" alt="avatar" height="40" width="40" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" valign="top">
+                                    <asp:LoginName ID="login_name" runat="server" Font-Bold="True" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td align="center">
+                                    <asp:LoginStatus ID="login_status" runat="server" LogoutAction="Redirect" 
+                                        LogoutPageUrl="~/Default.aspx" />
+                                </td>
+                            </tr>
+                        </table>        
+                    </LoggedInTemplate>
+                </asp:LoginView>
+	        </div>
+	                
+	        <!-- menu -->
+	        <div id="menu">
+	            <div id="search">
+	                <div id="text_box">
+                        <asp:TextBox ID="Query" runat="server"></asp:TextBox>
+	                </div>   
+                    <asp:ImageButton ID="search_go" runat="server" 
+                        ImageUrl="~/LookAndFeel/Images/search_go.gif" OnClick="ExecuteQuerySearch"/>
+	            </div>
+		        <ul>
+			        <li id="home" runat="server"><a href="Default.aspx">Home</a></li>
+			        <li id="browse" runat="server"><a href="Browse.aspx">Browse</a></li>
+			        <li id="profile" runat="server"><a href="UserProfile.aspx">Profile</a></li>
+			        <li id="groups" runat="server"><a href="Groups.aspx">Groups</a></li>
+			        <li id="uploader" runat="server"><a href="Uploader.aspx">Uploader</a></li>
+			        <li id="manager" runat="server"><a href="Manager.aspx">Manager</a></li>
+		        </ul>
+	        </div>
+	        <!-- menu -->
+	                
+        </div>
+        <!-- page header -->
+        
+        <!-- page -->
+        <div id="page">
+            <!-- page content -->
+            <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
+            </asp:ContentPlaceHolder>
+            <!-- page content -->
+        </div>
+        <!-- page -->
+        
+        <!-- footer -->
+        <div id="footer">
+	        <p> 
+                &copy;2007 Share A Pic. Almost All Rights Reserved :).
+	            &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+	            Web Master: Calin. &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+	            Graphic Artist: Ovidiu. 
+		    </p>
+	        <p> 
+	            <a href="http://validator.w3.org/check/referer" title="This page validates as XHTML">
+	                Valid 
+	                <abbr title="eXtensible HyperText Markup Language">
+	                    XHTML
+	                </abbr>
+	            </a> 
+	            &nbsp;&bull;&nbsp; 
+	            <a href="http://jigsaw.w3.org/css-validator/check/referer" title="This page validates as CSS">
+	                Valid 
+	                <abbr title="Cascading Style Sheets">
+	                    CSS
+	                </abbr> 
+	            </a> 
+	        </p>
+        </div>
+        <!-- footer -->
+        
+    </form>
+    <!-- main form -->
+    
+</body>
+<!-- body -->
+
+</html>

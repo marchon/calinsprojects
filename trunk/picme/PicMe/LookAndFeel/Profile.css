@@ -1,0 +1,25 @@
+﻿.box
+{
+    width: 800px;
+    padding: 10px;
+    background-color: #26292D;
+    margin: 10px auto;
+    
+    border: solid 1px #16191D;   
+    color: White; 
+    padding: 20px 0px 60px 0px;
+}
+h3
+{
+    font-size: 1.5em !important;
+    text-align: center;
+    margin-bottom: 40px;
+}
+.box .little_box
+{
+    margin-left: 160px;
+}
+.box .little_box input
+{
+    border: solid 1px #16191D;
+}

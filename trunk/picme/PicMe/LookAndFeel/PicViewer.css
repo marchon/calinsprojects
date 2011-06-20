@@ -1,0 +1,12 @@
+﻿.PicView
+{
+    width: 780px;
+    padding: 10px;
+    background-color: #26292D;
+    border: solid 1px #16191D;
+    margin: 10px auto;
+}
+.PicView input
+{
+    border: solid 1px #16191D;
+}

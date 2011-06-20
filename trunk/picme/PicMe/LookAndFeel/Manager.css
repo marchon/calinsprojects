@@ -1,0 +1,414 @@
+﻿.PictureStreamContainer
+{
+    float: left;
+    display: inline;
+    border-left: solid 3px #26292D;
+    border-top: solid 3px #26292D;
+    border-bottom: solid 3px #26292D;
+    width: 110px;
+    height: 700px;
+}
+
+.ScrollUp
+{
+    width: 110px;
+    height: 60px;
+    background: #26292D url(Images/scroll_up.gif) no-repeat 50% 50%;
+    cursor: pointer;
+}
+.ScrollUpPressed
+{
+    width: 110px;
+    height: 60px;
+    background: #26292D url(Images/scroll_up_pressed.gif) no-repeat 50% 50%;
+    cursor: pointer;
+}
+.ScrollDown
+{
+    width: 110px;
+    height: 60px;
+    background: #26292D url(Images/scroll_down.gif) no-repeat 50% 50%;
+    cursor: pointer;
+}
+.ScrollDownPressed
+{
+    width: 110px;
+    height: 60px;
+    background: #26292D url(Images/scroll_down_pressed.gif) no-repeat 50% 50%;
+    cursor: pointer;
+}
+
+.PictureStream
+{
+    background-image: url(Images/film.gif);
+    background-repeat: repeat-y;
+    background-position: top left;
+    background-attachment: scroll;
+    height: 580px;
+    overflow: hidden;
+}
+.PictureStream div
+{
+    margin: 5px auto;
+    padding-top: 10px;
+    background-color: #26292D;
+   
+    width: 96px;
+    height: 106px; 
+}
+
+.PictureStream div div
+{
+    margin: 0px auto;
+    padding: 0px;
+    background-repeat: no-repeat;
+    background-position: top left;
+    width: 80px;
+    height: 80px;
+}
+.PictureStream .selectedImage div
+{
+    border: solid 1px Red;
+}
+
+.WorkSpace
+{
+    border: solid 3px #26292D;
+    color: White;
+    
+    background: url(Images/camera_back.gif) repeat 50% 50%;
+    
+    width: 790px;
+    height: 700px;
+    overflow: auto;
+}
+.TaskBar
+{
+    float: right;
+    display: inline;
+    
+    width: 115px;
+    height: 696px;
+    padding-top: 10px;
+    
+    overflow: hidden;
+}
+
+.TaskBar div
+{
+    width: 99px;
+    height: 29px;
+    padding: 12px 0px 0px 16px;
+    background: url(Images/taskbar_button_inv.gif) no-repeat top left;
+    margin: 0px 0px 10px 0px;
+    
+    color: Gray;
+    font-size: 1em;
+    font-weight: bold; 
+}
+.TaskBar .ValidButton
+{
+    background: url(Images/taskbar_button.gif) no-repeat top left;
+    cursor: pointer;
+    color: Black;
+}
+.TaskBar .PressedButton
+{
+    width: 95px;
+    height: 27px;
+    padding-top: 14px;
+    padding-left: 20px;
+    background: url(Images/taskbar_button_pressed.gif) no-repeat top left;
+    cursor: pointer;
+    color: Black;
+}
+
+.TaskbarEntry
+{
+    width: 80px;
+    height: 20px;
+    overflow: hidden;
+    
+    margin: 0px 0px 10px 0px;
+    padding: 3px 1px 1px 10px;
+    
+    color: #26292D;
+    border-bottom: solid 3px #26292D;
+    border-top: solid 3px #26292D;
+    border-right: solid 3px #26292D;
+    
+    cursor: pointer;
+}
+
+.TaskbarEntrySelected
+{
+    width: 80px;
+    height: 20px;
+    overflow: hidden;
+    
+    margin: 10px 0px;
+    padding: 3px 1px 1px 10px;
+    
+    background-color: #26292D;
+    color: #36393D;
+    font-weight: bold;
+    border-bottom: solid 3px #26292D;
+    border-top: solid 3px #26292D;
+    border-right: solid 3px #26292D;
+    
+    cursor: pointer;
+}
+
+.SetFolder_1
+{
+    float: left;
+    display: inline;
+
+    text-align: center;  
+    width: 92px;
+    background: url(Images/set_1.gif) no-repeat top left;
+    padding-top: 77px;
+    margin: 1px;
+}
+.SetFolder_2
+{
+    float: left;
+    display: inline;
+
+    text-align: center;  
+    width: 92px;
+    background: url(Images/set_2.gif) no-repeat top left;
+    padding-top: 77px;
+    margin: 1px;
+}
+.SetFolder_3
+{
+    float: left;
+    display: inline;
+
+    text-align: center;  
+    width: 92px;
+    background: url(Images/set_3.gif) no-repeat top left;
+    padding-top: 77px;
+    margin: 1px;
+}
+
+.SetFolder_1 p
+{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70px;
+    height: 20px;
+    overflow: hidden;
+}
+.SetFolder_2 p
+{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70px;
+    height: 20px;
+    overflow: hidden;
+    color: #B42600;
+}
+.SetFolder_3 p
+{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.MessageBox
+{
+    width: 450px;
+
+    color: Black;
+    background-color: #C46600;
+    border-right: solid 2px #B42600;
+    border-left: solid 2px #B42600; 
+    border-bottom: solid 2px #B42600;     
+}
+.MessageBox .Caption
+{
+    height: 27px;
+    padding: 5px 5px 0px;  
+    
+    background: url(Images/win_caption.gif) repeat-x top left;
+    color: White;
+    overflow:hidden;
+}
+.MessageBox p
+{
+    text-align: left;
+    padding: 10px 15px;
+}
+.MessageBox div .button
+{
+    float: right;
+    display: inline;
+    
+    border: solid 2px #B42600;
+    width: 60px;
+    padding: 2px;
+    margin: 3px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.LoadingMessage
+{
+    border: none;
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    
+    background: url(Images/loading_big.gif) no-repeat top left;
+}
+
+.PopUpSet
+{
+    visibility: hidden;
+    color: Black;
+    background: url(Images/win_back.gif) repeat-y top left;
+    
+    width: 384px;
+    height: 286px; 
+    position: absolute;
+    z-index: 300;
+    
+    text-align: center;
+}
+
+.PopUpSet .PopUpCaption
+{
+    width: 374px;
+    height: 27px;
+    padding: 5px 5px 0px;    
+    
+    background: url(Images/win_caption.gif) repeat-x top left;
+    color: White;
+    overflow:hidden;
+    cursor: pointer;
+    
+    text-align: left;  
+}
+
+.PopUpSet .PopUpCaption div
+{    
+    float: right;
+}
+
+.PopUpSet .PopUpCaption div img
+{
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.PopUpSet .PopUpContent
+{
+    width: 372px;
+    height: 220px;
+    margin: auto;
+      
+    overflow: auto;
+}
+
+.PopUpSet .PopUpContent div
+{
+    float: left;
+    display: inline; /*ie fix*/
+    
+    margin: 5px;
+    
+    border: solid 1px #d3d3d3;
+
+    text-align: center; 
+    width: 100px; 
+     
+    background: url(Images/loading_small.gif) 50% 50% no-repeat;
+}
+
+.PopUpSet .PopUpContent .selectedImage
+{
+    border: solid 1px Red;
+}
+
+.PopUpSet .PopUpContent div div
+{
+    clear: both;
+    margin: 0px 10px;
+    padding: 0px;
+    background-repeat: no-repeat;
+    background-position: top left;
+    width: 80px;
+    height: 80px;
+    visibility: hidden;
+}
+
+.PopUpSet .PopUpContent div p
+{
+    clear: both;
+    text-align: center;
+    margin-top: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70px;
+    height: 18px;
+    overflow: hidden;
+}
+
+.PopUpSet .PopUpToolBar
+{
+    width: 384px;
+    height: 34px;
+    
+    background: url(Images/win_toolbar.gif) no-repeat top left;
+    
+    padding: 4px 40px;
+}
+
+.PopUpSet .PopUpToolBar div
+{
+    float: left;
+    display: inline;
+    width: 49px;
+    height: 24px;
+    
+    color: Gray;
+    font-size:x-small;
+    font-weight: bold;
+    
+    margin-left: 10px;
+    padding-top: 4px;
+    
+    background: url(Images/win_button_inv.gif) no-repeat top left;
+}
+
+.PopUpSet .PopUpToolBar .ValidButton
+{
+    color: Black;
+    background: url(Images/win_button.gif) no-repeat top left;
+    
+    cursor: pointer;
+}
+
+.PopUpSet .PopUpToolBar .PressedButton
+{
+    color: Black;
+    width: 47px;
+    padding-top: 6px;
+    padding-left: 2px;
+    background: url(Images/win_button_pressed.gif) no-repeat top left;
+    
+    cursor: pointer;
+}
+
+.LoadingBig
+{
+    display: block;
+    margin: 100px auto auto;
+}

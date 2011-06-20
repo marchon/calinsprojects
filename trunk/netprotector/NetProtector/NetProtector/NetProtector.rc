@@ -1,0 +1,535 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Romanian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ROM)
+#ifdef _WIN32
+LANGUAGE LANG_ROMANIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\NetProtector.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\NetProtector.ico"
+IDI_BUT_ADD             ICON                    "res\\but_add.ico"
+IDI_BUT_DEL             ICON                    "res\\but_del.ico"
+IDI_BUT_DELALL          ICON                    "res\\but_delall.ico"
+IDI_BUT_EDIT            ICON                    "res\\but_edit.ico"
+IDI_CHECK_ON            ICON                    "res\\CheckOn.ico"
+IDI_CHECK_OFF           ICON                    "res\\CheckOff.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OPTIONPAGE DIALOGEX 0, 0, 399, 254
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    CONTROL         178,IDC_STATIC,"Static",SS_BITMAP,96,1,207,17
+    CONTROL         "Start NetProtector at boot time",IDC_START_BOOT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,40,171,19
+    CONTROL         "Enable Firewall",IDC_ENABLE_FIRE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,102,171,19
+    CONTROL         "Enable Process Monitor",IDC_ENABLE_PM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,164,171,19
+    LTEXT           "This option enables NetProtector to start at system boot. For maximum protection it is adviced to enable this option.",IDC_STATIC_NP,56,62,227,28
+    LTEXT           "In order to be able to filter packet traffic using the firewall component you must enable this option.",IDC_STATIC_FI,56,124,227,28
+    LTEXT           "Process monitor prevents unwanted applications to access the Internet. For a full control over your programs this component must be used.",IDC_STATIC_PM,56,186,227,37
+END
+
+IDD_PROCESSMONITORPAGE DIALOGEX 0, 0, 399, 254
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_RULELIST_PM,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOLABELWRAP | WS_TABSTOP,7,49,385,164
+    PUSHBUTTON      "Add...",IDC_BUTTONADD_PM,210,219,60,25
+    PUSHBUTTON      "Delete...",IDC_BUTTONDELETE_PM,271,219,60,25,WS_DISABLED
+    PUSHBUTTON      "Delete All...",IDC_BUTTONDELETEALL_PM,332,219,60,25
+    LTEXT           "Application Internet access rules:",IDC_APPRUL_STATIC,7,35,191,8
+    LTEXT           "(*)Those are session rules. Session rules",IDC_SESSIONRUL_STATIC,7,217,197,8
+    CONTROL         177,IDC_STATIC,"Static",SS_BITMAP,96,1,207,17
+    LTEXT           "expire when NetProtector is closed.",IDC_SESSIONRUL_STATIC2,7,225,191,8
+END
+
+IDD_FIREWALLPAGE DIALOGEX 0, 0, 399, 254
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_TRANSPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_RULELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOLABELWRAP | WS_TABSTOP,7,49,385,164
+    PUSHBUTTON      "Add...",IDC_BUTTONADD,149,219,60,25
+    PUSHBUTTON      "Delete...",IDC_BUTTONDELETE,271,219,60,25
+    PUSHBUTTON      "Edit...",IDC_BUTTONEDIT,210,219,60,25
+    PUSHBUTTON      "Delete All...",IDC_BUTTONDELETEALL,332,219,60,25
+    LTEXT           "Packet filtering rules:",IDC_PFR_STATIC,7,35,119,8
+    CONTROL         176,IDC_STATIC,"Static",SS_BITMAP,96,1,207,17
+END
+
+IDD_ADDRULEDIALOG DIALOGEX 0, 0, 316, 160
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add Rule..."
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,175,129,61,22
+    PUSHBUTTON      "Cancel",IDCANCEL,253,129,56,24
+    GROUPBOX        "Add a new rule:",IDC_STATIC,7,5,302,119
+    EDITTEXT        IDC_DESTIP,207,44,69,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SRCPORT,61,73,69,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DESTPORT,207,73,69,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SRCIP,61,44,69,14,ES_AUTOHSCROLL
+    GROUPBOX        "Source:",IDC_STATIC,12,24,145,70
+    GROUPBOX        "Destination:",IDC_STATIC,157,24,145,70
+    LTEXT           "IP address:",IDC_STATIC,15,44,38,8
+    LTEXT           "Port Number:",IDC_STATIC,15,73,44,8
+    LTEXT           "IP address:",IDC_STATIC,161,44,38,8
+    LTEXT           "Port Number:",IDC_STATIC,161,73,44,8
+    LTEXT           "Protocol:",IDC_STATIC,111,102,30,8
+    COMBOBOX        IDC_PROTO,148,102,48,51,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "...",IDC_BUTTON_SRCIP_POPUP,136,44,16,14
+    PUSHBUTTON      "...",IDC_BUTTON_DESTIP_POPUP,282,44,16,14
+    PUSHBUTTON      "...",IDC_BUTTON_SRCPORT_POPUP,136,73,16,14
+    PUSHBUTTON      "...",IDC_BUTTON_DESTPORT_POPUP,282,73,16,14
+END
+
+IDD_PROCESSMONITORQUERYDIALOG DIALOGEX 0, 0, 302, 135
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ProcessMonitor Alert"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Allow",IDOK,96,106,50,14
+    PUSHBUTTON      "Block",IDCANCEL,155,106,50,14
+    LTEXT           "The following application is trying to connect to the Internet:",IDC_QUERRY,25,9,195,8
+    CONTROL         "This session only",IDC_THIS_SESSION_ONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,90,69,10
+    LTEXT           "",IDC_QUERRY_NAME,100,26,188,8
+    LTEXT           "",IDC_QUERRY_PATH,100,39,188,8
+    LTEXT           "Name:",IDC_STATIC,55,26,22,8
+    LTEXT           "Path:",IDC_STATIC,55,39,18,8
+    LTEXT           "Publisher:",IDC_STATIC,55,52,32,8
+    ICON            "",IDC_APPICON,25,26,20,20
+    LTEXT           "",IDC_QUERRY_PUBLISHER,100,52,188,8
+    LTEXT           "Description:",IDC_STATIC,55,65,39,8
+    LTEXT           "",IDC_QUERRY_DESCRIPTION,100,65,188,8
+END
+
+IDD_ADDAPPRULEDLG DIALOGEX 0, 0, 252, 87
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add Rule..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,132,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,195,65,50,14
+    EDITTEXT        IDC_PATH_EDIT,45,16,135,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BROWSE_BUTTON,188,16,50,14
+    LTEXT           "Path:",IDC_STATIC,17,22,18,8
+    LTEXT           "Action:",IDC_STATIC,17,40,24,8
+    COMBOBOX        IDC_ACTION_COMBO,45,36,72,39,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OPTIONPAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 392
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
+    END
+
+    IDD_PROCESSMONITORPAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 392
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
+    END
+
+    IDD_FIREWALLPAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 392
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
+    END
+
+    IDD_ADDRULEDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 153
+    END
+
+    IDD_PROCESSMONITORQUERYDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 295
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_ADDAPPRULEDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_TRAYMENU MENU 
+BEGIN
+    POPUP "POPUP_TRY"
+    BEGIN
+        MENUITEM "Show ",                       ID_POPUP_SHOWNETPROTECTOR
+        MENUITEM "Hide",                        ID_POPUP_HIDENETPROTECTOR
+        MENUITEM SEPARATOR
+        MENUITEM "Exit",                        ID_POPUP_EXIT
+    END
+END
+
+IDR_IPMENU MENU 
+BEGIN
+    POPUP "POPUP_IP"
+    BEGIN
+        MENUITEM "My Machine",                  ID_POPUP_IP_MYMACHINE
+        MENUITEM "Any Machine",                 ID_POPUP_IP_ANYMACHINE
+    END
+END
+
+IDR_PORTMENU MENU 
+BEGIN
+    POPUP "POPUP_PORT"
+    BEGIN
+        MENUITEM "Any Port",                    ID_POPUP_ANYPORT
+        MENUITEM "HTTP",                        ID_POPUP_HTTP
+        MENUITEM "FTP",                         ID_POPUP_FTP
+        MENUITEM "SSH",                         ID_POPUP_SSH
+        MENUITEM "Telnet",                      ID_POPUP_TELNET
+        MENUITEM "SMTP",                        ID_POPUP_SMTP
+        MENUITEM "DNS",                         ID_POPUP_DNS
+        MENUITEM "DHCP",                        ID_POPUP_DHCP
+        MENUITEM "POP3",                        ID_POPUP_POP3
+        MENUITEM "NNTP",                        ID_POPUP_NNTP
+        MENUITEM "NetBios",                     ID_POPUP_NETBIOS
+        MENUITEM "SOCKS",                       ID_POPUP_SOCKS
+    END
+END
+
+IDR_ACTIONMENU MENU 
+BEGIN
+    POPUP "POPUP_ACTION"
+    BEGIN
+        MENUITEM "Allow",                       ID_POPUP_ALLOW
+        MENUITEM "Block",                       ID_POPUP_BLOCK
+        MENUITEM SEPARATOR
+        MENUITEM "Application info...",         ID_POPUP_APPLICATIONINFO
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_SHIELD              BITMAP                  "res\\shield.bmp"
+IDB_WAREA_UP            BITMAP                  "res\\warea_up.bmp"
+IDB_WAREA_UP_RIGHT      BITMAP                  "res\\warea_up_right.bmp"
+IDB_WAREA_RIGHT         BITMAP                  "res\\warea_right.bmp"
+IDB_WAREA_DOWN_RIGHT    BITMAP                  "res\\warea_down_right.bmp"
+IDB_WAREA_DOWN          BITMAP                  "res\\warea_down.bmp"
+IDB_WAREA_DOWN_LEFT     BITMAP                  "res\\warea_down_left.bmp"
+IDB_WAREA_LEFT          BITMAP                  "res\\warea_left.bmp"
+IDB_FIREWALLBUTTON_UP   BITMAP                  "res\\firewallbutton_up.bmp"
+IDB_FIREWALLBUTTON_DOWN BITMAP                  "res\\firewallbutton_down.bmp"
+IDB_PMONITORBUTTON_UP   BITMAP                  "res\\pmonitorbutton_up.bmp"
+IDB_PMONITORBUTTON_DOWN BITMAP                  "res\\pmonitorbutton_down.bmp"
+IDB_OPTIONSBUTTON_UP    BITMAP                  "res\\optionsbutton_up.bmp"
+IDB_OPTIONSBUTTON_DOWN  BITMAP                  "res\\optionsbutton_down.bmp"
+IDB_STATUS_DOWN         BITMAP                  "res\\status_down.bmp"
+IDB_STATUS_LEFT         BITMAP                  "res\\status_left.bmp"
+IDB_STATUS_RIGHT        BITMAP                  "res\\status_right.bmp"
+IDB_STATUS_UP           BITMAP                  "res\\status_up.bmp"
+IDB_TITLE               BITMAP                  "E:\\Projects\\Visual Studio\\NetProtector\\NetProtector\\res\\title.bmp"
+IDB_FIRE_TITLE          BITMAP                  "res\\fire_title.bmp"
+IDB_PM_TITLE            BITMAP                  "res\\pm_title.bmp"
+IDB_OPT_TITLE           BITMAP                  "res\\opt_title.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_ADDRULEDIALOG DLGINIT
+BEGIN
+    IDC_PROTO, 0x403, 5, 0
+0x4349, 0x504d, "\000" 
+    IDC_PROTO, 0x403, 4, 0
+0x4354, 0x0050, 
+    IDC_PROTO, 0x403, 4, 0
+0x4455, 0x0050, 
+    0
+END
+
+IDD_ADDAPPRULEDLG DLGINIT
+BEGIN
+    IDC_ACTION_COMBO, 0x403, 6, 0
+0x6c41, 0x6f6c, 0x0077, 
+    IDC_ACTION_COMBO, 0x403, 6, 0
+0x6c42, 0x636f, 0x006b, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_HAND2               CURSOR                  "res\\Hand.cur"
+#endif    // Romanian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About FirewallApp"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "FirewallApp, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2008",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_NETPROTECTOR DIALOGEX 0, 0, 490, 343
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU
+CAPTION "NetProtector"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_GUIDE,"Static",SS_BLACKFRAME,70,64,399,254
+    CONTROL         148,IDC_STATIC,"Static",SS_BITMAP,72,62,394,3
+    CONTROL         149,IDC_STATIC,"Static",SS_BITMAP,466,63,7,8
+    CONTROL         150,IDC_STATIC,"Static",SS_BITMAP,468,71,4,243
+    CONTROL         151,IDC_STATIC,"Static",SS_BITMAP,465,314,7,5
+    CONTROL         152,IDC_STATIC,"Static",SS_BITMAP,72,317,393,2
+    CONTROL         153,IDC_STATIC,"Static",SS_BITMAP,67,312,6,7
+    CONTROL         154,IDC_WAREA_LEFT,"Static",SS_BITMAP,67,71,3,241
+    CONTROL         140,IDC_LOGO,"Static",SS_BITMAP,8,7,65,78
+    CONTROL         "",IDC_FIREWALLBTN,"Static",SS_BITMAP | SS_NOTIFY,14,113,55,31
+    CONTROL         "",IDC_PMONBTN,"Static",SS_BITMAP | SS_NOTIFY,14,150,15,13
+    CONTROL         "",IDC_OPTIONSBTN,"Static",SS_BITMAP | SS_NOTIFY,14,187,15,13
+    LTEXT           "Ready",IDC_STATUS,20,328,447,10
+    CONTROL         165,IDC_STATIC,"Static",SS_BITMAP,14,326,6,13
+    CONTROL         166,IDC_STATIC,"Static",SS_BITMAP,467,326,6,13
+    CONTROL         167,IDC_STATIC,"Static",SS_BITMAP,20,326,447,1
+    CONTROL         164,IDC_STATIC,"Static",SS_BITMAP,20,338,447,1
+    LTEXT           "IDC_SYSINFO_OS",IDC_SYSINFO_OS,116,29,350,8
+    LTEXT           "IDC_SYSINFO_CPU",IDC_SYSINFO_CPU,116,37,350,8
+    LTEXT           "IDC_SYSINFO_MEM",IDC_SYSINFO_MEM,116,45,350,8
+    CONTROL         168,IDC_STATIC,"Static",SS_BITMAP,77,3,186,27
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_NETPROTECTOR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 482
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 339
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 0,0,0,1
+ PRODUCTVERSION 0,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "CALIN Home CORP"
+            VALUE "FileDescription", "Firewall Application."
+            VALUE "FileVersion", "0.0.0.1"
+            VALUE "InternalName", "NetProtector.exe"
+            VALUE "LegalCopyright", "(c) CALIN Home.  All rights reserved."
+            VALUE "OriginalFilename", "NetProtector.exe"
+            VALUE "ProductName", "NetProtector"
+            VALUE "ProductVersion", "0.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About FirewallApp..."
+    IDS_APPNAME             "NetProtector"
+    IDS_APPERROR            "An error has occured! The application will now close."
+    IDS_PATH                "Path"
+    IDS_SRCIP               "SOURCE IP"
+    IDS_DESTIP              "DESTINATION IP"
+    IDS_SRCPORT             "SOURCE PORT"
+    IDS_DESTPORT            "DESTINATION PORT"
+    IDS_PROTOCOL            "PROTOCOL"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ACTION              "Action"
+    IDS_NAME                "Name"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\NetProtector.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

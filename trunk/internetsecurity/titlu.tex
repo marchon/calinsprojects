@@ -1,0 +1,55 @@
+
+%linie orizontala
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+%linie orizontala
+
+%data in format romanesc
+\def\today{\space  \ifcase \month
+\or IANUARIE\or FEBRUARIE\or mARTIE\or APRILIE\or MAI\or IUNIE\or
+IULIE\or AUGUST\or SEPTEMBRIE\or OCTOMBRIE\or NOIEMBRIE\or DECEMBRIE \fi
+\space  \number\year}
+%data in format romanesc
+
+%pagina de titlu
+\begin{titlepage}
+\begin{center}
+  
+%facultatea
+\textsc{\LARGE Universitatea Bucure'sti}\\
+\textsc{\LARGE Facultatea de matematic'a 'si informatic'a}\\[1.0cm]
+%facultatea
+ 
+
+\textsc{\Large Lucrare de licen't'a}\\[3.0cm]
+ 
+ 
+%Titlu
+\HRule \\[0.5cm]
+{ \huge \bfseries Securitatea pe Internet}\\[0.4cm]
+\HRule \\[4.5cm]
+%Titlu
+ 
+%autor si coordonator
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autor:}\\
+C'alin \textsc{Avas'ilc'ai}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Coordonator:} \\
+Prof. Dr. Adrian \textsc{Atanasiu}
+\end{flushright}
+\end{minipage}
+%autor si coordonator
+ 
+\vfill
+ 
+%data curenta
+{\large \today}
+%data curenta
+ 
+\end{center}
+\end{titlepage}
+%pagina de titlu

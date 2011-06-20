@@ -1,0 +1,162 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E52D7438-4F2C-4177-83A2-2E92CB3C6751}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MapEditor2</RootNamespace>
+    <AssemblyName>MapEditor2</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DescriptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DescriptionForm.Designer.cs">
+      <DependentUpon>DescriptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VehicleEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VehicleEditor.Designer.cs">
+      <DependentUpon>VehicleEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Map.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MapPropertiesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapPropertiesDialog.Designer.cs">
+      <DependentUpon>MapPropertiesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ObjectEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ObjectEditor.Designer.cs">
+      <DependentUpon>ObjectEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectPropertiesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ObjectPropertiesDialog.Designer.cs">
+      <DependentUpon>ObjectPropertiesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OpenMapDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenMapDialog.Designer.cs">
+      <DependentUpon>OpenMapDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DescriptionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DescriptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapPropertiesDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MapPropertiesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ObjectEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ObjectEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ObjectPropertiesDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ObjectPropertiesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenMapDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OpenMapDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VehicleEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VehicleEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VehiclePropertiesDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VehiclePropertiesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TileContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="VehiclePropertiesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VehiclePropertiesDialog.Designer.cs">
+      <DependentUpon>VehiclePropertiesDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

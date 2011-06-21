@@ -134,6 +134,7 @@
 						//TODO: externalize hardcoded values
 						//in future we can specify individual button width,
 						//so it makes sense to calculate pos in menu component???()
+						//TODO: different scale values on categories not working
 						if(event) showCategory(config.categories[action[1]], 271 + 220 * event.buttonIndex);
 						break;
 					case MENU_ACTION_TEXT:

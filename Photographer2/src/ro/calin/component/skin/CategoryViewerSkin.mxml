@@ -10,12 +10,12 @@
 	<!-- SkinParts
 	name=thumbnailStrip, type=spark.components.DataGroup, required=true
 	-->
-	<!--<s:Rect width="100%" 
+	<s:Rect width="100%" 
 			height="100%">
 		<s:fill>
 			<s:SolidColor color="red"/>
 		</s:fill>
-	</s:Rect>-->
+	</s:Rect>
 	<!--need to adjust height to match the maximum scale amount-->
 	<s:DataGroup id="thumbnailStrip" height="100%" 
 				 width="100%" >

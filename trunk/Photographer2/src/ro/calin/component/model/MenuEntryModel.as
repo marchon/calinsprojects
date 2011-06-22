@@ -17,6 +17,7 @@ package ro.calin.component.model
 		public var color:uint = 0x000000;
 		public var fontColor:uint = 0xffffff;
 		public var fontSize:Number = 30;
+		public var buttonWidth:Number = NaN;
 		
 		public var entries:IList = null;
 		

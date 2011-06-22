@@ -44,6 +44,11 @@ package ro.calin.component
 		private var _model:MenuModel;
 		
 		/**
+		 * x distances from logo for each button
+		 */
+		private var _cachedDistances:Array = [];
+		
+		/**
 		 * Stack used to keep track of the submenus,
 		 * so that we can return to previous submenu/menu.
 		 * */
@@ -71,6 +76,16 @@ package ro.calin.component
 			}
 		}
 		
+		public function getButtonDistance(index:int) : Number {
+			if(_cachedDistances.length > index && index >= 0) return _cachedDistances[index];
+			
+			return -1;
+		}
+		
+		public function getButtonWidth(entry:MenuEntryModel):Number {
+			return isNaN(entry.buttonWidth)? _model.buttonWidth : entry.buttonWidth;
+		}
+		
 		/**
 		 * Update the button bar and push this list in the stack.
 		 * */
@@ -78,6 +93,16 @@ package ro.calin.component
 			if(entries) {
 				bar.dataProvider = entries;
 				_menuState.push(entries);
+				
+				//calculate middle distances
+				_cachedDistances = [];
+				var curentDistance:Number = 0;
+				for (var i:int = 0; i < entries.length; i++) {
+					var w:Number = getButtonWidth(entries.getItemAt(i) as MenuEntryModel);
+					_cachedDistances[i] = curentDistance +  w / 2;
+					curentDistance += w;
+				}
+				
 				invalidateSkinState();
 			}
 		}

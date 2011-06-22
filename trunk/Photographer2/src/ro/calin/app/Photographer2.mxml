@@ -135,7 +135,7 @@
 						//in future we can specify individual button width,
 						//so it makes sense to calculate pos in menu component???()
 						//TODO: different scale values on categories not working
-						if(event) showCategory(config.categories[action[1]], 271 + 220 * event.buttonIndex);
+						if(event) showCategory(config.categories[action[1]], event.buttonMiddlePosition);
 						break;
 					case MENU_ACTION_TEXT:
 						//create a new one, otherwise the props would not get resetted
@@ -176,7 +176,10 @@
 				//TODO: externalize hardcoded values
 				catViewer.height = Math.min(this.height - menu.height, 
 					catViewer.model.subcategories.length * 119);
-				catViewer.x = x;
+				
+				//center on menu button
+				//TOOD: smfn not workin well if button not same width
+				catViewer.x = x - catViewer.model.thumbWidth / 2;
 				
 				//TODO: use a nice fade in/out
 				catViewer.visible = true;

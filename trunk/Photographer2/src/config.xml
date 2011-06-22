@@ -22,13 +22,13 @@
 					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
 					<entry label="art" color="0xff00ff" action="hover//>categ//>art"/>
 					<entry label="comercial" color="0x123423" action="hover//>categ//>commercial"/>
-					<entry label="cgi" color="0xfaaaaa" action="hover//>categ//>cgi"/>
+					<entry label="cgi" color="0xfaaaaa" action="hover//>categ//>cgi" buttonWidth="150"/>
 				</entries>
 			</entry>
 			<entry label="info" color="0xff0000" action="click//>slide//>up">
 				<entries>
-					<entry label="blog" />
-					<entry label="contact" />
+					<entry label="blog" buttonWidth="100"/>
+					<entry label="contact" buttonWidth="120"/>
 					<entry label="about" action="click//>text//>about" />
 					<entry label="friends" action="click//>text//>friends" />
 				</entries>

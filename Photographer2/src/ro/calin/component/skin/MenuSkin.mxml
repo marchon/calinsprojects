@@ -29,6 +29,11 @@
 			<s:layout>
 				<s:HorizontalLayout gap="0" />
 			</s:layout>
+				<fx:Script>
+					<![CDATA[
+						import ro.calin.component.model.MenuEntryModel;
+					]]>
+				</fx:Script>
 			<!-- Render a button for each item. -->
 			<s:itemRenderer>
 				<fx:Component>
@@ -43,9 +48,10 @@
 							]]>
 						</fx:Script>
 						<!-- Contains only a MenuButton component. -->
-						<component:MenuButton id="button" width="{outerDocument.hostComponent.model.buttonWidth}" 
-											  height="{outerDocument.hostComponent.height}" buttonMode="true"
-											  entry="{data}" buttonIndex="{itemIndex}"/>
+						<component:MenuButton id="button" width="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
+											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"
+											  buttonMiddlePosition="{outerDocument.logo.width + outerDocument.hostComponent.getButtonDistance(itemIndex)}"/>
+												<!--add logo to get whole distance-->
 					</s:ItemRenderer>
 				</fx:Component>
 			</s:itemRenderer>

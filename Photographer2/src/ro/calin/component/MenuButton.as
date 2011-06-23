@@ -19,7 +19,11 @@ package ro.calin.component
 		 * */
 		private var _entry:MenuEntryModel;
 		
-		public var buttonMiddlePosition:Number; 
+		private var _buttonMiddlePosition:Number;
+		
+		public function set buttonMiddlePosition(value:Number):void {
+			_buttonMiddlePosition = value;
+		}
 		
 		[Bindable]
 		public function get entry():MenuEntryModel {
@@ -40,11 +44,11 @@ package ro.calin.component
 			
 			//when clicked, trigger a menu event with this entry
 			addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, _entry, buttonMiddlePosition, true));
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_CLICK, _entry, _buttonMiddlePosition, true));
 			});
 			
 			addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void {
-				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_HOVER, _entry, buttonMiddlePosition, true));
+				dispatchEvent(new MenuEvent(MenuEvent.MENU_ITEM_HOVER, _entry, _buttonMiddlePosition, true));
 			});
 		}
 	}

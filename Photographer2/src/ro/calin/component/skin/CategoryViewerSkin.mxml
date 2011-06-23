@@ -25,15 +25,8 @@
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>
-				<s:ItemRenderer>
-					<fx:Script>
-						<![CDATA[
-							//hack to get rid of grey shade artifact
-							override protected function get hovered():Boolean {
-								return false;
-							}
-						]]>
-					</fx:Script>
+				<!-- Inline item renderer. Do not autodraw ugly gray background.-->
+				<s:ItemRenderer autoDrawBackground="false">
 					<component:Subcategory model="{data}" buttonMode="true" 
 										thumbWidth="{outerDocument.hostComponent.model.thumbWidth}"
 										scaleFrom="{outerDocument.hostComponent.model.scaleFrom}"

@@ -37,17 +37,11 @@
 			<!-- Render a button for each item. -->
 			<s:itemRenderer>
 				<fx:Component>
-					<!-- Inline item renderer. -->
-					<s:ItemRenderer>
-						<fx:Script>
-							<![CDATA[
-								//hack to get rid of grey shade artifact
-								override protected function get hovered():Boolean {
-									return false;
-								}
-							]]>
-						</fx:Script>
+					<!-- Inline item renderer. Do not autodraw ugly gray background.-->
+					<s:ItemRenderer autoDrawBackground="false">
 						<!-- Contains only a MenuButton component. -->
+						<!--TODO: if you set a break point here, more then required iterations are done.
+						Find out why, and study inner workings of item renderer.-->
 						<component:MenuButton id="button" width="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
 											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"
 											  buttonMiddlePosition="{outerDocument.logo.width + outerDocument.hostComponent.getButtonDistance(itemIndex)}"/>

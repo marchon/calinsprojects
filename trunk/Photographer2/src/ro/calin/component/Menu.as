@@ -44,7 +44,8 @@ package ro.calin.component
 		private var _model:MenuModel;
 		
 		/**
-		 * x distances from logo for each button
+		 * Distances from menu left edge for each button.
+		 * TODO: does it make sense for menu to support this???
 		 */
 		private var _cachedDistances:Array = [];
 		

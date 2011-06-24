@@ -16,14 +16,12 @@ package ro.calin.component.event
 		public static const MENU_LOGO_CLICK:String = "logoClick";
 		
 		public var entry:MenuEntryModel;
-		public var buttonMiddlePosition:Number;
 		
-		public function MenuEvent(type:String, entry:MenuEntryModel=null, buttonMiddlePosition:Number=NaN,
+		public function MenuEvent(type:String, entry:MenuEntryModel=null,
 								  bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			this.entry = entry;
-			this.buttonMiddlePosition = buttonMiddlePosition;
 		}
 	}
 }

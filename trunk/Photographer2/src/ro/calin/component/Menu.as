@@ -44,12 +44,6 @@ package ro.calin.component
 		private var _model:MenuModel;
 		
 		/**
-		 * Distances from menu left edge for each button.
-		 * TODO: does it make sense for menu to support this???
-		 */
-		private var _cachedDistances:Array = [];
-		
-		/**
 		 * Stack used to keep track of the submenus,
 		 * so that we can return to previous submenu/menu.
 		 * */
@@ -71,16 +65,20 @@ package ro.calin.component
 			
 			_model = value;
 			
+			setContainerEntriesForEachEntry(_model.entries);
+			
 			//go to the first set of entries
 			if(bar) {
 				pushMenu(_model.entries);
 			}
 		}
 		
-		public function getButtonDistance(index:int) : Number {
-			if(_cachedDistances.length > index && index >= 0) return _cachedDistances[index];
-			
-			return -1;
+		private function setContainerEntriesForEachEntry(entries:IList):void {
+			for (var i:int = 0; i < entries.length; i++) {
+				var entry:MenuEntryModel = entries.getItemAt(i) as MenuEntryModel;
+				entry.containerEntries = entries;
+				if(entry.entries) setContainerEntriesForEachEntry(entry.entries);
+			}
 		}
 		
 		public function getButtonWidth(entry:MenuEntryModel):Number {
@@ -94,16 +92,6 @@ package ro.calin.component
 			if(entries) {
 				bar.dataProvider = entries;
 				_menuState.push(entries);
-				
-				//calculate middle distances
-				_cachedDistances = [];
-				var curentDistance:Number = 0;
-				for (var i:int = 0; i < entries.length; i++) {
-					var w:Number = getButtonWidth(entries.getItemAt(i) as MenuEntryModel);
-					_cachedDistances[i] = curentDistance +  w / 2;
-					curentDistance += w;
-				}
-				
 				invalidateSkinState();
 			}
 		}

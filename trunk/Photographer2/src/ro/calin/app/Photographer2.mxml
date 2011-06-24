@@ -8,6 +8,7 @@
 		<![CDATA[
 			import flash.net.navigateToURL;
 			
+			import mx.collections.IList;
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -131,11 +132,8 @@
 						}
 						break;
 					case MENU_ACTION_CATEG:
-						//TODO: externalize hardcoded values
-						//in future we can specify individual button width,
-						//so it makes sense to calculate pos in menu component???()
-						//TODO: different scale values on categories not working
-						if(event) showCategory(config.categories[action[1]], event.buttonMiddlePosition);
+						var xPos = calculateMiddleButtonPosition(event.entry);
+						if(event) showCategory(config.categories[action[1]], xPos);
 						break;
 					case MENU_ACTION_TEXT:
 						//create a new one, otherwise the props would not get resetted
@@ -165,6 +163,28 @@
 						navigateToURL(new URLRequest(action[1]));
 						break;
 				}
+			}
+			
+			private function calculateMiddleButtonPosition(entry:MenuEntryModel) : Number {
+				//TODO: use a cache
+				// logo width + sum(i = [1, k - 1], i-th buttonwidth) + k-th buttonWith / 2 
+				
+				var pos:Number = menu.logo.width + 2; //small adjustment ;))
+				
+				var i:int = 0;
+				var entryList:IList = entry.containerEntries;
+				var currentEntry:MenuEntryModel = entryList.getItemAt(i) as MenuEntryModel;
+				
+				while(currentEntry != entry) {
+					//ugly!!!
+					pos += menu.getButtonWidth(currentEntry);
+					if(i + 1 == entryList.length) return -1;
+					currentEntry = entryList.getItemAt(++i) as MenuEntryModel;
+				}
+				
+				pos += menu.getButtonWidth(entry) / 2;
+				
+				return pos;
 			}
 			
 			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {

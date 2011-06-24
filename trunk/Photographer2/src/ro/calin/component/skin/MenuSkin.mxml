@@ -43,8 +43,7 @@
 						<!--TODO: if you set a break point here, more then required iterations are done.
 						Find out why, and study inner workings of item renderer.-->
 						<component:MenuButton id="button" width="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
-											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"
-											  buttonMiddlePosition="{outerDocument.logo.width + outerDocument.hostComponent.getButtonDistance(itemIndex)}"/>
+											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"/>
 												<!--add logo to get whole distance-->
 					</s:ItemRenderer>
 				</fx:Component>

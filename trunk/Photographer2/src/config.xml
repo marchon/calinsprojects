@@ -48,7 +48,7 @@
 	<!-- SECTIUNEA CATEGORII, ADICA BENZILE ALEA CARE APAR CAND DAI CLICK PE BUTON IN MENIU -->
 	<categories>
 		<!-- KEY ESTE REFERIT IN MENIU -->
-		<category key="art" thumbWidth="220" scaleFrom="1.0" scaleTo="1.03">
+		<category key="art" thumbWidth="220" scaleFrom="1.0" scaleTo="1.01">
 			<subcategories>
 				<!-- FIECARE CATEGORIE CONTINE MAI MULTE SUBCATEGORII, ADICA IMAGINI PE BANDA AIA -->
 				<!-- PICURL ESTE IMAGINEA CARE APARE PE BANDA SI EXTRA REFERA LISTA DE POZE(VEZI PICTURESETS) 

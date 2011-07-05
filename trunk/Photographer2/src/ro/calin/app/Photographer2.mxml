@@ -7,6 +7,8 @@
 	<fx:Script>
 		<![CDATA[
 			import flash.net.navigateToURL;
+			import flash.utils.clearTimeout;
+			import flash.utils.setTimeout;
 			
 			import mx.collections.IList;
 			import mx.controls.Alert;
@@ -96,6 +98,22 @@
 				setPictureViewerRandomWallpaper();
 			}
 			
+			private function addEventListeners():void {
+				//hide when user move mouse away from category
+				catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void {
+					triggerHiding();
+				});
+				catViewer.addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void{
+					untriggerHiding();
+				});
+				menu.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void {
+					triggerHiding();
+				});
+				menu.logo.addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void {
+					triggerHiding();
+				});
+			}
+			
 			/**
 			 * Called when error occured in getting conf xml.
 			 * Show error popup.
@@ -165,29 +183,39 @@
 				}
 			}
 			
+			private var cache:Dictionary = new Dictionary();
 			private function calculateMiddleButtonPosition(entry:MenuEntryModel) : Number {
-				//TODO: use a cache
-				// logo width + sum(i = [1, k - 1], i-th buttonwidth) + k-th buttonWith / 2 
+				// logo width + sum(i = [1, k - 1], i-th buttonwidth) + k-th buttonWith / 2
 				
-				var pos:Number = menu.logo.width + 2; //small adjustment ;))
+				var pos:Number = cache[entry];
 				
-				var i:int = 0;
-				var entryList:IList = entry.containerEntries;
-				var currentEntry:MenuEntryModel = entryList.getItemAt(i) as MenuEntryModel;
+				if(!pos) {
+					pos = menu.logo.width + 2; //small adjustment ;))
 				
-				while(currentEntry != entry) {
-					//ugly!!!
-					pos += menu.getButtonWidth(currentEntry);
-					if(i + 1 == entryList.length) return -1;
-					currentEntry = entryList.getItemAt(++i) as MenuEntryModel;
+					var i:int = 0;
+					var entryList:IList = entry.containerEntries;
+					var currentEntry:MenuEntryModel = entryList.getItemAt(i) as MenuEntryModel;
+					
+					while(currentEntry != entry) {
+						//ugly!!!
+						pos += menu.getButtonWidth(currentEntry);
+						if(i + 1 == entryList.length) return -1;
+						currentEntry = entryList.getItemAt(++i) as MenuEntryModel;
+					}
+					
+					pos += menu.getButtonWidth(entry) / 2;
+					
+					cache[entry] = pos;
 				}
-				
-				pos += menu.getButtonWidth(entry) / 2;
 				
 				return pos;
 			}
 			
+			private var cancelHiding:Boolean = false;
 			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {
+				//cancel hiding if another category is shown
+				cancelHiding = true;
+				
 				catViewer.model = model;
 				
 				//dimension and position
@@ -203,12 +231,20 @@
 				
 				//TODO: use a nice fade in/out
 				catViewer.visible = true;
-				
-				//hide when user move mouse away from category
-				//TODO: also be sure to hide it when the user rolls out the button/menubar(can be a little tricky)
-				catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void{
-					catViewer.visible = false;
-				});
+				//highlight all pics at first
+				catViewer.highlighted = true;
+			}
+			
+			private function triggerHiding():void {
+				//todo: fade in/out
+				cancelHiding = false;
+				setTimeout(function():void {
+					if(!cancelHiding) catViewer.visible = false;
+				}, 700);
+			}
+			
+			private function untriggerHiding():void {
+				if(catViewer.visible) cancelHiding = true;
 			}
 
 			
@@ -224,7 +260,6 @@
 				
 				if(!action) return;
 				
-				//TODO: speparator char (url problems???)
 				action = action.split("//>");
 				
 				if((action[0] == MENU_ACTION_CLICK && event.type == MenuEvent.MENU_ITEM_CLICK) ||
@@ -252,8 +287,6 @@
 				setPictureViewerRandomWallpaper();
 			}
 
-			
-			
 			/**
 			 * Called when clicked on subactegory.
 			 * Hide category control and change picture viewer pics.
@@ -329,6 +362,8 @@
 		
 			//get the config xml
 			configService.send();
+		
+			addEventListeners();
 		]]>
 	</s:applicationComplete>
 	

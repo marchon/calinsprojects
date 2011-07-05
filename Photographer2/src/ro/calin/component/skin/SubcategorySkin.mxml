@@ -46,7 +46,7 @@
 			<mx:Image id="image" width="{hostComponent.thumbWidth}" 
 					  scaleX.normal="{hostComponent.scaleFrom}" scaleY.normal="{hostComponent.scaleFrom}"
 					  scaleX.hovered="{hostComponent.scaleTo}" scaleY.hovered="{hostComponent.scaleTo}" 
-					  height="100%" alpha="0.3" alpha.hovered="1.0" />
+					  height="100%" alpha="{hostComponent.alwaysHighlight? 1.0 : 0.3}" alpha.hovered="1.0" />
 			
 			<s:Group id="details" includeInLayout.normal="false" visible.normal="false"
 					 width.normal="0" width.hovered="{hostComponent.thumbWidth}">

@@ -1,5 +1,6 @@
 package ro.calin.component
 {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import mx.controls.Image;
@@ -27,6 +28,9 @@ package ro.calin.component
 		public var thumbWidth:Number;
 		public var scaleFrom:Number;
 		public var scaleTo:Number;
+		
+		[Bindable]
+		public var alwaysHighlight:Boolean;
 		
 		private var _model:SubcategoryModel;
 		

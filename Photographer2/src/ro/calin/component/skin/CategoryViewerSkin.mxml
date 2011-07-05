@@ -30,7 +30,8 @@
 					<component:Subcategory model="{data}" buttonMode="true" 
 										thumbWidth="{outerDocument.hostComponent.model.thumbWidth}"
 										scaleFrom="{outerDocument.hostComponent.model.scaleFrom}"
-										scaleTo="{outerDocument.hostComponent.model.scaleTo}"/>
+										scaleTo="{outerDocument.hostComponent.model.scaleTo}"
+										alwaysHighlight="{outerDocument.hostComponent.highlighted}"/>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>

@@ -1,8 +1,10 @@
 package ro.calin.component
 {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
 	
 	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.model.CategoryViewerModel;
@@ -26,21 +28,33 @@ package ro.calin.component
 		[SkinPart(required="true")]
 		public var thumbnailStrip:DataGroup;
 		
+		/**
+		 * Contains information about pics shown here.
+		 */
 		private var _model:CategoryViewerModel;
 		
+		/**
+		 * Specifies wether the strip is entirely highlighted,
+		 * or every pic gets highlighted on mouseover.
+		 */
+		[Bindable]
+		public var highlighted:Boolean = false;
+		
+		private var _newModel:Boolean = true;
+		
 		public function CategoryViewer() {
+			//set the skin
 			setStyle("skinClass", CategoryViewerSkin);
 		}
 		
 		[Bindable]
 		public function set model(value:CategoryViewerModel):void {
+			_newModel = true;
 			_model = value;
 			
 			//set the provider for the data group
 			if(thumbnailStrip != null) {
 				thumbnailStrip.dataProvider = _model.subcategories;
-				//TODO: exept!!!!!!!! if model is changed from small to big
-//				thumbnailStrip.verticalScrollPosition = maxScroll();
 			}
 		}
 		
@@ -51,28 +65,50 @@ package ro.calin.component
 			return _model;
 		}
 		
+		/**
+		 * Attaching behaviour to components.
+		 */
 		override protected function partAdded(partName:String, instance:Object) : void {
 			super.partAdded(partName, instance);
 			
 			if(instance == thumbnailStrip) {
 				if(_model != null) {
 					thumbnailStrip.dataProvider = _model.subcategories;
-//					thumbnailStrip.verticalScrollPosition = maxScroll();
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
+				thumbnailStrip.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, thumbnailStrip_ContentHeightChanged);
+				
+				//clip it, scroll it!!! yeah
 				thumbnailStrip.clipAndEnableScrolling = true;
 			}
 		}
 		
+		/**
+		 * Probably is called when a skin part is removed(so never in this case)
+		 */
 		override protected function partRemoved(partName:String, instance: Object) : void {
 			super.partRemoved(partName, instance);
 			
 			if(instance == thumbnailStrip) {
 				thumbnailStrip.removeEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
+				thumbnailStrip.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, thumbnailStrip_ContentHeightChanged);
 			}
 		}
 		
+		/**
+		 * This method calculates the scrolling position each time the mouse moves.
+		 * TODO:
+		 * 	1. tap max value as to not get empty space under last pic
+		 * 		- this might be because of pic scaling
+		 *  	- if scale is very little, it is bearly noticeable
+		 *  2. set scroll position to max scroll when the model changes (this should be done after all the pics are loaded)
+		 *  3. try scrolling with animation
+		 */
 		private function thumbnailStrip_mouseMoveHandler(evt:MouseEvent):void {
+			
+			//first time pointer is over, remove highlighting
+			if(highlighted) highlighted = false;
+			
 			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
 			
 			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
@@ -85,7 +121,15 @@ package ro.calin.component
 		}
 		
 		private function maxScroll():Number {
-			return thumbnailStrip.contentHeight - thumbnailStrip.height;
+			return thumbnailStrip.contentHeight - thumbnailStrip.height;  //haha, funny
 		} 
+		
+		private function thumbnailStrip_ContentHeightChanged(event:PropertyChangeEvent):void {
+//			if(_newModel && event.property == "contentHeight") {
+//				thumbnailStrip.verticalScrollPosition = maxScroll();
+//				_newModel = false;
+//			}
+		}
+		
 	}
 }

@@ -107,9 +107,7 @@ package ro.calin.component
 			//first time pointer is over, remove highlighting
 			if(highlighted) highlighted = false;
 			
-			//why is thumbnailStrip.contentHeight == thumbnailStrip.height???
-			
-			var fr:Number = (thumbnailStrip.contentHeight - this.height) / this.height;
+			var fr:Number = (thumbnailStrip.contentHeight - thumbnailStrip.height) / thumbnailStrip.height;
 			var scroll:Number = fr * evt.stageY - fr * this.y;
 			
 			var ms:Number = maxScroll();

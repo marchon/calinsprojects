@@ -12,6 +12,7 @@
 			
 			import mx.collections.IList;
 			import mx.controls.Alert;
+			import mx.events.EffectEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.ObjectUtil;
@@ -32,6 +33,7 @@
 			import ro.calin.utils.XmlToObjectConverter;
 			
 			import spark.components.Label;
+			import spark.effects.Fade;
 			
 			/**
 			 * Name of special pictureset which contains 
@@ -104,7 +106,7 @@
 					triggerHiding();
 				});
 				catViewer.addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void{
-					untriggerHiding();
+					triggerShowing();
 				});
 				menu.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void {
 					triggerHiding();
@@ -150,7 +152,7 @@
 						}
 						break;
 					case MENU_ACTION_CATEG:
-						var xPos = calculateMiddleButtonPosition(event.entry);
+						var xPos:Number = calculateMiddleButtonPosition(event.entry);
 						if(event) showCategory(config.categories[action[1]], xPos);
 						break;
 					case MENU_ACTION_TEXT:
@@ -211,11 +213,17 @@
 				return pos;
 			}
 			
-			private var cancelHiding:Boolean = false;
+			//!!!!!!!!!!!!!!!!
+			//TODO: fix categ view bug: remaining invisible(nothing to do with settimeout)
+			//maybe z-index...it starts working again if another categ is selected
+			//that implies changing model and x
+			//steps to reproduce:
+			//	1. move pointer very fast on the menu near a button for a big categ(w/ scroll)
+			//  2. if the categ does not show it will continue to do so for the same button
+			//  3. change to another button to have it work aganin
+			
+			private var timeoutId:Number = NaN;
 			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {
-				//cancel hiding if another category is shown
-				cancelHiding = true;
-				
 				catViewer.model = model;
 				
 				//dimension and position
@@ -229,24 +237,42 @@
 				//TOOD: smfn not workin well if button not same width
 				catViewer.x = x - catViewer.model.thumbWidth / 2;
 				
-				//TODO: use a nice fade in/out
-				catViewer.visible = true;
 				//highlight all pics at first
 				catViewer.highlighted = true;
+				
+				triggerShowing(true);
 			}
 			
 			private function triggerHiding():void {
 				//todo: fade in/out
-				cancelHiding = false;
-				setTimeout(function():void {
-					if(!cancelHiding) catViewer.visible = false;
-				}, 700);
+//				timeoutId = setTimeout(function():void {
+//					spark.effects.Fade f
+//					catViewer.visible = false;
+//				}, 700);
+				if(categFadeAnimation.isPlaying)
+					categFadeAnimation.reverse();
+				else categFadeAnimation.play();
 			}
 			
-			private function untriggerHiding():void {
-				if(catViewer.visible) cancelHiding = true;
+			private function triggerShowing(stop:Boolean = false):void {
+//				if(!isNaN(timeoutId)) {
+//					clearTimeout(timeoutId);
+//					timeoutId = NaN;
+//				}
+				if(categFadeAnimation.isPlaying) {
+					if(stop) {
+						categFadeAnimation.stop();
+						categFadeAnimation.play(null, true);
+					}
+					else categFadeAnimation.reverse();
+				}	
+				else categFadeAnimation.play(null, true);
 			}
 
+			protected function categFadeAnimation_effectEndHandler(event:EffectEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
 			
 			/**
 			 * Called when item in menu is clicked or hovered.
@@ -314,7 +340,6 @@
 				picViewer.model = wallpaperModel;
 			}
 
-
 		]]>
 	</fx:Script>
 	
@@ -353,6 +378,9 @@
 				</fx:Array>
 			</model:pictures>
 		</model:PictureViewerModel>
+		
+		<s:Fade id="categFadeAnimation" duration="1000" target="{catViewer}" alphaFrom="1.0" alphaTo="0.0"
+				effectEnd="categFadeAnimation_effectEndHandler(event)"/>
 	</fx:Declarations>
 	
 	<s:applicationComplete>
@@ -382,8 +410,7 @@
 					width="100%" y.menuMiddle="{this.height * .7}" 
 					y.menuTop="0" y.menuBottom="{this.height - menu.height}" />
 	
-	<!--TODO: REMOVE HARDCODED WIDTH AND SCALE-->
-	<component:CategoryViewer id="catViewer" visible="false" bottom="{menu.height}"
-							  categItemClick="catViewer_categItemClickHandler(event)"/>
+	<component:CategoryViewer id="catViewer" alpha="0.0" bottom="{menu.height}"
+							  categItemClick="catViewer_categItemClickHandler(event)" visible="{catViewer.alpha > 0.0}"/>
 	
 </s:Application>

@@ -76,7 +76,6 @@ package ro.calin.component
 					thumbnailStrip.dataProvider = _model.subcategories;
 				}
 				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
-				thumbnailStrip.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, thumbnailStrip_ContentHeightChanged);
 				
 				//clip it, scroll it!!! yeah
 				thumbnailStrip.clipAndEnableScrolling = true;
@@ -91,7 +90,6 @@ package ro.calin.component
 			
 			if(instance == thumbnailStrip) {
 				thumbnailStrip.removeEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
-				thumbnailStrip.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, thumbnailStrip_ContentHeightChanged);
 			}
 		}
 		
@@ -123,13 +121,6 @@ package ro.calin.component
 		private function maxScroll():Number {
 			return thumbnailStrip.contentHeight - thumbnailStrip.height;  //haha, funny
 		} 
-		
-		private function thumbnailStrip_ContentHeightChanged(event:PropertyChangeEvent):void {
-//			if(_newModel && event.property == "contentHeight") {
-//				thumbnailStrip.verticalScrollPosition = maxScroll();
-//				_newModel = false;
-//			}
-		}
 		
 	}
 }

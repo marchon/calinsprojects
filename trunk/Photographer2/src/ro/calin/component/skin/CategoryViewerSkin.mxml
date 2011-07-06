@@ -21,7 +21,7 @@
 				 width="100%" >
 				 <!--{hostComponent.thumbnailWidth * (hostComponent.scale + 1 /*for name*/)}-->
 		<s:layout>
-			<s:VerticalLayout gap="-1" horizontalAlign="left"/>
+			<s:VerticalLayout gap="-1" horizontalAlign="left" verticalScrollPosition="{thumbnailStrip.contentHeight - thumbnailStrip.height}"/>
 		</s:layout>
 		<s:itemRenderer>
 			<fx:Component>

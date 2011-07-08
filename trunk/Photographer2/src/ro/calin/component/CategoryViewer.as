@@ -12,6 +12,7 @@ package ro.calin.component
 	
 	import spark.components.DataGroup;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.core.NavigationUnit;
 	
 	/**
 	 * Component which can display a vertical thumbnail strip.
@@ -40,16 +41,26 @@ package ro.calin.component
 		[Bindable]
 		public var highlighted:Boolean = false;
 		
-		private var _newModel:Boolean = true;
-		
 		public function CategoryViewer() {
 			//set the skin
 			setStyle("skinClass", CategoryViewerSkin);
 		}
 		
+		/**
+		 * If the same model is passed in, flex won't execute setter code,
+		 * but I need to scroll to bottom.
+		 */
+		public function setModel(value:CategoryViewerModel):void {
+			if(value == _model) {
+				if(thumbnailStrip != null) scrollToBottom();
+				return;
+			}
+			
+			model = value;
+		}
+		
 		[Bindable]
 		public function set model(value:CategoryViewerModel):void {
-			_newModel = true;
 			_model = value;
 			
 			//set the provider for the data group
@@ -120,5 +131,23 @@ package ro.calin.component
 			return thumbnailStrip.contentHeight - thumbnailStrip.height;  //haha, funny
 		} 
 		
+		/**
+		 * ugly fix to scroll to bottom
+		 * http://flexponential.com/2011/02/13/scrolling-to-the-bottom-of-a-spark-list/ 
+		 */
+		public function scrollToBottom():void {
+			// update the verticalScrollPosition to the end of the List
+			// virtual layout may require us to validate a few times
+			var delta:Number = 0;
+			var count:int = 0;
+			while (count++ < 10){
+				thumbnailStrip.validateNow();
+				delta = thumbnailStrip.layout.getVerticalScrollPositionDelta(NavigationUnit.END);
+				thumbnailStrip.layout.verticalScrollPosition += delta;
+				
+				if (delta == 0)
+					break;
+			}
+		}
 	}
 }

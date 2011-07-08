@@ -224,7 +224,7 @@
 			
 			private var timeoutId:Number = NaN;
 			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {
-				catViewer.model = model;
+				catViewer.setModel(model);
 				
 				//dimension and position
 				//if more thumbs then the screen can fit, height is screen height

@@ -7,6 +7,18 @@
 		[HostComponent("ro.calin.component.CategoryViewer")]
 	</fx:Metadata>
 	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			
+			import spark.core.NavigationUnit;
+			public function handleBottomScrolling(event:Event):void {
+				hostComponent.scrollToBottom();
+			}
+			
+		]]>
+	</fx:Script>
+	
 	<!-- SkinParts
 	name=thumbnailStrip, type=spark.components.DataGroup, required=true
 	-->
@@ -32,7 +44,8 @@
 										thumbWidth="{outerDocument.hostComponent.model.thumbWidth}"
 										scaleFrom="{outerDocument.hostComponent.model.scaleFrom}"
 										scaleTo="{outerDocument.hostComponent.model.scaleTo}"
-										alwaysHighlight="{outerDocument.hostComponent.highlighted}"/>
+										alwaysHighlight="{outerDocument.hostComponent.highlighted}" 
+										imageLoadedHandler="{outerDocument.handleBottomScrolling}"/>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>

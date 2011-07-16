@@ -103,16 +103,16 @@
 			private function addEventListeners():void {
 				//hide when user move mouse away from category
 				catViewer.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void {
-					triggerHiding();
+					categoryFadeOut();
 				});
 				catViewer.addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void{
-					triggerShowing();
+					categoryFadeIn();
 				});
 				menu.addEventListener(MouseEvent.ROLL_OUT, function(event:MouseEvent):void {
-					triggerHiding();
+					categoryFadeOut();
 				});
 				menu.logo.addEventListener(MouseEvent.ROLL_OVER, function(event:MouseEvent):void {
-					triggerHiding();
+					categoryFadeOut();
 				});
 			}
 			
@@ -222,56 +222,64 @@
 			//  2. if the categ does not show it will continue to do so for the same button
 			//  3. change to another button to have it work aganin
 			
-			private var timeoutId:Number = NaN;
 			protected function showCategory(model:CategoryViewerModel, x:Number /*, y:Number ?? bottom??*/):void {
-				catViewer.setModel(model);
+				if(catViewer.model != model) {
+					catViewer.model = model;
+					
+					//dimension and position
+					//if more thumbs then the screen can fit, height is screen height
+					//else, height is determined by nb of pics and pic height.
+					//TODO: externalize hardcoded values
+					catViewer.height = Math.min(this.height - menu.height, 
+						catViewer.model.subcategories.length * 119);
+					
+					//center on menu button
+					//TOOD: smfn not workin well if button not same width
+					catViewer.x = x - catViewer.model.thumbWidth / 2;
+				}
 				
-				//dimension and position
-				//if more thumbs then the screen can fit, height is screen height
-				//else, height is determined by nb of pics and pic height.
-				//TODO: externalize hardcoded values
-				catViewer.height = Math.min(this.height - menu.height, 
-					catViewer.model.subcategories.length * 119);
-				
-				//center on menu button
-				//TOOD: smfn not workin well if button not same width
-				catViewer.x = x - catViewer.model.thumbWidth / 2;
-				
-				//highlight all pics at first
+				//highlight all pics when moving on menu
 				catViewer.highlighted = true;
 				
-				triggerShowing(true);
+				if(catViewer.model == model && catViewer.visible) {
+					categoryFadeIn();
+				} else {
+					categoryFadeIn(true);
+					if(catViewer.model == model) catViewer.scrollToBottom();
+				}
 			}
 			
-			private function triggerHiding():void {
-				//todo: fade in/out
-//				timeoutId = setTimeout(function():void {
-//					spark.effects.Fade f
-//					catViewer.visible = false;
-//				}, 700);
+			private var isFadeIn:Boolean = false;
+			private function categoryFadeOut():void {
+				//no point fading out if it already fades out
+				if(!isFadeIn) return;
+				
+				//revers it if it fades in, else, play it from begining
 				if(categFadeAnimation.isPlaying)
 					categFadeAnimation.reverse();
 				else categFadeAnimation.play();
+				
+				isFadeIn = false;
 			}
 			
-			private function triggerShowing(stop:Boolean = false):void {
-//				if(!isNaN(timeoutId)) {
-//					clearTimeout(timeoutId);
-//					timeoutId = NaN;
-//				}
+			private function categoryFadeIn(stop:Boolean = false):void {
+				//no point fading in if it already fades in
+				if(isFadeIn) return;
+				
+				//revers it if it fades out, else, play it from begining
 				if(categFadeAnimation.isPlaying) {
 					if(stop) {
+						//stop it and play from begining(alpha = 0.0)
+						//used when categ is changed(cuz we use the same component)
 						categFadeAnimation.stop();
 						categFadeAnimation.play(null, true);
 					}
+					// start stop de
 					else categFadeAnimation.reverse();
 				}	
 				else categFadeAnimation.play(null, true);
-			}
-
-			protected function categFadeAnimation_effectEndHandler(event:EffectEvent):void
-			{
-				// TODO Auto-generated method stub
+				
+				isFadeIn = true;
 			}
 			
 			/**
@@ -379,8 +387,7 @@
 			</model:pictures>
 		</model:PictureViewerModel>
 		
-		<s:Fade id="categFadeAnimation" duration="1000" target="{catViewer}" alphaFrom="1.0" alphaTo="0.0"
-				effectEnd="categFadeAnimation_effectEndHandler(event)"/>
+		<s:Fade id="categFadeAnimation" duration="1000" target="{catViewer}" alphaFrom="1.0" alphaTo="0.0"/>
 	</fx:Declarations>
 	
 	<s:applicationComplete>

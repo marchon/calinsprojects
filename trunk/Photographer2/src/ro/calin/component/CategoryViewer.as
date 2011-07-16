@@ -46,19 +46,6 @@ package ro.calin.component
 			setStyle("skinClass", CategoryViewerSkin);
 		}
 		
-		/**
-		 * If the same model is passed in, flex won't execute setter code,
-		 * but I need to scroll to bottom.
-		 */
-		public function setModel(value:CategoryViewerModel):void {
-			if(value == _model) {
-				if(thumbnailStrip != null) scrollToBottom();
-				return;
-			}
-			
-			model = value;
-		}
-		
 		[Bindable]
 		public function set model(value:CategoryViewerModel):void {
 			_model = value;
@@ -136,11 +123,13 @@ package ro.calin.component
 		 * http://flexponential.com/2011/02/13/scrolling-to-the-bottom-of-a-spark-list/ 
 		 */
 		public function scrollToBottom():void {
+			if(thumbnailStrip == null) return;
+			
 			// update the verticalScrollPosition to the end of the List
 			// virtual layout may require us to validate a few times
 			var delta:Number = 0;
 			var count:int = 0;
-			while (count++ < 10){
+			while (count++ < 30){
 				thumbnailStrip.validateNow();
 				delta = thumbnailStrip.layout.getVerticalScrollPositionDelta(NavigationUnit.END);
 				thumbnailStrip.layout.verticalScrollPosition += delta;

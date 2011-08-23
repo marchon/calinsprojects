@@ -22,7 +22,7 @@
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
              xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
-			 minWidth="30" minHeight="30" alpha.disabled="0.5">
+			 minWidth="30" minHeight="30" alpha.disabled="0.5" xmlns:skin="ro.calin.component.skin.*">
     
     <!-- host component -->
     <fx:Metadata>
@@ -41,13 +41,37 @@
         <s:State name="down" />
         <s:State name="disabled" />
     </s:states>
+	
+	<s:transitions>
+		<s:Transition toState="over" >
+			<s:Animate targets="{[upper, lower]}" duration="40">
+				<s:SimpleMotionPath property="yFrom" />
+				<s:SimpleMotionPath property="yTo" />
+			</s:Animate>
+		</s:Transition>
+		<s:Transition toState="up" >
+			<s:Animate targets="{[upper, lower]}" duration="40">
+				<s:SimpleMotionPath property="yFrom" />
+				<s:SimpleMotionPath property="yTo" />
+			</s:Animate>
+		</s:Transition>
+	</s:transitions>
+	
+	<s:Rect x="0" y="0" width="28" height="48">
+		 <s:fill>
+			 <s:SolidColor color="black" alpha="0.0" />
+		 </s:fill>
+	 </s:Rect>
     
-	<s:Rect width="100%" height="100%" alpha="0.5">
-		<s:fill>
-			<s:SolidColor color="black"/>
-		</s:fill>
-	</s:Rect>
-    
-    <s:Label id="labelDisplay" text="&lt;" verticalCenter="0" horizontalCenter="0"/>
+	<s:Line id="upper" xFrom="4" xTo="24" yFrom="4" yFrom.over="12" yTo="24">
+		<s:stroke>
+			<s:SolidColorStroke color="yellow" weight="6"/>
+		</s:stroke>
+	</s:Line>
+	<s:Line id="lower" xFrom="24" xTo="4" yFrom="24" yTo="44" yTo.over="36">
+		<s:stroke>
+			<s:SolidColorStroke color="yellow" weight="6"/>
+		</s:stroke>
+	</s:Line>
     
 </s:SparkSkin>

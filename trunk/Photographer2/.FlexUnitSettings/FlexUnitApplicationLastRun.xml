@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testrun name="" >
 <testsuite  name="Default Test Suite" project="Photographer2">
-<testsuite name="flexUnitTests:XmlToObjectConverterTest" type="testcaseclass">
-<testcase name="testConvertToObject" classname="flexUnitTests:XmlToObjectConverterTest"/>
-</testsuite>
+<testsuite name="flexUnitTests:XmlToObjectConverterTest" type="testsuiteclass"/>
 </testsuite>
 </testrun>

@@ -129,7 +129,7 @@ package ro.calin.component
 			// virtual layout may require us to validate a few times
 			var delta:Number = 0;
 			var count:int = 0;
-			while (count++ < 30){
+			while (count++ < 100){
 				thumbnailStrip.validateNow();
 				delta = thumbnailStrip.layout.getVerticalScrollPositionDelta(NavigationUnit.END);
 				thumbnailStrip.layout.verticalScrollPosition += delta;

@@ -97,7 +97,7 @@
 				converter.convertToObject(configXml, config);
 				
 				menu.model = config.menu;
-				setPictureViewerRandomWallpaper();
+				setPictureViewerRandomWallpaper(false);
 			}
 			
 			private function addEventListeners():void {
@@ -141,12 +141,15 @@
 					case MENU_ACTION_SLIDE:
 						switch(action[1]) {
 							case MENU_ACTION_SLIDE_UP:
+								setPictureViewerRandomWallpaper(false);
 								currentState = "menuTop";
 								break;
 							case MENU_ACTION_SLIDE_DOWN:
+								setPictureViewerRandomWallpaper(true);
 								currentState = "menuBottom";
 								break;
 							case MENU_ACTION_SLIDE_MIDDLE:
+								setPictureViewerRandomWallpaper(currentState == "menuTop");
 								currentState = "menuMiddle";
 								break;
 						}
@@ -315,10 +318,10 @@
 				
 				action = action.split("//>");
 				(action as Array).shift();
+				
 				processMenuAction(action);
 				
 				catViewer.visible = false;
-				setPictureViewerRandomWallpaper();
 			}
 
 			/**
@@ -336,15 +339,17 @@
 			/**
 			 * Randomizes over wallpaper pictureset.
 			 */
-			private function setPictureViewerRandomWallpaper():void {
+			private function setPictureViewerRandomWallpaper(slideDown:Boolean):void {
 				var walls:Array = (config.picturesets[WALLPAPERS] as PictureViewerModel).pictures;
 				var rand:int = Math.floor(Math.random() * walls.length);
 				wallpaperModel.pictures[0] = walls[rand];
+				picViewer.slideDownOnModelChange = slideDown;
 				picViewer.model = wallpaperModel;
 			}
 			
 			private function setPictureViewerWallpaper(url:String):void {
 				PictureModel(wallpaperModel.pictures[0]).url = url;
+				picViewer.slideDownOnModelChange = true;
 				picViewer.model = wallpaperModel;
 			}
 

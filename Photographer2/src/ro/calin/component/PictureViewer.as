@@ -51,7 +51,9 @@ package ro.calin.component
 		 * The progress bar for the component.
 		 * TODO: load all pics at the beginning and show progress bar.
 		 */
-		public var progressBar:ProgressBar;
+//		public var progressBar:ProgressBar;
+		
+		public var slideDownOnModelChange:Boolean = false;
 		
 		[Bindable]
 		/**
@@ -106,7 +108,8 @@ package ro.calin.component
 			_current = 0;
 			if(_currentPicture) {
 				_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
-				slideUp();
+				if(slideDownOnModelChange) slideDown();
+				else slideUp();
 			}
 			
 			if(_model.pictures.length > 1) hasLeftRight = true;

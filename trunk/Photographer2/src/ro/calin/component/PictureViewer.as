@@ -18,13 +18,14 @@ package ro.calin.component
 	
 	import spark.components.Application;
 	import spark.components.Button;
-	import spark.components.Panel;
+	import spark.components.Group;
+	import spark.components.SkinnableContainer;
 	import spark.effects.Move;
 	
 	/**
 	 * Component that provides posibility to slide through a set of pictures.
 	 */
-	public class PictureViewer extends Panel
+	public class PictureViewer extends SkinnableContainer
 	{
 		/**
 		 * The first picture.
@@ -32,13 +33,13 @@ package ro.calin.component
 		 * In order to make a slide we need two pics.
 		 */
 		[SkinPart(required="true")]
-		public var picture1:CacheableImage;
+		public var picture1:ClippedImage;
 		
 		/**
 		 * Second picture.
 		 */
 		[SkinPart(required="true")]
-		public var picture2:CacheableImage;
+		public var picture2:ClippedImage;
 		
 		[SkinPart(required="true")]
 		public var leftButton:Button;
@@ -64,12 +65,12 @@ package ro.calin.component
 		/**
 		 * Point to the picture currently on the screen.
 		 */
-		private var _currentPicture:Image;
+		private var _currentPicture:ClippedImage;
 		
 		/**
 		 * Points to the image currently outside the screen.
 		 */
-		private var _outsidePicture:Image;
+		private var _outsidePicture:ClippedImage;
 		
 		private var _model:PictureViewerModel;
 		
@@ -114,15 +115,12 @@ package ro.calin.component
 			
 			if(_model.pictures.length > 1) hasLeftRight = true;
 			else hasLeftRight = false;
-			
-//			triggerImageSetLoading();
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance);
 			
 			if(instance == picture1) {
-				picture1.bitmapProcessor = bitmapProcessor;
 				if(_model) {
 					picture1.source = PictureModel(_model.pictures[_current]).url;
 				}
@@ -130,7 +128,6 @@ package ro.calin.component
 			}
 			
 			if(instance == picture2) {
-				picture2.bitmapProcessor = bitmapProcessor;
 				_outsidePicture = picture2;
 			}
 			
@@ -225,44 +222,5 @@ package ro.calin.component
 			_moveAnim.xBy = 0;
 			_moveAnim.yBy = 0;
 		}
-		
-		
-		/*TODO: implement loading whole set at the beginning*/
-//		private function triggerImageSetLoading() : void {
-//			//			progressBar.visible = true;
-//			bytesLoaded = 0;
-//			bytesTotal = 0;
-//			for each(var pic:PictureModel in _model.pictures) {
-//				var loader:CacheableImage = new CacheableImage();
-//				loader.bitmapProcessor = bitmapProcessor;
-//				loader.source = pic.url;
-//				loader.visible = false;
-//				this.addElement(loader);
-//				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-//				loader.addEventListener(Event.COMPLETE, completeHandler);
-//			}		
-//		}
-//		
-//		private var bytesLoaded:uint;
-//		private var bytesTotal:uint;
-//		private var reg:Array = [];
-//		private function progressHandler(e:ProgressEvent):void {
-//			//add bytes total for all
-//			if(reg.indexOf(e.currentTarget) < 0) {
-//				bytesTotal += e.bytesTotal;
-//				reg.push(e.currentTarget);
-//			}
-//			
-//			bytesLoaded += e.bytesLoaded;
-//			
-//			progressBar.setProgress(bytesLoaded, bytesTotal);
-//			progressBar.visible = bytesLoaded <= bytesTotal;
-//		}
-//		
-//		private function completeHandler(e:Event):void {
-//			reg.splice(reg.indexOf(e.currentTarget), 1);
-//			this.removeElement(e.currentTarget as IVisualElement);
-//			if(reg.length == 0) progressBar.visible = false;
-//		}
 	}
 }

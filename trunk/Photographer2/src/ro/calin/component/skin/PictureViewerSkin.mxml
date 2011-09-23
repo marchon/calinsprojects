@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500" xmlns:utils="ro.calin.utils.*">
+		xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500" xmlns:utils="ro.calin.utils.*" xmlns:component="ro.calin.component.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("ro.calin.component.PictureViewer")]
 	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			
+			import spark.components.Application;
+		]]>
+	</fx:Script>
 	
 	<s:states>
 		<s:State name="disabled"/>
 		<s:State name="normal"/>
-		<s:State name="disabledWithControlBar"/>
-		<s:State name="normalWithControlBar"/>
 	</s:states>
 	
-	<utils:CacheableImage id="picture1" />
-	<utils:CacheableImage id="picture2" />
+	<component:ClippedImage id="picture1" width="100%" height="100%"/>
+	<component:ClippedImage id="picture2" width="100%" height="100%"/>
 	
 	<!--<mx:ProgressBar id="progressBar" verticalCenter="0" horizontalCenter="0"/>-->
 	

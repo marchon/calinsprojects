@@ -3,23 +3,20 @@ package ro.calin.component
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
+	import flash.utils.Dictionary;
 	
-	import mx.controls.Image;
-	import mx.controls.ProgressBar;
-	import mx.core.FlexGlobals;
-	import mx.core.IVisualElement;
+	import mx.binding.utils.BindingUtils;
+	import mx.controls.Alert;
 	
 	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.skin.PictureViewerSkin;
-	import ro.calin.utils.BitmapProcessor;
-	import ro.calin.utils.CacheableImage;
-	import ro.calin.utils.ScaleCropBitmapProcessor;
 	
-	import spark.components.Application;
 	import spark.components.Button;
-	import spark.components.Group;
 	import spark.components.SkinnableContainer;
+	import spark.core.ContentCache;
+	import spark.core.ContentRequest;
+	import spark.core.IContentLoader;
 	import spark.effects.Move;
 	
 	/**
@@ -30,7 +27,7 @@ package ro.calin.component
 		/**
 		 * The first picture.
 		 * 
-		 * In order to make a slide we need two pics.
+		 * In order to make a slide we need two pics loaded at the same time.
 		 */
 		[SkinPart(required="true")]
 		public var picture1:ClippedImage;
@@ -46,24 +43,22 @@ package ro.calin.component
 		
 		[SkinPart(required="true")]
 		public var rightButton:Button;
-		
-//		[SkinPart(required="true")]
+			
 		/**
-		 * The progress bar for the component.
-		 * TODO: load all pics at the beginning and show progress bar.
+		 * When the model is changed, the slide will performe in the indicated direction.
 		 */
-//		public var progressBar:ProgressBar;
-		
 		public var slideDownOnModelChange:Boolean = false;
 		
 		[Bindable]
 		/**
-		 * This is auto set to false if the set contains only one pic
+		 * If this is false, the buttons w'ont be displayed.
+		 * This is set to false if the set contains only one pic.
 		 */
-		public var hasLeftRight:Boolean = true;
+		public var hasLeftRight:Boolean = false;
 		
 		/**
-		 * Point to the picture currently on the screen.
+		 * Points to the picture currently on the screen.
+		 * When the slide happens, these to are swapped.
 		 */
 		private var _currentPicture:ClippedImage;
 		
@@ -72,24 +67,30 @@ package ro.calin.component
 		 */
 		private var _outsidePicture:ClippedImage;
 		
+		/**
+		 * The list of picture urls.
+		 */
 		private var _model:PictureViewerModel;
 		
 		/**
-		 * Index of the picture on the screen
-		 * in models set of urls.
+		 * Index of the picture on the screen.
 		 */
 		private var _current:Number = 0;
 		
 		/**
-		 * Used to slide.
+		 * Used for the slide animation.
 		 */
 		private var _moveAnim:Move;
 		
-		/**
-		 * Used to process the images before caching(CachableImage).
-		 */
-		public var bitmapProcessor:BitmapProcessor = null;
+		private var loader:ContentCache;
 		
+		[Bindable] public var percentLoaded:Number = 0;
+		[Bindable] public var loadingInProgress:Boolean = false;
+		
+		
+		/**
+		 * Constructor, sets the skin and creates the animation object.
+		 */
 		public function PictureViewer()
 		{
 			super();
@@ -98,11 +99,21 @@ package ro.calin.component
 			setStyle("skinClass", PictureViewerSkin);
 			
 			_moveAnim = new Move();
+			
+			loader = new ContentCache();
 		}
 		
+		/**
+		 * Model getter.
+		 */
 		public function get model():PictureViewerModel {return _model;}
+		
+		/**
+		 * Model setter.
+		 * It aditionally performes a slide if the control is on stage.
+		 */
 		public function set model(value:PictureViewerModel):void {
-			if(value == null) return;
+			if(value == null || _model == value) return;
 		
 			_model = value;
 			
@@ -113,10 +124,68 @@ package ro.calin.component
 				else slideUp();
 			}
 			
+			//just one pic -> makes no sens to show buttons
 			if(_model.pictures.length > 1) hasLeftRight = true;
 			else hasLeftRight = false;
+			
+			//start loading progress
+			loader.removeAllCacheEntries();
+			dict = new Dictionary();
+			picNb = _model.pictures.length;
+			
+			loadingInProgress = true;
+			percentLoaded = 0.0;
+			for(var i:int = 0; i < _model.pictures.length; i++) {
+				var cr:ContentRequest = loader.load(PictureModel(_model.pictures[i]).url);
+				if(!cr.complete) {
+					cr.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
+						progress(event);
+					});
+					cr.addEventListener(Event.COMPLETE, function(event:Event):void {
+						complete(event);
+					});
+				}
+				dict[cr] = {bytesLoaded : 0, bytesTotal : 0};
+			}
 		}
 		
+		private var dict:Dictionary;
+		private var picNb:int = 0;
+		private function progress(event:ProgressEvent):void {
+			dict[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
+			
+			compute();
+		}
+		private function complete(event:Event):void {
+			delete dict[event.target];
+			
+			compute();
+			
+			picNb--;
+			
+			if(picNb == 0) {
+				loadingInProgress = false;
+			}
+		}
+		
+		private function compute():void {
+			var loaded:Number = 0;
+			var total:Number = 0;
+			
+			for each(var progressInfo:Object in dict) {
+				loaded += progressInfo.bytesLoaded;
+				total += progressInfo.bytesTotal;
+			}
+			
+			percentLoaded = total > 0? (loaded/total) : 1;
+		}
+		
+		
+		
+		/**
+		 * When ths skin parts are created, make the pointers for outside and inside pics
+		 * point to pic1/pic2 and add click listeners for the buttons.
+		 */
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance);
 			
@@ -125,10 +194,12 @@ package ro.calin.component
 					picture1.source = PictureModel(_model.pictures[_current]).url;
 				}
 				_currentPicture = picture1;
+				picture1.contentLoader = loader;
 			}
 			
 			if(instance == picture2) {
 				_outsidePicture = picture2;
+				picture2.contentLoader = loader;
 			}
 			
 			if(instance == leftButton) {
@@ -152,27 +223,38 @@ package ro.calin.component
 			}
 		}
 		
+		/**
+		 * Left click: go to privious pic in list, slide to right.
+		 */
 		private function leftButton_clickHandler(event:MouseEvent) : void {
 			_current--;
 			if(_current == -1) {
 				_current = _model.pictures.length - 1;
 			}
 			
-			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 			slideRight();
 		}
 		
+		/**
+		 * Right click: go to next pic in list, slide to left.
+		 */
 		private function rightButton_clickHandler(event:MouseEvent) : void {
 			_current++;
 			if(_current == _model.pictures.length) {
 				_current = 0;
 			}
-			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
+
 			slideLeft();
 		}
 		
-		
-		//TODO: another anim should not start if one is currently in progres, maybe queue just one..
+		/**
+		 * 1. Put outside pic in the right side, outside the visible screen.
+		 * 2. Tell animation to move pics on x, from right to left, with an ammount equal to the width.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=-width,0.
+		 */
 		private function slideLeft():void {
 			if(_moveAnim.isPlaying) return;
 			
@@ -182,6 +264,14 @@ package ro.calin.component
 			performSlide();
 		}
 		
+		/**
+		 * 1. Put outside pic in the left side, outside the visible screen.
+		 * 2. Tell animation to move pics on x, from left to right, with an ammount equal to the width.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=width,0.
+		 */
 		private function slideRight():void {
 			if(_moveAnim.isPlaying) return;
 			
@@ -191,6 +281,14 @@ package ro.calin.component
 			performSlide();
 		}
 		
+		/**
+		 * 1. Put outside pic in the bottom side, outside the visible screen.
+		 * 2. Tell animation to move pics on y, from bottom to top, with an ammount equal to the height.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=-height,0.
+		 */
 		private function slideUp():void {
 			if(_moveAnim.isPlaying) return;
 			
@@ -200,6 +298,14 @@ package ro.calin.component
 			performSlide();
 		}
 		
+		/**
+		 * 1. Put outside pic in the top side, outside the visible screen.
+		 * 2. Tell animation to move pics on y, from top to bottom, with an ammount equal to the height.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=height,0.
+		 */
 		private function slideDown():void {
 			if(_moveAnim.isPlaying) return;
 			
@@ -209,7 +315,14 @@ package ro.calin.component
 			performSlide();
 		}
 		
+		/**
+		 * Set the new url for the outside image.
+		 * Set the targets(which are the same all the time).
+		 * Start it.
+		 * Current pic becomes outside pic and viceversa.
+		 */
 		private function performSlide():void {
+			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 			_moveAnim.targets = [_currentPicture, _outsidePicture];
 			_moveAnim.play();
 			

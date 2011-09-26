@@ -3,19 +3,23 @@ package ro.calin.component
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import mx.controls.Image;
-	
 	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.model.SubcategoryModel;
 	import ro.calin.component.skin.SubcategorySkin;
 	
+	import spark.components.Image;
 	import spark.components.Label;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.core.ContentCache;
+	import spark.core.IContentLoader;
 	
 	[SkinState("normal")]
 	[SkinState("hovered")]
 	public class Subcategory extends SkinnableComponent
 	{
+		public static var loader:IContentLoader = new ContentCache();
+		
+		//TODO: bitmap image not scaling as inteded
 		[SkinPart(required="true")]
 		public var image:Image;
 		
@@ -88,6 +92,8 @@ package ro.calin.component
 			super.partAdded(partName, instance); 
 			
 			if(instance == image) {
+				image.contentLoader = loader;
+				
 				if(_model) {
 					image.source == _model.picUrl;	
 				}

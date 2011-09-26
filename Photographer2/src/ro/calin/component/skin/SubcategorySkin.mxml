@@ -43,7 +43,7 @@
 				<s:HorizontalLayout verticalAlign="top"/>
 			</s:layout>
 			
-			<mx:Image id="image" width="{hostComponent.thumbWidth}" 
+			<s:Image id="image" width="{hostComponent.thumbWidth}" 
 					  scaleX.normal="{hostComponent.scaleFrom}" scaleY.normal="{hostComponent.scaleFrom}"
 					  scaleX.hovered="{hostComponent.scaleTo}" scaleY.hovered="{hostComponent.scaleTo}" 
 					  height="100%" alpha="{hostComponent.alwaysHighlight? 1.0 : 0.3}" alpha.hovered="1.0" />

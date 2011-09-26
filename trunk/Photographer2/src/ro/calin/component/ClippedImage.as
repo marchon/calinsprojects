@@ -3,6 +3,7 @@ package ro.calin.component
 	import flash.events.Event;
 	
 	import mx.events.FlexEvent;
+	import mx.events.ResizeEvent;
 	import mx.graphics.BitmapSmoothingQuality;
 	
 	import org.osmf.layout.ScaleMode;
@@ -27,7 +28,7 @@ package ro.calin.component
 			image.smooth = true;
 			image.smoothingQuality = BitmapSmoothingQuality.HIGH;
 			
-//			this.addEventListener(ResizeEvent.RESIZE, scaleImage);
+			this.addEventListener(ResizeEvent.RESIZE, scaleImage);
 			image.addEventListener(FlexEvent.READY, scaleImage);
 			this.clipAndEnableScrolling = true;
 		}
@@ -52,13 +53,15 @@ package ro.calin.component
 			///an ideea would be to store the results and apply before redrawing
 			//(but maybe this is already done in the setters of height/width
 			
-			if(image /*and is loaded*/) {
+			if(image && !isNaN(image.sourceWidth)) {
 				var w:Number = image.sourceWidth;
 				var h:Number = image.sourceHeight;
 				var dw:Number = w / this.width;
 				var dh:Number = h / this.height; //height is not reported properly
 				
-//				trace('w=', w, ',h=', h, ',aw=', this.width, ',ah=', this.height);
+				//TODO: at resizig, the method is called each time, but after some time
+				//the scale is not working(it may be happening when starting incresing;
+				trace('w=', w, ',h=', h, ',aw=', this.width, ',ah=', this.height);
 				
 				if(w/h >= 1.85) {
 //					trace('case 1: panafuckingramic, scale on width, center on vert');

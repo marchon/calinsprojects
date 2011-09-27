@@ -7,6 +7,7 @@ package ro.calin.component
 	
 	import mx.binding.utils.BindingUtils;
 	import mx.controls.Alert;
+	import mx.events.EffectEvent;
 	
 	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
@@ -99,6 +100,10 @@ package ro.calin.component
 			setStyle("skinClass", PictureViewerSkin);
 			
 			_moveAnim = new Move();
+			_moveAnim.addEventListener(EffectEvent.EFFECT_END, function(event:Event):void {
+				//when the picture gets outside, make it invisible
+				_outsidePicture.visible = false;
+			});
 			
 			loader = new ContentCache();
 		}
@@ -113,7 +118,7 @@ package ro.calin.component
 		 * It aditionally performes a slide if the control is on stage.
 		 */
 		public function set model(value:PictureViewerModel):void {
-			if(value == null || _model == value) return;
+			if(value == null) return;
 		
 			_model = value;
 			
@@ -129,6 +134,8 @@ package ro.calin.component
 			else hasLeftRight = false;
 			
 			//start loading progress
+			//TODO: provide posibillity to have sets of pictures that will not be removed
+			//eg: wallpapers
 			loader.removeAllCacheEntries();
 			dict = new Dictionary();
 			picNb = _model.pictures.length;
@@ -199,6 +206,7 @@ package ro.calin.component
 			
 			if(instance == picture2) {
 				_outsidePicture = picture2;
+				_outsidePicture.visible = false;
 				picture2.contentLoader = loader;
 			}
 			
@@ -322,6 +330,8 @@ package ro.calin.component
 		 * Current pic becomes outside pic and viceversa.
 		 */
 		private function performSlide():void {
+			_outsidePicture.visible = true;
+			
 			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
 			_moveAnim.targets = [_currentPicture, _outsidePicture];
 			_moveAnim.play();

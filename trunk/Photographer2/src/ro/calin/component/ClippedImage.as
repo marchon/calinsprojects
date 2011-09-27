@@ -9,28 +9,52 @@ package ro.calin.component
 	import org.osmf.layout.ScaleMode;
 	
 	import spark.components.Group;
-	import spark.core.ContentCache;
 	import spark.core.IContentLoader;
 	import spark.primitives.BitmapImage;
 	
+	/**
+	 * Image container that automatically centers ands scales the image after a certain algorithm
+	 * and clips the parts that fall outside the width and height. 
+	 * 
+	 * Scaling algorithm:
+	 * if aspect ratio > 1.85 (panoramic)
+	 * 		:show it all: scale on width
+	 * 
+	 * if both width and height exceed display area
+	 * 		:scale on the smallest (excess from the other dimension will be cropped)
+	 * 	
+	 * if just one of the dimension is bigger
+	 *		:scale on that dimension
+	 * 		
+	 */
 	public class ClippedImage extends Group
 	{	
 		private var image:BitmapImage;		
 		
 		public function ClippedImage()
 		{
+			//create image and add it to the container
 			image = new BitmapImage();
 			addElement(image);
 			
+			//keep it centered
 			image.verticalCenter = 0;
 			image.horizontalCenter = 0;
+			
+			//constrain aspect ration when scaling
 			image.scaleMode = ScaleMode.LETTERBOX;
+			//use best algo for scaling
 			image.smooth = true;
 			image.smoothingQuality = BitmapSmoothingQuality.HIGH;
 			
-			this.addEventListener(ResizeEvent.RESIZE, scaleImage);
-			image.addEventListener(FlexEvent.READY, scaleImage);
+			//clip what falls outside
 			this.clipAndEnableScrolling = true;
+
+			//update scaling on image loading
+			image.addEventListener(FlexEvent.READY, scaleImage);
+			
+			//update scaling on resize
+			this.addEventListener(ResizeEvent.RESIZE, scaleImage);
 		}
 		
 		public function get source():Object {
@@ -48,39 +72,32 @@ package ro.calin.component
 		} 
 		
 		protected function scaleImage(event:Event):void 
-		{
-			//todo: as this is called more than once, 
-			///an ideea would be to store the results and apply before redrawing
-			//(but maybe this is already done in the setters of height/width
-			
-			if(image && !isNaN(image.sourceWidth)) {
+		{			
+			if(visible && image && !isNaN(image.sourceWidth)) {
 				var w:Number = image.sourceWidth;
 				var h:Number = image.sourceHeight;
-				var dw:Number = w / this.width;
-				var dh:Number = h / this.height; //height is not reported properly
+				var rw:Number = w / this.width;
+				var rh:Number = h / this.height;
 				
-				//TODO: at resizig, the method is called each time, but after some time
-				//the scale is not working(it may be happening when starting incresing;
-				trace('w=', w, ',h=', h, ',aw=', this.width, ',ah=', this.height);
+				var scale:Number = NaN;
 				
 				if(w/h >= 1.85) {
-//					trace('case 1: panafuckingramic, scale on width, center on vert');
-					image.width = this.width;
-				} else if(dh > 1 && dw > 1) {
-//					trace('case 2 - bigger on bolth: scale on smallest, then crop on the other');
-					if(dh > dw) {
-//						trace("scale on width, because it's smaller");
-						image.width = this.width;
+					scale = this.width / w;
+				} else if(rh > 1 && rw > 1) {
+					if(rh > rw) {
+						scale = this.width / w;
 					} else {
-//						trace('scale on height');
-						image.height = this.height;
+						scale = this.height / h;
 					}
-				} else if(dh > 1) {
-//					trace('case 3 - bigger just on height: scale on height');
-					image.height = this.height;
-				} else if(dw > 1) {
-//					trace('case 4 - bigger just on width: scale on width');
-					image.width = this.width;
+				} else if(rh > 1) {
+					scale = this.height / h;
+				} else if(rw > 1) {
+					scale = this.width / w;
+				}
+				
+				if(!isNaN(scale)) {
+					image.scaleX = scale;
+					image.scaleY = scale;
 				}
 			}
 		}

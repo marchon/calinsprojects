@@ -2,10 +2,8 @@ package ro.calin.component
 {
 	import flash.events.MouseEvent;
 	
-	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.controls.Image;
 	
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.MenuEntryModel;
@@ -13,8 +11,8 @@ package ro.calin.component
 	import ro.calin.component.skin.MenuSkin;
 	
 	import spark.components.DataGroup;
+	import spark.components.Image;
 	import spark.components.supportClasses.SkinnableComponent;
-	import spark.events.IndexChangeEvent;
 
 	/**
 	 * Component that represents a menu with potential submenus.

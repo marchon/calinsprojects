@@ -118,6 +118,7 @@ package ro.calin.component
 		 * It aditionally performes a slide if the control is on stage.
 		 */
 		public function set model(value:PictureViewerModel):void {
+			//TODO: provide functionality of displaying wallpaper while not having any model???
 			if(value == null) return;
 		
 			_model = value;
@@ -134,8 +135,16 @@ package ro.calin.component
 			else hasLeftRight = false;
 			
 			//start loading progress
+			preload();
+		}
+		
+		private var dict:Dictionary;
+		private var picNb:int = 0;
+		
+		private function preload():void {
 			//TODO: provide posibillity to have sets of pictures that will not be removed
 			//eg: wallpapers
+			 
 			loader.removeAllCacheEntries();
 			dict = new Dictionary();
 			picNb = _model.pictures.length;
@@ -156,8 +165,6 @@ package ro.calin.component
 			}
 		}
 		
-		private var dict:Dictionary;
-		private var picNb:int = 0;
 		private function progress(event:ProgressEvent):void {
 			dict[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
 			
@@ -186,8 +193,6 @@ package ro.calin.component
 			
 			percentLoaded = total > 0? (loaded/total) : 1;
 		}
-		
-		
 		
 		/**
 		 * When ths skin parts are created, make the pointers for outside and inside pics

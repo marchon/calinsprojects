@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" 
-			   minHeight="600" xmlns:component="ro.calin.component.*" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="400" 
+			   minHeight="400" xmlns:component="ro.calin.component.*" 
 			   xmlns:model="ro.calin.component.model.*" xmlns:appmodel="ro.calin.app.model.*" xmlns:utils="ro.calin.utils.*"
 			   backgroundColor="black">
 	<fx:Script>
@@ -92,6 +92,23 @@
 				
 				menu.model = config.menu;
 				setPictureViewerRandomWallpaper(false);
+			}
+			
+			private function toggleFullScreen():void {
+				//TODO: add button to the menu
+				//beforeComponent: logo image
+				//afterComponent: fullscreen button
+				var newState:String;
+				if (stage.displayState == StageDisplayState.FULL_SCREEN)
+					newState = StageDisplayState.NORMAL;
+				else
+					newState = StageDisplayState.FULL_SCREEN;
+				
+				try {
+					stage.displayState = newState;
+				} catch (any:*) {
+					//ignore
+				}
 			}
 			
 			private function addEventListeners():void {

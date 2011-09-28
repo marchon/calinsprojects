@@ -41,8 +41,6 @@ package ro.calin.component
 			image.verticalCenter = 0;
 			image.horizontalCenter = 0;
 			
-			//constrain aspect ration when scaling
-			image.scaleMode = ScaleMode.LETTERBOX;
 			//use best algo for scaling
 			image.smooth = true;
 			image.smoothingQuality = BitmapSmoothingQuality.HIGH;

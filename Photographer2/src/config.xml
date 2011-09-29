@@ -1,45 +1,32 @@
-<!-- DACA NU VEZI MODIFICARILE IN BROWSER, CLEAR CACHE INAINTE SA MA BATI LA CAP :p -->
+<?xml version="1.0" encoding="UTF-16"?>
 
 <config>
-
-	<!-- SECTIUNEA MENIU, DEOCAMDATA AI TREABA DOAR CU SUBENTRYURILE DIN GALLERY-->
-	<!-- extra(soon to be action) specifies the types of actions 
-		it has the following format:
-		mouse_action//>action_type//>action_parameters
-		
-		mouse_action = click|hover
-		action_type = slide|categ|text|url
-		action_parameters 
-			- if action_type is slide: up|middle|donw
-			- if action_type is url: the link
-			- if action_type is categ: category key
-			- if action_type is text: text key (see bottom)
-	-->
-	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" action="click//>slide//>middle">
+	<menu buttonWidth="220" color="0x333333" alpha="0.5" logoUrl="logo.jpg" extra="click//>slide//>middle">
 		<entries>
-			<entry label="gallery" color="0xff00ff" action="click//>slide//>down">
+			<entry label="gallery" color="0xECD872" action="click//>slide//>down">
 				<entries>
-					<!-- ATRIBUTUL EXTRA E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
-					<entry label="art" color="0xff00ff" action="hover//>categ//>art"/>
-					<entry label="comercial" color="0x123423" action="hover//>categ//>commercial"/>
-					<entry label="cgi" color="0xfaaaaa" action="hover//>categ//>cgi" buttonWidth="150"/>
+					<!-- ATRIBUTUL 'action' E LEGATURA CU CATEGORIILE (VEZI KEY LA CATEGORIES), RESTU E EVIDENT -->
+					<entry label="art" color="0xECD672" action="hover//>categ//>art"/>
+					<entry label="comercial" color="0xFFE87C" action="hover//>categ//>commercial"/>
+					<entry label="cgi" color="0xC8B560" action="hover//>categ//>cgi"/>
+					<entry label="latest" color="0xC8B560" action="hover//>categ//>latest"/>
 				</entries>
 			</entry>
-			<entry label="info" color="0xff0000" action="click//>slide//>up">
+			<entry label="info" color="0x82CAFA" action="click//>slide//>up">
 				<entries>
-					<entry label="blog" buttonWidth="100"/>
-					<entry label="contact" buttonWidth="120"/>
-					<entry label="about" action="click//>text//>about" />
-					<entry label="friends" action="click//>text//>friends" />
+					<entry label="blog" color="0x000000" action="click//>url//>http://mariusstoianov.wordpress.com/" />
+					<entry label="contact" color="0x413839" action="click//>text//>contact" />
+					<entry label="about" color="0x595454" action="click//>text//>about" />
+					<entry label="friends" color="0x736F6E" action="click//>text//>friends" />
 				</entries>
 			</entry>
-			<entry label="share" action="click//>slide//>up">
+			<entry label="share" color="0xFAAFBA" action="click//>slide//>up">
 				<entries>
-					<entry label="" imageUrl="data/thumb/fb.png" color="0xFFFFFF" action="click//>url//>http://facebook.com"/>
+					<entry label="" imageUrl="data/thumb/fb.png" color="0xFFFFFF" action="click//>url//>http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F"/>
 					<entry label="" imageUrl="data/thumb/digg.jpg"/>
-					<entry label="about" imageUrl="data/thumb/su.jpg"/>
-					<entry label="" imageUrl="data/thumb/tw.jpg"/>
-					<entry label="" imageUrl="data/thumb/gb.png" color="0xFFFFFF"/>
+					<entry label="" imageUrl="data/thumb/su.jpg"/>
+					<entry label="" imageUrl="data/thumb/tw.jpg " action="click//>url//>http://twitter.com/share"/>
+					<entry label="" imageUrl="data/thumb/gb.png" color="0xFFFFFF" action="click//>url//>http://www.google.com/buzz/post?message=Here's%20Buzz!&url=http://www.google.com/buzz"/>
 				</entries>
 			</entry>
 		</entries>
@@ -51,33 +38,39 @@
 		<category key="art" thumbWidth="220" scaleFrom="1.0" scaleTo="1.01">
 			<subcategories>
 				<!-- FIECARE CATEGORIE CONTINE MAI MULTE SUBCATEGORII, ADICA IMAGINI PE BANDA AIA -->
-				<!-- PICURL ESTE IMAGINEA CARE APARE PE BANDA SI EXTRA REFERA LISTA DE POZE(VEZI PICTURESETS) 
+				<!-- 'picUrl' ESTE IMAGINEA CARE APARE PE BANDA SI 'setref' REFERA LISTA DE POZE(VEZI PICTURESETS) 
 					CARE SE INCARCA CAND DAI CLICK PE EA -->
-				<subcategory picUrl="data/thumb/2.jpg" name="abstract" description=" " setref="abs"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="studio" description="studio" setref="studio"/>
-				<subcategory picUrl="data/thumb/3.jpg" name="portraits" description="Portraits" setref="portraits"/>
-				<subcategory picUrl="data/thumb/5.jpg" name="nude" description="" setref="nude"/>
+				<subcategory picUrl="data/thumb/eco.jpg" name="eco" description="ecological message (in a bottle) " setref="eco"/>
+				<subcategory picUrl="data/thumb/abstract.jpg" name="abstract" description=" " setref="abs"/>
+				<subcategory picUrl="data/thumb/studio.jpg" name="studio" description="studio" setref="studio"/>
+				<subcategory picUrl="data/thumb/portrait.jpg" name="portraits" description="Portraits" setref="portraits"/>
+				<subcategory picUrl="data/thumb/nude.jpg" name="nude" description="" setref="nude"/>
 				<subcategory picUrl="data/thumb/self.jpg" name="self portaits" description="" setref="self"/>
-				<subcategory picUrl="data/thumb/street.jpg" name="street" description="thumb1" setref="street"/>
+				<subcategory picUrl="data/thumb/street.jpg" name="street" description="" setref="street"/>
 				<subcategory picUrl="data/thumb/back.jpg" name="the backstage" description="" setref="backstage"/>
-				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="thumb3" setref="morbid"/>
+				<subcategory picUrl="data/thumb/morbid.jpg" name="morbid" description="death is not really a sad thing" setref="morbid"/>
 				<subcategory picUrl="data/thumb/ruins.jpg" name="ruins" description="" setref="ruins"/>
 				<subcategory picUrl="data/thumb/land.jpg" name="landscapes" description="" setref="land"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb12" description="thumb6" setref="set2"/>
+				<subcategory picUrl="data/thumb/sport.jpg" name="sports" description="" setref="sport"/>
+				<subcategory picUrl="data/thumb/2.jpg" name="others" description="uncategorized" setref="others"/>
 			</subcategories>
 		</category>
-		
-		<category key="commercial" thumbWidth="220" scaleFrom="1.0" scaleTo="1.03">
+		<category key="latest" thumbWidth="220" scaleFrom="1.0" scaleTo="1.01">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="product sample shots" setref="sample"/>
+				<subcategory picUrl="data/thumb/new.jpg" name="my latest work" description="thumb5" setref="set4"/>
+			</subcategories>
+		</category>
+		<category key="commercial" thumbWidth="220" scaleFrom="1.0" scaleTo="1.01">
+			<subcategories>
+				<subcategory picUrl="data/thumb/jb.jpg" name="events" description="fashion events" setref="fevents"/>
+				<subcategory picUrl="data/thumb/jb.jpg" name="samples" description="product sample shots" setref="sample"/>
 				<subcategory picUrl="data/thumb/jb.jpg" name="J&amp;B" description="J&amp;B Shaking the Dancefloor events" setref="jb"/>
 				<subcategory picUrl="data/thumb/6.jpg" name="samples" description="bottle samples" setref="bottle"/>
 			</subcategories>
 		</category>
-		<category key="cgi" thumbWidth="220" scaleFrom="1.0" scaleTo="1.03">
+		<category key="cgi" thumbWidth="220" scaleFrom="1.0" scaleTo="1.01">
 			<subcategories>
-				<subcategory picUrl="data/thumb/5.jpg" name="thumb5" description="thumb5" setref="set4"/>
-				<subcategory picUrl="data/thumb/6.jpg" name="thumb6" description="thumb6" setref="set5"/>
+				<subcategory picUrl="data/thumb/5.jpg" name="samples" description="thumb5" setref="set4"/>
 			</subcategories>
 		</category>
 	</categories>
@@ -88,69 +81,136 @@
 	<picturesets>
 		<pictureset key="WALLPAPERS">
 			<pictures>
-				<picture url="data/l1.jpg" />
-				<picture url="data/r1.jpg" />
-				<picture url="data/x1.jpg" />
-				<picture url="data/x2.jpg" />
+				<picture url="data/l/l1.jpg" />
+				<picture url="data/r/r1.jpg" />
+				<picture url="data/o/o4.jpg" />
+				<picture url="data/o/o3.jpg" />
 				<picture url="data/3.jpg" />
+				<picture url="data/s/s3.jpg" />
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="self">
+			<pictures>
+				<picture url="data/sp/sp1.jpg" />
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="sport">
+			<pictures>
+				<picture url="data/spo/spo3.jpg" />
+				<picture url="data/spo/spo2.jpg" />
+				<picture url="data/spo/spo1.jpg" />
+
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="eco">
+			<pictures>
+				<picture url="data/e/e2.jpg" />
+				<picture url="data/e/e1.jpg" />
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="fevents">
+			<pictures>
+				<picture url="data/fe/fe1.jpg" />
+			</pictures>
+		</pictureset>
+		
+		<pictureset key="others">
+			<pictures>
+				<picture url="data/o/o5.jpg" />
+				<picture url="data/o/o1.jpg" />
+				<picture url="data/o/o3.jpg" />
+				<picture url="data/o/o2.jpg" />
+				<picture url="data/o/o14.jpg" />
+				<picture url="data/o/o4.jpg" />
+				<picture url="data/o/o13.jpg" />
+				<picture url="data/o/o15.jpg" />
+				<picture url="data/o/o7.jpg" />
+				<picture url="data/o/o11.jpg" />
+				<picture url="data/o/o6.jpg" />
+				<picture url="data/o/o12.jpg" />
+				<picture url="data/o/o9.jpg" />
+				<picture url="data/o/o8.jpg" />
+				<picture url="data/o/o10.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="jb">
 			<pictures>
-				<picture url="data/1 (1).jpg" />
-				<picture url="data/1 (2).jpg" />
-				<picture url="data/1 (3).jpg" />
-				<picture url="data/1 (4).jpg" />
-				<picture url="data/1 (5).jpg" />
+				<picture url="data/j/j2jpg" />
+				<picture url="data/j/j1.jpg" />
+				<picture url="data/j/j3.jpg" />
+				<picture url="data/j/j4.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="street">
 			<pictures>
-				<picture url="data/s4.jpg" />
-				<picture url="data/s5.jpg" />
-				<picture url="data/s1.jpg" />
-				<picture url="data/s2.jpg" />
-				<picture url="data/s3.jpg" />
+				<picture url="data/s/s4.jpg" />
+				<picture url="data/s/s15.jpg" />
+				<picture url="data/s/s5.jpg" />
+				<picture url="data/s/s10.jpg" />
+				<picture url="data/s/s19.jpg" />
+				<picture url="data/s/s1.jpg" />
+				<picture url="data/s/s2.jpg" />
+				<picture url="data/s/s3.jpg" />
+				<picture url="data/s/s13.jpg" />
+				<picture url="data/s/s16.jpg" />
+				<picture url="data/s/s8.jpg" />
+				<picture url="data/s/s6.jpg" />
+				<picture url="data/s/s9.jpg" />
+				<picture url="data/s/s7.jpg" />
+				<picture url="data/s/s11.jpg" />
+				<picture url="data/s/s12.jpg" />
+				<picture url="data/s/s14.jpg" />
+				<picture url="data/s/s18.jpg" />
+				<picture url="data/s/s21.jpg" />
+				<picture url="data/s/s17.jpg" />
+				<picture url="data/s/s20.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="land">
 			<pictures>
-				<picture url="data/l1.jpg" />
-				<picture url="data/l2.jpg" />
-				<picture url="data/l3.jpg" />
-				<picture url="data/1 (4).jpg" />
-				<picture url="data/1 (5).jpg" />
+				<picture url="data/l/l1.jpg" />
+				<picture url="data/l/l2.jpg" />
+				<picture url="data/l/l3.jpg" />
+				<picture url="data/l/l5.jpg" />
+				<picture url="data/l/l4.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="abs">
 			<pictures>
-				<picture url="data/a1.jpg" />
-				<picture url="data/1 (2).jpg" />
-				<picture url="data/1 (3).jpg" />
-				<picture url="data/1 (4).jpg" />
-				<picture url="data/1 (5).jpg" />
+				<picture url="data/a/a3.jpg" />
+				<picture url="data/a/a4.jpg" />
+				<picture url="data/a/a7.jpg" />
+				<picture url="data/a/a9.jpg" />
+				<picture url="data/a/a1.jpg" />
+				<picture url="data/a/a5.jpg" />
+				<picture url="data/a/a6.jpg" />
+				<picture url="data/a/a8.jpg" />
+				<picture url="data/a/a2.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="nude">
 			<pictures>
-				<picture url="data/n1.jpg" />
-				<picture url="data/1 (2).jpg" />
-				<picture url="data/1 (3).jpg" />
+				<picture url="data/n/n2.jpg" />
+				<picture url="data/n/n1.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="backstage">
 			<pictures>
-				<picture url="data/b1.jpg" />
-				<picture url="data/b3.jpg" />
-				<picture url="data/b4.jpg" />
-				<picture url="data/b2.jpg" />
-				<picture url="data/1 (10).jpg" />
+				<picture url="data/b/b5.jpg" />
+				<picture url="data/b/b1.jpg" />
+				<picture url="data/b/b3.jpg" />
+				<picture url="data/b/b4.jpg" />
+				<picture url="data/b/b2.jpg" />
 			</pictures>
 		</pictureset>
 		
@@ -161,56 +221,93 @@
 				<picture url="data/p3.jpg" />
 				<picture url="data/p5.jpg" />
 				<picture url="data/p6.jpg" />
+				<picture url="data/p14.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="ruins">
 			<pictures>
-				<picture url="data/r1.jpg" />
-				<picture url="data/r2.jpg" />
-				<picture url="data/r3.jpg" />
-				<picture url="data/p5.jpg" />
-				<picture url="data/p6.jpg" />
+				<picture url="data/r/r13.jpg" />
+				<picture url="data/r/r14.jpg" />
+				<picture url="data/r/r1.jpg" />
+				<picture url="data/r/r8.jpg" />
+				<picture url="data/r/r2.jpg" />
+				<picture url="data/r/r3.jpg" />
+				<picture url="data/r/r4.jpg" />
+				<picture url="data/r/r5.jpg" />
+				<picture url="data/r/r7.jpg" />
+				<picture url="data/r/r15.jpg" />
+				<picture url="data/r/r6.jpg" />
+				<picture url="data/r/r16.jpg" />
+				<picture url="data/r/r12.jpg" />
+				<picture url="data/r/r11.jpg" />
+				<picture url="data/r/r9.jpg" />
+				<picture url="data/r/r10.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="portraits">
 			<pictures>
-				<picture url="data/p1.jpg" />
-				<picture url="data/p2.jpg" />
-				<picture url="data/p7.jpg" />
+				<picture url="data/p/p20.jpg" />
+				<picture url="data/p/p24.jpg" />
+				<picture url="data/p/p19.jpg" />
+				<picture url="data/p/p23.jpg" />
+				<picture url="data/p/p22.jpg" />
+				<picture url="data/p/p21.jpg" />
+				<picture url="data/p/p1.jpg" />
+				<picture url="data/p/p25.jpg" />
+				<picture url="data/p/p26.jpg" />
+				<picture url="data/p/p9.jpg" />
+				<picture url="data/p/p15.jpg" />
+				<picture url="data/p/p18.jpg" />
+				<picture url="data/p/p7.jpg" />
+				<picture url="data/p/p16.jpg" />
+				<picture url="data/p/p17.jpg" />
+				<picture url="data/p/p27.jpg" />
 			</pictures>
 		</pictureset>
 		
 		<pictureset key="morbid">
 			<pictures>
-				<picture url="data/m1.jpg" />
-				<picture url="data/m2.jpg" />
-				<picture url="data/m3.jpg" />
+				<picture url="data/m/m1.jpg" />
+				<picture url="data/m/m4.jpg" />
+				<picture url="data/m/m2.jpg" />
+				<picture url="data/m/m3.jpg" />
+				<picture url="data/m/m5.jpg" />
 			</pictures>
 		</pictureset>
 	</picturesets>
 	
 	<textset>
+		<text key="contact" bgUrl="data/contact.jpg">
+			<style top="50" left="0" color="white" 
+				fontSize="20" textAlign="left" width="287" height="1080" backgroundColor="black" backgroundAlpha="0.5"/>
+			<![CDATA[
+				Marius Stoianov
+				Telephone: +040742053730	
+				E-mail: marius@stoianov.ro
+				Location: Bucharest, Romania
+			]]>
+		</text>
+	
 		<text key="about" bgUrl="data/m1.jpg">
-			<style top="100" left="50" color="red" 
-				fontSize="18" textAlign="justify" width="300" />
+			<style top="50" left="0" color="black" 
+				fontSize="18" textAlign="left" width="287" height="1080" backgroundColor="white" backgroundAlpha="0.8" />
 			<![CDATA[
 				This is me. My name is Marius Stoianov, and I make high quality, state-of-the-art, premium, and only for YOU, out of the box, ready to use, and, above all, beautiful photos. 
 			]]>
 		</text>
 		
-		<text key="friends" bgUrl="data/m2.jpg">
-			<style bottom="30" right="50" color="0xabb103" 
-				fontSize="15" backgroundColor="black" backgroundAlpha="0.5" />
+		<text key="friends" bgUrl="data/friends.jpg">
+			<style bottom="10" right="10" color="0x00000" 
+				fontSize="20" textAlign="right" width="287" />
 			<![CDATA[
-				 	I've been blessed with some of the best friends.
-				 Especially, my friend Calin, which is so fucking awsome.
-				 He ocasionally bangs my mom, but I forgive him,
-				 'cuz he's such a great guy...		
-				 	1. abc
-				 	2. def
-				 	3. bla
+				 Sasha Daria
+				 Charlie
+				 Ana Mindaianu
+				 Victor Gheorghita
+				 Mihai Morariu
+				 Cristian Mereuta
 			]]>
 		</text>
 	</textset>

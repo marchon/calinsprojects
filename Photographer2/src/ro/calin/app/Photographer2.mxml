@@ -95,17 +95,15 @@
 			}
 			
 			private function toggleFullScreen():void {
-				//TODO: add button to the menu
-				//beforeComponent: logo image
-				//afterComponent: fullscreen button
 				var newState:String;
-				if (stage.displayState == StageDisplayState.FULL_SCREEN)
-					newState = StageDisplayState.NORMAL;
-				else
-					newState = StageDisplayState.FULL_SCREEN;
-				
 				try {
-					stage.displayState = newState;
+					if (stage.displayState == StageDisplayState.FULL_SCREEN) {
+						stage.displayState = StageDisplayState.NORMAL;
+						fs.label = "Fullscreen";
+					} else {
+						stage.displayState = StageDisplayState.FULL_SCREEN;
+						fs.label = "Windowed";
+					}
 				} catch (any:*) {
 					//ignore
 				}
@@ -427,7 +425,16 @@
 					itemHover="menu_itemHandler(event)"
 					logoClick="menu_logoClickHandler(event)"
 					width="100%" y.menuMiddle="{this.height * .7}" 
-					y.menuTop="0" y.menuBottom="{this.height - menu.height}" />
+					y.menuTop="0" y.menuBottom="{this.height - menu.height}">
+		<component:customComponent>
+			<component:MenuButton click="toggleFullScreen();" height="{menu.height}" buttonMode="true" width="80">
+				<component:entry>
+					<model:MenuEntryModel id="fs" label="Fullscreen" color="0xECD672" fontSize="12" fontColor="0xbbbbbb" 
+										   animToBottom="true"/>
+				</component:entry>
+			</component:MenuButton>
+		</component:customComponent>
+	</component:Menu>
 	
 	<component:CategoryViewer id="catViewer" alpha="0.0" bottom="{menu.height}"
 							  categItemClick="catViewer_categItemClickHandler(event)" visible="{catViewer.alpha > 0.0}"/>

@@ -18,12 +18,9 @@
     </s:states>
     
 	<!-- Transitions for the cool animations. -->
-	<s:transitions>
-		<s:Transition toState="over" autoReverse="true">
-			<s:Move target="{overFill}" duration="200"/>
-		</s:Transition>
-		<s:Transition toState="normal" autoReverse="true">
-			<s:Move target="{overFill}" duration="200"/>
+	<s:transitions>		
+		<s:Transition>
+			<s:Resize duration="200" target="{overFill}" />
 		</s:Transition>
 	</s:transitions>
 	
@@ -35,8 +32,10 @@
 	</s:Rect>
 	
 	<!-- Layer 2: colored rectagle for animation -->
-	<s:Rect id="overFill" y="{hostComponent.height}" y.over="0"  
-			width="100%" height="100%">
+	<s:Rect id="overFill" 
+			bottom="{hostComponent.entry.animToBottom? '@Clear' : '0'}" 
+			top="{hostComponent.entry.animToBottom? '0' : '@Clear'}" 
+			width="100%" height="0" height.over="{hostComponent.height}">
 		<s:fill>
 			<s:SolidColor color="{hostComponent.entry.color}"/>
 		</s:fill>

@@ -4,13 +4,16 @@ package ro.calin.component
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
+	import mx.core.IVisualElement;
 	
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.skin.MenuSkin;
 	
+	import spark.components.Button;
 	import spark.components.DataGroup;
+	import spark.components.HGroup;
 	import spark.components.Image;
 	import spark.components.supportClasses.SkinnableComponent;
 
@@ -24,6 +27,9 @@ package ro.calin.component
 	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
 	public class Menu extends SkinnableComponent
 	{
+		[SkinPart(required="true")]
+		public var placeholder:HGroup;
+		
 		[SkinPart(required="false")]
 		/**
 		 * Image logo.
@@ -47,6 +53,11 @@ package ro.calin.component
 		 * */
 		private var _menuState:Array = [];
 		
+		/**
+		 * Will be displayed after the buttons.
+		 */
+		private var _customComponent:IVisualElement;
+		
 		public function Menu() {
 			//set the default skin class
 			setStyle("skinClass", MenuSkin);
@@ -68,6 +79,19 @@ package ro.calin.component
 			//go to the first set of entries
 			if(bar) {
 				pushMenu(_model.entries);
+			}
+		}
+		
+		public function get customComponent():IVisualElement {
+			return _customComponent;
+		}
+		public function set customComponent(value:IVisualElement):void {
+			if(_customComponent == value) return;
+			
+			_customComponent = value;
+			
+			if(placeholder != null) {
+				placeholder.addElement(_customComponent);
 			}
 		}
 		
@@ -121,6 +145,12 @@ package ro.calin.component
 					pushMenu(_model.entries);
 				}
 				bar.addEventListener(MenuEvent.MENU_ITEM_CLICK, buttonBar_changeHandler);
+			}
+			
+			if(instance == placeholder) {
+				if(_customComponent != null) {
+					placeholder.addElement(_customComponent);
+				}
 			}
 		}
 		

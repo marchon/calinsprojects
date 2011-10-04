@@ -20,7 +20,7 @@
 	</s:Rect>
 	
 	<!-- Layer 2: logo and button group -->
-	<s:HGroup>
+	<s:HGroup id="placeholder" width="100%">
 		<!-- Sublayer 2.1: image logo -->
 		<s:Image id="logo" buttonMode="true" source="{hostComponent.model.logoUrl}"/>
 		

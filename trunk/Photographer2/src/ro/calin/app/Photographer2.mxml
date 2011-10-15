@@ -204,7 +204,7 @@
 				var pos:Number = cache[entry];
 				
 				if(!pos) {
-					pos = menu.logo.width + 2; //small adjustment ;))
+					pos = menu.logo.width + 5; //small adjustment ;))
 				
 					var i:int = 0;
 					var entryList:IList = entry.containerEntries;

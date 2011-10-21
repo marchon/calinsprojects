@@ -20,11 +20,16 @@ package ro.calin.component
 	import spark.core.IContentLoader;
 	import spark.effects.Move;
 	
+	
 	/**
 	 * Component that provides posibility to slide through a set of pictures.
 	 */
 	public class PictureViewer extends SkinnableContainer
 	{
+		public static const MODE_NEXT:int = 0;
+		public static const MODE_PREV:int = 1;
+		public static const MODE_RAND:int = 2;
+		
 		/**
 		 * The first picture.
 		 * 
@@ -44,16 +49,10 @@ package ro.calin.component
 		
 		[SkinPart(required="true")]
 		public var rightButton:Button;
-			
-		/**
-		 * When the model is changed, the slide will performe in the indicated direction.
-		 */
-		public var slideDownOnModelChange:Boolean = false;
 		
 		[Bindable]
 		/**
-		 * If this is false, the buttons w'ont be displayed.
-		 * This is set to false if the set contains only one pic.
+		 * If this is false, the buttons won't be displayed.
 		 */
 		public var hasLeftRight:Boolean = false;
 		
@@ -71,21 +70,24 @@ package ro.calin.component
 		/**
 		 * The list of picture urls.
 		 */
-		private var _model:PictureViewerModel;
+		private var _models:Object;
+		
+		/**
+		 * The current set of pictures to be displayed.
+		 */
+		private var _currentModel:PictureViewerModel;
 		
 		/**
 		 * Index of the picture on the screen.
 		 */
-		private var _current:Number = 0;
+		private var _currentPicIndex:Number = 0;
 		
 		/**
 		 * Used for the slide animation.
 		 */
 		private var _moveAnim:Move;
 		
-		private var loader:ContentCache;
-		
-		[Bindable] public var percentLoaded:Number = 0;
+		[Bindable] public var percentLoaded:Number = 0.0;
 		[Bindable] public var loadingInProgress:Boolean = false;
 		
 		
@@ -105,54 +107,109 @@ package ro.calin.component
 				_outsidePicture.visible = false;
 			});
 			
-			loader = new ContentCache();
+			_models = new Object();
+		}
+		
+		public function registerModel(name:String, value:PictureViewerModel):void {
+			
+		}
+		
+		public function unregisterModel(name:String):void {
+			
+		}
+		
+		public function makeCurrentModel(name:String):void {
+			
+		}
+		
+		
+		/**
+		 * 1. Put outside pic in the right side, outside the visible screen.
+		 * 2. Tell animation to move pics on x, from right to left, with an ammount equal to the width.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=-width,0.
+		 */
+		public function slideLeft(mode:int):void {
+			processMode(mode);
+			if(_moveAnim.isPlaying) return;
+			
+			_outsidePicture.x = this.width;
+			_outsidePicture.y = 0;
+			_moveAnim.xBy = -this.width;
+			performSlide();
 		}
 		
 		/**
-		 * Model getter.
+		 * 1. Put outside pic in the left side, outside the visible screen.
+		 * 2. Tell animation to move pics on x, from left to right, with an ammount equal to the width.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=width,0.
 		 */
-		public function get model():PictureViewerModel {return _model;}
+		public function slideRight(mode:int):void {
+			processMode(mode);
+			
+			if(_moveAnim.isPlaying) return;
+			
+			_outsidePicture.x = -this.width;
+			_outsidePicture.y = 0;
+			_moveAnim.xBy = this.width;
+			performSlide();
+		}
 		
 		/**
-		 * Model setter.
-		 * It aditionally performes a slide if the control is on stage.
+		 * 1. Put outside pic in the bottom side, outside the visible screen.
+		 * 2. Tell animation to move pics on y, from bottom to top, with an ammount equal to the height.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=-height,0.
 		 */
-		public function set model(value:PictureViewerModel):void {
-			//TODO: provide functionality of displaying wallpaper while not having any model???
-			if(value == null) return;
-		
-			_model = value;
+		public function slideUp(mode:int):void {
+			processMode(mode);
 			
-			_current = 0;
-			if(_currentPicture) {
-				_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
-				if(slideDownOnModelChange) slideDown();
-				else slideUp();
-			}
+			if(_moveAnim.isPlaying) return;
 			
-			//just one pic -> makes no sens to show buttons
-			if(_model.pictures.length > 1) hasLeftRight = true;
-			else hasLeftRight = false;
-			
-			//start loading progress
-			preload();
+			_outsidePicture.x = 0;
+			_outsidePicture.y = this.height;
+			_moveAnim.yBy = -this.height;
+			performSlide();
 		}
+		
+		/**
+		 * 1. Put outside pic in the top side, outside the visible screen.
+		 * 2. Tell animation to move pics on y, from top to bottom, with an ammount equal to the height.
+		 * 3. Start the animation.
+		 * 
+		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
+		 * will get to x,y=height,0.
+		 */
+		public function slideDown(mode:int):void {
+			processMode(mode);
+			
+			if(_moveAnim.isPlaying) return;
+			
+			_outsidePicture.x = 0;
+			_outsidePicture.y = -this.height;
+			_moveAnim.yBy = this.height;
+			performSlide();
+		}
+		
 		
 		private var dict:Dictionary;
 		private var picNb:int = 0;
 		
-		private function preload():void {
-			//TODO: provide posibillity to have sets of pictures that will not be removed
-			//eg: wallpapers
-			 
-			loader.removeAllCacheEntries();
+		private function preload(cacheLoader:ContentCache, model:PictureViewerModel):void {			
+			cacheLoader.removeAllCacheEntries();
 			dict = new Dictionary();
-			picNb = _model.pictures.length;
+			picNb = model.pictures.length;
 			
 			loadingInProgress = true;
-			percentLoaded = 0.0;
-			for(var i:int = 0; i < _model.pictures.length; i++) {
-				var cr:ContentRequest = loader.load(PictureModel(_model.pictures[i]).url);
+			for(var i:int = 0; i < model.pictures.length; i++) {
+				var cr:ContentRequest = cacheLoader.load(PictureModel(model.pictures[i]).url);
 				if(!cr.complete) {
 					cr.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
 						progress(event);
@@ -161,7 +218,8 @@ package ro.calin.component
 						complete(event);
 					});
 				}
-				dict[cr] = {bytesLoaded : 0, bytesTotal : 0};
+				//need to hold a reference to cr, else the callbacks are not called
+				dict[cr] = {bytesLoaded : 0, bytesTotal : 1024 * 1024}; //assume a pic has 1 mb 
 			}
 		}
 		
@@ -179,6 +237,7 @@ package ro.calin.component
 			
 			if(picNb == 0) {
 				loadingInProgress = false;
+				percentLoaded = 0.0;
 			}
 		}
 		
@@ -202,17 +261,17 @@ package ro.calin.component
 			super.partAdded(partName, instance);
 			
 			if(instance == picture1) {
-				if(_model) {
-					picture1.source = PictureModel(_model.pictures[_current]).url;
-				}
+//				if(_model) {
+//					picture1.source = PictureModel(_model.pictures[_current]).url;
+//				}
 				_currentPicture = picture1;
-				picture1.contentLoader = loader;
+//				picture1.contentLoader = loader;
 			}
 			
 			if(instance == picture2) {
 				_outsidePicture = picture2;
 				_outsidePicture.visible = false;
-				picture2.contentLoader = loader;
+//				picture2.contentLoader = loader;
 			}
 			
 			if(instance == leftButton) {
@@ -240,93 +299,48 @@ package ro.calin.component
 		 * Left click: go to privious pic in list, slide to right.
 		 */
 		private function leftButton_clickHandler(event:MouseEvent) : void {
-			_current--;
-			if(_current == -1) {
-				_current = _model.pictures.length - 1;
-			}
-			
-			slideRight();
+			slideRight(MODE_PREV);
 		}
 		
 		/**
 		 * Right click: go to next pic in list, slide to left.
 		 */
 		private function rightButton_clickHandler(event:MouseEvent) : void {
-			_current++;
-			if(_current == _model.pictures.length) {
-				_current = 0;
+			slideLeft(MODE_NEXT);
+		}
+		
+		private function processMode(mode:int) {
+			switch(mode) {
+				case MODE_NEXT:
+					next();
+					break;
+				case MODE_PREV:
+					previous();
+					break;
+				case MODE_RAND:
+					randomize();
+					break;
 			}
-
-			slideLeft();
 		}
 		
-		/**
-		 * 1. Put outside pic in the right side, outside the visible screen.
-		 * 2. Tell animation to move pics on x, from right to left, with an ammount equal to the width.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=-width,0.
-		 */
-		private function slideLeft():void {
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = this.width;
-			_outsidePicture.y = 0;
-			_moveAnim.xBy = -this.width;
-			performSlide();
+		private function next():void {
+			_currentPicIndex--;
+			if(_currentPicIndex == _currentModel.pictures.length) {
+				_currentPicIndex = 0;
+			}
 		}
 		
-		/**
-		 * 1. Put outside pic in the left side, outside the visible screen.
-		 * 2. Tell animation to move pics on x, from left to right, with an ammount equal to the width.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=width,0.
-		 */
-		private function slideRight():void {
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = -this.width;
-			_outsidePicture.y = 0;
-			_moveAnim.xBy = this.width;
-			performSlide();
+		private function previous():void {
+			_currentPicIndex--;
+			if(_currentPicIndex == -1) {
+				_currentPicIndex = _currentModel.pictures.length - 1;
+			}
 		}
 		
-		/**
-		 * 1. Put outside pic in the bottom side, outside the visible screen.
-		 * 2. Tell animation to move pics on y, from bottom to top, with an ammount equal to the height.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=-height,0.
-		 */
-		private function slideUp():void {
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = 0;
-			_outsidePicture.y = this.height;
-			_moveAnim.yBy = -this.height;
-			performSlide();
+		private function randomize():void {
+			_currentPicIndex = Math.floor(Math.random() * _currentModel.pictures.length);
 		}
 		
-		/**
-		 * 1. Put outside pic in the top side, outside the visible screen.
-		 * 2. Tell animation to move pics on y, from top to bottom, with an ammount equal to the height.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=height,0.
-		 */
-		private function slideDown():void {
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = 0;
-			_outsidePicture.y = -this.height;
-			_moveAnim.yBy = this.height;
-			performSlide();
-		}
 		
 		/**
 		 * Set the new url for the outside image.
@@ -337,7 +351,7 @@ package ro.calin.component
 		private function performSlide():void {
 			_outsidePicture.visible = true;
 			
-			_outsidePicture.source = PictureModel(_model.pictures[_current]).url;
+			_outsidePicture.source = PictureModel(_currentModel.pictures[_currentPicIndex]).url;
 			_moveAnim.targets = [_currentPicture, _outsidePicture];
 			_moveAnim.play();
 			

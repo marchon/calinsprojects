@@ -20,9 +20,8 @@ package ro.calin.component
 	import spark.core.IContentLoader;
 	import spark.effects.Move;
 	
-	
 	/**
-	 * Component that provides posibility to slide through a set of pictures.
+	 * Component that provides posibillity to slide through a set of pictures.
 	 */
 	public class PictureViewer extends SkinnableContainer
 	{
@@ -43,18 +42,6 @@ package ro.calin.component
 		 */
 		[SkinPart(required="true")]
 		public var picture2:ClippedImage;
-		
-		[SkinPart(required="true")]
-		public var leftButton:Button;
-		
-		[SkinPart(required="true")]
-		public var rightButton:Button;
-		
-		[Bindable]
-		/**
-		 * If this is false, the buttons won't be displayed.
-		 */
-		public var hasLeftRight:Boolean = false;
 		
 		/**
 		 * Points to the picture currently on the screen.
@@ -87,8 +74,25 @@ package ro.calin.component
 		 */
 		private var _moveAnim:Move;
 		
+		/**
+		 * Amout of data received if load is triggered.
+		 */
 		[Bindable] public var percentLoaded:Number = 0.0;
+		
+		/**
+		 * Whether or not to show a loading bar. 
+		 */
 		[Bindable] public var loadingInProgress:Boolean = false;
+		
+		/**
+		 * Holds a map of requests for computing loading progress.
+		 */
+		private var _loadingMap:Dictionary;
+		
+		/**
+		 * Number of pictures that have not finished loading if preloading is atempted.
+		 */
+		private var _unloadedPicNb:int = 0;
 		
 		
 		/**
@@ -104,24 +108,47 @@ package ro.calin.component
 			_moveAnim = new Move();
 			_moveAnim.addEventListener(EffectEvent.EFFECT_END, function(event:Event):void {
 				//when the picture gets outside, make it invisible
-				_outsidePicture.visible = false;
+				if(_outsidePicture) _outsidePicture.visible = false;
 			});
 			
 			_models = new Object();
 		}
 		
-		public function registerModel(name:String, value:PictureViewerModel):void {
+		/**
+		 * Registers a list of pictures, optionally preloading them. 
+		 */
+		public function registerModel(name:String, value:PictureViewerModel, preload:Boolean):void {
+			//create or reuse a cache loader
+			var cache:ContentCache = _models[name] != null? _models[name].cache : new ContentCache();
+			cache.removeAllCacheEntries();
 			
+			//save the values
+			_models[name] = {
+				cache: cache,
+				model: value
+			};
+			
+			//preload if necesarry
+			if(preload) load(cache, value);
 		}
 		
+		/**
+		 * Removes the model from the list of models.
+		 */
 		public function unregisterModel(name:String):void {
-			
+			_models[name] = null;
 		}
 		
-		public function makeCurrentModel(name:String):void {
+		/**
+		 * Set this set of pictures as the currently displayed model.
+		 */
+		public function setActiveModel(name:String):void {
+			_currentModel = _models[name].model;
+			picture1.contentLoader = _models[name].cache;
+			picture2.contentLoader = _models[name].cache;
 			
+			_currentPicIndex = 0;
 		}
-		
 		
 		/**
 		 * 1. Put outside pic in the right side, outside the visible screen.
@@ -199,13 +226,12 @@ package ro.calin.component
 		}
 		
 		
-		private var dict:Dictionary;
-		private var picNb:int = 0;
-		
-		private function preload(cacheLoader:ContentCache, model:PictureViewerModel):void {			
-			cacheLoader.removeAllCacheEntries();
-			dict = new Dictionary();
-			picNb = model.pictures.length;
+		/**
+		 * Starts loading the 
+		 */
+		private function load(cacheLoader:ContentCache, model:PictureViewerModel):void {			
+			_loadingMap = new Dictionary();
+			_unloadedPicNb = model.pictures.length;
 			
 			loadingInProgress = true;
 			for(var i:int = 0; i < model.pictures.length; i++) {
@@ -219,23 +245,23 @@ package ro.calin.component
 					});
 				}
 				//need to hold a reference to cr, else the callbacks are not called
-				dict[cr] = {bytesLoaded : 0, bytesTotal : 1024 * 1024}; //assume a pic has 1 mb 
+				_loadingMap[cr] = {bytesLoaded : 0, bytesTotal : 1024 * 1024}; //assume a pic has 1 mb 
 			}
 		}
 		
 		private function progress(event:ProgressEvent):void {
-			dict[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
+			_loadingMap[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
 			
 			compute();
 		}
 		private function complete(event:Event):void {
-			delete dict[event.target];
+			delete _loadingMap[event.target];
 			
 			compute();
 			
-			picNb--;
+			_unloadedPicNb--;
 			
-			if(picNb == 0) {
+			if(_unloadedPicNb == 0) {
 				loadingInProgress = false;
 				percentLoaded = 0.0;
 			}
@@ -245,7 +271,7 @@ package ro.calin.component
 			var loaded:Number = 0;
 			var total:Number = 0;
 			
-			for each(var progressInfo:Object in dict) {
+			for each(var progressInfo:Object in _loadingMap) {
 				loaded += progressInfo.bytesLoaded;
 				total += progressInfo.bytesTotal;
 			}
@@ -261,55 +287,17 @@ package ro.calin.component
 			super.partAdded(partName, instance);
 			
 			if(instance == picture1) {
-//				if(_model) {
-//					picture1.source = PictureModel(_model.pictures[_current]).url;
-//				}
 				_currentPicture = picture1;
-//				picture1.contentLoader = loader;
 			}
 			
 			if(instance == picture2) {
 				_outsidePicture = picture2;
 				_outsidePicture.visible = false;
-//				picture2.contentLoader = loader;
 			}
 			
-			if(instance == leftButton) {
-				leftButton.addEventListener(MouseEvent.CLICK, leftButton_clickHandler);
-			}
-			
-			if(instance == rightButton) {
-				rightButton.addEventListener(MouseEvent.CLICK, rightButton_clickHandler);
-			}
 		}
 		
-		override protected function partRemoved(partName:String, instance: Object) : void {
-			super.partRemoved(partName, instance);
-			
-			if(instance == leftButton) {
-				leftButton.removeEventListener(MouseEvent.CLICK, leftButton_clickHandler);
-			}
-			
-			if(instance == rightButton) {
-				rightButton.removeEventListener(MouseEvent.CLICK, rightButton_clickHandler);
-			}
-		}
-		
-		/**
-		 * Left click: go to privious pic in list, slide to right.
-		 */
-		private function leftButton_clickHandler(event:MouseEvent) : void {
-			slideRight(MODE_PREV);
-		}
-		
-		/**
-		 * Right click: go to next pic in list, slide to left.
-		 */
-		private function rightButton_clickHandler(event:MouseEvent) : void {
-			slideLeft(MODE_NEXT);
-		}
-		
-		private function processMode(mode:int) {
+		private function processMode(mode:int):void {
 			switch(mode) {
 				case MODE_NEXT:
 					next();

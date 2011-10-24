@@ -25,9 +25,15 @@ package ro.calin.component
 	 */
 	public class PictureViewer extends SkinnableContainer
 	{
-		public static const MODE_NEXT:int = 0;
-		public static const MODE_PREV:int = 1;
-		public static const MODE_RAND:int = 2;
+		public static const MODE_NEXT:int 	= 0;
+		public static const MODE_PREV:int 	= 1;
+		public static const MODE_RAND:int 	= 2;
+		public static const MODE_FIRST:int 	= 3;
+		
+		public static const DIR_UP:int 		= 0;
+		public static const DIR_DOWN:int  	= 1;
+		public static const DIR_LEFT:int 	= 2;
+		public static const DIR_RIGHT:int	= 3;
 		
 		/**
 		 * The first picture.
@@ -143,6 +149,8 @@ package ro.calin.component
 		 * Set this set of pictures as the currently displayed model.
 		 */
 		public function setActiveModel(name:String):void {
+			if(_models[name] == null || _currentModel == _models[name].model) return;
+			
 			_currentModel = _models[name].model;
 			picture1.contentLoader = _models[name].cache;
 			picture2.contentLoader = _models[name].cache;
@@ -151,80 +159,81 @@ package ro.calin.component
 		}
 		
 		/**
-		 * 1. Put outside pic in the right side, outside the visible screen.
-		 * 2. Tell animation to move pics on x, from right to left, with an ammount equal to the width.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=-width,0.
+		 * Slide pic to NEXT, PREVIOUS, or RANDOM in this current picture list, 
+		 * in one of the four directions.
 		 */
-		public function slideLeft(mode:int):void {
-			processMode(mode);
-			if(_moveAnim.isPlaying) return;
+		public function slide(direction:int, mode:int):void {
+			if(_currentModel == null || _moveAnim.isPlaying) return;
 			
-			_outsidePicture.x = this.width;
-			_outsidePicture.y = 0;
-			_moveAnim.xBy = -this.width;
+			switch(direction) {
+				case DIR_UP:
+					_outsidePicture.x = 0;
+					_outsidePicture.y = this.height;
+					_moveAnim.yBy = -this.height;
+					break;
+				case DIR_DOWN:
+					_outsidePicture.x = 0;
+					_outsidePicture.y = -this.height;
+					_moveAnim.yBy = this.height;
+					break;
+				case DIR_LEFT:
+					_outsidePicture.x = this.width;
+					_outsidePicture.y = 0;
+					_moveAnim.xBy = -this.width;
+					break;
+				case DIR_RIGHT:
+					_outsidePicture.x = -this.width;
+					_outsidePicture.y = 0;
+					_moveAnim.xBy = this.width;
+					break;
+			}
+			
+			switch(mode) {
+				case MODE_NEXT:
+					_currentPicIndex++;
+					if(_currentPicIndex == _currentModel.pictures.length) {
+						_currentPicIndex = 0;
+					}
+					break;
+				case MODE_PREV:
+					_currentPicIndex--;
+					if(_currentPicIndex == -1) {
+						_currentPicIndex = _currentModel.pictures.length - 1;
+					}
+					break;
+				case MODE_RAND:
+					_currentPicIndex = Math.floor(Math.random() * _currentModel.pictures.length);
+					break;
+				case MODE_FIRST:
+					_currentPicIndex = 0;
+					break;
+			}
+			
 			performSlide();
 		}
 		
 		/**
-		 * 1. Put outside pic in the left side, outside the visible screen.
-		 * 2. Tell animation to move pics on x, from left to right, with an ammount equal to the width.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=width,0.
+		 * Set the new url for the outside image.
+		 * Set the targets(which are the same all the time).
+		 * Start it.
+		 * Current pic becomes outside pic and viceversa.
 		 */
-		public function slideRight(mode:int):void {
-			processMode(mode);
+		private function performSlide():void {
+			_outsidePicture.visible = true;
 			
-			if(_moveAnim.isPlaying) return;
+			_outsidePicture.source = PictureModel(_currentModel.pictures[_currentPicIndex]).url;
+			_moveAnim.targets = [_currentPicture, _outsidePicture];
+			_moveAnim.play();
 			
-			_outsidePicture.x = -this.width;
-			_outsidePicture.y = 0;
-			_moveAnim.xBy = this.width;
-			performSlide();
+			//switch between current and outside.
+			var temp:* = _currentPicture;
+			_currentPicture = _outsidePicture;
+			_outsidePicture = temp;
+			
+			//reset anim
+			_moveAnim.xBy = 0;
+			_moveAnim.yBy = 0;
 		}
-		
-		/**
-		 * 1. Put outside pic in the bottom side, outside the visible screen.
-		 * 2. Tell animation to move pics on y, from bottom to top, with an ammount equal to the height.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=-height,0.
-		 */
-		public function slideUp(mode:int):void {
-			processMode(mode);
-			
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = 0;
-			_outsidePicture.y = this.height;
-			_moveAnim.yBy = -this.height;
-			performSlide();
-		}
-		
-		/**
-		 * 1. Put outside pic in the top side, outside the visible screen.
-		 * 2. Tell animation to move pics on y, from top to bottom, with an ammount equal to the height.
-		 * 3. Start the animation.
-		 * 
-		 * In the end, the outside pic will get to x,y=0,0 and the inside pic
-		 * will get to x,y=height,0.
-		 */
-		public function slideDown(mode:int):void {
-			processMode(mode);
-			
-			if(_moveAnim.isPlaying) return;
-			
-			_outsidePicture.x = 0;
-			_outsidePicture.y = -this.height;
-			_moveAnim.yBy = this.height;
-			performSlide();
-		}
-		
 		
 		/**
 		 * Starts loading the 
@@ -294,63 +303,6 @@ package ro.calin.component
 				_outsidePicture = picture2;
 				_outsidePicture.visible = false;
 			}
-			
-		}
-		
-		private function processMode(mode:int):void {
-			switch(mode) {
-				case MODE_NEXT:
-					next();
-					break;
-				case MODE_PREV:
-					previous();
-					break;
-				case MODE_RAND:
-					randomize();
-					break;
-			}
-		}
-		
-		private function next():void {
-			_currentPicIndex--;
-			if(_currentPicIndex == _currentModel.pictures.length) {
-				_currentPicIndex = 0;
-			}
-		}
-		
-		private function previous():void {
-			_currentPicIndex--;
-			if(_currentPicIndex == -1) {
-				_currentPicIndex = _currentModel.pictures.length - 1;
-			}
-		}
-		
-		private function randomize():void {
-			_currentPicIndex = Math.floor(Math.random() * _currentModel.pictures.length);
-		}
-		
-		
-		/**
-		 * Set the new url for the outside image.
-		 * Set the targets(which are the same all the time).
-		 * Start it.
-		 * Current pic becomes outside pic and viceversa.
-		 */
-		private function performSlide():void {
-			_outsidePicture.visible = true;
-			
-			_outsidePicture.source = PictureModel(_currentModel.pictures[_currentPicIndex]).url;
-			_moveAnim.targets = [_currentPicture, _outsidePicture];
-			_moveAnim.play();
-			
-			//switch between current and outside.
-			var temp:* = _currentPicture;
-			_currentPicture = _outsidePicture;
-			_outsidePicture = temp;
-			
-			//reset anim
-			_moveAnim.xBy = 0;
-			_moveAnim.yBy = 0;
 		}
 	}
 }

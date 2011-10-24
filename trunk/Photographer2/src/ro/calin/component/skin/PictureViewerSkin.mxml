@@ -28,9 +28,4 @@
 			<s:SolidColor color="green" />
 		</s:fill>
 	</s:Rect>
-	
-	<s:Button id="leftButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
-			  verticalCenter="0" left="-12" visible="{hostComponent.hasLeftRight}" buttonMode="true" rotation="180"/>
-	<s:Button id="rightButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
-			  verticalCenter="0" right="-12" visible="{hostComponent.hasLeftRight}" buttonMode="true"/>
 </s:Skin>

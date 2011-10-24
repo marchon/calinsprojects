@@ -91,7 +91,10 @@
 				converter.convertToObject(configXml, config);
 				
 				menu.model = config.menu;
-				setPictureViewerRandomWallpaper(false);
+				
+				picViewer.registerModel(WALLPAPERS, config.picturesets[WALLPAPERS], true);
+				picViewer.setActiveModel(WALLPAPERS);
+				picViewer.slide(PictureViewer.DIR_DOWN ,PictureViewer.MODE_RAND);
 			}
 			
 			private function toggleFullScreen():void {
@@ -150,15 +153,22 @@
 					case MENU_ACTION_SLIDE:
 						switch(action[1]) {
 							case MENU_ACTION_SLIDE_UP:
-								setPictureViewerRandomWallpaper(false);
+								picViewer.setActiveModel(WALLPAPERS);
+								picViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
 								currentState = "menuTop";
 								break;
 							case MENU_ACTION_SLIDE_DOWN:
-								setPictureViewerRandomWallpaper(true);
+								picViewer.setActiveModel(WALLPAPERS);
+								picViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
 								currentState = "menuBottom";
 								break;
 							case MENU_ACTION_SLIDE_MIDDLE:
-								setPictureViewerRandomWallpaper(currentState == "menuTop");
+								picViewer.setActiveModel(WALLPAPERS);
+								if(currentState == "menuTop") {
+									picViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+								} else {
+									picViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
+								}
 								currentState = "menuMiddle";
 								break;
 						}
@@ -172,7 +182,8 @@
 						textDisplay = new Label();
 						
 						var textModel:TextModel = config.textset[action[1]] as TextModel;
-						setPictureViewerWallpaper(textModel.bgUrl);
+						//TODO: see here
+//						setPictureViewerWallpaper(textModel.bgUrl);
 						
 						textDisplay.text = textModel.content;
 						
@@ -340,7 +351,11 @@
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
 				var picset:String = event.subcategory.extra as String;
-				picViewer.model = config.picturesets[picset];
+//				picViewer.model = config.picturesets[picset];
+				
+				picViewer.registerModel("CURRENT_PICS", config.picturesets[picset], true);
+				picViewer.setActiveModel("CURRENT_PICS");
+				picViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
 				
 				catViewer.visible = false;
 			}
@@ -348,19 +363,12 @@
 			/**
 			 * Randomizes over wallpaper pictureset.
 			 */
-			private function setPictureViewerRandomWallpaper(slideDown:Boolean):void {
-				var walls:Array = (config.picturesets[WALLPAPERS] as PictureViewerModel).pictures;
-				var rand:int = Math.floor(Math.random() * walls.length);
-				wallpaperModel.pictures[0] = walls[rand];
-				picViewer.slideDownOnModelChange = slideDown;
-				picViewer.model = wallpaperModel;
-			}
 			
-			private function setPictureViewerWallpaper(url:String):void {
-				PictureModel(wallpaperModel.pictures[0]).url = url;
-				picViewer.slideDownOnModelChange = true;
-				picViewer.model = wallpaperModel;
-			}
+//			private function setPictureViewerWallpaper(url:String):void {
+//				PictureModel(wallpaperModel.pictures[0]).url = url;
+//				picViewer.slideDownOnModelChange = true;
+//				picViewer.model = wallpaperModel;
+//			}
 
 		]]>
 	</fx:Script>
@@ -438,5 +446,10 @@
 	
 	<component:CategoryViewer id="catViewer" alpha="0.0" bottom="{menu.height}"
 							  categItemClick="catViewer_categItemClickHandler(event)" visible="{catViewer.alpha > 0.0}"/>
+	
+	<s:Button id="leftButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
+			  verticalCenter="0" left="-12" buttonMode="true" rotation="180"/>
+	<s:Button id="rightButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
+			  verticalCenter="0" right="-12" buttonMode="true"/>
 	
 </s:Application>

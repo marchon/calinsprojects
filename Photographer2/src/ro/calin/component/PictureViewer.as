@@ -4,6 +4,7 @@ package ro.calin.component
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.utils.Dictionary;
+	import flash.utils.setTimeout;
 	
 	import mx.binding.utils.BindingUtils;
 	import mx.controls.Alert;
@@ -124,15 +125,19 @@ package ro.calin.component
 		 * Registers a list of pictures, optionally preloading them. 
 		 */
 		public function registerModel(name:String, value:PictureViewerModel, preload:Boolean):void {
+			//do not register if already registered
+			if(_models[name] != null && _models[name].model == value) return;
+			
 			//create or reuse a cache loader
 			var cache:ContentCache = _models[name] != null? _models[name].cache : new ContentCache();
-			cache.removeAllCacheEntries();
 			
 			//save the values
 			_models[name] = {
 				cache: cache,
 				model: value
 			};
+			
+			cache.removeAllCacheEntries();
 			
 			//preload if necesarry
 			if(preload) load(cache, value);
@@ -236,33 +241,45 @@ package ro.calin.component
 		}
 		
 		/**
-		 * Starts loading the 
+		 * Starts loading the pictures in the model with the specified content loader.
 		 */
-		private function load(cacheLoader:ContentCache, model:PictureViewerModel):void {			
+		private function load(cacheLoader:ContentCache, model:PictureViewerModel):void {
+			if(loadingInProgress) {
+				//schedule for later, do not interupt the current loading
+				setTimeout(load, 400, cacheLoader, model);
+				return;
+			}
+			
+			loadingInProgress = true;
+			
 			_loadingMap = new Dictionary();
 			_unloadedPicNb = model.pictures.length;
 			
-			loadingInProgress = true;
 			for(var i:int = 0; i < model.pictures.length; i++) {
 				var cr:ContentRequest = cacheLoader.load(PictureModel(model.pictures[i]).url);
 				if(!cr.complete) {
-					cr.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
-						progress(event);
-					});
-					cr.addEventListener(Event.COMPLETE, function(event:Event):void {
-						complete(event);
-					});
+					cr.addEventListener(ProgressEvent.PROGRESS, progress);
+					cr.addEventListener(Event.COMPLETE, complete);
 				}
 				//need to hold a reference to cr, else the callbacks are not called
 				_loadingMap[cr] = {bytesLoaded : 0, bytesTotal : 1024 * 1024}; //assume a pic has 1 mb 
 			}
+			
+			compute();
 		}
 		
+		/**
+		 * Called with each progress event. 
+		 */
 		private function progress(event:ProgressEvent):void {
 			_loadingMap[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
 			
 			compute();
 		}
+		
+		/**
+		 * Called with each complete event.
+		 */
 		private function complete(event:Event):void {
 			delete _loadingMap[event.target];
 			
@@ -270,12 +287,16 @@ package ro.calin.component
 			
 			_unloadedPicNb--;
 			
-			if(_unloadedPicNb == 0) {
+			if(_unloadedPicNb == 0) { 
+				//all pics in the set are loaded
 				loadingInProgress = false;
-				percentLoaded = 0.0;
+				_loadingMap = null;
 			}
 		}
 		
+		/**
+		 * Called to update the progress for loading.
+		 */
 		private function compute():void {
 			var loaded:Number = 0;
 			var total:Number = 0;

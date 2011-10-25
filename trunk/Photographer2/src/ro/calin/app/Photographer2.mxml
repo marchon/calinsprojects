@@ -102,10 +102,8 @@
 				try {
 					if (stage.displayState == StageDisplayState.FULL_SCREEN) {
 						stage.displayState = StageDisplayState.NORMAL;
-						fs.label = "Fullscreen";
 					} else {
 						stage.displayState = StageDisplayState.FULL_SCREEN;
-						fs.label = "Windowed";
 					}
 				} catch (any:*) {
 					//ignore
@@ -342,7 +340,10 @@
 				processMenuAction(action);
 				
 				catViewer.visible = false;
+				showButtons = false;
 			}
+			
+			[Bindable] private var showButtons:Boolean = false;
 
 			/**
 			 * Called when clicked on subactegory.
@@ -351,13 +352,14 @@
 			protected function catViewer_categItemClickHandler(event:CategoryEvent):void
 			{
 				var picset:String = event.subcategory.extra as String;
-//				picViewer.model = config.picturesets[picset];
 				
 				picViewer.registerModel("CURRENT_PICS", config.picturesets[picset], true);
 				picViewer.setActiveModel("CURRENT_PICS");
 				picViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
 				
-				catViewer.visible = false;
+				showButtons = config.picturesets[picset].pictures.length > 1;
+				
+//				catViewer.visible = false;
 			}
 		
 			/**
@@ -369,6 +371,18 @@
 //				picViewer.slideDownOnModelChange = true;
 //				picViewer.model = wallpaperModel;
 //			}
+
+
+			protected function leftButton_clickHandler(event:MouseEvent):void
+			{
+				picViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+			}
+
+
+			protected function rightButton_clickHandler(event:MouseEvent):void
+			{
+				picViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+			}
 
 		]]>
 	</fx:Script>
@@ -435,12 +449,7 @@
 					width="100%" y.menuMiddle="{this.height * .7}" 
 					y.menuTop="0" y.menuBottom="{this.height - menu.height}">
 		<component:customComponent>
-			<component:MenuButton click="toggleFullScreen();" height="{menu.height}" buttonMode="true" width="80">
-				<component:entry>
-					<model:MenuEntryModel id="fs" label="Fullscreen" color="0xECD672" fontSize="12" fontColor="0xbbbbbb" 
-										   animToBottom="true"/>
-				</component:entry>
-			</component:MenuButton>
+			<s:Button color="0xECD672" click="toggleFullScreen();" />
 		</component:customComponent>
 	</component:Menu>
 	
@@ -448,8 +457,8 @@
 							  categItemClick="catViewer_categItemClickHandler(event)" visible="{catViewer.alpha > 0.0}"/>
 	
 	<s:Button id="leftButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
-			  verticalCenter="0" left="-12" buttonMode="true" rotation="180"/>
+			  verticalCenter="0" left="-12" buttonMode="true" rotation="180" visible="{showButtons}" click="leftButton_clickHandler(event)"/>
 	<s:Button id="rightButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
-			  verticalCenter="0" right="-12" buttonMode="true"/>
+			  verticalCenter="0" right="-12" buttonMode="true" visible="{showButtons}" click="rightButton_clickHandler(event)"/>
 	
 </s:Application>

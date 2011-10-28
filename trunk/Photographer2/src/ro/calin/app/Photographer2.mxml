@@ -34,6 +34,7 @@
 			 * references to pictures to be shown when not on gallery.
 			 */
 			private static const WALLPAPERS:String = "WALLPAPERS";
+			private static const PICS:String = "PICS";
 			
 			private static const MENU_ACTION_CLICK:String = "click";
 			private static const MENU_ACTION_HOVER:String = "hover";
@@ -353,24 +354,12 @@
 			{
 				var picset:String = event.subcategory.extra as String;
 				
-				picViewer.registerModel("CURRENT_PICS", config.picturesets[picset], true);
-				picViewer.setActiveModel("CURRENT_PICS");
+				picViewer.registerModel(PICS, config.picturesets[picset], true);
+				picViewer.setActiveModel(PICS);
 				picViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
 				
 				showButtons = config.picturesets[picset].pictures.length > 1;
-				
-//				catViewer.visible = false;
 			}
-		
-			/**
-			 * Randomizes over wallpaper pictureset.
-			 */
-			
-//			private function setPictureViewerWallpaper(url:String):void {
-//				PictureModel(wallpaperModel.pictures[0]).url = url;
-//				picViewer.slideDownOnModelChange = true;
-//				picViewer.model = wallpaperModel;
-//			}
 
 
 			protected function leftButton_clickHandler(event:MouseEvent):void
@@ -449,7 +438,11 @@
 					width="100%" y.menuMiddle="{this.height * .7}" 
 					y.menuTop="0" y.menuBottom="{this.height - menu.height}">
 		<component:customComponent>
-			<s:Button color="0xECD672" click="toggleFullScreen();" />
+			<s:Group>
+				<s:Image smooth="true" scaleMode="stretch" id="tglFs" source="@Embed(source='assets/fs1.png')" buttonMode="true" 
+						 click="toggleFullScreen();" mouseOver="tglFs.width += 3;tglFs.height += 3"
+						 mouseOut="tglFs.width -= 3;tglFs.height -= 3" verticalCenter="0" horizontalCenter="0"/>	
+			</s:Group>
 		</component:customComponent>
 	</component:Menu>
 	

@@ -178,7 +178,7 @@
 						break;
 					case MENU_ACTION_TEXT:
 						//create a new one, otherwise the props would not get resetted
-						textDisplay = new Label();
+						var textDisplay:Label = new Label();
 						
 						var textModel:TextModel = config.textset[action[1]] as TextModel;
 						//TODO: see here
@@ -400,17 +400,6 @@
 		
 		<!-- Store the model in memory. -->
 		<appmodel:Config id="config" />
-		
-		<!-- Reference to a label used to display text -->
-		<s:Label id="textDisplay" />
-		
-		<!-- Modified each time to contain only one pic, the current wallpaper. -->
-		<model:PictureViewerModel id="wallpaperModel">
-			<model:pictures>
-				<fx:Array>
-				</fx:Array>
-			</model:pictures>
-		</model:PictureViewerModel>
 		
 		<s:Fade id="categFadeAnimation" duration="1000" target="{catViewer}" alphaFrom="1.0" alphaTo="0.0"/>
 	</fx:Declarations>

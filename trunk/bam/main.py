@@ -14,17 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from controller.main_handler import MainHandler
-from controller.upload_handler import UploadHandler
-
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
+
+from controller.main_handler import MainHandler
+from controller.transaction_handler import TransactionHandler
+from controller.category_handler import CategoryHandler
+from controller.upload_handler import UploadHandler
 
 def main():
 	application = webapp.WSGIApplication(
 		[
 			('/', MainHandler),
-			('/upload', UploadHandler),
+			('/transaction', TransactionHandler),
+			('/category', CategoryHandler),
+			('/upload', UploadHandler)
 		], debug=True)
 	util.run_wsgi_app(application)
 

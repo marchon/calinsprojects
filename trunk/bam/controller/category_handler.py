@@ -3,7 +3,7 @@ from google.appengine.ext import db
 from model.transaction import Transaction
 from model.transaction import Category
 from google.appengine.api import users
-from util.json import json
+from util.json_helper import json_response
 from util.message_codes import *
 
 class CategoryHandler(webapp.RequestHandler):
@@ -11,7 +11,7 @@ class CategoryHandler(webapp.RequestHandler):
 		user = users.get_current_user()
 		
 		if not user:
-			self.response.out.write(json(NOT_LOGGED_IN))
+			self.response.out.write(json_response(NOT_LOGGED_IN))
 			return
 			
 		op = self.request.get('op')
@@ -21,7 +21,7 @@ class CategoryHandler(webapp.RequestHandler):
 			rule = self.request.get('rule')
 			
 			if name == None or name == '':
-				self.response.out.write(json(NAME_NOT_EMPTY))
+				self.response.out.write(json_response(NAME_NOT_EMPTY))
 				return
 			
 			category = Category(
@@ -30,31 +30,51 @@ class CategoryHandler(webapp.RequestHandler):
 				rule = rule
 			)
 			category.put()
-			self.response.out.write(json(CAT_CREATED))
+			self.response.out.write(json_response(CAT_CREATED))
 		elif op == 'upd':
-			key = self.request.get('key')
+			id = self.request.get('id')
 			name = self.request.get('name')
 			rule = self.request.get('rule')
 			
-			if key == None or key == '':
-				self.response.out.write(json(KEY_NOT_EMPTY))
+			if id == None or id == '':
+				self.response.out.write(json_response(ID_NOT_EMPTY))
 				return
 			
+			key = db.Key.from_path('Category', id)
 			category = db.get(key)
+			
 			if name != None and name != '': category.name = name
 			if rule != None and rule != '': category.rule = rule
 			
 			category.put()
 			
-			self.response.out.write(json(CAT_UPDATED))
+			self.response.out.write(json_response(CAT_UPDATED))
 		elif op == 'del':
-			key = self.request.get('key')
-			if key == None or key == '':
-				self.response.out.write(json(KEY_NOT_EMPTY))
-				return			
+			id = self.request.get('id')
+			if id == None or id == '':
+				self.response.out.write(json_response(ID_NOT_EMPTY))
+				return		
+				
+			key = db.Key.from_path('Category', id)
 			db.delete(key)
-			self.response.out.write(json(CAT_DELETED))
+			
+			self.response.out.write(json_response(CAT_DELETED))
 		elif op == 'list':
-			pass
+			offset = int(self.request.get('offset', 0))
+			limit = int(self.request.get('limit', 10))
+			
+			q = Category.all()
+			#filter
+			
+			#fetch an extra one to see if new pages have sense to be requested
+			r = q.fetch(limit=limit + 1, offset=offset)
+			
+			l = len(r)
+			if l <= limit: has_next = False
+			else: 
+				has_next = True
+				r.pop()
+			
+			self.response.out.write(json_response(CAT_SELECTED, r, has_next))
 		else:
-			self.response.out.write(json(NOT_SUPPORTED))
+			self.response.out.write(json_response(NOT_SUPPORTED))

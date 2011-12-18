@@ -1,5 +1,4 @@
 from google.appengine.ext import db
-import json
 
 class Category(db.Model):
 	account = db.UserProperty()

@@ -1,18 +1,27 @@
 //http://blogs.jetbrains.com/idea/2010/11/javascript-libraries-in-intellij-idea-10/
 
-Jaml.register('cat', function(cat){
-    div(
-        h1(cat.name),
-        p(cat.rule)
-    )
-});
-
+//http://code.google.com/apis/chart/
 $(document).ready(function() {
     $("#main").accordion();
 
+    var catnb = 0;
+    $('#create').click(function(){
+        catnb ++;
+        $.get('/category',
+            {op: "add", name: "cat" + catnb, rule: "rule" + catnb},
+            function(data) {
+                alert(data.message);
+            },
+            'json'
+        ).error(function(){
+                alert('Check server!');
+        });
+    });
+
+    var tmpl = $('#categs').compile(false);
     $("#test").click(function(){
         $.get('/category?op=list', function(data) {
-            $("#testcontent").html(Jaml.render('cat', data.content));
+            $('#categs').autoRender({'categ': data.content}, tmpl);
         }, 'json');
     });
 });

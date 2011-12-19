@@ -11,9 +11,17 @@
 <div id="main">
 	<h3><a href="#">Transaction list</a></h3>
 	<div>
+        <input type="button" id="create" value="create it"/>
         <input type="button" id="test" value="get it"/>
-		<p id="testcontent">
-		</p>
+		<ul id="categs">
+            <li class="categ">
+                <span class="id"></span>
+                <span class="name"></span>
+                <span class="rule"></span>
+            </li>
+		</ul>
+
+        <div id="result"></div>
 	</div>
 	<h3><a href="#">Create/upload transactions</a></h3>
 	<div>
@@ -58,7 +66,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-<script type="text/javascript" src="static/js/jaml.js"></script>
+<script type="text/javascript" src="static/js/pure_min.js"></script>
 <script type="text/javascript" src="static/js/scripts.js"></script>
 </body>
 </html>

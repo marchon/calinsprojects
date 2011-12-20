@@ -21,7 +21,7 @@ $(document).ready(function() {
     var tmpl = $('#categs').compile(false);
     $("#test").click(function(){
         $.get('/category?op=list', function(data) {
-            $('#categs').autoRender({'categ': data.content}, tmpl);
+            $('#categs').autoRender({'categ': data.content.result}, tmpl);
         }, 'json');
     });
 });

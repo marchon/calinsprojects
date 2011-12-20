@@ -19,7 +19,7 @@ class CategoryHandler(webapp.RequestHandler):
             name = self.request.get('name')
             rule = self.request.get('rule')
 
-            if name == None or name == '':
+            if not name:
                 self.response.out.write(json_response(NAME_NOT_EMPTY))
                 return
 
@@ -35,22 +35,22 @@ class CategoryHandler(webapp.RequestHandler):
             name = self.request.get('name')
             rule = self.request.get('rule')
 
-            if id == None or id == '':
+            if not id:
                 self.response.out.write(json_response(ID_NOT_EMPTY))
                 return
 
             key = db.Key.from_path('Category', id)
             category = db.get(key)
 
-            if name != None and name != '': category.name = name
-            if rule != None and rule != '': category.rule = rule
+            if not name: category.name = name
+            if not rule: category.rule = rule
 
             category.put()
 
             self.response.out.write(json_response(CAT_UPDATED))
         elif op == 'del':
             id = self.request.get('id')
-            if id == None or id == '':
+            if not id:
                 self.response.out.write(json_response(ID_NOT_EMPTY))
                 return
 
@@ -63,6 +63,7 @@ class CategoryHandler(webapp.RequestHandler):
             limit = int(self.request.get('limit', 10))
 
             q = Category.all()
+            q.filter('account =', user)
             #filter
 
             #fetch an extra one to see if new pages have sense to be requested
@@ -74,6 +75,9 @@ class CategoryHandler(webapp.RequestHandler):
                 has_next = True
                 r.pop()
 
-            self.response.out.write(json_response(CAT_SELECTED, r, has_next))
+            self.response.out.write(json_response(CAT_SELECTED, {
+                        'result': r,
+                        'hasNext': has_next
+            }))
         else:
             self.response.out.write(json_response(NOT_SUPPORTED))

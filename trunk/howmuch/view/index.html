@@ -13,24 +13,20 @@
 	<div>
         <input type="button" id="create" value="create it"/>
         <input type="button" id="test" value="get it"/>
-		<ul id="categs">
-            <li class="categ">
-                <span class="id"></span>
-                <span class="name"></span>
-                <span class="rule"></span>
-            </li>
-		</ul>
-
-        <div id="result"></div>
+            <ul id="categs">
+                <li>
+                    <span class="id"></span>
+                    <span class="name"></span>
+                    <span class="rule"></span>
+                </li>
+            </ul>
 	</div>
 	<h3><a href="#">Create/upload transactions</a></h3>
 	<div>
-		<p>
-		<form method="post" action="/upload" enctype="multipart/form-data">
-			<input type="file" name="data" />
-			<input type="submit" />
-		</form>
-		</p>
+        <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="data" />
+            <input type="submit" />
+        </form>
 	</div>
 	<h3><a href="#">Categories</a></h3>
 	<div>

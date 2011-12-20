@@ -17,11 +17,21 @@ $(document).ready(function() {
                 alert('Check server!');
         });
     });
+    var result = $('#categs');
 
-    var tmpl = $('#categs').compile(false);
+    var tmpl = result.compile({
+        'li' : {
+            'child <- result' : {
+                '.id': 'child.id',
+                '.name': 'child.name',
+                '.rule': 'child.rule'
+            }
+        }
+    });
     $("#test").click(function(){
         $.get('/category?op=list', function(data) {
-            $('#categs').autoRender({'categ': data.content.result}, tmpl);
+            result = result.render(data.content, tmpl);
+//            result.html(tmpl(data.content));
         }, 'json');
     });
 });

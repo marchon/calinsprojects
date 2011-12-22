@@ -1,7 +1,7 @@
 from google.appengine.ext import webapp
 import csv
 import datetime
-from model.transaction import Transaction
+from model.model import Transaction
 from google.appengine.api import users
 
 months = {

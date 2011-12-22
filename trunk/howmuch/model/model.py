@@ -1,3 +1,4 @@
+from google.appengine.api import users
 from google.appengine.ext import db
 
 class Category(db.Model):
@@ -6,12 +7,26 @@ class Category(db.Model):
     name = db.StringProperty()
     rule = db.StringProperty()
 
-    def dict(self):
+    def to_dict(self):
         return {
-            'id': self.key().id_or_name(),
+            'key': str(self.key()),
             'name': self.name,
             'rule': self.rule
         }
+
+    def from_dict(cat):
+        if cat.has_key('key'): # get from datastore
+            category = db.get(cat['key'])
+            if cat['name']: category.name = cat['name']
+            if cat['rule']: category.rule = cat['rule']
+        else:         # create
+            category = Category()
+            category.account = users.get_current_user()
+            category.name = cat['name']
+            category.rule = cat['rule']
+
+        return category
+    from_dict = staticmethod(from_dict)
 
 class Transaction(db.Model):
     account = db.UserProperty()
@@ -36,5 +51,9 @@ class Transaction(db.Model):
             #'category': self.category.id_or_name() #send the id??
         }
 
-#db.put([[]e1, e2, e3]) batch put is faster
-#key().id()
+
+
+entities = {
+    "Category": Category,
+    "Transaction": Transaction
+}

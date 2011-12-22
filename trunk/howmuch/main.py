@@ -17,15 +17,13 @@
 from google.appengine.ext import webapp
 
 from controller.main_handler import MainHandler
-from controller.transaction_handler import TransactionHandler
-from controller.category_handler import CategoryHandler
+from controller.crud_handler import  CrudHandler
 from controller.upload_handler import UploadHandler
 
 
 app = webapp.WSGIApplication(
     [
         ('/', MainHandler),
-        ('/transaction', TransactionHandler),
-        ('/category', CategoryHandler),
+        ('/crud', CrudHandler),
         ('/upload', UploadHandler)
     ], debug=True)

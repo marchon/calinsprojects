@@ -13,8 +13,8 @@ def json_response(msg_id, content=None):
 def object_to_json(content):
     if content is None: return None
 
-    if hasattr(content, 'dict'):
-        return content.dict()
+    if hasattr(content, 'to_dict'):
+        return content.to_dict()
 
     if type(content) is list:
         lst = []

@@ -1,14 +1,49 @@
 from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
-from model.model import entities
-from util.json_helper import json_response
-from util.message_codes import *
+from google.appengine.ext.db import TransactionFailedError, BadKeyError
+from model.model import Category, Transaction
 import json
+
+
+crud_entities = {
+    'Category': Category,
+    'Transaction': Transaction
+}
+
+#TODO: parameters
+def json_response(msg_id, content=None):
+    return json.dumps({
+        'type': m[msg_id][0],
+        'message': m[msg_id][1],
+        'content': content,
+        })
+
+NOT_LOGGED_IN = 1
+BAD_REQUEST = 2
+ENT_NOT_SUPPORTED = 3
+OP_NOT_SUPPORTED = 4
+OP_END_SUCCESS = 5
+OP_BAD_VALUE = 6
+OP_DS_FAILED = 7
+
+SUC = 'success'
+ERR = 'error'
+FAT = 'fatal'
+
+m = {
+    NOT_LOGGED_IN: [ERR, 'You have to be logged in to perform this operation.'],
+    BAD_REQUEST: [ERR, 'The request is not well formatted.'],
+    ENT_NOT_SUPPORTED: [ERR, 'This entity is not supported.'],
+    OP_NOT_SUPPORTED: [ERR, 'This operation is not supported.'],
+    OP_END_SUCCESS: [SUC, 'Operation has been performed with success.'],
+    OP_BAD_VALUE: [ERR, 'Bad value: {1}'],
+    OP_DS_FAILED: [FAT, 'Failed to save to datastore.']
+}
 
 class CrudHandler(webapp.RequestHandler):
     """
-        The request has the following json format:
+        REQUEST:
 
         {
             "ent" : entity_name
@@ -20,10 +55,17 @@ class CrudHandler(webapp.RequestHandler):
         del_params = [key1, key2, ...]
         lst_params = {"offset" : ..., "limit": ..., "filter":{}}
 
+
+        RESPONSE:
+
+        {
+            "code": "success" | "error"
+            "message" : sone_string
+            "content" : null | {"hasNext": true | false, [selected_entities]} - just for "lst" op
+        }
     """
+
     def post(self):
-        #TODO: error handling
-        #TODO: better use unique keys then ids
         #TODO: security???
         user = users.get_current_user()
 
@@ -32,41 +74,74 @@ class CrudHandler(webapp.RequestHandler):
             return
 
         j_str = self.request.get('json')
-        json_r = json.loads(j_str)
+
+        try:
+            json_r = json.loads(j_str)
+        except ValueError:
+            self.response.out.write(json_response(BAD_REQUEST))
+            return
+
+        ent = json_r['ent']
         op = json_r['op']
-        entity = entities[json_r['ent']]
+        params = json_r['params']
 
+        if not ent or not op or not params:
+            self.response.out.write(json_response(BAD_REQUEST))
+            return
+
+        try:
+            ent = crud_entities[ent]
+        except KeyError:
+            self.response.out.write(json_response(ENT_NOT_SUPPORTED))
+            return
+
+        ## execute operation ##
         if op == 'put':
-            ents = []
+            try:
+                entities = []
+                for cat_j in params:
+                    entities.append(ent.from_dict(cat_j))
+                db.put(entities)
 
-            for cat_j in json_r['params']:
-                ents.append(entity.from_dict(cat_j))
-            db.put(ents)
+                self.response.out.write(json_response(OP_END_SUCCESS))
+            except ValueError:
+                self.response.out.write(json_response(OP_BAD_VALUE))
+            except TransactionFailedError:
+                self.response.out.write(json_response(OP_DS_FAILED))
 
-            self.response.out.write(json_response(CAT_CREATED))
         elif op == 'del':
-            db.delete(json_r['params'])
-            self.response.out.write(json_response(CAT_DELETED))
-        elif op == 'lst':
-            offset = json_r['params']['offset']
-            limit = json_r['params']['limit']
+            try:
+                db.delete(params)
+                self.response.out.write(json_response(OP_END_SUCCESS))
+            except BadKeyError:
+                self.response.out.write(json_response(OP_BAD_VALUE))
+            except TransactionFailedError:
+                self.response.out.write(json_response(OP_DS_FAILED))
 
-            q = entity.all()
-            q.filter('account =', user)
+        elif op == 'lst':
+            offset = params['offset']
+            limit = params['limit']
+            #            filter = params['filter']
+
+            q = ent.all_query()
             #filter
 
             #fetch an extra one to see if new pages have sense to be requested
-            r = q.fetch(limit=limit + 1, offset=offset)
+            rs = q.fetch(limit=limit + 1, offset=offset)
 
-            l = len(r)
+            l = len(rs)
             if l <= limit: has_next = False
             else:
                 has_next = True
-                r.pop()
+                rs.pop()
 
-            self.response.out.write(json_response(CAT_SELECTED, {
-                        'result': r,
-                        'hasNext': has_next
+            res = []
+            for e in rs:
+                res.append(ent.to_dict(e))
+
+            self.response.out.write(json_response(OP_END_SUCCESS, {
+                'result': res,
+                'hasNext': has_next
             }))
         else:
-            self.response.out.write(json_response(NOT_SUPPORTED))
+            self.response.out.write(json_response(ENT_NOT_SUPPORTED))

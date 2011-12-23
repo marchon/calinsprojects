@@ -1,38 +1,6 @@
 //http://code.google.com/apis/chart/
+//http://pinchzoom.com/contact/
 $(document).ready(function() {
-//    var catnb = 0;
-//    $('#create').click(function(){
-//        catnb ++;
-//        $.get('/category',
-//            {op: "add", name: "cat" + catnb, rule: "rule" + catnb},
-//            function(data) {
-//                alert(data.message);
-//            },
-//            'json'
-//        ).error(function(){
-//                alert('Check server!');
-//        });
-//    });
-//    var result = $('#categs');
-//
-//    var tmpl = result.compile({
-//        'li' : {
-//            'child <- result' : {
-//                '.id': 'child.id',
-//                '.name': 'child.name',
-//                '.rule': 'child.rule'
-//            }
-//        }
-//    });
-//    $("#test").click(function(){
-//        $.get('/category?op=list', function(data) {
-//            result = result.render(data.content, tmpl);
-////            result.html(tmpl(data.content));
-//        }, 'json');
-//    });
-
-    //add 2 cats
-    //$.post('crud', {json: '{"ent":"Category", "op":"put", "params": [{"name":"cat1", "rule":"rule1"}, {"name":"cat2", "rule":"rule2"}]}'})
 
     //SECTIONS
     var content = {

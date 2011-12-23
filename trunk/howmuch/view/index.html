@@ -8,60 +8,53 @@
 <body>
 
 <a href="{{logout}}">Logout</a>
-<div id="main">
-	<h3><a href="#">Transaction list</a></h3>
-	<div>
-        <input type="button" id="create" value="create it"/>
-        <input type="button" id="test" value="get it"/>
-            <ul id="categs">
-                <li>
-                    <span class="id"></span>
-                    <span class="name"></span>
-                    <span class="rule"></span>
-                </li>
-            </ul>
-	</div>
-	<h3><a href="#">Create/upload transactions</a></h3>
-	<div>
-        <form method="post" action="/upload" enctype="multipart/form-data">
-            <input type="file" name="data" />
-            <input type="submit" />
-        </form>
-	</div>
-	<h3><a href="#">Categories</a></h3>
-	<div>
-		<p>
-		Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-		Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-		ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-		lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-		</p>
-		<ul>
-			<li>List item one</li>
-			<li>List item two</li>
-			<li>List item three</li>
-		</ul>
-	</div>
-	<h3><a href="#">Charts</a></h3>
-	<div>
-		<p>
-		Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-		et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-		faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-		mauris vel est.
-		</p>
-		<p>
-		Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-		Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-		inceptos himenaeos.
-		</p>
-	</div>
+
+<ul id="menu">
+    <li><a href="#transactions">Transactions</a></li>
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#upload">Upload data</a></li>
+    <li><a href="#charts">Charts</a></li>
+</ul>
+
+<div id="content">
+    <div id="transactions">
+        Curabitur dolor augue, vehicula quis fermentum id, accumsan in magna. Suspendisse et gravida eros. Integer non elit quam, id placerat ipsum. Duis consectetur orci quis leo hendrerit vel consequat ipsum placerat. Proin vel risus est, non luctus tellus. Phasellus molestie sollicitudin porta. Phasellus lorem nulla, ullamcorper vulputate convallis sit amet, dictum at est. Ut nibh metus, scelerisque nec tristique et, dapibus eget elit. Nam egestas velit ut turpis aliquam feugiat viverra lacus malesuada. Aenean erat velit, aliquam ac scelerisque vitae, consequat non felis. Pellentesque velit tellus, euismod ac suscipit nec, aliquet sit amet nulla.
+    </div>
+    <div id="categories">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="name"></td>
+                    <td class="rule"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                   <td colspan="2">
+                       <a class="prev" href="#">Previous</a>
+                       <a class="next" href="#">Next</a>
+                   </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="upload">
+        Cras laoreet metus eget massa sagittis vitae auctor nibh consectetur. Aenean ullamcorper, risus ut bibendum ullamcorper, orci neque mattis turpis, id malesuada tellus elit ut neque. Pellentesque vehicula felis ultrices erat sodales eu fermentum nibh volutpat. Fusce hendrerit enim ac arcu auctor malesuada. Integer sodales ipsum ipsum. In aliquet, ante euismod venenatis porta, sem nisl molestie mi, at mollis mauris magna a velit. Aenean malesuada facilisis eros non auctor. Sed id tempus augue. Quisque dui dolor, varius bibendum dapibus ut, euismod ac sapien. Vestibulum neque sem, rutrum a convallis in, vestibulum eget dui. Fusce aliquet, nulla a scelerisque convallis, ligula neque condimentum odio, eu ultrices lacus est vitae mauris. Maecenas sed dolor sed nunc pretium pulvinar. Ut eget tincidunt metus. Pellentesque suscipit semper ante, ac aliquam nibh interdum non. Morbi et erat eget ante commodo hendrerit.
+    </div>
+    <div id="charts">
+        Morbi posuere, enim eu imperdiet fermentum, urna purus porta odio, nec lobortis sem ligula quis libero. Proin quis mattis velit. Nunc accumsan magna eu leo gravida ut ultricies neque accumsan. Donec erat enim, pretium et tincidunt ac, auctor non risus. Integer mollis pharetra risus, eu semper eros adipiscing sit amet. Aliquam rhoncus fringilla lorem sit amet interdum. Vivamus gravida sagittis varius. Maecenas viverra magna tortor, ac aliquet metus. Duis diam lectus, tincidunt eu rhoncus vestibulum, consectetur id arcu. Quisque fringilla, eros nec malesuada convallis, risus mi auctor erat, id tincidunt turpis risus nec turpis. Nulla facilisi. Cras vitae lorem ut lorem tincidunt pretium. Mauris eros velit, tincidunt ut accumsan nec, ultricies ut lacus. Nam non posuere est.
+    </div>
 </div>
 
 <!-- http://www.portalzine.de/Horizontal_Accordion_Plugin_2/index.html -->
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 <script type="text/javascript" src="static/js/pure_min.js"></script>
 <script type="text/javascript" src="static/js/scripts.js"></script>
 </body>

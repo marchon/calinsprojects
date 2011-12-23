@@ -26,8 +26,8 @@ $(document).ready(function() {
     var catTemplateFunction = catTemplate.compile({
        'tr' : {
            'cat <- result' : {
-               '.name': 'cat.name',
-               '.rule': 'cat.rule'
+               '.name input@value': 'cat.name',
+               '.rule input@value': 'cat.rule'
            }
        }
     });

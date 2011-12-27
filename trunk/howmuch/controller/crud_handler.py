@@ -2,6 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext.db import TransactionFailedError, BadKeyError
+from model import counter
 from model.model import Category, Transaction
 import json
 
@@ -61,7 +62,7 @@ class CrudHandler(webapp.RequestHandler):
         {
             "code": "success" | "error"
             "message" : sone_string
-            "content" : null | {"hasNext": true | false, [selected_entities]} - just for "lst" op
+            "content" : null | {"total  ": ?, "result": [selected_entities]} - just for "lst" op
         }
     """
 
@@ -77,20 +78,15 @@ class CrudHandler(webapp.RequestHandler):
 
         try:
             json_r = json.loads(j_str)
-        except ValueError:
-            self.response.out.write(json_response(BAD_REQUEST))
-            return
-
-        ent = json_r['ent']
-        op = json_r['op']
-        params = json_r['params']
-
-        if not ent or not op or not params:
+            ent_name = json_r['ent']
+            op = json_r['op']
+            params = json_r['params']
+        except (ValueError, KeyError):
             self.response.out.write(json_response(BAD_REQUEST))
             return
 
         try:
-            ent = crud_entities[ent]
+            ent_class = crud_entities[ent_name]
         except KeyError:
             self.response.out.write(json_response(ENT_NOT_SUPPORTED))
             return
@@ -99,9 +95,19 @@ class CrudHandler(webapp.RequestHandler):
         if op == 'put':
             try:
                 entities = []
+                new_amount = 0
+
                 for cat_j in params:
-                    entities.append(ent.from_dict(cat_j))
+                    if cat_j.has_key('key'):
+                        entity =  ent_class.load(cat_j)
+                    else:
+                        entity = ent_class.create(cat_j)
+                        new_amount += 1
+
+                    entities.append(entity)
+
                 db.put(entities)
+                counter.update_counter(ent_name, new_amount)
 
                 self.response.out.write(json_response(OP_END_SUCCESS))
             except ValueError:
@@ -112,6 +118,7 @@ class CrudHandler(webapp.RequestHandler):
         elif op == 'del':
             try:
                 db.delete(params)
+                counter.update_counter(ent_name, -len(params))
                 self.response.out.write(json_response(OP_END_SUCCESS))
             except BadKeyError:
                 self.response.out.write(json_response(OP_BAD_VALUE))
@@ -121,27 +128,21 @@ class CrudHandler(webapp.RequestHandler):
         elif op == 'lst':
             offset = params['offset']
             limit = params['limit']
-            #            filter = params['filter']
+            #filter = params['filter']
 
-            q = ent.all_query()
+            q = ent_class.query()
             #filter
 
-            #fetch an extra one to see if new pages have sense to be requested
-            rs = q.fetch(limit=limit + 1, offset=offset)
-
-            l = len(rs)
-            if l <= limit: has_next = False
-            else:
-                has_next = True
-                rs.pop()
+            rs = q.fetch(limit=limit, offset=offset)
 
             res = []
             for e in rs:
-                res.append(ent.to_dict(e))
+                res.append(ent_class.serialize(e))
 
+            _counter = counter.get_counter(ent_name)
             self.response.out.write(json_response(OP_END_SUCCESS, {
                 'result': res,
-                'hasNext': has_next
+                'total': _counter.count if _counter is not None else 0
             }))
         else:
             self.response.out.write(json_response(ENT_NOT_SUPPORTED))

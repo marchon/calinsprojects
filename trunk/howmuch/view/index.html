@@ -9,10 +9,14 @@
 
 <a href="{{logout}}">Logout</a>
 
+<div id="notification">
+    <div></div>
+</div>
+
 <ul id="menu">
     <li><a href="#transactions">Transactions</a></li>
     <li><a href="#categories">Categories</a></li>
-    <li><a href="#upload">Upload data</a></li>
+    <li><a href="#upload">Import data</a></li>
     <li><a href="#charts">Charts</a></li>
 </ul>
 
@@ -21,7 +25,26 @@
         Curabitur dolor augue, vehicula quis fermentum id, accumsan in magna. Suspendisse et gravida eros. Integer non elit quam, id placerat ipsum. Duis consectetur orci quis leo hendrerit vel consequat ipsum placerat. Proin vel risus est, non luctus tellus. Phasellus molestie sollicitudin porta. Phasellus lorem nulla, ullamcorper vulputate convallis sit amet, dictum at est. Ut nibh metus, scelerisque nec tristique et, dapibus eget elit. Nam egestas velit ut turpis aliquam feugiat viverra lacus malesuada. Aenean erat velit, aliquam ac scelerisque vitae, consequat non felis. Pellentesque velit tellus, euismod ac suscipit nec, aliquet sit amet nulla.
     </div>
     <div id="categories">
-        <table>
+        <input class="new button" type="button" value="New" />
+
+        <form class="create" action="/crud" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td><input type="text" name="name"/></td>
+                    </tr>
+                    <tr>
+                        <td>Rule</td>
+                        <td><input type="text" name="rule"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <input type="submit" class="ajaxDisable">
+        </form>
+
+        <table class="list">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -38,6 +61,7 @@
                 <tr>
                    <td colspan="2">
                        <a class="prev" href="#">Previous</a>
+                       <span>Page <em></em> of <em></em></span>
                        <a class="next" href="#">Next</a>
                    </td>
                 </tr>

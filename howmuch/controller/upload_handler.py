@@ -69,9 +69,9 @@ class UploadHandler(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
 
-        if not user:
-            self.response.out.write(json_response(NOT_LOGGED_IN))
-            return
+#        if not user:
+#            self.response.out.write(json_response(NOT_LOGGED_IN))
+#            return
 
         data = self.request.get('data')
         if data is None:

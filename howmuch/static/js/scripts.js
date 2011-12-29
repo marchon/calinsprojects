@@ -18,6 +18,23 @@ $.fn.serializeObject = function() {
 };
 
 $(document).ready(function() {
+    //TODO: cookie is not passed
+    $('#file_upload').uploadify({
+        'uploader'  : '/static/uploadify/uploadify.swf',
+        'script'    : '/upload',
+        'cancelImg' : '/static/uploadify/cancel.png',
+        'auto'      : false,
+        'fileDataName' : 'data',
+        'multi'       : true,
+        'onComplete'  : function(event, ID, fileObj, response, data) {
+            console.log(response);
+        }
+    });
+
+    $('#upload a').click(function(e) {
+        e.preventDefault();
+        $('#file_upload').uploadifyUpload();
+    });
 
     //SECTIONS
     var content = {

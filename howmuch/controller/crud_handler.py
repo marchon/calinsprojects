@@ -1,45 +1,15 @@
 from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
-from google.appengine.ext.db import TransactionFailedError, BadKeyError
+from google.appengine.ext.db import Error, BadKeyError, BadValueError
+from controller.util.json_response import *
 from model import counter
 from model.model import Category, Transaction
 import json
 
-
 crud_entities = {
     'Category': Category,
     'Transaction': Transaction
-}
-
-#TODO: parameters
-def json_response(msg_id, content=None):
-    return json.dumps({
-        'type': m[msg_id][0],
-        'message': m[msg_id][1],
-        'content': content,
-        })
-
-NOT_LOGGED_IN = 1
-BAD_REQUEST = 2
-ENT_NOT_SUPPORTED = 3
-OP_NOT_SUPPORTED = 4
-OP_END_SUCCESS = 5
-OP_BAD_VALUE = 6
-OP_DS_FAILED = 7
-
-SUC = 'success'
-ERR = 'error'
-FAT = 'fatal'
-
-m = {
-    NOT_LOGGED_IN: [ERR, 'You have to be logged in to perform this operation.'],
-    BAD_REQUEST: [ERR, 'The request is not well formatted.'],
-    ENT_NOT_SUPPORTED: [ERR, 'This entity is not supported.'],
-    OP_NOT_SUPPORTED: [ERR, 'This operation is not supported.'],
-    OP_END_SUCCESS: [SUC, 'Operation has been performed with success.'],
-    OP_BAD_VALUE: [ERR, 'Bad value: {1}'],
-    OP_DS_FAILED: [FAT, 'Failed to save to datastore.']
 }
 
 class CrudHandler(webapp.RequestHandler):
@@ -68,6 +38,8 @@ class CrudHandler(webapp.RequestHandler):
 
     def post(self):
         #TODO: security???
+        #TODO: logging
+        #TODO: test ex handling
         user = users.get_current_user()
 
         if not user:
@@ -110,9 +82,9 @@ class CrudHandler(webapp.RequestHandler):
                 counter.update_counter(ent_name, new_amount)
 
                 self.response.out.write(json_response(OP_END_SUCCESS))
-            except ValueError:
+            except (KeyError, ValueError, BadValueError):
                 self.response.out.write(json_response(OP_BAD_VALUE))
-            except TransactionFailedError:
+            except Error:
                 self.response.out.write(json_response(OP_DS_FAILED))
 
         elif op == 'del':
@@ -122,7 +94,7 @@ class CrudHandler(webapp.RequestHandler):
                 self.response.out.write(json_response(OP_END_SUCCESS))
             except BadKeyError:
                 self.response.out.write(json_response(OP_BAD_VALUE))
-            except TransactionFailedError:
+            except Error:
                 self.response.out.write(json_response(OP_DS_FAILED))
 
         elif op == 'lst':

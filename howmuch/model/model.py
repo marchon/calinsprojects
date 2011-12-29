@@ -5,8 +5,8 @@ from google.appengine.ext import db
 class Category(db.Model):
     account = db.UserProperty(auto_current_user_add=True)
 
-    name = db.StringProperty()
-    rule = db.StringProperty()
+    name = db.StringProperty(required=True)
+    rule = db.StringProperty(required=True)
 
     def serialize(category):
         return {
@@ -16,9 +16,7 @@ class Category(db.Model):
         }
 
     def create(map):
-        category = Category()
-        if map.has_key('name'): category.name = map['name']
-        if map.has_key('rule'): category.rule = map['rule']
+        category = Category(name = map['name'], rule = map['rule'])
 
         return category
 
@@ -42,10 +40,10 @@ class Category(db.Model):
 class Transaction(db.Model):
     account = db.UserProperty(auto_current_user_add=True)
 
-    date = db.DateTimeProperty()
-    desc = db.StringProperty()
-    debit = db.FloatProperty()
-    credit = db.FloatProperty()
+    date = db.DateTimeProperty(required=True)
+    desc = db.StringProperty(required=True)
+    debit = db.FloatProperty(default=0.0)
+    credit = db.FloatProperty(default=0.0)
     detailsKeys = db.StringListProperty()
     detailsValues = db.StringListProperty()
     category = db.ReferenceProperty(Category)
@@ -59,15 +57,18 @@ class Transaction(db.Model):
             'debit': trans.debit,
             'credit': trans.credit,
             'details': dict(zip(trans.detailsKeys, trans.detailsValues)),
-            #'category': trans.category #send the id??
+            'category': str(trans.category.key()) if trans.category is not None else None
+
         }
 
     def create(map):
-        transaction = Transaction()
-        if map.has_key('date'): transaction.name = map['date']
-        if map.has_key('desc'): transaction.desc = map['desc']
+        transaction = Transaction(date = map['date'], desc = map['desc'])
         if map.has_key('debit'): transaction.debit = map['debit']
         if map.has_key('credit'): transaction.credit = map['credit']
+        if map.has_key('details'):
+            transaction.detailsKeys = map['details'].keys()
+            transaction.detailsValues = map['details'].values()
+        if map.has_key('category'): transaction.category = map['category']
 
         return transaction
 
@@ -77,6 +78,10 @@ class Transaction(db.Model):
         if map.has_key('desc'): transaction.desc = map['desc']
         if map.has_key('debit'): transaction.debit = map['debit']
         if map.has_key('credit'): transaction.credit = map['credit']
+        if map.has_key('details'):
+            transaction.detailsKeys = map['details'].keys()
+            transaction.detailsValues = map['details'].values()
+        if map.has_key('category'): transaction.category = map['category']
 
         return transaction
 

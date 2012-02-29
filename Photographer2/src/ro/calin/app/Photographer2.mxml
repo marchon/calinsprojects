@@ -146,7 +146,7 @@
 			protected function processMenuAction(action:Array, event:MenuEvent=null) : void {
 				if(!action || action.length != 2) throw new Error('Bad action.');
 				
-				if(textDisplay.parent != null) removeElement(textDisplay);
+//				if(textDisplay.parent != null) removeElement(textDisplay);
 				
 				switch(action[0]) {
 					case MENU_ACTION_SLIDE:

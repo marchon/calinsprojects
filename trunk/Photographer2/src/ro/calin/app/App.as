@@ -1,6 +1,7 @@
 package ro.calin.app
 {
 
+	import mx.collections.ArrayList;
 	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -9,6 +10,7 @@ package ro.calin.app
 	import ro.calin.component.CategoryViewer;
 	import ro.calin.component.Menu;
 	import ro.calin.component.PictureViewer;
+	import ro.calin.component.model.MenuEntryModel;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -24,6 +26,16 @@ package ro.calin.app
 		
 		[SkinPart(required="true")]
 		public var categoryViewer:CategoryViewer;
+		
+		public function get categories():ArrayList {
+			var cat1:MenuEntryModel = new MenuEntryModel();
+			cat1.label = "test1";
+			
+			var cat2:MenuEntryModel = new MenuEntryModel();
+			cat2.label = "test2";
+			
+			return new ArrayList([cat1, cat2]);
+		}
 		
 		public function App()
 		{			

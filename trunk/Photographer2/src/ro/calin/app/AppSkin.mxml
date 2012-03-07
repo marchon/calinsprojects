@@ -6,25 +6,35 @@
 		xmlns:model="ro.calin.component.model.*"
 		width="100%"
 		height="100%">
+	
+	<!--
+		OLD STUFF:
+	http://code.google.com/p/calinsprojects/source/browse/trunk/Photographer2/src/ro/calin/app/Photographer2.mxml?r=270
+	-->
+	
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("ro.calin.app.App")]
 	</fx:Metadata>
 	
-	<s:layout>
-		<s:BasicLayout />
-	</s:layout>
+	<!-- states -->
+	<s:states>
+		<s:State name="menumiddle" />
+		<s:State name="menutop" />
+		<s:State name="menubottom" />
+	</s:states>
 	
 	<component:PictureViewer id="pictureViewer"/>
 	
-	<component:Menu id="menu" width="100%" bottom="100">
+	<component:Menu id="menu" width="100%" 
+					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}">
 		<component:model>
 			<model:MenuModel alpha="0.5">
 				<model:entries>
 					<s:ArrayList>
 						<model:MenuEntryModel label="gallery" color="{0xff0000}">
 						</model:MenuEntryModel>
-						<model:MenuEntryModel label="info">
+						<model:MenuEntryModel label="info" entries="{hostComponent.categories}">
 						</model:MenuEntryModel>
 					</s:ArrayList>
 				</model:entries>

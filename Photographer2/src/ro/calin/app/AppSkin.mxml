@@ -24,17 +24,69 @@
 		<s:State name="menubottom" />
 	</s:states>
 	
+	<s:transitions>
+		<s:Transition toState="*">
+			<s:Move target="{menu}" duration="300"/>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Script>
+		<![CDATA[
+			import ro.calin.component.event.MenuEvent;
+
+			protected function menu_logoClickHandler(event:MenuEvent):void
+			{
+				currentState = 'menumiddle';
+			}
+
+
+			protected function menu_itemClickHandler(event:MenuEvent):void
+			{
+				switch(event.entry.label) {
+					case 'gallery':
+						currentState = 'menubottom';
+					break;
+					default:
+						currentState = 'menutop';
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
 	<component:PictureViewer id="pictureViewer"/>
 	
 	<component:Menu id="menu" width="100%" 
-					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}">
+					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}"
+					logoClick="menu_logoClickHandler(event)" itemClick="menu_itemClickHandler(event)">
 		<component:model>
 			<model:MenuModel alpha="0.5">
 				<model:entries>
 					<s:ArrayList>
-						<model:MenuEntryModel label="gallery" color="{0xff0000}">
+						<model:MenuEntryModel label="gallery" color="{0xff0000}" 
+											  entries="{hostComponent.categories}">
 						</model:MenuEntryModel>
-						<model:MenuEntryModel label="info" entries="{hostComponent.categories}">
+						<model:MenuEntryModel label="info">
+							<model:entries>
+								<s:ArrayList>
+									<model:MenuEntryModel label="blog">
+									</model:MenuEntryModel>
+									<model:MenuEntryModel label="contact">
+									</model:MenuEntryModel>
+									<model:MenuEntryModel label="about">
+									</model:MenuEntryModel>
+									<model:MenuEntryModel label="friends">
+									</model:MenuEntryModel>
+								</s:ArrayList>
+							</model:entries>
+						</model:MenuEntryModel>
+						<model:MenuEntryModel label="share">
+							<model:entries>
+								<s:ArrayList>
+									<model:MenuEntryModel label="blog">
+									</model:MenuEntryModel>
+								</s:ArrayList>
+							</model:entries>
 						</model:MenuEntryModel>
 					</s:ArrayList>
 				</model:entries>

@@ -175,7 +175,7 @@ package ro.calin.component
 		 * should have a default back button or smfn
 		 * */
 		private function logo_clickHandler(event:MouseEvent) : void {
-			popMenu();
+			popMenu();			
 			dispatchEvent(new MenuEvent(MenuEvent.MENU_LOGO_CLICK));
 		}
 	

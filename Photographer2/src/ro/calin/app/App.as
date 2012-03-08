@@ -10,6 +10,7 @@ package ro.calin.app
 	import ro.calin.component.CategoryViewer;
 	import ro.calin.component.Menu;
 	import ro.calin.component.PictureViewer;
+	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.MenuEntryModel;
 	
 	import spark.components.supportClasses.SkinnableComponent;
@@ -43,6 +44,23 @@ package ro.calin.app
 			setStyle("skinClass", AppSkin);
 		}
 		
+		override protected function partAdded(partName:String, instance:Object) : void { 
+			super.partAdded(partName, instance);
+			
+			if(instance == menu) {
+				menu.addEventListener(MenuEvent.MENU_ITEM_CLICK, menuItemClick);
+			}
+			
+		}
+		
+		override protected function partRemoved(partName:String, instance: Object) : void {
+			super.partRemoved(partName, instance);
+			
+			if(instance == menu) {
+				menu.removeEventListener(MenuEvent.MENU_ITEM_CLICK, menuItemClick);
+			}
+		}
+		
 		private function getConfig():void {
 			var service:HTTPService = new HTTPService();
 			service.url = 'config.xml';
@@ -56,13 +74,7 @@ package ro.calin.app
 			service.send();
 		}
 		
-		override protected function partAdded(partName:String, instance:Object) : void { 
-			super.partAdded(partName, instance);
-			
-		}
-		
-		override protected function partRemoved(partName:String, instance: Object) : void {
-			super.partRemoved(partName, instance);
+		private function menuItemClick(event:MenuEvent):void {
 		}
 	}
 }

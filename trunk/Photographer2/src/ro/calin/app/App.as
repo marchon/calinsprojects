@@ -1,6 +1,8 @@
 package ro.calin.app
 {
 
+	import flash.utils.setTimeout;
+	
 	import mx.collections.ArrayList;
 	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
@@ -17,7 +19,9 @@ package ro.calin.app
 	
 	public class App extends SkinnableComponent
 	{
-		private var config:XML = null;
+		private var config:XML;
+		
+		private var _categories:ArrayList;
 		
 		[SkinPart(required="true")]
 		public var pictureViewer:PictureViewer;
@@ -29,18 +33,22 @@ package ro.calin.app
 		public var categoryViewer:CategoryViewer;
 		
 		public function get categories():ArrayList {
-			var cat1:MenuEntryModel = new MenuEntryModel();
-			cat1.label = "test1";
-			
-			var cat2:MenuEntryModel = new MenuEntryModel();
-			cat2.label = "test2";
-			
-			return new ArrayList([cat1, cat2]);
+			return _categories;
 		}
 		
-		public function App()
+		public function App(xml:XML)
 		{			
 			super();
+			
+			this.config = xml;
+			
+			_categories = new ArrayList();
+			for each (var category:XML in config.categories.category) {
+				var entry:MenuEntryModel = new MenuEntryModel();
+				entry.label = category.@name;
+				_categories.addItem(entry);
+			}
+			
 			setStyle("skinClass", AppSkin);
 		}
 		
@@ -61,20 +69,9 @@ package ro.calin.app
 			}
 		}
 		
-		private function getConfig():void {
-			var service:HTTPService = new HTTPService();
-			service.url = 'config.xml';
-			service.resultFormat = "e4x";
-			service.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void {
-				config = XML(event.result);
-			});
-			service.addEventListener(FaultEvent.FAULT, function(event:FaultEvent):void {
-				
-			});
-			service.send();
-		}
-		
 		private function menuItemClick(event:MenuEvent):void {
+			trace(width);
+			trace(height);
 		}
 	}
 }

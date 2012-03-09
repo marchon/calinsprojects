@@ -3,9 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:component="ro.calin.component.*" 
-		xmlns:model="ro.calin.component.model.*"
-		width="100%"
-		height="100%">
+		xmlns:model="ro.calin.component.model.*">
 	
 	<!--
 		OLD STUFF:
@@ -46,7 +44,8 @@
 					case 'gallery':
 						currentState = 'menubottom';
 					break;
-					default:
+					case 'info':
+					case 'share':
 						currentState = 'menutop';
 				}
 			}
@@ -60,7 +59,7 @@
 					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}"
 					logoClick="menu_logoClickHandler(event)" itemClick="menu_itemClickHandler(event)">
 		<component:model>
-			<model:MenuModel alpha="0.5">
+			<model:MenuModel alpha="0.5" buttonWidth="200" >
 				<model:entries>
 					<s:ArrayList>
 						<model:MenuEntryModel label="gallery" color="{0xff0000}" 

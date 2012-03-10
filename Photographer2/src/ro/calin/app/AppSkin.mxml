@@ -82,7 +82,9 @@
 						<model:MenuEntryModel label="share">
 							<model:entries>
 								<s:ArrayList>
-									<model:MenuEntryModel label="blog">
+									<model:MenuEntryModel label="facebook">
+									</model:MenuEntryModel>
+									<model:MenuEntryModel label="like on facebook">
 									</model:MenuEntryModel>
 								</s:ArrayList>
 							</model:entries>
@@ -93,5 +95,5 @@
 		</component:model>	
 	</component:Menu>
 	
-	<component:CategoryViewer id="categoryViewer"/>
+	<component:CategoryViewer id="categoryViewer" bottom="{menu.height}" visible="false"/>
 </s:Skin>

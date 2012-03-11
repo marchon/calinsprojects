@@ -1,24 +1,19 @@
 package ro.calin.component
 {
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
-	import mx.binding.utils.BindingUtils;
-	import mx.controls.Alert;
 	import mx.events.EffectEvent;
 	
 	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.skin.PictureViewerSkin;
 	
-	import spark.components.Button;
 	import spark.components.SkinnableContainer;
 	import spark.core.ContentCache;
 	import spark.core.ContentRequest;
-	import spark.core.IContentLoader;
 	import spark.effects.Move;
 	
 	/**

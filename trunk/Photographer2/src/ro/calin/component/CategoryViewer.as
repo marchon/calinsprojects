@@ -117,26 +117,5 @@ package ro.calin.component
 		private function maxScroll():Number {
 			return thumbnailStrip.contentHeight - thumbnailStrip.height;  //haha, funny
 		} 
-		
-		/**
-		 * ugly fix to scroll to bottom
-		 * http://flexponential.com/2011/02/13/scrolling-to-the-bottom-of-a-spark-list/ 
-		 */
-		public function scrollToBottom():void {
-			if(thumbnailStrip == null) return;
-			
-			// update the verticalScrollPosition to the end of the List
-			// virtual layout may require us to validate a few times
-			var delta:Number = 0;
-			var count:int = 0;
-			while (count++ < 100){
-				thumbnailStrip.validateNow();
-				delta = thumbnailStrip.layout.getVerticalScrollPositionDelta(NavigationUnit.END);
-				thumbnailStrip.layout.verticalScrollPosition += delta;
-				
-				if (delta == 0)
-					break;
-			}
-		}
 	}
 }

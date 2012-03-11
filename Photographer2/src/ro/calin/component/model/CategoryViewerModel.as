@@ -13,7 +13,7 @@ package ro.calin.component.model
 		
 		public var thumbWidth:Number = 220;
 		public var scaleFrom:Number = 1.0;
-		public var scaleTo:Number = 1.2;
+		public var scaleTo:Number = 1.01;
 		
 		public var extra:Object;
 	}

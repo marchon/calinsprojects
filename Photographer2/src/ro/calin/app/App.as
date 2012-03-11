@@ -58,6 +58,7 @@ package ro.calin.app
 			for each (var category:XML in categories) {
 				var model:MenuEntryModel = new MenuEntryModel();
 				model.label = category.@name;
+				model.color = uint(category.@color);
 				var categoryModel:CategoryViewerModel = new CategoryViewerModel();
 				categoryModel.subcategories = parseSubcategories(category.subcategory);
 				model.extra = categoryModel;
@@ -74,7 +75,7 @@ package ro.calin.app
 				var model:SubcategoryModel = new SubcategoryModel();
 				model.name = subcategory.@name;
 				model.description = subcategory.@description;
-				model.picUrl = subcategory.@thumbnailPath;
+				model.picUrl = subcategory.@picUrl;
 				var pictureModel:PictureViewerModel = new PictureViewerModel();
 				pictureModel.pictures = parsePictures(subcategory.picture); 
 				model.extra = pictureModel;
@@ -89,7 +90,7 @@ package ro.calin.app
 			
 			for each (var picture:XML in pictures) {
 				var model:PictureModel = new PictureModel;
-				model.url = picture.@path;
+				model.url = picture.@url;
 				pictureList.push(model);
 			}
 			
@@ -122,7 +123,8 @@ package ro.calin.app
 		private function menuItemHover(event:MenuEvent):void {
 			if(event.entry.extra != null) {
 				categoryViewer.model = event.entry.extra as CategoryViewerModel;
-				categoryViewer.x = 500; //you're here
+//				categoryViewer.x = 200;
+				categoryViewer.visible = true;
 			}
 		}
 	}

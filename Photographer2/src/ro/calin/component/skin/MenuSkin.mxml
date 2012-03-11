@@ -32,7 +32,7 @@
 	</s:Rect>
 	
 	<!-- Layer 2: logo and button group -->
-	<s:HGroup id="placeholder" width="100%" fontFamily="walkway">
+	<s:HGroup id="placeholder" width="100%" fontFamily="walkway" gap="0">	
 		<!-- Sublayer 2.1: image logo -->
 		<s:Image id="logo" buttonMode="true" source="{hostComponent.model.logoUrl}"/>
 		
@@ -49,14 +49,9 @@
 			<!-- Render a button for each item. -->
 			<s:itemRenderer>
 				<fx:Component>
-					<!-- Inline item renderer. Do not autodraw ugly gray background.-->
 					<s:ItemRenderer autoDrawBackground="false">
-						<!-- Contains only a MenuButton component. -->
-						<!--TODO: if you set a break point here, more then required iterations are done.
-						Find out why, and study inner workings of item renderer.-->
 						<component:MenuButton id="button" width="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
 											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"/>
-												<!--add logo to get whole distance-->
 					</s:ItemRenderer>
 				</fx:Component>
 			</s:itemRenderer>

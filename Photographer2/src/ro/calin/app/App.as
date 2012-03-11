@@ -123,6 +123,7 @@ package ro.calin.app
 		private function menuItemHover(event:MenuEvent):void {
 			if(event.entry.extra != null) {
 				categoryViewer.model = event.entry.extra as CategoryViewerModel;
+				categoryViewer.height = Math.min(this.height - menu.height, categoryViewer.model.subcategories.length * 119);
 //				categoryViewer.x = 200;
 				categoryViewer.visible = true;
 			}

@@ -6,14 +6,14 @@
 	<xsd:element name="config" type="configType" />
 
 	<xsd:complexType name="pictureType">
-		<xsd:attribute name="path" type="xsd:string" />
+		<xsd:attribute name="url" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:complexType name="subcategoryType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" name="picture" type="pictureType" />
 		</xsd:sequence>
-		<xsd:attribute name="thumbnailPath" type="xsd:string" />
+		<xsd:attribute name="picUrl" type="xsd:string" />
 		<xsd:attribute name="name" type="xsd:string" />
 		<xsd:attribute name="description" type="xsd:string" />
 	</xsd:complexType>

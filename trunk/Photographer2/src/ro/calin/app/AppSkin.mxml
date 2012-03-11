@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:component="ro.calin.component.*" 
-		xmlns:model="ro.calin.component.model.*">
+		xmlns:model="ro.calin.component.model.*" clipAndEnableScrolling="true">
 	
 	<!--
 		OLD STUFF:

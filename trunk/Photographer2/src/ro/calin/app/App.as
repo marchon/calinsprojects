@@ -19,11 +19,16 @@ package ro.calin.app
 	import spark.components.Button;
 	import spark.components.supportClasses.SkinnableComponent;
 	
+	[SkinState("menumiddle")]
+	[SkinState("menutop")]
+	[SkinState("menubottom")]
 	public class App extends SkinnableComponent
 	{	
 		
 		private static const WALLPAPERS:String = "wp";
 		
+		[Bindable]
+		public var currentSkinState:String = "menumiddle";
 		
 		private var _categories:ArrayList;
 		private var wallpapers:PictureViewerModel;
@@ -159,18 +164,19 @@ package ro.calin.app
 		
 		protected function menuLogoClick(event:MenuEvent):void
 		{
-			
+			currentSkinState = 'menumiddle';
 		}
+		
 		
 		protected function menuItemClick(event:MenuEvent):void
 		{
 			switch(event.entry.label) {
 				case 'gallery':
-					
+					currentSkinState = 'menubottom';
 					break;
 				case 'info':
 				case 'share':
-					
+					currentSkinState = 'menutop';
 			}
 		}
 		

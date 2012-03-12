@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:component="ro.calin.component.*" 
-		xmlns:model="ro.calin.component.model.*">
+		xmlns:model="ro.calin.component.model.*" currentState="{hostComponent.currentSkinState}">
 	
 	<!--
 		OLD STUFF:
@@ -28,36 +28,10 @@
 		</s:Transition>
 	</s:transitions>
 	
-	<fx:Script>
-		<![CDATA[
-			import ro.calin.component.event.MenuEvent;
-
-			protected function menu_logoClickHandler(event:MenuEvent):void
-			{
-				currentState = 'menumiddle';
-			}
-
-
-			protected function menu_itemClickHandler(event:MenuEvent):void
-			{
-				switch(event.entry.label) {
-					case 'gallery':
-						currentState = 'menubottom';
-					break;
-					case 'info':
-					case 'share':
-						currentState = 'menutop';
-				}
-			}
-
-		]]>
-	</fx:Script>
-	
 	<component:PictureViewer id="pictureViewer" width="100%" height="100%"/>
 	
 	<component:Menu id="menu" width="100%" 
-					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}"
-					logoClick="menu_logoClickHandler(event)" itemClick="menu_itemClickHandler(event)">
+					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}">
 		<component:model>
 			<model:MenuModel alpha="0.5" buttonWidth="220" >
 				<model:entries>

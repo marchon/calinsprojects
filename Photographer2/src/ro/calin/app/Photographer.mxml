@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   width="100%" height="100%" xmlns:app="ro.calin.app.*" xmlns:model="ro.calin.component.model.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+
+			protected function configService_resultHandler(event:ResultEvent):void
+			{
+				var app:App = new App(model, event.result as XML);
+				app.percentHeight = 100;
+				app.percentWidth = 100;
+				addElement(app);
+			}
+
+
+			protected function configService_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:applicationComplete>
+		<![CDATA[
+			configService.send();
+		]]>
+	</s:applicationComplete>
+	
+	<fx:Declarations>
+		<!-- Used to get external model. This service requests the xml config. -->
+		<s:HTTPService id="configService" url="config.xml" result="configService_resultHandler(event)"
+					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
+		
+		<!-- Declare internal model -->
+		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" >
+			<model:entries>
+				<s:ArrayList>
+					<model:MenuEntryModel label="gallery" color="{0xff0000}">
+					</model:MenuEntryModel>
+					<model:MenuEntryModel label="info">
+						<model:entries>
+							<s:ArrayList>
+								<model:MenuEntryModel label="blog">
+								</model:MenuEntryModel>
+								<model:MenuEntryModel label="contact">
+								</model:MenuEntryModel>
+								<model:MenuEntryModel label="about">
+								</model:MenuEntryModel>
+								<model:MenuEntryModel label="friends">
+								</model:MenuEntryModel>
+							</s:ArrayList>
+						</model:entries>
+					</model:MenuEntryModel>
+					<model:MenuEntryModel label="share">
+						<model:entries>
+							<s:ArrayList>
+								<model:MenuEntryModel label="facebook">
+								</model:MenuEntryModel>
+								<model:MenuEntryModel label="like on facebook">
+								</model:MenuEntryModel>
+							</s:ArrayList>
+						</model:entries>
+					</model:MenuEntryModel>
+				</s:ArrayList>
+			</model:entries>
+		</model:MenuModel>
+	</fx:Declarations>
+</s:Application>

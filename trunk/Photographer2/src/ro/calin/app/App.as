@@ -12,6 +12,7 @@ package ro.calin.app
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.MenuEntryModel;
+	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.model.SubcategoryModel;
@@ -24,13 +25,17 @@ package ro.calin.app
 	[SkinState("menubottom")]
 	public class App extends SkinnableComponent
 	{	
+		private static const MENU_MIDDLE:String = "menumiddle";
+		private static const MENU_TOP:String = "menutop";
+		private static const MENU_BOTTOM:String = "menubottom";
 		
 		private static const WALLPAPERS:String = "wp";
 		
 		[Bindable]
-		public var currentSkinState:String = "menumiddle";
+		public var currentSkinState:String = MENU_MIDDLE;
 		
-		private var _categories:ArrayList;
+		private var categories:ArrayList;
+		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
 		
 		/**
@@ -53,21 +58,24 @@ package ro.calin.app
 		[SkinPart(required="true")]
 		public var rightButton:Button;
 		
-		public function get categories():ArrayList {
-			return _categories;
-		}
-		
-		public function App(xml:XML)
+		public function App(menuModel:MenuModel, xmlModel:XML)
 		{			
 			super();
 			
-			parseXMLandPopulateModel(xml);
+			//parse external model
+			parseXMLandPopulateModel(xmlModel);
+			
+			//set internal model
+			this.menuModel = menuModel;
+			
+			//link external with internal(attach categories to 'gallery' menu entry)
+			this.menuModel.entries.getItemAt(0).entries = categories;
 			
 			setStyle("skinClass", AppSkin);
 		}
 		
 		private function parseXMLandPopulateModel(xml:XML):void {
-			_categories = parseCategories(xml.categories[0].category);
+			categories = parseCategories(xml.categories[0].category);
 			wallpapers = parseWallpapers(xml.wallpapers[0]);
 		}
 		
@@ -130,6 +138,7 @@ package ro.calin.app
 			super.partAdded(partName, instance);
 			
 			if(instance == menu) {
+				menu.model = menuModel;
 				menu.addEventListener(MenuEvent.MENU_LOGO_CLICK, menuLogoClick);
 				menu.addEventListener(MenuEvent.MENU_ITEM_CLICK, menuItemClick);
 				menu.addEventListener(MenuEvent.MENU_ITEM_HOVER, menuItemHover);
@@ -164,19 +173,20 @@ package ro.calin.app
 		
 		protected function menuLogoClick(event:MenuEvent):void
 		{
-			currentSkinState = 'menumiddle';
+			currentSkinState = MENU_MIDDLE;
 		}
 		
 		
 		protected function menuItemClick(event:MenuEvent):void
 		{
 			switch(event.entry.label) {
+				//hardcoded
 				case 'gallery':
-					currentSkinState = 'menubottom';
+					currentSkinState = MENU_BOTTOM;
 					break;
 				case 'info':
 				case 'share':
-					currentSkinState = 'menutop';
+					currentSkinState = MENU_TOP;
 			}
 		}
 		

@@ -31,43 +31,7 @@
 	<component:PictureViewer id="pictureViewer" width="100%" height="100%"/>
 	
 	<component:Menu id="menu" width="100%" 
-					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}">
-		<component:model>
-			<model:MenuModel alpha="0.5" buttonWidth="220" >
-				<model:entries>
-					<s:ArrayList>
-						<model:MenuEntryModel label="gallery" color="{0xff0000}" 
-											  entries="{hostComponent.categories}">
-						</model:MenuEntryModel>
-						<model:MenuEntryModel label="info">
-							<model:entries>
-								<s:ArrayList>
-									<model:MenuEntryModel label="blog">
-									</model:MenuEntryModel>
-									<model:MenuEntryModel label="contact">
-									</model:MenuEntryModel>
-									<model:MenuEntryModel label="about">
-									</model:MenuEntryModel>
-									<model:MenuEntryModel label="friends">
-									</model:MenuEntryModel>
-								</s:ArrayList>
-							</model:entries>
-						</model:MenuEntryModel>
-						<model:MenuEntryModel label="share">
-							<model:entries>
-								<s:ArrayList>
-									<model:MenuEntryModel label="facebook">
-									</model:MenuEntryModel>
-									<model:MenuEntryModel label="like on facebook">
-									</model:MenuEntryModel>
-								</s:ArrayList>
-							</model:entries>
-						</model:MenuEntryModel>
-					</s:ArrayList>
-				</model:entries>
-			</model:MenuModel>
-		</component:model>	
-	</component:Menu>
+					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}"/>
 	
 	<component:CategoryViewer id="categoryViewer" bottom="{menu.height}" visible="false"/>
 	

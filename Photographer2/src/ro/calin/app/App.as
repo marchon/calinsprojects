@@ -23,25 +23,31 @@ package ro.calin.app
 	[SkinState("menumiddle")]
 	[SkinState("menutop")]
 	[SkinState("menubottom")]
+	/**
+	 * Menu model entries contain extra info about....
+	 * TODO: continue...
+	 */
 	public class App extends SkinnableComponent
 	{	
+		private static const THUMBNAIL_HEIGHT:Number = 119;
+		
 		private static const MENU_MIDDLE:String = "menumiddle";
 		private static const MENU_TOP:String = "menutop";
 		private static const MENU_BOTTOM:String = "menubottom";
+		
+		
+		//externalize???
+		private static const TOP_LIST:Array = ['info', 'share'];
+		private static const BOTTOM_LIST:Array = ['gallery'];
 		
 		private static const WALLPAPERS:String = "wp";
 		
 		[Bindable]
 		public var currentSkinState:String = MENU_MIDDLE;
 		
-		private var categories:ArrayList;
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
-		
-		/**
-		 * Maps category model with it's index, so that we know where to display the category component.
-		 */
-		private var categoryIndexMap:Dictionary = new Dictionary();
+	
 		
 		[SkinPart(required="true")]
 		public var pictureViewer:PictureViewer;
@@ -58,80 +64,14 @@ package ro.calin.app
 		[SkinPart(required="true")]
 		public var rightButton:Button;
 		
-		public function App(menuModel:MenuModel, xmlModel:XML)
+		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel)
 		{			
 			super();
 			
-			//parse external model
-			parseXMLandPopulateModel(xmlModel);
-			
-			//set internal model
 			this.menuModel = menuModel;
-			
-			//link external with internal(attach categories to 'gallery' menu entry)
-			this.menuModel.entries.getItemAt(0).entries = categories;
+			this.wallpapers = wallpaperModel;
 			
 			setStyle("skinClass", AppSkin);
-		}
-		
-		private function parseXMLandPopulateModel(xml:XML):void {
-			categories = parseCategories(xml.categories[0].category);
-			wallpapers = parseWallpapers(xml.wallpapers[0]);
-		}
-		
-		private function parseCategories(categories:XMLList):ArrayList {
-			var categoryList:ArrayList = new ArrayList();
-			
-			var idx:Number = 0;
-			for each (var category:XML in categories) {
-				var model:MenuEntryModel = new MenuEntryModel();
-				model.label = category.@name;
-				model.color = uint(category.@color);
-				var categoryModel:CategoryViewerModel = new CategoryViewerModel();
-				categoryModel.subcategories = parseSubcategories(category.subcategory);
-				model.extra = categoryModel;
-				categoryIndexMap[categoryModel] = idx++;
-				categoryList.addItem(model);
-			}
-			
-			return categoryList;
-		}
-		
-		private function parseSubcategories(subcategories:XMLList):ArrayList {
-			var subcategoryList:ArrayList = new ArrayList();
-			
-			for each (var subcategory:XML in subcategories) {
-				var model:SubcategoryModel = new SubcategoryModel();
-				model.name = subcategory.@name;
-				model.description = subcategory.@description;
-				model.picUrl = subcategory.@picUrl;
-				var pictureModel:PictureViewerModel = new PictureViewerModel();
-				pictureModel.pictures = parsePictures(subcategory.picture); 
-				model.extra = pictureModel;
-				subcategoryList.addItem(model);
-			}
-			
-			return subcategoryList;
-		}
-		
-		private function parseWallpapers(wallpaperList:XML):PictureViewerModel {
-			var model:PictureViewerModel = new PictureViewerModel();
-
-			model.pictures = parsePictures(wallpaperList.picture);
-			
-			return model;
-		}
-		
-		private function parsePictures(pictures:XMLList):Array {
-			var pictureList:Array = new Array();
-			
-			for each (var picture:XML in pictures) {
-				var model:PictureModel = new PictureModel;
-				model.url = picture.@url;
-				pictureList.push(model);
-			}
-			
-			return pictureList;
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void { 
@@ -154,7 +94,6 @@ package ro.calin.app
 				pictureViewer.setActiveModel(WALLPAPERS);
 				pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
 			}
-			
 		}
 		
 		override protected function partRemoved(partName:String, instance: Object) : void {
@@ -176,17 +115,12 @@ package ro.calin.app
 			currentSkinState = MENU_MIDDLE;
 		}
 		
-		
 		protected function menuItemClick(event:MenuEvent):void
 		{
-			switch(event.entry.label) {
-				//hardcoded
-				case 'gallery':
-					currentSkinState = MENU_BOTTOM;
-					break;
-				case 'info':
-				case 'share':
-					currentSkinState = MENU_TOP;
+			if(TOP_LIST.indexOf(event.entry.label) >= 0) {
+				currentSkinState = MENU_TOP;
+			} else if(BOTTOM_LIST.indexOf(event.entry.label) >= 0) {
+				currentSkinState = MENU_BOTTOM;
 			}
 		}
 		
@@ -199,10 +133,10 @@ package ro.calin.app
 					categoryViewer.model = cm;
 					
 					//set the height of the strip (max is screen height)
-					categoryViewer.height = Math.min(this.height - menu.height, categoryViewer.model.subcategories.length * 119);
+					categoryViewer.height = Math.min(this.height - menu.height, categoryViewer.model.subcategories.length * THUMBNAIL_HEIGHT);
 					
 					//move it above the corresponding menu item
-					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * categoryIndexMap[cm] - 1;
+					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1;
 				}
 			
 				categoryViewer.visible = true;

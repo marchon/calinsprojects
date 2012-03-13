@@ -5,13 +5,27 @@
 			   width="100%" height="100%" xmlns:app="ro.calin.app.*" xmlns:model="ro.calin.component.model.*">
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
+			
+			import ro.calin.component.model.CategoryViewerModel;
+			import ro.calin.component.model.PictureModel;
+			import ro.calin.component.model.PictureViewerModel;
+			import ro.calin.component.model.SubcategoryModel;
 			
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
-				var app:App = new App(model, event.result as XML);
+				var xml:XML = event.result as XML;
+				var categories:ArrayList = parseCategories(xml.categories[0].category);
+				var wallpapers:PictureViewerModel = parseWallpapers(xml.wallpapers[0]);
+				
+				//link external with internal(attach categories to 'gallery' menu entry)
+				model.entries.getItemAt(0).entries = categories;
+				
+				var app:App = new App(model, wallpapers);
+				
 				app.percentHeight = 100;
 				app.percentWidth = 100;
 				addElement(app);
@@ -20,7 +34,66 @@
 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
-				// TODO Auto-generated method stub
+				Alert.show("Error! Data is unavailable!");
+			}
+			
+			
+			private function parseCategories(categories:XMLList):ArrayList {
+				var categoryList:ArrayList = new ArrayList();
+
+				var idx:Number = 0;
+				for each (var category:XML in categories) {
+					var model:MenuEntryModel = new MenuEntryModel();
+					model.label = category.@name;
+					model.color = uint(category.@color);
+					var categoryModel:CategoryViewerModel = new CategoryViewerModel();
+					categoryModel.subcategories = parseSubcategories(category.subcategory);
+					
+					//map categories to their index in the menu (to know where to put the categviewer)
+					categoryModel.extra = idx++;
+					
+					model.extra = categoryModel;
+					categoryList.addItem(model);
+				}
+				
+				return categoryList;
+			}
+			
+			private function parseSubcategories(subcategories:XMLList):ArrayList {
+				var subcategoryList:ArrayList = new ArrayList();
+				
+				for each (var subcategory:XML in subcategories) {
+					var model:SubcategoryModel = new SubcategoryModel();
+					model.name = subcategory.@name;
+					model.description = subcategory.@description;
+					model.picUrl = subcategory.@picUrl;
+					var pictureModel:PictureViewerModel = new PictureViewerModel();
+					pictureModel.pictures = parsePictures(subcategory.picture); 
+					model.extra = pictureModel;
+					subcategoryList.addItem(model);
+				}
+				
+				return subcategoryList;
+			}
+			
+			private function parseWallpapers(wallpaperList:XML):PictureViewerModel {
+				var model:PictureViewerModel = new PictureViewerModel();
+				
+				model.pictures = parsePictures(wallpaperList.picture);
+				
+				return model;
+			}
+			
+			private function parsePictures(pictures:XMLList):Array {
+				var pictureList:Array = new Array();
+				
+				for each (var picture:XML in pictures) {
+					var model:PictureModel = new PictureModel;
+					model.url = picture.@url;
+					pictureList.push(model);
+				}
+				
+				return pictureList;
 			}
 
 		]]>
@@ -41,7 +114,7 @@
 		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" >
 			<model:entries>
 				<s:ArrayList>
-					<model:MenuEntryModel label="gallery" color="{0xff0000}">
+					<model:MenuEntryModel label="gallery">
 					</model:MenuEntryModel>
 					<model:MenuEntryModel label="info">
 						<model:entries>

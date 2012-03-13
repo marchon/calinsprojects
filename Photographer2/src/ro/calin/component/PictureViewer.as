@@ -237,6 +237,8 @@ package ro.calin.component
 		
 		/**
 		 * Starts loading the pictures in the model with the specified content loader.
+		 * 
+		 * TODO: make this a separate component
 		 */
 		private function load(cacheLoader:ContentCache, model:PictureViewerModel):void {
 			if(loadingInProgress) {

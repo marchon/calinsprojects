@@ -111,12 +111,12 @@
 					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
 		
 		<!-- Declare internal model -->
-		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" >
+		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" extra="{App.MENU_MIDDLE}">
 			<model:entries>
 				<s:ArrayList>
-					<model:MenuEntryModel label="gallery">
+					<model:MenuEntryModel label="gallery" extra="{App.MENU_BOTTOM}">
 					</model:MenuEntryModel>
-					<model:MenuEntryModel label="info">
+					<model:MenuEntryModel label="info" extra="{App.MENU_TOP}">
 						<model:entries>
 							<s:ArrayList>
 								<model:MenuEntryModel label="blog">
@@ -130,7 +130,7 @@
 							</s:ArrayList>
 						</model:entries>
 					</model:MenuEntryModel>
-					<model:MenuEntryModel label="share">
+					<model:MenuEntryModel label="share" extra="{App.MENU_TOP}">
 						<model:entries>
 							<s:ArrayList>
 								<model:MenuEntryModel label="facebook">

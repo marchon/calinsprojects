@@ -1,7 +1,9 @@
 package ro.calin.app
 {
 
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayList;
@@ -9,6 +11,7 @@ package ro.calin.app
 	import ro.calin.component.CategoryViewer;
 	import ro.calin.component.Menu;
 	import ro.calin.component.PictureViewer;
+	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.MenuEntryModel;
@@ -31,19 +34,15 @@ package ro.calin.app
 	{	
 		private static const THUMBNAIL_HEIGHT:Number = 119;
 		
-		private static const MENU_MIDDLE:String = "menumiddle";
-		private static const MENU_TOP:String = "menutop";
-		private static const MENU_BOTTOM:String = "menubottom";
-		
-		
-		//externalize???
-		private static const TOP_LIST:Array = ['info', 'share'];
-		private static const BOTTOM_LIST:Array = ['gallery'];
+		public static const MENU_MIDDLE:String = "menumiddle";
+		public static const MENU_TOP:String = "menutop";
+		public static const MENU_BOTTOM:String = "menubottom";
 		
 		private static const WALLPAPERS:String = "wp";
+		private static const PICS:String = "pcs";
 		
 		[Bindable]
-		public var currentSkinState:String = MENU_MIDDLE;
+		public var currentSkinState:String = MENU_BOTTOM;
 		
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
@@ -71,6 +70,8 @@ package ro.calin.app
 			this.menuModel = menuModel;
 			this.wallpapers = wallpaperModel;
 			
+			currentSkinState = menuModel.extra as String;
+			
 			setStyle("skinClass", AppSkin);
 		}
 		
@@ -86,13 +87,21 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.addEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
+				categoryViewer.addEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
 			if(instance == pictureViewer) {
 				pictureViewer.registerModel(WALLPAPERS, wallpapers, true);
-				
 				pictureViewer.setActiveModel(WALLPAPERS);
 				pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+			}
+			
+			if(instance == leftButton) {
+				leftButton.addEventListener(MouseEvent.CLICK, leftButtonClick);
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+			}
+			if(instance == rightButton) {
+				rightButton.addEventListener(MouseEvent.CLICK, rightButtonClick);
 			}
 		}
 		
@@ -107,21 +116,46 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.removeEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
+				categoryViewer.removeEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
+			}
+			
+			if(instance == leftButton) {
+				leftButton.removeEventListener(MouseEvent.CLICK, leftButtonClick);
+				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+			}
+			if(instance == rightButton) {
+				rightButton.removeEventListener(MouseEvent.CLICK, rightButtonClick);
 			}
 		}
 		
 		protected function menuLogoClick(event:MenuEvent):void
 		{
-			currentSkinState = MENU_MIDDLE;
+			changeCurrentState(menuModel.extra as String);
 		}
 		
-		protected function menuItemClick(event:MenuEvent):void
-		{
-			if(TOP_LIST.indexOf(event.entry.label) >= 0) {
-				currentSkinState = MENU_TOP;
-			} else if(BOTTOM_LIST.indexOf(event.entry.label) >= 0) {
-				currentSkinState = MENU_BOTTOM;
+		protected function menuItemClick(event:MenuEvent):void {
+			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String)	
+		}
+		
+		protected function changeCurrentState(state:String):void
+		{	
+			leftButton.visible = rightButton.visible = false;
+			pictureViewer.setActiveModel(WALLPAPERS);
+			
+			switch(state) {
+				case MENU_MIDDLE:
+					if(currentSkinState == MENU_TOP) pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+					else pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
+					break;
+				case MENU_TOP:
+					pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
+					break;
+				case MENU_BOTTOM:
+					pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+					break;
 			}
+			
+			currentSkinState = state;
 		}
 		
 		private function menuItemHover(event:MenuEvent):void {
@@ -145,6 +179,35 @@ package ro.calin.app
 		
 		private function categoryRollOut(event:MouseEvent):void {
 			categoryViewer.visible = false;
+		}
+		
+		protected function categoryItemClick(event:CategoryEvent):void
+		{
+			var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
+			
+			pictureViewer.registerModel(PICS, model, true);
+			pictureViewer.setActiveModel(PICS);
+			pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
+			
+			leftButton.visible = rightButton.visible = model.pictures.length > 1;
+		}
+		
+		protected function leftButtonClick(event:MouseEvent):void
+		{
+			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+		}
+		
+		protected function rightButtonClick(event:MouseEvent):void
+		{
+			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+		}
+		
+		protected function keyDown(event:KeyboardEvent):void
+		{
+			if(event.keyCode == Keyboard.LEFT)
+				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+			else if(event.keyCode == Keyboard.RIGHT)
+				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
 		}
 	}
 }

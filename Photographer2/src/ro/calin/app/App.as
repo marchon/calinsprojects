@@ -24,8 +24,17 @@ package ro.calin.app
 	[SkinState("menutop")]
 	[SkinState("menubottom")]
 	/**
-	 * Menu model entries contain extra info about....
-	 * TODO: continue...
+	 * 
+	 * This is the expected extra information:
+	 * menuModel.extra - default menu state
+	 * menuModel.entries[i].extra 
+	 * 			- when a string: menu state when displaying subentries in this list
+	 * 			- when a CategoryViewerModel: category model for that category
+	 * CategoryViewerModel.extra - index of this category
+	 * CategoryViewerModel.subcategories[i].extra - the PictureViewerModel for that subcategory
+	 * 
+	 * Category entries are assumed to be displayed when in menubottom state,
+	 * and the category view will be displayed above the menu.
 	 */
 	public class App extends SkinnableComponent
 	{	

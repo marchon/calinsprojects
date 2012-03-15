@@ -1,8 +1,10 @@
 package ro.calin.app
 {
 
+	import flash.display.DisplayObject;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
 	import ro.calin.component.CategoryViewer;
@@ -173,21 +175,37 @@ package ro.calin.app
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1;
 				}
 			
-				categoryViewer.visible = true;
+				showCategory();
 				
 				if(event.target is MenuButton) { //should be
-//					(event.target as MenuButton).addEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
+					(event.target as MenuButton).addEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
 				}
 			}
 		}
 		
 		private function menuButtonRollOut(event:MouseEvent):void {
-			categoryRollOut(event);
+			if(!rolloutIsAboveObject(event)) {
+				hideCategory();
+			}
+			
 			(event.target as MenuButton).removeEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
 		}
 		
+		private function rolloutIsAboveObject(event:MouseEvent):Boolean {
+			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
+			return event.stageY < pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
+		}
+		
 		private function categoryRollOut(event:MouseEvent):void {
+			hideCategory();
+		}
+		
+		private function hideCategory():void {
 			categoryViewer.visible = false;
+		}
+		
+		private function showCategory():void {
+			categoryViewer.visible = true;
 		}
 		
 		protected function categoryItemClick(event:CategoryEvent):void

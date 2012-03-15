@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:component="ro.calin.component.*" 
-		xmlns:model="ro.calin.component.model.*" currentState="{hostComponent.currentSkinState}">
+		xmlns:model="ro.calin.component.model.*">
 	
 	<!--
 		OLD STUFF:

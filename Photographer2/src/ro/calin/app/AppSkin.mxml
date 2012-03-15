@@ -33,7 +33,7 @@
 	<component:Menu id="menu" width="100%" 
 					y.menumiddle="{this.height * .7}" y.menutop="0" y.menubottom="{this.height - menu.height}"/>
 	
-	<component:CategoryViewer id="categoryViewer" bottom="{menu.height}" visible="false"/>
+	<component:CategoryViewer2 id="categoryViewer" bottom="{menu.height}" visible="false"/>
 	
 	<s:Button id="leftButton" skinClass="ro.calin.component.skin.PictureViewerButtonSkin" 
 			  verticalCenter="0" left="-12" buttonMode="true" rotation="180" visible="false"/>

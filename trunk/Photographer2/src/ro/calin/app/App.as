@@ -8,6 +8,7 @@ package ro.calin.app
 	import flash.ui.Keyboard;
 	
 	import ro.calin.component.CategoryViewer;
+	import ro.calin.component.CategoryViewer2;
 	import ro.calin.component.Menu;
 	import ro.calin.component.MenuButton;
 	import ro.calin.component.PictureViewer;
@@ -61,7 +62,7 @@ package ro.calin.app
 		public var menu:Menu;
 		
 		[SkinPart(required="true")]
-		public var categoryViewer:CategoryViewer;
+		public var categoryViewer:CategoryViewer2;
 		
 		[SkinPart(required="true")]
 		public var leftButton:Button;
@@ -178,7 +179,7 @@ package ro.calin.app
 					categoryViewer.model = cm;
 					
 					//set the height of the strip (max is screen height)
-					categoryViewer.height = Math.min(this.height - menu.height, categoryViewer.model.subcategories.length * THUMBNAIL_HEIGHT);
+					categoryViewer.height = Math.min(this.height - menu.height, cm.subcategories.length * THUMBNAIL_HEIGHT);
 					
 					//move it above the corresponding menu item
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1;

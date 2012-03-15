@@ -33,21 +33,6 @@ package ro.calin.component
 		public var scaleFrom:Number;
 		public var scaleTo:Number;
 		
-		public var _imageLoadedHandler:Function = null;
-		
-		public function get imageLoadedHandler():Function {return _imageLoadedHandler;}
-		public function set imageLoadedHandler(value:Function):void {
-			if(imageLoadedHandler != null && image != null) {
-				image.removeEventListener(Event.COMPLETE, _imageLoadedHandler);
-			}
-			
-			_imageLoadedHandler = value;
-			
-			if(imageLoadedHandler != null && image != null) {
-				image.addEventListener(Event.COMPLETE, _imageLoadedHandler);
-			}
-		}
-		
 		[Bindable]
 		public var alwaysHighlight:Boolean;
 		
@@ -101,10 +86,6 @@ package ro.calin.component
 				image.addEventListener(MouseEvent.ROLL_OVER, image_rollOver);
 				image.addEventListener(MouseEvent.ROLL_OUT, image_rollOut);
 				image.addEventListener(MouseEvent.CLICK, image_click);
-				
-				if(_imageLoadedHandler != null) {
-					image.addEventListener(Event.COMPLETE, _imageLoadedHandler);
-				}
 			}
 			if(instance == subcatName && _model) {
 				subcatName.text = _model.name;

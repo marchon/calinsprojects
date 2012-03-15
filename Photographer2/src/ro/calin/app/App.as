@@ -4,21 +4,16 @@ package ro.calin.app
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
-	import flash.utils.Dictionary;
-	
-	import mx.collections.ArrayList;
 	
 	import ro.calin.component.CategoryViewer;
 	import ro.calin.component.Menu;
+	import ro.calin.component.MenuButton;
 	import ro.calin.component.PictureViewer;
 	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.CategoryViewerModel;
-	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
-	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
-	import ro.calin.component.model.SubcategoryModel;
 	
 	import spark.components.Button;
 	import spark.components.supportClasses.SkinnableComponent;
@@ -128,6 +123,10 @@ package ro.calin.app
 			}
 		}
 		
+		override protected function getCurrentSkinState() : String {
+			return currentSkinState;
+		}
+		
 		protected function menuLogoClick(event:MenuEvent):void
 		{
 			changeCurrentState(menuModel.extra as String);
@@ -156,11 +155,12 @@ package ro.calin.app
 			}
 			
 			currentSkinState = state;
+			invalidateSkinState();
 		}
 		
 		private function menuItemHover(event:MenuEvent):void {
 			//extra stores the model for the cagegory, otherwise it's not a category
-			if(event.entry.extra != null) {
+			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
 				
 				if(cm != categoryViewer.model) {
@@ -174,7 +174,16 @@ package ro.calin.app
 				}
 			
 				categoryViewer.visible = true;
+				
+				if(event.target is MenuButton) { //should be
+//					(event.target as MenuButton).addEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
+				}
 			}
+		}
+		
+		private function menuButtonRollOut(event:MouseEvent):void {
+			categoryRollOut(event);
+			(event.target as MenuButton).removeEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
 		}
 		
 		private function categoryRollOut(event:MouseEvent):void {

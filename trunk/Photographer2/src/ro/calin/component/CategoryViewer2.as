@@ -5,6 +5,8 @@ package ro.calin.component
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.SubcategoryModel;
 	
+	import spark.components.Image;
+	import spark.components.Label;
 	import spark.components.VGroup;
 	
 	/**
@@ -31,7 +33,7 @@ package ro.calin.component
 		public function CategoryViewer2()
 		{
 			super();
-			
+			gap = 0;
 			addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			clipAndEnableScrolling = true;
 		}
@@ -42,20 +44,23 @@ package ro.calin.component
 			_model = value;
 			
 			removeAllElements();
-			
+			verticalScrollPosition = 0;
+			//why does this not work
 			for(var i:int = 0; i < _model.subcategories.length; i++) {
-				var sc:Subcategory = new Subcategory();
+//				var sc:Subcategory = new Subcategory();
+//				
+//				sc.model = _model.subcategories.getItemAt(i) as SubcategoryModel;
+//				sc.thumbWidth = _model.thumbWidth;
+//				sc.scaleFrom = _model.scaleFrom;
+//				sc.scaleTo = _model.scaleTo;
+//				sc.alwaysHighlight = highlighted;
 				
-				sc.model = _model.subcategories.getItemAt(i) as SubcategoryModel;
-				sc.thumbWidth = _model.thumbWidth;
-				sc.scaleFrom = _model.scaleFrom;
-				sc.scaleTo = _model.scaleTo;
-				sc.alwaysHighlight = highlighted;
+				var img:Image = new Image();
+				img.source = (_model.subcategories.getItemAt(i) as SubcategoryModel).picUrl;
 				
-				addElement(sc);
+				addElement(img);
 			}
 			
-			invalidateDisplayList();
 		}
 		
 		public function get model():CategoryViewerModel {

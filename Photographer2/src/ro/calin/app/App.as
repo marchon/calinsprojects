@@ -5,6 +5,8 @@ package ro.calin.app
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	
 	import ro.calin.component.CategoryViewer;
@@ -145,7 +147,8 @@ package ro.calin.app
 		}
 		
 		protected function menuItemClick(event:MenuEvent):void {
-			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String)	
+			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String);
+			else if(event.entry.extra is URLRequest) navigateToURL(event.entry.extra as URLRequest);
 		}
 		
 		protected function changeCurrentState(state:String):void

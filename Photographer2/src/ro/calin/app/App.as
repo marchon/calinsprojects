@@ -175,15 +175,20 @@ package ro.calin.app
 			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
 				
+				var actuallHeight:Number = cm.subcategories.length * THUMBNAIL_HEIGHT;
+				var viewHeight:Number = Math.min(this.height - menu.height, actuallHeight);
+				//reset scroll position to bottom
+				categoryViewer.verticalScrollPosition = actuallHeight - viewHeight;
+
 				if(cm != categoryViewer.model) {
-					categoryViewer.model = cm;
-					
 					//set the height of the strip (max is screen height)
-					categoryViewer.height = Math.min(this.height - menu.height, cm.subcategories.length * THUMBNAIL_HEIGHT);
+					categoryViewer.height = viewHeight;
 					
 					//move it above the corresponding menu item
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1;
 				}
+				
+				categoryViewer.model = cm;
 			
 				showCategory();
 				

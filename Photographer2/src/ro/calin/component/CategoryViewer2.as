@@ -1,6 +1,8 @@
 package ro.calin.component
 {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.setTimeout;
 	
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.SubcategoryModel;
@@ -8,6 +10,10 @@ package ro.calin.component
 	import spark.components.Image;
 	import spark.components.Label;
 	import spark.components.VGroup;
+	import spark.effects.Animate;
+	import spark.effects.animation.Animation;
+	import spark.effects.animation.Keyframe;
+	import spark.effects.animation.MotionPath;
 	
 	/**
 	 * Component which can display a vertical thumbnail strip.
@@ -23,12 +29,8 @@ package ro.calin.component
 		 */
 		private var _model:CategoryViewerModel;
 		
-		/**
-		 * Specifies wether the strip is entirely highlighted,
-		 * or every pic gets highlighted on mouseover.
-		 */
-		[Bindable]
-		public var highlighted:Boolean = false;
+		private var anim:Animate = new Animate();
+		private var path:MotionPath = new MotionPath('verticalScrollPosition');
 		
 		public function CategoryViewer2()
 		{
@@ -36,16 +38,22 @@ package ro.calin.component
 			gap = 0;
 			addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			clipAndEnableScrolling = true;
+			
+			anim.target = this;
+			var v:Vector.<MotionPath> = new Vector.<MotionPath>();
+			v.push(path);
+			anim.motionPaths = v;
 		}
-		
-		public function set model(value:CategoryViewerModel):void {
+
+		public function set model(value:CategoryViewerModel):void {	
+			anim.stop();
+			
 			if(_model == value) return;
 			
 			_model = value;
 			
 			removeAllElements();
-			verticalScrollPosition = 0;
-			//why does this not work
+
 			for(var i:int = 0; i < _model.subcategories.length; i++) {
 //				var sc:Subcategory = new Subcategory();
 //				
@@ -58,9 +66,8 @@ package ro.calin.component
 				var img:Image = new Image();
 				img.source = (_model.subcategories.getItemAt(i) as SubcategoryModel).picUrl;
 				
-				addElement(img);
+				addElementAt(img, 0);
 			}
-			
 		}
 		
 		public function get model():CategoryViewerModel {
@@ -69,25 +76,21 @@ package ro.calin.component
 		
 		/**
 		 * This method calculates the scrolling position each time the mouse moves.
-		 * TODO:
-		 * 	1. tap max value as to not get empty space under last pic
-		 * 		- this might be because of pic scaling
-		 *  	- if scale is very little, it is bearly noticeable
-		 *  2. set scroll position to max scroll when the model changes (this should be done after all the pics are loaded)
-		 *  3. try scrolling with animation
 		 */
-		private function mouseMoveHandler(evt:MouseEvent):void {
-			
-			//first time pointer is over, remove highlighting
-			if(highlighted) highlighted = false;
-			
+		private function mouseMoveHandler(evt:MouseEvent):void {	
 			var fr:Number = (contentHeight - height) / height;
-			var scroll:Number = fr * evt.stageY - fr * this.y;
+			if(fr == 0) return;
+			
+			var scroll:Number = fr * (evt.stageY - this.y);
 			
 			var ms:Number = contentHeight - height;
 			if(scroll > ms) scroll = ms;
 			
-			verticalScrollPosition = scroll;
+			anim.stop();
+			path.keyframes = new <Keyframe>[new Keyframe(0, verticalScrollPosition), 
+				new Keyframe(Math.abs(verticalScrollPosition - scroll) / 2, scroll)];			
+			anim.play();
+//			verticalScrollPosition = scroll;
 		}
 		
 	}

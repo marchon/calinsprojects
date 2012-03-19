@@ -29,6 +29,10 @@ package ro.calin.component
 		 */
 		private var _model:CategoryViewerModel;
 		
+		private var adjustFraction:Number = 0;
+		private var adjustFraction1:Number = 0;
+		private var recalculateFraction:Boolean = true;
+		
 		private var anim:Animate = new Animate();
 		private var path:MotionPath = new MotionPath('verticalScrollPosition');
 		
@@ -68,29 +72,54 @@ package ro.calin.component
 				
 				addElementAt(img, 0);
 			}
+			
+			recalculateFraction = true;
 		}
 		
 		public function get model():CategoryViewerModel {
 			return _model;
 		}
 		
+		override public function set height(value:Number):void {
+			super.height = value;
+			recalculateFraction = true;
+		}
+		
+		public function set scroll(value:Number):void  {
+			
+//			anim.stop();
+//			path.keyframes = new <Keyframe>[new Keyframe(0, super.verticalScrollPosition), 
+//				new Keyframe(Math.abs(super.verticalScrollPosition - value) / 2, value)];			
+//			anim.play();
+			
+			super.verticalScrollPosition = value;
+		}
+		
 		/**
 		 * This method calculates the scrolling position each time the mouse moves.
+		 * 
+		 * mouseY		->	scroll
+		 * (h/p, h-h/p) -> (0, ch-h)
 		 */
 		private function mouseMoveHandler(evt:MouseEvent):void {	
-			var fr:Number = (contentHeight - height) / height;
-			if(fr == 0) return;
+			if(recalculateFraction) {
+				var p:int = 10;
+				adjustFraction = ((contentHeight - height) / height) * p/(p-2);
+				adjustFraction1 = (height - contentHeight) / (p-2);
+				recalculateFraction = false;
+			}
 			
-			var scroll:Number = fr * (evt.stageY - this.y);
+			if(adjustFraction == 0) return;
+			var relativeY:Number = evt.stageY - this.y;
 			
-			var ms:Number = contentHeight - height;
-			if(scroll > ms) scroll = ms;
+			var scroll:Number = adjustFraction * relativeY + adjustFraction1;
 			
-			anim.stop();
-			path.keyframes = new <Keyframe>[new Keyframe(0, verticalScrollPosition), 
-				new Keyframe(Math.abs(verticalScrollPosition - scroll) / 2, scroll)];			
-			anim.play();
-//			verticalScrollPosition = scroll;
+			//cap it for overflow
+			var max:Number = contentHeight - height;
+			if(scroll > max) scroll = max;
+			if(scroll < 0) scroll = 0;
+			
+			this.scroll = scroll;
 		}
 		
 	}

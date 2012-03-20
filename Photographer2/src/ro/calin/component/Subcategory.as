@@ -1,6 +1,5 @@
 package ro.calin.component
 {
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import ro.calin.component.event.CategoryEvent;
@@ -19,7 +18,6 @@ package ro.calin.component
 	{
 		public static var loader:IContentLoader = new ContentCache();
 		
-		//TODO: bitmap image not scaling as inteded
 		[SkinPart(required="true")]
 		public var image:Image;
 		
@@ -30,8 +28,6 @@ package ro.calin.component
 		public var subcatDesc:Label;
 		
 		public var thumbWidth:Number;
-		public var scaleFrom:Number;
-		public var scaleTo:Number;
 		
 		[Bindable]
 		public var alwaysHighlight:Boolean;
@@ -60,11 +56,6 @@ package ro.calin.component
 			}
 		}
 		
-		public function get leftMargin():Number {
-			//TODO: cache this value, cuz it's constant for all???
-			return (scaleTo - scaleFrom) * thumbWidth / 2;
-		}
-		
 		override protected function getCurrentSkinState() : String {
 			if(_isHovered) {
 				return "hovered";
@@ -80,7 +71,7 @@ package ro.calin.component
 				image.contentLoader = loader;
 				
 				if(_model) {
-					image.source == _model.picUrl;	
+					image.source = _model.picUrl;	
 				}
 				
 				image.addEventListener(MouseEvent.ROLL_OVER, image_rollOver);

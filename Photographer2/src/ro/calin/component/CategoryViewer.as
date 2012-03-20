@@ -1,18 +1,15 @@
 package ro.calin.component
 {
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import mx.collections.ArrayCollection;
-	import mx.events.PropertyChangeEvent;
+	import mx.binding.utils.BindingUtils;
 	
-	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.model.CategoryViewerModel;
-	import ro.calin.component.skin.CategoryViewerSkin;
+	import ro.calin.component.model.SubcategoryModel;
 	
-	import spark.components.DataGroup;
-	import spark.components.supportClasses.SkinnableComponent;
-	import spark.core.NavigationUnit;
+	import spark.components.VGroup;
+	import spark.effects.Animate;
+	import spark.effects.animation.MotionPath;
 	
 	/**
 	 * Component which can display a vertical thumbnail strip.
@@ -21,101 +18,84 @@ package ro.calin.component
 	 * or bottom.
 	 */
 	[Event(name="categItemClick", type="ro.calin.component.event.CategoryEvent")]
-	public class CategoryViewer extends SkinnableComponent
+	public class CategoryViewer extends VGroup
 	{
-		/**
-		 * This is the group of thumbnails.
-		 */
-		[SkinPart(required="true")]
-		public var thumbnailStrip:DataGroup;
-		
 		/**
 		 * Contains information about pics shown here.
 		 */
 		private var _model:CategoryViewerModel;
+
+		private var adjustFraction:Number = 0;
+		private var adjustFraction1:Number = 0;
+		private var recalculateFraction:Boolean = true;
 		
-		/**
-		 * Specifies wether the strip is entirely highlighted,
-		 * or every pic gets highlighted on mouseover.
-		 */
 		[Bindable]
-		public var highlighted:Boolean = false;
+		public var highlightAll:Boolean = true;
 		
-		public function CategoryViewer() {
-			//set the skin
-			setStyle("skinClass", CategoryViewerSkin);
+		public function CategoryViewer()
+		{
+			super();
+			gap = 0;
+			addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+			clipAndEnableScrolling = true;
 		}
-		
-		[Bindable]
-		public function set model(value:CategoryViewerModel):void {
+
+		public function set model(value:CategoryViewerModel):void {	
+			if(_model == value) return;
+			
 			_model = value;
 			
-			//set the provider for the data group
-			if(thumbnailStrip != null) {
-				thumbnailStrip.dataProvider = _model.subcategories;
+			removeAllElements();
+			for(var i:int = 0; i < _model.subcategories.length; i++) {
+				var sc:Subcategory = new Subcategory();
+				
+				sc.model = _model.subcategories.getItemAt(i) as SubcategoryModel;
+				sc.thumbWidth = _model.thumbWidth;
+				BindingUtils.bindProperty(sc, "alwaysHighlight", this, "highlightAll");
+				
+				addElementAt(sc, 0);
 			}
+			
+			recalculateFraction = true;
 		}
 		
 		public function get model():CategoryViewerModel {
-			//create one to avoid npe in skin
-			if(_model == null) _model = new CategoryViewerModel();
-			
 			return _model;
 		}
 		
-		/**
-		 * Attaching behaviour to components.
-		 */
-		override protected function partAdded(partName:String, instance:Object) : void {
-			super.partAdded(partName, instance);
-			
-			if(instance == thumbnailStrip) {
-				if(_model != null) {
-					thumbnailStrip.dataProvider = _model.subcategories;
-				}
-				thumbnailStrip.addEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
-				
-				//clip it, scroll it!!! yeah
-				thumbnailStrip.clipAndEnableScrolling = true;
-			}
+		override public function set height(value:Number):void {
+			super.height = value;
+			recalculateFraction = true;
 		}
 		
-		/**
-		 * Probably is called when a skin part is removed(so never in this case)
-		 */
-		override protected function partRemoved(partName:String, instance: Object) : void {
-			super.partRemoved(partName, instance);
-			
-			if(instance == thumbnailStrip) {
-				thumbnailStrip.removeEventListener(MouseEvent.MOUSE_MOVE, thumbnailStrip_mouseMoveHandler);
-			}
+		public function set scroll(value:Number):void  {
+			super.verticalScrollPosition = value;
 		}
 		
 		/**
 		 * This method calculates the scrolling position each time the mouse moves.
-		 * TODO:
-		 * 	1. tap max value as to not get empty space under last pic
-		 * 		- this might be because of pic scaling
-		 *  	- if scale is very little, it is bearly noticeable
-		 *  2. set scroll position to max scroll when the model changes (this should be done after all the pics are loaded)
-		 *  3. try scrolling with animation
+		 * 
+		 * mouseY   ->	scroll
+		 * (p, h-p) -> (0, ch-h)
 		 */
-		private function thumbnailStrip_mouseMoveHandler(evt:MouseEvent):void {
+		private function mouseMoveHandler(evt:MouseEvent):void {	
+			if(recalculateFraction) {
+				adjustFraction = (contentHeight - height) / (height - _model.thumbHeight);
+				adjustFraction1 = ((height - contentHeight) * _model.thumbHeight / 2) / (height - _model.thumbHeight);
+				recalculateFraction = false;
+			}
 			
-			//first time pointer is over, remove highlighting
-			if(highlighted) highlighted = false;
+			if(adjustFraction == 0) return;
+			var relativeY:Number = evt.stageY - this.y;
 			
-			var fr:Number = (thumbnailStrip.contentHeight - thumbnailStrip.height) / thumbnailStrip.height;
-			var scroll:Number = fr * evt.stageY - fr * this.y;
+			var scroll:Number = adjustFraction * relativeY + adjustFraction1;
 			
-			var ms:Number = maxScroll();
-			if(scroll > ms) scroll = ms;
+			//cap it for overflow
+			var max:Number = contentHeight - height;
+			if(scroll > max) scroll = max;
+			if(scroll < 0) scroll = 0;
 			
-			thumbnailStrip.verticalScrollPosition = scroll;
+			this.scroll = scroll;
 		}
-		
-		private function maxScroll():Number {
-			return thumbnailStrip.contentHeight - thumbnailStrip.height;  //haha, funny
-		} 
 	}
 }

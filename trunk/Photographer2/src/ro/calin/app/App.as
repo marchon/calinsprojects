@@ -9,8 +9,9 @@ package ro.calin.app
 	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	
+	import mx.core.IVisualElement;
+	
 	import ro.calin.component.CategoryViewer;
-	import ro.calin.component.CategoryViewer2;
 	import ro.calin.component.Menu;
 	import ro.calin.component.MenuButton;
 	import ro.calin.component.PictureViewer;
@@ -21,6 +22,7 @@ package ro.calin.app
 	import ro.calin.component.model.PictureViewerModel;
 	
 	import spark.components.Button;
+	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	[SkinState("menumiddle")]
@@ -33,6 +35,7 @@ package ro.calin.app
 	 * menuModel.entries[i].extra 
 	 * 			- when a string: menu state when displaying subentries in this list
 	 * 			- when a CategoryViewerModel: category model for that category
+	 * 			- when a URLRequest: url to navigate at click
 	 * CategoryViewerModel.extra - index of this category
 	 * CategoryViewerModel.subcategories[i].extra - the PictureViewerModel for that subcategory
 	 * 
@@ -41,8 +44,6 @@ package ro.calin.app
 	 */
 	public class App extends SkinnableComponent
 	{	
-		private static const THUMBNAIL_HEIGHT:Number = 119;
-		
 		public static const MENU_MIDDLE:String = "menumiddle";
 		public static const MENU_TOP:String = "menutop";
 		public static const MENU_BOTTOM:String = "menubottom";
@@ -64,13 +65,16 @@ package ro.calin.app
 		public var menu:Menu;
 		
 		[SkinPart(required="true")]
-		public var categoryViewer:CategoryViewer2;
+		public var categoryViewer:ro.calin.component.CategoryViewer;
 		
 		[SkinPart(required="true")]
 		public var leftButton:Button;
 		
 		[SkinPart(required="true")]
 		public var rightButton:Button;
+		
+		[SkinPart(required="true")]
+		public var externalContentGroup:Group;
 		
 		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel)
 		{			
@@ -96,6 +100,7 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.addEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
+				categoryViewer.addEventListener(MouseEvent.ROLL_OVER, mouseRollOverHandler);
 				categoryViewer.addEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
@@ -125,6 +130,7 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.removeEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
+				categoryViewer.removeEventListener(MouseEvent.ROLL_OVER, mouseRollOverHandler);
 				categoryViewer.removeEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
@@ -147,8 +153,11 @@ package ro.calin.app
 		}
 		
 		protected function menuItemClick(event:MenuEvent):void {
+			if(externalContentGroup.numElements > 0) externalContentGroup.removeAllElements();
+			
 			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String);
 			else if(event.entry.extra is URLRequest) navigateToURL(event.entry.extra as URLRequest);
+			else if(event.entry.extra is IVisualElement) externalContentGroup.addElement(event.entry.extra as IVisualElement);
 		}
 		
 		protected function changeCurrentState(state:String):void
@@ -178,21 +187,21 @@ package ro.calin.app
 			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
 				
-				var actuallHeight:Number = cm.subcategories.length * THUMBNAIL_HEIGHT;
+				var actuallHeight:Number = cm.subcategories.length * cm.thumbHeight;
 				var viewHeight:Number = Math.min(this.height - menu.height, actuallHeight);
 				//reset scroll position to bottom
 				categoryViewer.verticalScrollPosition = actuallHeight - viewHeight;
-
+				
 				if(cm != categoryViewer.model) {
 					//set the height of the strip (max is screen height)
 					categoryViewer.height = viewHeight;
 					
 					//move it above the corresponding menu item
-					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1;
+					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1; //hardcoded adjustment(because of scaling)
 				}
 				
 				categoryViewer.model = cm;
-			
+				categoryViewer.highlightAll = true;
 				showCategory();
 				
 				if(event.target is MenuButton) { //should be
@@ -216,6 +225,10 @@ package ro.calin.app
 		
 		private function categoryRollOut(event:MouseEvent):void {
 			hideCategory();
+		}
+		
+		private function mouseRollOverHandler(evt:MouseEvent):void {	
+			categoryViewer.highlightAll = false;
 		}
 		
 		private function hideCategory():void {

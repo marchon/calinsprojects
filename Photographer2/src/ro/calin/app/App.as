@@ -248,6 +248,8 @@ package ro.calin.app
 			pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
 			
 			leftButton.visible = rightButton.visible = model.pictures.length > 1;
+			
+			hideCategory();
 		}
 		
 		protected function leftButtonClick(event:MouseEvent):void
@@ -262,6 +264,8 @@ package ro.calin.app
 		
 		protected function keyDown(event:KeyboardEvent):void
 		{
+			if(!leftButton.visible) return;
+			
 			if(event.keyCode == Keyboard.LEFT)
 				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
 			else if(event.keyCode == Keyboard.RIGHT)

@@ -51,7 +51,7 @@ package ro.calin.component
 				
 				sc.model = _model.subcategories.getItemAt(i) as SubcategoryModel;
 				sc.thumbWidth = _model.thumbWidth;
-				BindingUtils.bindProperty(sc, "alwaysHighlight", this, "highlightAll");
+				BindingUtils.bindProperty(sc, "alwaysHighlight", this, "highlightAll", true, true);
 				
 				addElementAt(sc, 0);
 			}
@@ -79,13 +79,16 @@ package ro.calin.component
 		 * (p, h-p) -> (0, ch-h)
 		 */
 		private function mouseMoveHandler(evt:MouseEvent):void {	
+			if(height == contentHeight) return;
+			
 			if(recalculateFraction) {
-				adjustFraction = (contentHeight - height) / (height - _model.thumbHeight);
-				adjustFraction1 = ((height - contentHeight) * _model.thumbHeight / 2) / (height - _model.thumbHeight);
+				//if height - thumbHeight = 0(just one thumb), we have problems (div0)
+				var adj:Number = _model.thumbHeight == height? 0 : _model.thumbHeight;
+				adjustFraction = (contentHeight - height) / (height - adj);
+				adjustFraction1 = ((height - contentHeight) * adj / 2) / (height - adj);
 				recalculateFraction = false;
 			}
 			
-			if(adjustFraction == 0) return;
 			var relativeY:Number = evt.stageY - this.y;
 			
 			var scroll:Number = adjustFraction * relativeY + adjustFraction1;

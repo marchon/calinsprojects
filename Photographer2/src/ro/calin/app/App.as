@@ -28,6 +28,7 @@ package ro.calin.app
 	[SkinState("menumiddle")]
 	[SkinState("menutop")]
 	[SkinState("menubottom")]
+	[SkinState("menubottomshowcat")]
 	/**
 	 * 
 	 * This is the expected extra information:
@@ -39,7 +40,7 @@ package ro.calin.app
 	 * CategoryViewerModel.extra - index of this category
 	 * CategoryViewerModel.subcategories[i].extra - the PictureViewerModel for that subcategory
 	 * 
-	 * Category entries are assumed to be displayed when in menubottom state,
+	 * Category entries are assumed to be displayed in the menu when in menubottom state,
 	 * and the category view will be displayed above the menu.
 	 */
 	public class App extends SkinnableComponent
@@ -47,12 +48,13 @@ package ro.calin.app
 		public static const MENU_MIDDLE:String = "menumiddle";
 		public static const MENU_TOP:String = "menutop";
 		public static const MENU_BOTTOM:String = "menubottom";
+		public static const MENU_BOTTOM_CATEGORY:String = "menubottomshowcat"
 		
 		private static const WALLPAPERS:String = "wp";
 		private static const PICS:String = "pcs";
 		
 		[Bindable]
-		public var currentSkinState:String = MENU_BOTTOM;
+		public var currentSkinState:String = MENU_MIDDLE;
 		
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
@@ -100,7 +102,7 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.addEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
-				categoryViewer.addEventListener(MouseEvent.ROLL_OVER, mouseRollOverHandler);
+				categoryViewer.addEventListener(MouseEvent.ROLL_OVER, categoryRollOver);
 				categoryViewer.addEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
@@ -130,7 +132,7 @@ package ro.calin.app
 			
 			if(instance == categoryViewer) {
 				categoryViewer.removeEventListener(MouseEvent.ROLL_OUT, categoryRollOut);
-				categoryViewer.removeEventListener(MouseEvent.ROLL_OVER, mouseRollOverHandler);
+				categoryViewer.removeEventListener(MouseEvent.ROLL_OVER, categoryRollOver);
 				categoryViewer.removeEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
@@ -223,20 +225,30 @@ package ro.calin.app
 			return event.stageY < pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
 		}
 		
-		private function categoryRollOut(event:MouseEvent):void {
-			hideCategory();
+		private function rolloutIsBelowObject(event:MouseEvent):Boolean {
+			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
+			return event.stageY > pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
 		}
 		
-		private function mouseRollOverHandler(evt:MouseEvent):void {	
+		private function categoryRollOut(event:MouseEvent):void {
+			if(!rolloutIsBelowObject(event)) {
+				hideCategory();
+			}
+		}
+		
+		private function categoryRollOver(evt:MouseEvent):void {
+			if(currentSkinState != MENU_BOTTOM_CATEGORY) showCategory();
 			categoryViewer.highlightAll = false;
 		}
 		
 		private function hideCategory():void {
-			categoryViewer.visible = false;
+			currentSkinState = MENU_BOTTOM;
+			invalidateSkinState();
 		}
 		
 		private function showCategory():void {
-			categoryViewer.visible = true;
+			currentSkinState = MENU_BOTTOM_CATEGORY;
+			invalidateSkinState();
 		}
 		
 		protected function categoryItemClick(event:CategoryEvent):void

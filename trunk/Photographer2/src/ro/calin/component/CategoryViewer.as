@@ -78,8 +78,9 @@ package ro.calin.component
 		 * mouseY   ->	scroll
 		 * (p, h-p) -> (0, ch-h)
 		 */
-		private function mouseMoveHandler(evt:MouseEvent):void {	
-			if(height == contentHeight) return;
+		private function mouseMoveHandler(evt:MouseEvent):void {
+			//nothing to scroll - it all fits (cover scale of thumbnail - ch will slightly increase)
+			if(Math.abs(height - contentHeight) < 3) return;
 			
 			if(recalculateFraction) {
 				//if height - thumbHeight = 0(just one thumb), we have problems (div0)

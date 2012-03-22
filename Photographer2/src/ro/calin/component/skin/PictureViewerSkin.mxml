@@ -15,17 +15,4 @@
 	
 	<component:ClippedImage id="picture1" width="{hostComponent.width}" height="{hostComponent.height}"/>
 	<component:ClippedImage id="picture2" width="{hostComponent.width}" height="{hostComponent.height}"/>
-	
-	<s:Rect x="0" y="0" height="10" visible="{hostComponent.loadingInProgress}"
-			width="{hostComponent.width}" >
-		<s:fill>
-			<s:SolidColor color="green" alpha="0.3"/>
-		</s:fill>
-	</s:Rect>
-	<s:Rect x="0" y="0" height="10" visible="{hostComponent.loadingInProgress}"
-			width="{hostComponent.width * hostComponent.percentLoaded}" >
-		<s:fill>
-			<s:SolidColor color="green" />
-		</s:fill>
-	</s:Rect>
 </s:Skin>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("ro.calin.component.LoadingProgressBar")]
+	</fx:Metadata>
+	
+	<s:Rect x="0" y="0" width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="{hostComponent.color}" alpha="0.3"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect x="0" y="0" height="100%" percentWidth="{hostComponent.percentLoaded}">
+		<s:fill>
+			<s:SolidColor color="{hostComponent.color}" />
+		</s:fill>
+	</s:Rect>
+</s:Skin>

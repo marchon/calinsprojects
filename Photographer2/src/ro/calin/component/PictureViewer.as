@@ -77,27 +77,6 @@ package ro.calin.component
 		private var _moveAnim:Move;
 		
 		/**
-		 * Amout of data received if load is triggered.
-		 */
-		[Bindable] public var percentLoaded:Number = 0.0;
-		
-		/**
-		 * Whether or not to show a loading bar. 
-		 */
-		[Bindable] public var loadingInProgress:Boolean = false;
-		
-		/**
-		 * Holds a map of requests for computing loading progress.
-		 */
-		private var _loadingMap:Dictionary;
-		
-		/**
-		 * Number of pictures that have not finished loading if preloading is atempted.
-		 */
-		private var _unloadedPicNb:int = 0;
-		
-		
-		/**
 		 * Constructor, sets the skin and creates the animation object.
 		 */
 		public function PictureViewer()
@@ -117,14 +96,26 @@ package ro.calin.component
 		}
 		
 		/**
-		 * Registers a list of pictures, optionally preloading them. 
+		 * Registers a list of pictures, starts to load and cache.
+		 * Returns a list of content requests.
 		 */
-		public function registerModel(name:String, value:PictureViewerModel, preload:Boolean):void {
+		public function registerModel(name:String, value:PictureViewerModel):Array {
 			//do not register if already registered
-			if(_models[name] != null && _models[name].model == value) return;
+			if(_models[name] != null && _models[name].model == value) return null;
 			
 			//create or reuse a cache loader
-			var cache:ContentCache = _models[name] != null? _models[name].cache : new ContentCache();
+			var cache:ContentCache;
+			
+			if(_models[name] != null) {
+				cache = _models[name].cache;
+				cache.removeAllCacheEntries();
+			} else {
+				cache = new ContentCache();
+				cache.enableCaching = true;
+				cache.enableQueueing = true;
+				cache.maxActiveRequests = 5;
+				cache.maxCacheEntries = 30;
+			}
 			
 			//save the values
 			_models[name] = {
@@ -132,10 +123,13 @@ package ro.calin.component
 				model: value
 			};
 			
-			cache.removeAllCacheEntries();
+			var res:Array = [];
 			
-			//preload if necesarry
-			if(preload) load(cache, value);
+			for(var i:int = 0; i < value.pictures.length; i++) {
+				res.push(cache.load(PictureModel(value.pictures[i]).url));
+			}
+			
+			return res;
 		}
 		
 		/**
@@ -234,78 +228,7 @@ package ro.calin.component
 			_moveAnim.xBy = 0;
 			_moveAnim.yBy = 0;
 		}
-		
-		/**
-		 * Starts loading the pictures in the model with the specified content loader.
-		 * 
-		 * TODO: make this a separate component
-		 */
-		private function load(cacheLoader:ContentCache, model:PictureViewerModel):void {
-			if(loadingInProgress) {
-				//schedule for later, do not interupt the current loading
-				setTimeout(load, 400, cacheLoader, model);
-				return;
-			}
-			
-			loadingInProgress = true;
-			
-			_loadingMap = new Dictionary();
-			_unloadedPicNb = model.pictures.length;
-			
-			for(var i:int = 0; i < model.pictures.length; i++) {
-				var cr:ContentRequest = cacheLoader.load(PictureModel(model.pictures[i]).url);
-				if(!cr.complete) {
-					cr.addEventListener(ProgressEvent.PROGRESS, progress);
-					cr.addEventListener(Event.COMPLETE, complete);
-				}
-				//need to hold a reference to cr, else the callbacks are not called
-				_loadingMap[cr] = {bytesLoaded : 0, bytesTotal : 1024 * 1024}; //assume a pic has 1 mb 
-			}
-			
-			compute();
-		}
-		
-		/**
-		 * Called with each progress event. 
-		 */
-		private function progress(event:ProgressEvent):void {
-			_loadingMap[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
-			
-			compute();
-		}
-		
-		/**
-		 * Called with each complete event.
-		 */
-		private function complete(event:Event):void {
-			delete _loadingMap[event.target];
-			
-			compute();
-			
-			_unloadedPicNb--;
-			
-			if(_unloadedPicNb == 0) { 
-				//all pics in the set are loaded
-				loadingInProgress = false;
-				_loadingMap = null;
-			}
-		}
-		
-		/**
-		 * Called to update the progress for loading.
-		 */
-		private function compute():void {
-			var loaded:Number = 0;
-			var total:Number = 0;
-			
-			for each(var progressInfo:Object in _loadingMap) {
-				loaded += progressInfo.bytesLoaded;
-				total += progressInfo.bytesTotal;
-			}
-			
-			percentLoaded = total > 0? (loaded/total) : 1;
-		}
-		
+				
 		/**
 		 * When ths skin parts are created, make the pointers for outside and inside pics
 		 * point to pic1/pic2 and add click listeners for the buttons.

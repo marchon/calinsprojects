@@ -91,7 +91,7 @@
 				
 				for each (var picture:XML in pictures) {
 					var model:PictureModel = new PictureModel;
-					model.url = picture.@url;
+					model.url = "debug.php?img=" + picture.@url;
 					pictureList.push(model);
 				}
 				

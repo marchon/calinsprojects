@@ -7,18 +7,20 @@ package ro.calin.component
 	import flash.events.SecurityErrorEvent;
 	import flash.utils.Dictionary;
 	
-	import ro.calin.component.event.LoadComplete;
+	import ro.calin.component.event.LoadingEvent;
 	import ro.calin.component.skin.LoadingProgressBarSkin;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.core.ContentRequest;
 	
+	[Event(name="loadStart", type="ro.calin.component.event.LoadingEvent")]
+	[Event(name="loadComplete", type="ro.calin.component.event.LoadingEvent")]
 	public class LoadingProgressBar extends SkinnableComponent
 	{
 		[Bindable] public var color:uint = 0x00ff00;
 		[Bindable] public var percentLoaded:Number = 0;
 		
-		public var defaultSize:int = 1024 * 1024;
+		public var defaultSize:int = 1024 * 512; //500k default
 		
 		/**
 		 * Holds a map of requests for computing loading progress.
@@ -34,21 +36,16 @@ package ro.calin.component
 		}
 		
 		public function showLoading(requests:Array) : Boolean {
-			if(unfinishedRequests > 0) return false;
+			if(unfinishedRequests > 0 || requests == null || requests.length == 0) return false;
+			
+			dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_START));
 			
 			unfinishedRequests = 0;
 			for(var i:int = 0; i < requests.length; i++) {
 				var cr:ContentRequest = requests[i];
 				if(!cr.complete) {
 					unfinishedRequests++;
-					cr.addEventListener(ProgressEvent.PROGRESS, progress);
-					cr.addEventListener(Event.COMPLETE, complete);
-					cr.addEventListener(IOErrorEvent.IO_ERROR, complete);
-					cr.addEventListener(SecurityErrorEvent.SECURITY_ERROR, complete);
-					cr.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent) : void {
-						if(event.status % 100 == 4 || event.status % 100 == 5)
-							complete(event);
-					});
+					registerHandlers(cr);
 				}
 
 				loadingMap[cr] = {bytesLoaded : 0, bytesTotal : defaultSize};
@@ -57,6 +54,22 @@ package ro.calin.component
 			compute();
 			
 			return true;
+		}
+		
+		private function registerHandlers(req:ContentRequest) : void {
+			req.addEventListener(ProgressEvent.PROGRESS, progress);
+			req.addEventListener(Event.COMPLETE, complete);
+			req.addEventListener(IOErrorEvent.IO_ERROR, complete);
+			req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, complete);
+			req.addEventListener(HTTPStatusEvent.HTTP_STATUS, complete);
+		}
+		
+		private function unregisterHandlers(req:ContentRequest) : void {
+			req.removeEventListener(ProgressEvent.PROGRESS, progress);
+			req.removeEventListener(Event.COMPLETE, complete);
+			req.removeEventListener(IOErrorEvent.IO_ERROR, complete);
+			req.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, complete);
+			req.removeEventListener(HTTPStatusEvent.HTTP_STATUS, complete);
 		}
 		
 		/**
@@ -72,6 +85,12 @@ package ro.calin.component
 		 * Called with each complete event.
 		 */
 		private function complete(event:Event):void {
+			if(event is HTTPStatusEvent) {
+				//only if it's a http error it's complete
+				if(HTTPStatusEvent(event).status % 100 != 4 && HTTPStatusEvent(event).status % 100 != 5) return;
+			}
+			
+			unregisterHandlers(event.target as ContentRequest);
 			delete loadingMap[event.target];
 			
 			compute();
@@ -79,7 +98,7 @@ package ro.calin.component
 			unfinishedRequests--;
 			
 			if(unfinishedRequests == 0) { 
-				dispatchEvent(new LoadComplete(LoadComplete.LOAD_COMPLETE));
+				dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_COMPLETE));
 			}
 		}
 		
@@ -95,7 +114,7 @@ package ro.calin.component
 				total += progressInfo.bytesTotal;
 			}
 			
-			percentLoaded = total > 0? (loaded/total) * 100 : 0;
+			percentLoaded = total > 0? (loaded/total) * 100 : 100;
 		}
 	}
 }

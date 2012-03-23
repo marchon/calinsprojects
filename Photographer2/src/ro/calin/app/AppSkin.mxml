@@ -20,6 +20,9 @@
 			
 		]]>
 	</fx:Script>
+	<fx:Declarations>
+		<s:Fade id="pvFade" target="{progressBar}" duration="1200" alphaFrom="0" alphaTo="1"/>
+	</fx:Declarations>
 	
 	<!-- states -->
 	<s:states>
@@ -31,7 +34,7 @@
 	
 	<s:transitions>
 		<s:Transition toState="*">
-			<s:Move target="{menu}" duration="300"/>
+			<s:Move target="{menu}" duration="400"/>
 		</s:Transition>
 		
 		<s:Transition fromState="menubottom" toState="menubottomshowcat" autoReverse="true">
@@ -53,5 +56,6 @@
 	
 	<s:Group id="externalContentGroup" x="0" y="0" width="100%" height="100" />
 
-	<component:LoadingProgressBar id="progressBar" x="0" y="0" height="2" width="100%" visible="false" color="0xECD672"/>
+	<component:LoadingProgressBar id="progressBar" x="0" y="0" height="4" width="100%" visible="false" color="0xECD672" 
+								  loadStart="{pvFade.play()}" loadComplete="{pvFade.play(null, true)}"/>
 </s:Skin>

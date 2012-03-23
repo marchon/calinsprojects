@@ -9,7 +9,7 @@
 	
 	<s:Rect x="0" y="0" width="100%" height="100%">
 		<s:fill>
-			<s:SolidColor color="{hostComponent.color}" alpha="0.3"/>
+			<s:SolidColor color="{hostComponent.color}" alpha="0.45"/>
 		</s:fill>
 	</s:Rect>
 	<s:Rect x="0" y="0" height="100%" percentWidth="{hostComponent.percentLoaded}">

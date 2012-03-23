@@ -18,7 +18,7 @@ package ro.calin.app
 	import ro.calin.component.MenuButton;
 	import ro.calin.component.PictureViewer;
 	import ro.calin.component.event.CategoryEvent;
-	import ro.calin.component.event.LoadComplete;
+	import ro.calin.component.event.LoadingEvent;
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.CategoryViewerModel;
 	import ro.calin.component.model.MenuModel;
@@ -123,20 +123,13 @@ package ro.calin.app
 			if(instance == rightButton) {
 				rightButton.addEventListener(MouseEvent.CLICK, rightButtonClick);
 			}
-			
-			if(instance == progressBar) {
-				progressBar.addEventListener(LoadComplete.LOAD_COMPLETE, function(event:Event) {
-					progressBar.visible = false;
-					//TODO: move in skin + start event
-				})
-			}
 		}
 		
 		private function loadAndShowWallpapers() : void {
 			if(pictureViewer == null || progressBar == null) return;
 			
 			progressBar.showLoading(pictureViewer.registerModel(WALLPAPERS, wallpapers));
-			progressBar.visible = true;
+			
 			//TODO: slide when first pic is loaded
 			pictureViewer.setActiveModel(WALLPAPERS);
 			pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
@@ -277,12 +270,13 @@ package ro.calin.app
 		{
 			var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
 			
-			progressBar.showLoading(pictureViewer.registerModel(PICS, model));
-			progressBar.visible = true;
-			pictureViewer.setActiveModel(PICS);
-			pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
-			
-			leftButton.visible = rightButton.visible = model.pictures.length > 1;
+			var requests:Array = pictureViewer.registerModel(PICS, model);
+			if(requests != null) {
+				progressBar.showLoading(requests);
+				pictureViewer.setActiveModel(PICS);
+				pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
+				leftButton.visible = rightButton.visible = model.pictures.length > 1;
+			}
 			
 			hideCategory();
 		}

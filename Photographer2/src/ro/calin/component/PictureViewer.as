@@ -102,6 +102,7 @@ package ro.calin.component
 		public function registerModel(name:String, value:PictureViewerModel):Array {
 			//do not register if already registered
 			if(_models[name] != null && _models[name].model == value) return null;
+			if(value.pictures == null || value.pictures.length == 0) return null;
 			
 			//create or reuse a cache loader
 			var cache:ContentCache;

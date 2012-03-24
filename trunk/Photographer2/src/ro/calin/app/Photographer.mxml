@@ -10,12 +10,13 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.component.Registry;
 			import ro.calin.component.model.CategoryViewerModel;
-			import ro.calin.component.model.PictureModel;
 			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.utils.SWFProfiler;
 			
+			private var preloadAtStartupPicUrls:Array = [];
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
@@ -26,13 +27,12 @@
 				//link external with internal(attach categories to 'gallery' menu entry)
 				model.entries.getItemAt(0).entries = categories;
 				
-				var app:App = new App(model, wallpapers);
+				var app:App = new App(model, wallpapers, preloadAtStartupPicUrls);
 				
 				app.percentHeight = 100;
 				app.percentWidth = 100;
 				addElement(app);
 			}
-
 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
@@ -69,6 +69,9 @@
 					model.name = subcategory.@name;
 					model.description = subcategory.@description;
 					model.picUrl = subcategory.@picUrl;
+					//preload thumbs
+					preloadAtStartupPicUrls.push(model.picUrl);
+					
 					var pictureModel:PictureViewerModel = new PictureViewerModel();
 					pictureModel.pictures = parsePictures(subcategory.picture); 
 					model.extra = pictureModel;
@@ -82,6 +85,8 @@
 				var model:PictureViewerModel = new PictureViewerModel();
 				
 				model.pictures = parsePictures(wallpaperList.picture);
+				//preload wallpapers
+				preloadAtStartupPicUrls.push.apply(null, model.pictures);
 				
 				return model;
 			}
@@ -90,9 +95,7 @@
 				var pictureList:Array = new Array();
 				
 				for each (var picture:XML in pictures) {
-					var model:PictureModel = new PictureModel;
-					model.url = picture.@url;
-					pictureList.push(model);
+					pictureList.push(picture.@url.toString());
 				}
 				
 				return pictureList;

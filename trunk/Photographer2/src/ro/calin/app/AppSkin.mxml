@@ -45,7 +45,7 @@
 	<component:PictureViewer id="pictureViewer" width="100%" height="100%"/>
 	
 	<component:Menu id="menu" width="100%" 
-					y.menumiddle="{hostComponent.height * .7}" y.menutop="0" y="{hostComponent.height - menu.height}"/>
+					y.menumiddle="{parentApplication.height * .7}" y.menutop="0" y="{parentApplication.height - menu.height}"/>
 	
 	<component:CategoryViewer id="categoryViewer" bottom="{menu.height}" alpha="0" alpha.menubottomshowcat="1" visible="false"/>
 	

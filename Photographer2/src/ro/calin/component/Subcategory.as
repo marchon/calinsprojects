@@ -16,7 +16,7 @@ package ro.calin.component
 	[SkinState("hovered")]
 	public class Subcategory extends SkinnableComponent
 	{
-		public static var loader:IContentLoader = new ContentCache();
+		public static const IMAGE_LOADER_NAME:String = "subcategoryLoader";
 		
 		[SkinPart(required="true")]
 		public var image:Image;
@@ -46,6 +46,9 @@ package ro.calin.component
 			
 			_model = value;
 			if(image) {
+				try {
+					image.contentLoader = Registry.instance.check(IMAGE_LOADER_NAME) as IContentLoader;
+				} catch(ex:*) {}
 				image.source = _model.picUrl;
 			}
 			if(subcatName) {
@@ -68,7 +71,9 @@ package ro.calin.component
 			super.partAdded(partName, instance); 
 			
 			if(instance == image) {
-				image.contentLoader = loader;
+				try {
+					image.contentLoader = Registry.instance.check(IMAGE_LOADER_NAME) as IContentLoader;
+				} catch(ex:*) {}
 				
 				if(_model) {
 					image.source = _model.picUrl;	

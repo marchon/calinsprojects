@@ -1,19 +1,14 @@
 package ro.calin.component
 {
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
-	import flash.utils.Dictionary;
-	import flash.utils.setTimeout;
 	
 	import mx.events.EffectEvent;
 	
-	import ro.calin.component.model.PictureModel;
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.skin.PictureViewerSkin;
 	
 	import spark.components.SkinnableContainer;
-	import spark.core.ContentCache;
-	import spark.core.ContentRequest;
+	import spark.core.IContentLoader;
 	import spark.effects.Move;
 	
 	/**
@@ -96,41 +91,17 @@ package ro.calin.component
 		}
 		
 		/**
-		 * Registers a list of pictures, starts to load and cache.
-		 * Returns a list of content requests.
+		 * Registers a list of pictures by a name.
+		 * Optionally, it can associate a content loader with the list.
 		 */
-		public function registerModel(name:String, value:PictureViewerModel):Array {
+		public function registerModel(name:String, value:PictureViewerModel):void {
 			//do not register if already registered
-			if(_models[name] != null && _models[name].model == value) return null;
-			if(value.pictures == null || value.pictures.length == 0) return null;
-			
-			//create or reuse a cache loader
-			var cache:ContentCache;
-			
-			if(_models[name] != null) {
-				cache = _models[name].cache;
-				cache.removeAllCacheEntries();
-			} else {
-				cache = new ContentCache();
-				cache.enableCaching = true;
-				cache.enableQueueing = true;
-				cache.maxActiveRequests = 5;
-				cache.maxCacheEntries = 30;
-			}
+			if(_models[name] != null && _models[name] == value) return;
+			//do not register if empty
+			if(value.pictures == null || value.pictures.length == 0) return;
 			
 			//save the values
-			_models[name] = {
-				cache: cache,
-				model: value
-			};
-			
-			var res:Array = [];
-			
-			for(var i:int = 0; i < value.pictures.length; i++) {
-				res.push(cache.load(PictureModel(value.pictures[i]).url));
-			}
-			
-			return res;
+			_models[name] = value;
 		}
 		
 		/**
@@ -144,11 +115,14 @@ package ro.calin.component
 		 * Set this set of pictures as the currently displayed model.
 		 */
 		public function setActiveModel(name:String):void {
-			if(_models[name] == null || _currentModel == _models[name].model) return;
+			if(_models[name] == null || _currentModel == _models[name]) return;
 			
-			_currentModel = _models[name].model;
-			picture1.contentLoader = _models[name].cache;
-			picture2.contentLoader = _models[name].cache;
+			_currentModel = _models[name];
+			try {
+				var loader:IContentLoader = Registry.instance.check(name) as IContentLoader;
+				picture1.contentLoader = loader;
+				picture2.contentLoader = loader;
+			} catch(e:*) {}
 			
 			_currentPicIndex = 0;
 		}
@@ -216,7 +190,7 @@ package ro.calin.component
 		private function performSlide():void {
 			_outsidePicture.visible = true;
 			
-			_outsidePicture.source = PictureModel(_currentModel.pictures[_currentPicIndex]).url;
+			_outsidePicture.source = _currentModel.pictures[_currentPicIndex] as String;
 			_moveAnim.targets = [_currentPicture, _outsidePicture];
 			_moveAnim.play();
 			

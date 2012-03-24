@@ -11,10 +11,16 @@ package ro.calin.component
 	import ro.calin.component.skin.LoadingProgressBarSkin;
 	
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.core.ContentCache;
 	import spark.core.ContentRequest;
+	import spark.core.IContentLoader;
 	
 	[Event(name="loadStart", type="ro.calin.component.event.LoadingEvent")]
 	[Event(name="loadComplete", type="ro.calin.component.event.LoadingEvent")]
+	[Event(name="priorityLoadComplete", type="ro.calin.component.event.LoadingEvent")]
+	/**
+	 * Loads a bunch of resources from a content loader, showing progress.
+	 */
 	public class LoadingProgressBar extends SkinnableComponent
 	{
 		[Bindable] public var color:uint = 0x00ff00;
@@ -28,6 +34,7 @@ package ro.calin.component
 		private var loadingMap:Dictionary = new Dictionary();
 		
 		private var unfinishedRequests:int = 0;
+		private var unfinishedPriorityRequests:int = 0;
 		
 		public function LoadingProgressBar()
 		{
@@ -35,20 +42,29 @@ package ro.calin.component
 			setStyle("skinClass", LoadingProgressBarSkin);
 		}
 		
-		public function showLoading(requests:Array) : Boolean {
-			if(unfinishedRequests > 0 || requests == null || requests.length == 0) return false;
+		public function load(contentLoader:ContentCache, resources:Array, prioritysIndexes:Array) : Boolean {
+			if(unfinishedRequests > 0 || contentLoader == null || resources == null || resources.length == 0) return false;
 			
 			dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_START));
 			
 			unfinishedRequests = 0;
-			for(var i:int = 0; i < requests.length; i++) {
-				var cr:ContentRequest = requests[i];
+			for(var i:int = 0; i < resources.length; i++) {
+				var hasPriority:Boolean = prioritysIndexes != null && prioritysIndexes.indexOf(i) != -1;
+				
+				var cr:ContentRequest;
+				if(hasPriority) {
+					cr = contentLoader.load(resources[i], "priority");
+					contentLoader.prioritize("priority");
+				} else {
+					cr = contentLoader.load(resources[i]);
+				}
+					
 				if(!cr.complete) {
 					unfinishedRequests++;
+					if(hasPriority) unfinishedPriorityRequests++;
 					registerHandlers(cr);
+					loadingMap[cr] = {bytesLoaded : 0, bytesTotal : defaultSize, priority: hasPriority};
 				}
-
-				loadingMap[cr] = {bytesLoaded : 0, bytesTotal : defaultSize};
 			}
 			
 			compute();
@@ -76,7 +92,8 @@ package ro.calin.component
 		 * Called with each progress event. 
 		 */
 		private function progress(event:ProgressEvent):void {
-			loadingMap[event.target] = {bytesLoaded : event.bytesLoaded, bytesTotal : event.bytesTotal};
+			loadingMap[event.target].bytesLoaded = event.bytesLoaded;
+			loadingMap[event.target].bytesTotal = event.bytesTotal;
 			
 			compute();
 		}
@@ -91,6 +108,11 @@ package ro.calin.component
 			}
 			
 			unregisterHandlers(event.target as ContentRequest);
+			
+			if(loadingMap[event.target].priority) {
+				unfinishedPriorityRequests--;
+			}
+			
 			delete loadingMap[event.target];
 			
 			compute();
@@ -99,6 +121,10 @@ package ro.calin.component
 			
 			if(unfinishedRequests == 0) { 
 				dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_COMPLETE));
+			}
+			
+			if(unfinishedPriorityRequests == 0) {
+				dispatchEvent(new LoadingEvent(LoadingEvent.PRIORITY_LOAD_COMPLETE));
 			}
 		}
 		

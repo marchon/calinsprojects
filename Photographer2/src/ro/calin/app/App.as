@@ -55,17 +55,17 @@ package ro.calin.app
 		public static const MENU_MIDDLE:String = "menumiddle";
 		public static const MENU_TOP:String = "menutop";
 		public static const MENU_BOTTOM:String = "menubottom";
-		private static const MENU_BOTTOM_CATEGORY:String = "menubottomshowcat"
+		public static const MENU_BOTTOM_CATEGORY:String = "menubottomshowcat"
 		
-		private static const WALLPAPERS:String = "wallpapers";
-		private static const SUBCATEGORY_PIC_LIST:String = "subcategoryPicList";
+		public static const WALLPAPERS:String = "wallpapers";
+		public static const SUBCATEGORY_PIC_LIST:String = "subcategoryPicList";
 		
 		[Bindable]
 		public var currentSkinState:String = MENU_MIDDLE;
 		
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
-		private var wallpaperAndThumbnailUrls:Array;
+		private var progressBar:LoadingProgressBar;
 		
 		[SkinPart(required="true")]
 		public var pictureViewer:PictureViewer;
@@ -85,16 +85,13 @@ package ro.calin.app
 		[SkinPart(required="true")]
 		public var externalContentGroup:Group;
 		
-		[SkinPart(required="true")]
-		public var progressBar:LoadingProgressBar;
-		
-		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel, listOfPicUrlsToPreload:Array)
+		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel, progressBar:LoadingProgressBar)
 		{			
 			super();
 			
 			this.menuModel = menuModel;
 			this.wallpapers = wallpaperModel;
-			this.wallpaperAndThumbnailUrls = listOfPicUrlsToPreload;
+			this.progressBar = progressBar;
 			
 			currentSkinState = menuModel.extra as String;
 			
@@ -117,12 +114,10 @@ package ro.calin.app
 				categoryViewer.addEventListener(CategoryEvent.CATEG_ITEM_CLICK, categoryItemClick);
 			}
 			
-			if(instance == progressBar) {
-				loadWallpapersAndCategoryThumbnails();
-			}
-			
-			if(instance == progressBar || instance == pictureViewer) {
-				if(progressBar != null && pictureViewer != null) registerAndShowWallpapers();
+			if(instance == pictureViewer) {
+				pictureViewer.registerModel(WALLPAPERS, wallpapers);
+				pictureViewer.setActiveModel(WALLPAPERS);
+				pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_FIRST);
 			}
 			
 			if(instance == leftButton) {
@@ -132,26 +127,6 @@ package ro.calin.app
 			if(instance == rightButton) {
 				rightButton.addEventListener(MouseEvent.CLICK, rightButtonClick);
 			}
-		}
-		
-		private function loadWallpapersAndCategoryThumbnails() : void {
-			//TODOOOO: move outside and use priorities for a random wallpaper and menu logo
-			//pass the progress bar as parameter??
-			//pass the first random picture position
-			var loader:ContentCache = new ContentCache();
-			progressBar.load(loader, wallpaperAndThumbnailUrls, null);
-			
-			//register the cache loader so that components can access it and use it
-			Registry.instance.register(WALLPAPERS, loader); //for viewer
-			Registry.instance.register(Subcategory.IMAGE_LOADER_NAME, loader); //for subcategory
-		}
-		
-		private function registerAndShowWallpapers() : void {
-			pictureViewer.registerModel(WALLPAPERS, wallpapers);
-			
-			//TODO: slide when first pic is loaded
-			pictureViewer.setActiveModel(WALLPAPERS);
-			pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
 		}
 		
 		override protected function partRemoved(partName:String, instance: Object) : void {
@@ -298,7 +273,7 @@ package ro.calin.app
 			if(loader == null) {
 				loader = new ContentCache();
 				loader.enableQueueing = true;
-				loader.maxActiveRequests = 10;
+				loader.maxActiveRequests = 3; //1???
 				Registry.instance.register(SUBCATEGORY_PIC_LIST, loader);
 			}
 			

@@ -11,11 +11,11 @@ package ro.calin.component
 	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.skin.MenuSkin;
 	
-	import spark.components.Button;
 	import spark.components.DataGroup;
 	import spark.components.HGroup;
 	import spark.components.Image;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.core.IContentLoader;
 
 	/**
 	 * Component that represents a menu with potential submenus.
@@ -27,6 +27,8 @@ package ro.calin.component
 	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
 	public class Menu extends SkinnableComponent
 	{
+		public static const IMAGE_LOADER_NAME:String = "menuLoader";
+		
 		[SkinPart(required="true")]
 		public var placeholder:HGroup;
 		
@@ -138,6 +140,9 @@ package ro.calin.component
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance); 
 			if (instance == logo) {
+				try {
+					logo.contentLoader = Registry.instance.check(IMAGE_LOADER_NAME) as IContentLoader;
+				} catch(ex:*) {}
 				logo.addEventListener(MouseEvent.CLICK, logo_clickHandler);
 			}
 			if (instance == bar) {

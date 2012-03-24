@@ -13,7 +13,7 @@ package ro.calin.component.model
 	public class MenuEntryModel
 	{
 		public var label:String = null;
-		public var imageUrl:String = null;
+		public var imageSrc:Object = null;
 		public var color:uint = 0x000000;
 		public var fontColor:uint = 0xffffff;
 		public var fontSize:Number = 30;

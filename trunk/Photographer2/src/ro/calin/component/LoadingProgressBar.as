@@ -42,19 +42,20 @@ package ro.calin.component
 			setStyle("skinClass", LoadingProgressBarSkin);
 		}
 		
-		public function load(contentLoader:ContentCache, resources:Array, prioritysIndexes:Array) : Boolean {
-			if(unfinishedRequests > 0 || contentLoader == null || resources == null || resources.length == 0) return false;
+		public function load(contentLoader:ContentCache, resources:Array, priorityIndexes:Array) : Boolean {
+			if(contentLoader == null || resources == null || resources.length == 0) return false;
 			
-			dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_START));
+			if(unfinishedRequests == 0)
+				dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_START));
 			
-			unfinishedRequests = 0;
+			if(priorityIndexes.length > 0) contentLoader.prioritize("priority");
 			for(var i:int = 0; i < resources.length; i++) {
-				var hasPriority:Boolean = prioritysIndexes != null && prioritysIndexes.indexOf(i) != -1;
+				var hasPriority:Boolean = priorityIndexes != null && priorityIndexes.indexOf(i) != -1;
 				
 				var cr:ContentRequest;
 				if(hasPriority) {
+					//TODO: seems it's not working too well
 					cr = contentLoader.load(resources[i], "priority");
-					contentLoader.prioritize("priority");
 				} else {
 					cr = contentLoader.load(resources[i]);
 				}
@@ -113,7 +114,7 @@ package ro.calin.component
 				unfinishedPriorityRequests--;
 			}
 			
-			delete loadingMap[event.target];
+//			delete loadingMap[event.target];
 			
 			compute();
 			
@@ -121,6 +122,7 @@ package ro.calin.component
 			
 			if(unfinishedRequests == 0) { 
 				dispatchEvent(new LoadingEvent(LoadingEvent.LOAD_COMPLETE));
+				loadingMap = new Dictionary();
 			}
 			
 			if(unfinishedPriorityRequests == 0) {

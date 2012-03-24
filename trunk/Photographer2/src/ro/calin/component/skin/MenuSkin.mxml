@@ -50,7 +50,7 @@
 			<s:itemRenderer>
 				<fx:Component>
 					<s:ItemRenderer autoDrawBackground="false">
-						<component:MenuButton id="button" width="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
+						<component:MenuButton id="button" minWidth="{outerDocument.hostComponent.getButtonWidth(data as MenuEntryModel)}" 
 											  height="{outerDocument.hostComponent.height}" buttonMode="true" entry="{data}"/>
 					</s:ItemRenderer>
 				</fx:Component>

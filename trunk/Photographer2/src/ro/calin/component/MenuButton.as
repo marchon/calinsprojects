@@ -6,7 +6,10 @@ package ro.calin.component
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.skin.MenuButtonSkin;
 	
+	import spark.components.Group;
+	import spark.components.Image;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.core.IContentLoader;
 	
 	/**
 	 * Menu button component.
@@ -14,6 +17,9 @@ package ro.calin.component
 	 * */
 	public class MenuButton extends SkinnableComponent
 	{
+		[SkinPart(required="true")]
+		public var container:Group;
+		
 		/**
 		 * The model.
 		 * */
@@ -25,8 +31,34 @@ package ro.calin.component
 			return _entry;
 		}
 		public function set entry(value:MenuEntryModel):void {
-			if(value == _entry) return;
+			if(value == _entry || value == null) return;
 			_entry = value;
+			
+			if(container != null) {
+				processImage();
+			}
+		}
+		
+		override protected function partAdded(partName:String, instance:Object) : void { 
+			super.partAdded(partName, instance);
+			
+			if(instance == container && _entry != null) {
+				processImage();
+			}
+		}
+		
+		private function processImage():void {
+			if(_entry.imageSrc != null) {
+				var img:Image = new Image();
+				img.source = _entry.imageSrc;
+				try {
+					img.contentLoader = Registry.instance.check(Menu.IMAGE_LOADER_NAME) as IContentLoader;
+				} catch(ex:*) {}
+				container.addElementAt(img, 0);
+			} else {
+				//fix for item renderer caching (I guess...)
+				if(container.getElementAt(0) is Image) container.removeElementAt(0);
+			}
 		}
 		
 		public function MenuButton()

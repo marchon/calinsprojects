@@ -10,35 +10,63 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import ro.calin.component.Menu;
 			import ro.calin.component.Registry;
+			import ro.calin.component.Subcategory;
+			import ro.calin.component.event.LoadingEvent;
 			import ro.calin.component.model.CategoryViewerModel;
 			import ro.calin.component.model.PictureViewerModel;
 			import ro.calin.component.model.SubcategoryModel;
 			import ro.calin.utils.SWFProfiler;
 			
-			private var preloadAtStartupPicUrls:Array = [];
+			import spark.core.ContentCache;
+			
+			private var wallpaperUrls:Array;
+			private var subcategoryUrls:Array = [];
+			
+			private var wallpapers:PictureViewerModel;
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
 				var xml:XML = event.result as XML;
-				var categories:ArrayList = parseCategories(xml.categories[0].category);
-				var wallpapers:PictureViewerModel = parseWallpapers(xml.wallpapers[0]);
 				
+				var categories:ArrayList = parseCategories(xml.categories[0].category);
 				//link external with internal(attach categories to 'gallery' menu entry)
 				model.entries.getItemAt(0).entries = categories;
 				
-				var app:App = new App(model, wallpapers, preloadAtStartupPicUrls);
+				wallpapers = parseWallpapers(xml.wallpapers[0]);
+
 				
+				var loader:ContentCache = new ContentCache();
+				loader.enableQueueing = true;
+				loader.maxActiveRequests = 4;
+				//todo: move to app?
+				Registry.instance.register(App.WALLPAPERS, loader); //for viewer
+				Registry.instance.register(Subcategory.IMAGE_LOADER_NAME, loader); //for subcategory
+				Registry.instance.register(Menu.IMAGE_LOADER_NAME, loader); //for menu
+				
+				//prioritize logo and one random wallpaper
+				var preloadAtStartupPicUrls:Array = [];
+				preloadAtStartupPicUrls.push(model.logoUrl);
+				preloadAtStartupPicUrls.push.apply(null, wallpaperUrls);
+				preloadAtStartupPicUrls.push.apply(null, subcategoryUrls);
+				progressBar.load(loader, preloadAtStartupPicUrls, [0, 1]);
+				
+				progressBar.addEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, startApp);
+			}
+			
+			private function startApp(event:LoadingEvent):void {
+				var app:App = new App(model, wallpapers, progressBar);
 				app.percentHeight = 100;
 				app.percentWidth = 100;
-				addElement(app);
+				addElementAt(app, 0);
+				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, startApp);
 			}
 
 			protected function configService_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("Error! Data is unavailable!");
 			}
-			
 			
 			private function parseCategories(categories:XMLList):ArrayList {
 				var categoryList:ArrayList = new ArrayList();
@@ -70,7 +98,7 @@
 					model.description = subcategory.@description;
 					model.picUrl = subcategory.@picUrl;
 					//preload thumbs
-					preloadAtStartupPicUrls.push(model.picUrl);
+					subcategoryUrls.push(model.picUrl);
 					
 					var pictureModel:PictureViewerModel = new PictureViewerModel();
 					pictureModel.pictures = parsePictures(subcategory.picture); 
@@ -85,8 +113,14 @@
 				var model:PictureViewerModel = new PictureViewerModel();
 				
 				model.pictures = parsePictures(wallpaperList.picture);
-				//preload wallpapers
-				preloadAtStartupPicUrls.push.apply(null, model.pictures);
+				
+				//make the first wallpaper random
+				var rnd:int = Math.floor(Math.random() * (model.pictures.length - 1)) + 1;
+				var tmp:String = model.pictures[0];
+				model.pictures[0] = model.pictures[rnd];
+				model.pictures[rnd] = tmp;
+				
+				wallpaperUrls = model.pictures;
 				
 				return model;
 			}
@@ -117,7 +151,7 @@
 					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
 		
 		<!-- Declare internal model -->
-		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" extra="{App.MENU_MIDDLE}">
+		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" extra="{App.MENU_MIDDLE}" logoUrl="logo.jpg">
 			<model:entries>
 				<s:ArrayList>
 					<model:MenuEntryModel label="gallery" extra="{App.MENU_BOTTOM}">
@@ -142,9 +176,10 @@
 					<model:MenuEntryModel label="share" extra="{App.MENU_TOP}">
 						<model:entries>
 							<s:ArrayList>
-								<model:MenuEntryModel label="facebook" extra="{new URLRequest('http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F')}">
+								<model:MenuEntryModel label="facebook" imageSrc="@Embed(source='assets/fb.gif')" 
+													  extra="{new URLRequest('http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F')}">
 								</model:MenuEntryModel>
-								<model:MenuEntryModel label="like on facebook">
+								<model:MenuEntryModel label="like on facebook" imageSrc="@Embed(source='assets/fbl.png')">
 								</model:MenuEntryModel>
 							</s:ArrayList>
 						</model:entries>
@@ -152,5 +187,10 @@
 				</s:ArrayList>
 			</model:entries>
 		</model:MenuModel>
+		
+		<s:Fade id="pvFade" target="{progressBar}" duration="1200" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>
+	
+	<component:LoadingProgressBar id="progressBar" x="0" y="0" height="4" width="100%" visible="false" color="0xECD672" 
+								  loadStart="{pvFade.play()}" loadComplete="{pvFade.play(null, true)}"/>
 </s:Application>

@@ -157,6 +157,11 @@ package ro.calin.app
 			return currentSkinState;
 		}
 		
+		
+		/*
+		 *	HANDLERS
+		 */
+		
 		protected function menuLogoClick(event:MenuEvent):void
 		{
 			if(externalContentGroup.numElements > 0) externalContentGroup.removeAllElements();
@@ -168,32 +173,15 @@ package ro.calin.app
 			
 			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String);
 			else if(event.entry.extra is URLRequest) navigateToURL(event.entry.extra as URLRequest);
-			else if(event.entry.extra is IVisualElement) externalContentGroup.addElement(event.entry.extra as IVisualElement);
-		}
-		
-		protected function changeCurrentState(state:String):void
-		{	
-			leftButton.visible = rightButton.visible = false;
-			pictureViewer.setActiveModel(WALLPAPERS);
-			
-			switch(state) {
-				case MENU_MIDDLE:
-					if(currentSkinState == MENU_TOP) pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
-					else pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
-					break;
-				case MENU_TOP:
-					pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
-					break;
-				case MENU_BOTTOM:
-					pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
-					break;
+			else if(event.entry.extra is Array) {
+				var arr:Array = event.entry.extra as Array;
+				showPictures(arr[0] as PictureViewerModel);
+				externalContentGroup.addElement(arr[1] as IVisualElement);
 			}
-			
-			currentSkinState = state;
-			invalidateSkinState();
+			else if(event.entry.extra is PictureViewerModel) showPictures(event.entry.extra as PictureViewerModel);
 		}
 		
-		private function menuItemHover(event:MenuEvent):void {
+		protected function menuItemHover(event:MenuEvent):void {
 			//extra stores the model for the cagegory, otherwise it's not a category
 			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
@@ -221,12 +209,77 @@ package ro.calin.app
 			}
 		}
 		
-		private function menuButtonRollOut(event:MouseEvent):void {
+		protected function menuButtonRollOut(event:MouseEvent):void {
 			if(!rolloutIsAboveObject(event)) {
 				hideCategory();
 			}
 			
 			(event.target as MenuButton).removeEventListener(MouseEvent.ROLL_OUT, menuButtonRollOut);
+		}
+		
+		protected function categoryRollOut(event:MouseEvent):void {
+			if(!rolloutIsBelowObject(event)) {
+				hideCategory();
+			}
+		}
+		
+		protected function categoryItemClick(event:CategoryEvent):void
+		{
+			hideCategory();
+			
+			if(event.subcategory.extra is PictureViewerModel) {
+				var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
+				showPictures(model);
+			}
+		}
+		
+		protected function leftButtonClick(event:MouseEvent):void
+		{
+			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+		}
+		
+		protected function rightButtonClick(event:MouseEvent):void
+		{
+			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+		}
+		
+		protected function keyDown(event:KeyboardEvent):void
+		{
+			if(!leftButton.visible) return;
+			
+			if(event.keyCode == Keyboard.LEFT)
+				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+			else if(event.keyCode == Keyboard.RIGHT)
+				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+		}
+		
+		/*
+		*	END HANDLERS
+		*/
+		
+		
+		
+		
+		private function changeCurrentState(state:String):void
+		{	
+			leftButton.visible = rightButton.visible = false;
+			pictureViewer.setActiveModel(WALLPAPERS);
+			
+			switch(state) {
+				case MENU_MIDDLE:
+					if(currentSkinState == MENU_TOP) pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+					else pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
+					break;
+				case MENU_TOP:
+					pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_RAND);
+					break;
+				case MENU_BOTTOM:
+					pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_RAND);
+					break;
+			}
+			
+			currentSkinState = state;
+			invalidateSkinState();
 		}
 		
 		private function rolloutIsAboveObject(event:MouseEvent):Boolean {
@@ -237,12 +290,6 @@ package ro.calin.app
 		private function rolloutIsBelowObject(event:MouseEvent):Boolean {
 			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
 			return event.stageY > pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
-		}
-		
-		private function categoryRollOut(event:MouseEvent):void {
-			if(!rolloutIsBelowObject(event)) {
-				hideCategory();
-			}
 		}
 		
 		private function categoryRollOver(evt:MouseEvent):void {
@@ -260,12 +307,7 @@ package ro.calin.app
 			invalidateSkinState();
 		}
 		
-		protected function categoryItemClick(event:CategoryEvent):void
-		{
-			hideCategory();
-			
-			var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
-			
+		private function showPictures(model:PictureViewerModel) : void {
 			if(model == null || model.pictures == null || model.pictures.length == 0) return;
 			
 			var loader:ContentCache = Registry.instance.check(SUBCATEGORY_PIC_LIST) as ContentCache;
@@ -290,26 +332,6 @@ package ro.calin.app
 				leftButton.visible = rightButton.visible = model.pictures.length > 1;
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
 			});
-		}
-		
-		protected function leftButtonClick(event:MouseEvent):void
-		{
-			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-		}
-		
-		protected function rightButtonClick(event:MouseEvent):void
-		{
-			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
-		}
-		
-		protected function keyDown(event:KeyboardEvent):void
-		{
-			if(!leftButton.visible) return;
-			
-			if(event.keyCode == Keyboard.LEFT)
-				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-			else if(event.keyCode == Keyboard.RIGHT)
-				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
 		}
 	}
 }

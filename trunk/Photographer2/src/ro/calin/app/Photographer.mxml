@@ -6,6 +6,8 @@
 			   backgroundColor="black">
 	<fx:Script>
 		<![CDATA[
+			import flash.net.navigateToURL;
+			
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -76,13 +78,20 @@
 					var model:MenuEntryModel = new MenuEntryModel();
 					model.label = category.@name;
 					model.color = uint(category.@color);
-					var categoryModel:CategoryViewerModel = new CategoryViewerModel();
-					categoryModel.subcategories = parseSubcategories(category.subcategory);
 					
-					//map categories to their index in the menu (to know where to put the categviewer)
-					categoryModel.extra = idx++;
+					var submodel:Object = null;
+					if(category.subcategory.length() > 0) {
+						submodel = new CategoryViewerModel();
+						submodel.subcategories = parseSubcategories(category.subcategory);
+						submodel.extra = idx; //map categories to their index in the menu (to know where to put the categviewer)
+					} else if(category.picture.length() > 0) {
+						submodel = new PictureViewerModel();
+						submodel.pictures = parsePictures(category.picture);
+					}
 					
-					model.extra = categoryModel;
+					idx++;
+					
+					model.extra = submodel;
 					categoryList.addItem(model);
 				}
 				
@@ -97,7 +106,8 @@
 					model.name = subcategory.@name;
 					model.description = subcategory.@description;
 					model.picUrl = subcategory.@picUrl;
-					//preload thumbs
+					
+					//gather url list for preloading
 					subcategoryUrls.push(model.picUrl);
 					
 					var pictureModel:PictureViewerModel = new PictureViewerModel();
@@ -120,6 +130,7 @@
 				model.pictures[0] = model.pictures[rnd];
 				model.pictures[rnd] = tmp;
 				
+				//gather url list for preloading
 				wallpaperUrls = model.pictures;
 				
 				return model;
@@ -163,11 +174,7 @@
 								</model:MenuEntryModel>
 								<model:MenuEntryModel label="contact">
 								</model:MenuEntryModel>
-								<model:MenuEntryModel label="about">
-									<model:extra>
-										<s:Label text="some mxml shit" x="500" y="300"/>
-									</model:extra>
-								</model:MenuEntryModel>
+								<model:MenuEntryModel label="about" extra="{about}"/>
 								<model:MenuEntryModel label="friends">
 								</model:MenuEntryModel>
 							</s:ArrayList>
@@ -187,6 +194,20 @@
 				</s:ArrayList>
 			</model:entries>
 		</model:MenuModel>
+		
+		<fx:Array id="about">
+			<model:PictureViewerModel>
+				<model:pictures>
+					<!--TODO: move all static resources to static folder (logo, static pics)-->
+					<fx:String>data/_MG_5493.jpg</fx:String>
+				</model:pictures>
+			</model:PictureViewerModel>
+			
+			<s:VGroup bottom="10" right="10">
+				<mx:LinkButton label="mata" click="navigateToURL(new URLRequest('http://mata.com'))" />
+				<mx:LinkButton label="tactu" click="navigateToURL(new URLRequest('http://tactu.com'))" />
+			</s:VGroup>
+		</fx:Array>
 		
 		<s:Fade id="pvFade" target="{progressBar}" duration="1200" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>

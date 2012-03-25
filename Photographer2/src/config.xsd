@@ -20,10 +20,11 @@
 
 	<xsd:complexType name="categoryType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" name="subcategory"
-				type="subcategoryType" />
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="subcategory" type="subcategoryType" />
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="picture" type="pictureType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="color" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:complexType name="categoriesType">

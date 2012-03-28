@@ -12,6 +12,8 @@ package ro.calin.app
 	import mx.core.IVisualElement;
 	import mx.events.BrowserChangeEvent;
 	import mx.managers.BrowserManager;
+	import mx.utils.Base64Decoder;
+	import mx.utils.Base64Encoder;
 	import mx.utils.URLUtil;
 	
 	import ro.calin.component.CategoryViewer;
@@ -52,6 +54,9 @@ package ro.calin.app
 	 */
 	public class App extends SkinnableComponent
 	{	
+		private static const enc:Base64Encoder = new Base64Encoder();
+		private static const dec:Base64Decoder = new Base64Decoder();
+		
 		public static const MENU_MIDDLE:String = "menumiddle";
 		public static const MENU_TOP:String = "menutop";
 		public static const MENU_BOTTOM:String = "menubottom";
@@ -96,9 +101,6 @@ package ro.calin.app
 			currentSkinState = menuModel.extra as String;
 			
 			setStyle("skinClass", AppSkin);
-			
-			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
-			BrowserManager.getInstance().init("");
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void { 
@@ -176,7 +178,10 @@ package ro.calin.app
 		protected function menuItemClick(event:MenuEvent):void {
 			if(externalContentGroup.numElements > 0) externalContentGroup.removeAllElements();
 			
-			if(event.entry.extra is String) changeCurrentState(event.entry.extra as String);
+			if(event.entry.extra is String) {
+				changeCurrentState(event.entry.extra as String);
+				saveState();
+			}
 			else if(event.entry.extra is URLRequest) navigateToURL(event.entry.extra as URLRequest);
 			else if(event.entry.extra is Array) {
 				var arr:Array = event.entry.extra as Array;
@@ -184,8 +189,6 @@ package ro.calin.app
 				externalContentGroup.addElement(arr[1] as IVisualElement);
 			}
 			else if(event.entry.extra is PictureViewerModel) showPictures(event.entry.extra as PictureViewerModel);
-			
-			saveState();
 		}
 		
 		protected function menuItemHover(event:MenuEvent):void {
@@ -243,11 +246,13 @@ package ro.calin.app
 		protected function leftButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
+			saveState();
 		}
 		
 		protected function rightButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+			saveState();
 		}
 		
 		protected function keyDown(event:KeyboardEvent):void
@@ -258,6 +263,8 @@ package ro.calin.app
 				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
 			else if(event.keyCode == Keyboard.RIGHT)
 				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
+			
+			saveState();
 		}
 		
 		/*
@@ -345,27 +352,49 @@ package ro.calin.app
 				pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
 				leftButton.visible = rightButton.visible = model.pictures.length > 1;
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
+				saveState();
 			});
 		}
 		
-		private function loadState(event:BrowserChangeEvent): void {
-			var o:Object = URLUtil.stringToObject(BrowserManager.getInstance().fragment);
-			loadState2(o);
+		override protected function attachSkin() : void {
+			super.attachSkin();
+			
+			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
+			BrowserManager.getInstance().init("");
 		}
 		
-		private function loadState2(o:Object) : void {
-			if(pictureViewer && menu && categoryViewer && leftButton && rightButton && externalContentGroup) {
-				if(o.ms) changeCurrentState(o.ms);
-			} else {
-				callLater(loadState2, [o]);
-			}
+		private function loadState(event:BrowserChangeEvent): void {
+			var o:Object = URLUtil.stringToObject(decode(BrowserManager.getInstance().fragment));
+			
+			if(o.hasOwnProperty("ms")) changeCurrentState(o.ms);
+			else changeCurrentState(MENU_MIDDLE);
+			
+			if(o.hasOwnProperty("mis")) menu.setState(o.mis);
+			else menu.setState([]);
+			
+			if(o.hasOwnProperty("pvs")) pictureViewer.setState(o.pvs);
 		}
 		
 		private function saveState() : void {
 			var o:Object = {
-				ms: currentSkinState
+				ms: currentSkinState,
+				mis: menu.getState(),
+				pvs: pictureViewer.getState()
 			};
-			BrowserManager.getInstance().setFragment(URLUtil.objectToString(o));
+			
+			BrowserManager.getInstance().setFragment(encode(URLUtil.objectToString(o)));
+		}
+		
+		private function encode(s:String):String {
+//			enc.encode(s);
+//			return enc.toString();
+			return s;
+		}
+		
+		private function decode(s:String):String {
+//			dec.decode(s);
+//			return dec.toByteArray().toString();
+			return s;
 		}
 		
 	}

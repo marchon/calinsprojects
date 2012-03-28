@@ -10,6 +10,7 @@ package ro.calin.component
 	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.skin.MenuSkin;
+	import ro.calin.utils.StateObject;
 	
 	import spark.components.DataGroup;
 	import spark.components.HGroup;
@@ -25,7 +26,7 @@ package ro.calin.component
 	[Event(name="itemClick", type="ro.calin.component.event.MenuEvent")]
 	[Event(name="itemHover", type="ro.calin.component.event.MenuEvent")]
 	[Event(name="logoClick", type="ro.calin.component.event.MenuEvent")]
-	public class Menu extends SkinnableComponent
+	public class Menu extends SkinnableComponent implements StateObject
 	{
 		public static const IMAGE_LOADER_NAME:String = "menuLoader";
 		
@@ -55,6 +56,8 @@ package ro.calin.component
 		 * */
 		private var _menuState:Array = [];
 		
+		private var _menuIndexPath:Array = [];
+		
 		/**
 		 * Will be displayed after the buttons.
 		 */
@@ -80,7 +83,7 @@ package ro.calin.component
 			
 			//go to the first set of entries
 			if(bar) {
-				pushMenu(_model.entries);
+				resetMenu();
 			}
 		}
 		
@@ -100,7 +103,7 @@ package ro.calin.component
 		private function setContainerEntriesForEachEntry(entries:IList):void {
 			for (var i:int = 0; i < entries.length; i++) {
 				var entry:MenuEntryModel = entries.getItemAt(i) as MenuEntryModel;
-				entry.containerEntries = entries;
+				entry.index = i;
 				if(entry.entries) setContainerEntriesForEachEntry(entry.entries);
 			}
 		}
@@ -132,6 +135,13 @@ package ro.calin.component
 				invalidateSkinState();
 			}
 		}
+		
+		private function resetMenu():void {
+			_menuState = [];
+			_menuIndexPath = [];
+			
+			pushMenu(_model.entries);
+		}
 
 		/**
 		 * Called when the skin is applied.
@@ -147,7 +157,7 @@ package ro.calin.component
 			}
 			if (instance == bar) {
 				if(_model) {
-					pushMenu(_model.entries);
+					resetMenu();
 				}
 				bar.addEventListener(MenuEvent.MENU_ITEM_CLICK, buttonBar_changeHandler);
 			}
@@ -180,7 +190,10 @@ package ro.calin.component
 		 * should have a default back button or smfn
 		 * */
 		private function logo_clickHandler(event:MouseEvent) : void {
-			popMenu();			
+			popMenu();
+			
+			if(_menuIndexPath.length > 0) _menuIndexPath.pop();
+			
 			dispatchEvent(new MenuEvent(MenuEvent.MENU_LOGO_CLICK));
 		}
 	
@@ -191,7 +204,29 @@ package ro.calin.component
 		 * */
 		private function buttonBar_changeHandler(evt:MenuEvent) : void {
 			var selected:MenuEntryModel = evt.entry;
+			
+			if(selected.entries) _menuIndexPath.push(selected.index);
+			
 			pushMenu(selected.entries);
+		}
+		
+		public function getState():Object {
+			return _menuIndexPath;
+		}
+		
+		public function setState(o:Object):void {
+			if(o is Array) {
+				resetMenu();
+				
+				_menuIndexPath = o as Array;
+				
+				var entries:IList = _model.entries;
+				for(var i:int = 0; i < _menuIndexPath.length; i++) {
+					var entry:MenuEntryModel = entries.getItemAt(_menuIndexPath[i]) as MenuEntryModel;
+					pushMenu(entry.entries);
+					entries = entry.entries;
+				}
+			}
 		}
 	}
 }

@@ -22,12 +22,8 @@ package ro.calin.component.model
 		
 		public var entries:IList = null;
 		
-		/**
-		 * This should be a refference to the list of 
-		 * entries in which this entry is found.
-		 */
-		public var containerEntries:IList = null;
-		
 		public var extra:Object = null;
+		
+		public var index:int;
 	}
 }

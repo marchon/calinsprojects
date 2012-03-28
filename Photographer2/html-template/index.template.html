@@ -23,6 +23,19 @@
 			body { margin:0; padding:0; overflow:auto; text-align:center; 
 			       background-color: ${bgcolor}; }   
 			#flashContent { display:none; }
+			
+			.text
+			{
+				z-index: 1000;
+				overflow: default;
+				color: #FFFFFF;
+				font-family: verdana;
+				font-size: 18px;
+				top: 50px;
+				right: 50px;
+				position: absolute;
+			
+			} 
         </style>
 		
 		<!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
@@ -43,6 +56,7 @@
             params.bgcolor = "${bgcolor}";
             params.allowscriptaccess = "sameDomain";
             params.allowfullscreen = "true";
+            params.wmode = "transparent";
             var attributes = {};
             attributes.id = "${application}";
             attributes.name = "${application}";
@@ -72,6 +86,8 @@
 								+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
 			</script> 
         </div>
+        
+        <div class="text">this is a test</div>
 	   	
        	<noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="${width}" height="${height}" id="${application}">
@@ -86,6 +102,7 @@
                     <param name="bgcolor" value="${bgcolor}" />
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="allowFullScreen" value="true" />
+                    <param name="wmode" value="transparent" />
                 <!--<![endif]-->
                 <!--[if gte IE 6]>-->
                 	<p> 

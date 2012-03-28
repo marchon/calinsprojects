@@ -5,12 +5,14 @@ package ro.calin.app
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import flash.geom.Utils3D;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	
 	import mx.core.IVisualElement;
+	import mx.events.BrowserChangeEvent;
+	import mx.managers.BrowserManager;
+	import mx.utils.URLUtil;
 	
 	import ro.calin.component.CategoryViewer;
 	import ro.calin.component.LoadingProgressBar;
@@ -18,7 +20,6 @@ package ro.calin.app
 	import ro.calin.component.MenuButton;
 	import ro.calin.component.PictureViewer;
 	import ro.calin.component.Registry;
-	import ro.calin.component.Subcategory;
 	import ro.calin.component.event.CategoryEvent;
 	import ro.calin.component.event.LoadingEvent;
 	import ro.calin.component.event.MenuEvent;
@@ -30,7 +31,6 @@ package ro.calin.app
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.core.ContentCache;
-	import spark.core.IContentLoader;
 	
 	[SkinState("menumiddle")]
 	[SkinState("menutop")]
@@ -96,6 +96,9 @@ package ro.calin.app
 			currentSkinState = menuModel.extra as String;
 			
 			setStyle("skinClass", AppSkin);
+			
+			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
+			BrowserManager.getInstance().init("");
 		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void { 
@@ -166,6 +169,8 @@ package ro.calin.app
 		{
 			if(externalContentGroup.numElements > 0) externalContentGroup.removeAllElements();
 			changeCurrentState(menuModel.extra as String);
+			
+			saveState();
 		}
 		
 		protected function menuItemClick(event:MenuEvent):void {
@@ -179,6 +184,8 @@ package ro.calin.app
 				externalContentGroup.addElement(arr[1] as IVisualElement);
 			}
 			else if(event.entry.extra is PictureViewerModel) showPictures(event.entry.extra as PictureViewerModel);
+			
+			saveState();
 		}
 		
 		protected function menuItemHover(event:MenuEvent):void {
@@ -333,5 +340,26 @@ package ro.calin.app
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
 			});
 		}
+		
+		private function loadState(event:BrowserChangeEvent): void {
+			var o:Object = URLUtil.stringToObject(BrowserManager.getInstance().fragment);
+			loadState2(o);
+		}
+		
+		private function loadState2(o:Object) : void {
+			if(pictureViewer && menu && categoryViewer && leftButton && rightButton && externalContentGroup) {
+				if(o.ms) changeCurrentState(o.ms);
+			} else {
+				callLater(loadState2, [o]);
+			}
+		}
+		
+		private function saveState() : void {
+			var o:Object = {
+				ms: currentSkinState
+			};
+			BrowserManager.getInstance().setFragment(URLUtil.objectToString(o));
+		}
+		
 	}
 }

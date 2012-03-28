@@ -162,32 +162,29 @@
 					   fault="configService_faultHandler(event)" resultFormat="e4x"/>
 		
 		<!-- Declare internal model -->
-		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" extra="{App.MENU_MIDDLE}" logoUrl="logo.jpg">
+		<model:MenuModel id="model" alpha="0.5" buttonWidth="220" extra="{App.MENU_MIDDLE}" logoUrl="static/logo.jpg">
 			<model:entries>
 				<s:ArrayList>
-					<model:MenuEntryModel label="gallery" extra="{App.MENU_BOTTOM}">
+					<model:MenuEntryModel label="gallery" extra="{App.MENU_BOTTOM}" color="0xECD872">
 					</model:MenuEntryModel>
-					<model:MenuEntryModel label="info" extra="{App.MENU_TOP}">
+					<model:MenuEntryModel label="info" extra="{App.MENU_TOP}" color="0x82CAFA">
 						<model:entries>
 							<s:ArrayList>
-								<model:MenuEntryModel label="blog" extra="{new URLRequest('http://mariusstoianov.wordpress.com/')}">
-								</model:MenuEntryModel>
-								<model:MenuEntryModel label="contact">
-								</model:MenuEntryModel>
-								<model:MenuEntryModel label="about" extra="{about}"/>
-								<model:MenuEntryModel label="friends">
-								</model:MenuEntryModel>
+								<model:MenuEntryModel label="blog" extra="{new URLRequest('http://mariusstoianov.wordpress.com/')}" color="0x000000"/>
+								<model:MenuEntryModel label="contact" extra="{contact}" color="0x413839"/>
+								<model:MenuEntryModel label="about" extra="{about}" color="0x595454"/>
+								<model:MenuEntryModel label="friends" extra="{friends}" color="0x736F6E"/>
 							</s:ArrayList>
 						</model:entries>
 					</model:MenuEntryModel>
-					<model:MenuEntryModel label="share" extra="{App.MENU_TOP}">
+					<model:MenuEntryModel label="share" extra="{App.MENU_TOP}" color="0xFAAFBA">
 						<model:entries>
 							<s:ArrayList>
 								<model:MenuEntryModel label="facebook" imageSrc="@Embed(source='assets/fb.gif')" 
-													  extra="{new URLRequest('http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F')}">
-								</model:MenuEntryModel>
-								<model:MenuEntryModel label="like on facebook" imageSrc="@Embed(source='assets/fbl.png')">
-								</model:MenuEntryModel>
+													  extra="{new URLRequest('http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F')}"
+													  color="0x2222AA"/>
+								<model:MenuEntryModel label="like on facebook" imageSrc="@Embed(source='assets/fbl.png')"
+													  color="0x3333CC"/>
 							</s:ArrayList>
 						</model:entries>
 					</model:MenuEntryModel>
@@ -195,17 +192,42 @@
 			</model:entries>
 		</model:MenuModel>
 		
-		<fx:Array id="about">
+		<fx:Array id="contact">
 			<model:PictureViewerModel>
 				<model:pictures>
-					<!--TODO: move all static resources to static folder (logo, static pics)-->
-					<fx:String>data/_MG_5493.jpg</fx:String>
+					<fx:String>static/contact.jpg</fx:String>
 				</model:pictures>
 			</model:PictureViewerModel>
 			
 			<s:VGroup bottom="10" right="10">
-				<mx:LinkButton label="mata" click="navigateToURL(new URLRequest('http://mata.com'))" />
-				<mx:LinkButton label="tactu" click="navigateToURL(new URLRequest('http://tactu.com'))" />
+				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="blue"/>
+				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="blue"/>
+			</s:VGroup>
+		</fx:Array>
+		
+		<fx:Array id="about">
+			<model:PictureViewerModel>
+				<model:pictures>
+					<fx:String>static/about.jpg</fx:String>
+				</model:pictures>
+			</model:PictureViewerModel>
+			
+			<s:VGroup bottom="10" right="10">
+				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="blue"/>
+				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="blue"/>
+			</s:VGroup>
+		</fx:Array>
+		
+		<fx:Array id="friends">
+			<model:PictureViewerModel>
+				<model:pictures>
+					<fx:String>static/friends.jpg</fx:String>
+				</model:pictures>
+			</model:PictureViewerModel>
+			
+			<s:VGroup bottom="60" right="40">
+				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="black" fontWeight="bold"/>
+				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="black" fontWeight="bold"/>
 			</s:VGroup>
 		</fx:Array>
 		

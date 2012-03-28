@@ -19,15 +19,15 @@ package ro.calin.component
 		
 		private var registry:Object = new Object();
 		
-		public function register(name:String, object:Object) {
+		public function register(name:String, object:Object) : void {
 			registry[name] = object;
 		}
 		
-		public function check(name:String):Object {
+		public function check(name:String) : Object {
 			return registry[name];
 		}
 		
-		public function unregister(name:String) {
+		public function unregister(name:String) : void {
 			registry[name] = null;
 		}
 	}

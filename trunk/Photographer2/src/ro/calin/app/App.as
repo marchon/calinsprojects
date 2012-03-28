@@ -296,7 +296,14 @@ package ro.calin.app
 		
 		private function rolloutIsBelowObject(event:MouseEvent):Boolean {
 			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
-			return event.stageY > pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
+			var width:Number = (event.target as DisplayObject).width;
+			
+			//hack (category viewer extends with description)
+			if(event.target is CategoryViewer) {
+				width = (event.target as CategoryViewer).model.thumbWidth;
+			}
+			
+			return event.stageY > pos.y && event.stageX >= pos.x && event.stageX <= pos.x + width;
 		}
 		
 		private function categoryRollOver(evt:MouseEvent):void {

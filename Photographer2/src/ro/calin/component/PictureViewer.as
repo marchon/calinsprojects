@@ -6,7 +6,6 @@ package ro.calin.component
 	
 	import ro.calin.component.model.PictureViewerModel;
 	import ro.calin.component.skin.PictureViewerSkin;
-	import ro.calin.utils.StateObject;
 	
 	import spark.components.SkinnableContainer;
 	import spark.core.IContentLoader;
@@ -15,7 +14,7 @@ package ro.calin.component
 	/**
 	 * Component that provides posibillity to slide through a set of pictures.
 	 */
-	public class PictureViewer extends SkinnableContainer implements StateObject
+	public class PictureViewer extends SkinnableContainer
 	{
 		public static const MODE_NEXT:int 	= 0;
 		public static const MODE_PREV:int 	= 1;
@@ -25,7 +24,7 @@ package ro.calin.component
 		public static const DIR_UP:int 		= 0;
 		public static const DIR_DOWN:int  	= 1;
 		public static const DIR_LEFT:int 	= 2;
-		public static const DIR_RIGHT:int	= 3;
+		public static const DIR_RIGHT:int	= 3;		
 		
 		/**
 		 * The first picture.
@@ -62,10 +61,6 @@ package ro.calin.component
 		 */
 		private var _currentModel:PictureViewerModel;
 		
-		private var _currentModelName:String;
-		
-		private var _lastSlideDirection:int;
-		
 		/**
 		 * Index of the picture on the screen.
 		 */
@@ -95,6 +90,10 @@ package ro.calin.component
 			_models = new Object();
 		}
 		
+		public function get index():Number {
+			return _currentPicIndex;
+		}
+		
 		/**
 		 * Registers a list of pictures by a name.
 		 * Optionally, it can associate a content loader with the list.
@@ -122,7 +121,6 @@ package ro.calin.component
 		public function setActiveModel(name:String):void {
 			if(_models[name] == null || _currentModel == _models[name]) return;
 			
-			_currentModelName = name;
 			_currentModel = _models[name];
 			try {
 				var loader:IContentLoader = Registry.instance.check(name) as IContentLoader;
@@ -140,7 +138,6 @@ package ro.calin.component
 		public function slide(direction:int, mode:int):void {
 			if(_currentModel == null || _moveAnim.isPlaying) return;
 			
-			_lastSlideDirection = direction;
 			switch(direction) {
 				case DIR_UP:
 					_outsidePicture.x = 0;
@@ -183,6 +180,8 @@ package ro.calin.component
 				case MODE_FIRST:
 					_currentPicIndex = 0;
 					break;
+				default:
+					if(mode < 0) _currentPicIndex = (-mode) % _currentModel.pictures.length;
 			}
 			
 			performSlide();
@@ -210,7 +209,7 @@ package ro.calin.component
 			_moveAnim.xBy = 0;
 			_moveAnim.yBy = 0;
 		}
-				
+		
 		/**
 		 * When ths skin parts are created, make the pointers for outside and inside pics
 		 * point to pic1/pic2 and add click listeners for the buttons.
@@ -225,40 +224,6 @@ package ro.calin.component
 			if(instance == picture2) {
 				_outsidePicture = picture2;
 				_outsidePicture.visible = false;
-			}
-		}
-		
-		public function getState():Object {
-			return [_currentModelName, _currentPicIndex, _lastSlideDirection];
-		}
-		
-		public function setState(o:Object):void {
-			if(o is Array) {
-				var state:Array = o as Array;
-				
-				if(state.length != 3) return;
-				
-				setActiveModel(state[0]);
-				_currentPicIndex = state[1];
-				var newDir:int = DIR_UP;
-				
-				switch(state[2])
-				{
-					case DIR_UP:
-						newDir = DIR_DOWN;
-						break;
-					case DIR_DOWN:
-						newDir = DIR_UP;
-						break;
-					case DIR_LEFT:
-						newDir = DIR_RIGHT;
-						break;
-					case DIR_RIGHT:
-						newDir = DIR_LEFT;
-						break;
-				}
-				
-				slide(newDir, -1);
 			}
 		}
 	}

@@ -282,8 +282,8 @@ BrowserHistory = (function() {
                 setHash(flexAppUrl);
                 
                 // For IE8 we must restore full focus/activation to our invoking player instance.
-                if (browser.ie8)
-                    getPlayer().focus();
+                //if (browser.ie8)
+                getPlayer().focus();
             }
         }
         backStack.push(createState(baseUrl, newUrl, flexAppUrl));

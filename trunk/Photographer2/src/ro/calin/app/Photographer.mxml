@@ -27,6 +27,7 @@
 			private var subcategoryUrls:Array = [];
 			
 			private var wallpapers:PictureViewerModel;
+			private var picsInSubcategory:Object = {};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
@@ -58,7 +59,7 @@
 			}
 			
 			private function startApp(event:LoadingEvent):void {
-				var app:App = new App(model, wallpapers, progressBar);
+				var app:App = new App(model, wallpapers, progressBar, picsInSubcategory);
 				app.percentHeight = 100;
 				app.percentWidth = 100;
 				addElementAt(app, 0);
@@ -113,6 +114,7 @@
 					var pictureModel:PictureViewerModel = new PictureViewerModel();
 					pictureModel.pictures = parsePictures(subcategory.picture); 
 					model.extra = pictureModel;
+					picsInSubcategory[model.name] = pictureModel; //for urls
 					subcategoryList.addItem(model);
 				}
 				

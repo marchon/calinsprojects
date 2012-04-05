@@ -71,6 +71,8 @@ package ro.calin.app
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
 		private var progressBar:LoadingProgressBar;
+		private var picsInSubcategory:Object;
+		private var currentSubcategory:String = "";
 		
 		[SkinPart(required="true")]
 		public var pictureViewer:PictureViewer;
@@ -90,13 +92,14 @@ package ro.calin.app
 		[SkinPart(required="true")]
 		public var externalContentGroup:Group;
 		
-		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel, progressBar:LoadingProgressBar)
+		public function App(menuModel:MenuModel, wallpaperModel:PictureViewerModel, progressBar:LoadingProgressBar, picsInSubcategory:Object)
 		{			
 			super();
 			
 			this.menuModel = menuModel;
 			this.wallpapers = wallpaperModel;
 			this.progressBar = progressBar;
+			this.picsInSubcategory = picsInSubcategory;
 			
 			currentSkinState = menuModel.extra as String;
 			
@@ -171,8 +174,7 @@ package ro.calin.app
 		{
 			if(externalContentGroup.numElements > 0) externalContentGroup.removeAllElements();
 			changeCurrentState(menuModel.extra as String);
-			
-			saveState();
+			clearCurrentPictureFromUrl();
 		}
 		
 		protected function menuItemClick(event:MenuEvent):void {
@@ -180,7 +182,6 @@ package ro.calin.app
 			
 			if(event.entry.extra is String) {
 				changeCurrentState(event.entry.extra as String);
-				saveState();
 			}
 			else if(event.entry.extra is URLRequest) navigateToURL(event.entry.extra as URLRequest);
 			else if(event.entry.extra is Array) {
@@ -240,33 +241,36 @@ package ro.calin.app
 			if(event.subcategory.extra is PictureViewerModel) {
 				var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
 				showPictures(model);
+				currentSubcategory = event.subcategory.name;
+				saveCurrentPictureToUrl(currentSubcategory, 0);
 			}
 		}
 		
 		protected function leftButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-			saveState();
+			saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
 		}
 		
 		protected function rightButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
-			saveState();
+			saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
 		}
 		
 		protected function keyDown(event:KeyboardEvent):void
 		{
 			if(!leftButton.visible) return;
 			
-			if(event.keyCode == Keyboard.LEFT)
+			if(event.keyCode == Keyboard.LEFT) {
 				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-			else if(event.keyCode == Keyboard.RIGHT)
+				saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+			}
+			else if(event.keyCode == Keyboard.RIGHT) {
 				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
-			
-			saveState();
+				saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+			}
 		}
-		
 		/*
 		*	END HANDLERS
 		*/
@@ -328,7 +332,7 @@ package ro.calin.app
 			invalidateSkinState();
 		}
 		
-		private function showPictures(model:PictureViewerModel) : void {
+		private function showPictures(model:PictureViewerModel, pos:Number = NaN) : void {
 			if(model == null || model.pictures == null || model.pictures.length == 0) return;
 			
 			var loader:ContentCache = Registry.instance.check(SUBCATEGORY_PIC_LIST) as ContentCache;
@@ -342,59 +346,58 @@ package ro.calin.app
 			
 			loader.removeAllCacheEntries();
 			
-			progressBar.load(loader, model.pictures, [0]); //first pic is priority, after loading do the slide
+			progressBar.load(loader, model.pictures, [isNaN(pos)?0:pos]); //first pic has priority, after loading do the slide
 			pictureViewer.registerModel(SUBCATEGORY_PIC_LIST, model);
 			leftButton.visible = rightButton.visible = false;
 			
 			var _inline:Function;
 			progressBar.addEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline = function(event:LoadingEvent) : void {
 				pictureViewer.setActiveModel(SUBCATEGORY_PIC_LIST);
-				pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
+				pictureViewer.slide(PictureViewer.DIR_UP, isNaN(pos)?PictureViewer.MODE_FIRST : -pos); //neg means position
 				leftButton.visible = rightButton.visible = model.pictures.length > 1;
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
-				saveState();
 			});
 		}
 		
 		override protected function attachSkin() : void {
 			super.attachSkin();
 			
-			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
+//			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
 			BrowserManager.getInstance().init("");
+			loadPictureFromUrl();
 		}
 		
-		private function loadState(event:BrowserChangeEvent): void {
+		private function loadPictureFromUrl(): void {
 			var o:Object = URLUtil.stringToObject(decode(BrowserManager.getInstance().fragment));
 			
-			if(o.hasOwnProperty("ms")) changeCurrentState(o.ms);
-			else changeCurrentState(MENU_MIDDLE);
-			
-			if(o.hasOwnProperty("mis")) menu.setState(o.mis);
-			else menu.setState([]);
-			
-			if(o.hasOwnProperty("pvs")) pictureViewer.setState(o.pvs);
+			if(o.hasOwnProperty("s") && o.hasOwnProperty("p")) 
+			{
+				changeCurrentState(MENU_BOTTOM);
+				showPictures(picsInSubcategory[o["s"]], parseInt(o["p"]));
+			}
 		}
 		
-		private function saveState() : void {
+		private function saveCurrentPictureToUrl(subcategory:String, pos:int) : void {
 			var o:Object = {
-				ms: currentSkinState,
-				mis: menu.getState(),
-				pvs: pictureViewer.getState()
+				s: subcategory,
+				p: pos
 			};
 			
 			BrowserManager.getInstance().setFragment(encode(URLUtil.objectToString(o)));
 		}
 		
+		private function clearCurrentPictureFromUrl():void {
+			BrowserManager.getInstance().setFragment('');
+		}
+		
 		private function encode(s:String):String {
-//			enc.encode(s);
-//			return enc.toString();
-			return s;
+			enc.encode(s);
+			return enc.toString();
 		}
 		
 		private function decode(s:String):String {
-//			dec.decode(s);
-//			return dec.toByteArray().toString();
-			return s;
+			dec.decode(s);
+			return dec.toByteArray().toString();
 		}
 		
 	}

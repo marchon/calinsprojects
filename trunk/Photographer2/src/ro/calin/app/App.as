@@ -26,6 +26,7 @@ package ro.calin.app
 	import ro.calin.component.event.LoadingEvent;
 	import ro.calin.component.event.MenuEvent;
 	import ro.calin.component.model.CategoryViewerModel;
+	import ro.calin.component.model.MenuEntryModel;
 	import ro.calin.component.model.MenuModel;
 	import ro.calin.component.model.PictureViewerModel;
 	
@@ -362,7 +363,6 @@ package ro.calin.app
 		override protected function attachSkin() : void {
 			super.attachSkin();
 			
-//			BrowserManager.getInstance().addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, loadState);
 			BrowserManager.getInstance().init("");
 			loadPictureFromUrl();
 		}
@@ -374,6 +374,8 @@ package ro.calin.app
 			{
 				changeCurrentState(MENU_BOTTOM);
 				showPictures(picsInSubcategory[o["s"]], parseInt(o["p"]));
+				currentSubcategory = o["s"];
+				menu.changeMenuState(menuModel.entries.getItemAt(0) as MenuEntryModel); //assumes gallery is at 0
 			}
 		}
 		

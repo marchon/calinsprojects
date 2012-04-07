@@ -27,7 +27,7 @@
 			private var subcategoryUrls:Array = [];
 			
 			private var wallpapers:PictureViewerModel;
-			private var picsInSubcategory:Object = {};
+			private var pictureLists:Object = {};
 
 			protected function configService_resultHandler(event:ResultEvent):void
 			{
@@ -59,7 +59,7 @@
 			}
 			
 			private function startApp(event:LoadingEvent):void {
-				var app:App = new App(model, wallpapers, progressBar, picsInSubcategory);
+				var app:App = new App(model, wallpapers, progressBar, pictureLists);
 				app.percentHeight = 100;
 				app.percentWidth = 100;
 				addElementAt(app, 0);
@@ -88,6 +88,7 @@
 					} else if(category.picture.length() > 0) {
 						submodel = new PictureViewerModel();
 						submodel.pictures = parsePictures(category.picture);
+						pictureLists[model.label] = submodel;
 					}
 					
 					idx++;
@@ -114,7 +115,7 @@
 					var pictureModel:PictureViewerModel = new PictureViewerModel();
 					pictureModel.pictures = parsePictures(subcategory.picture); 
 					model.extra = pictureModel;
-					picsInSubcategory[model.name] = pictureModel; //for urls
+					pictureLists[model.name] = pictureModel; //for urls
 					subcategoryList.addItem(model);
 				}
 				

@@ -311,7 +311,7 @@ package ro.calin.app
 		private function pointerIsBelowObject(event:MouseEvent):Boolean {
 			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
 			var width:Number = (event.target as DisplayObject).width;
-			var height:Number = event.target is IViewport? (event.target as IViewport).contentHeight : (event.target as DisplayObject).width;
+			var height:Number = event.target is IViewport? (event.target as IViewport).contentHeight : (event.target as DisplayObject).height;
 			
 			//hack (category viewer extends with description)
 			if(event.target is CategoryViewer) {

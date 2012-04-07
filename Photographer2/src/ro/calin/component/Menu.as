@@ -183,5 +183,12 @@ package ro.calin.component
 			var selected:MenuEntryModel = evt.entry;
 			pushMenu(selected.entries);
 		}
+		
+		public function changeMenuState(entry:MenuEntryModel):void {
+			var entries:ArrayList = _menuState[_menuState.length - 1];
+			if(entries.source.indexOf(entry) > -1) {
+				pushMenu(entry.entries);
+			}
+		}
 	}
 }

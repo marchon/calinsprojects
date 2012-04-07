@@ -74,8 +74,8 @@ package ro.calin.app
 		private var menuModel:MenuModel;
 		private var wallpapers:PictureViewerModel;
 		private var progressBar:LoadingProgressBar;
-		private var picsInSubcategory:Object;
-		private var currentSubcategory:String = "";
+		private var pictureLists:Object;
+		private var currentPictureList:String = "";
 		
 		[SkinPart(required="true")]
 		public var pictureViewer:PictureViewer;
@@ -102,7 +102,7 @@ package ro.calin.app
 			this.menuModel = menuModel;
 			this.wallpapers = wallpaperModel;
 			this.progressBar = progressBar;
-			this.picsInSubcategory = picsInSubcategory;
+			this.pictureLists = picsInSubcategory;
 			
 			currentSkinState = menuModel.extra as String;
 			
@@ -192,7 +192,11 @@ package ro.calin.app
 				showPictures(arr[0] as PictureViewerModel);
 				externalContentGroup.addElement(arr[1] as IVisualElement);
 			}
-			else if(event.entry.extra is PictureViewerModel) showPictures(event.entry.extra as PictureViewerModel);
+			else if(event.entry.extra is PictureViewerModel) {
+				showPictures(event.entry.extra as PictureViewerModel);
+				currentPictureList = event.entry.label;
+				saveCurrentPictureToUrl(currentPictureList, 0);
+			}
 		}
 		
 		protected function menuItemHover(event:MenuEvent):void {
@@ -244,21 +248,21 @@ package ro.calin.app
 			if(event.subcategory.extra is PictureViewerModel) {
 				var model:PictureViewerModel = event.subcategory.extra as PictureViewerModel;
 				showPictures(model);
-				currentSubcategory = event.subcategory.name;
-				saveCurrentPictureToUrl(currentSubcategory, 0);
+				currentPictureList = event.subcategory.name;
+				saveCurrentPictureToUrl(currentPictureList, 0);
 			}
 		}
 		
 		protected function leftButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-			saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+			saveCurrentPictureToUrl(currentPictureList, pictureViewer.index);
 		}
 		
 		protected function rightButtonClick(event:MouseEvent):void
 		{
 			pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
-			saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+			saveCurrentPictureToUrl(currentPictureList, pictureViewer.index);
 		}
 		
 		protected function keyDown(event:KeyboardEvent):void
@@ -267,11 +271,11 @@ package ro.calin.app
 			
 			if(event.keyCode == Keyboard.LEFT) {
 				pictureViewer.slide(PictureViewer.DIR_RIGHT, PictureViewer.MODE_PREV);
-				saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+				saveCurrentPictureToUrl(currentPictureList, pictureViewer.index);
 			}
 			else if(event.keyCode == Keyboard.RIGHT) {
 				pictureViewer.slide(PictureViewer.DIR_LEFT, PictureViewer.MODE_NEXT);
-				saveCurrentPictureToUrl(currentSubcategory, pictureViewer.index);
+				saveCurrentPictureToUrl(currentPictureList, pictureViewer.index);
 			}
 		}
 		/*
@@ -376,8 +380,8 @@ package ro.calin.app
 			if(o.hasOwnProperty("s") && o.hasOwnProperty("p")) 
 			{
 				changeCurrentState(MENU_BOTTOM);
-				showPictures(picsInSubcategory[o["s"]], parseInt(o["p"]));
-				currentSubcategory = o["s"];
+				showPictures(pictureLists[o["s"]], parseInt(o["p"]));
+				currentPictureList = o["s"];
 				menu.changeMenuState(menuModel.entries.getItemAt(0) as MenuEntryModel); //assumes gallery is at 0
 			}
 		}

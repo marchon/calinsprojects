@@ -9,6 +9,7 @@ package ro.calin.app
 	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	
+	import mx.controls.Alert;
 	import mx.core.IVisualElement;
 	import mx.events.BrowserChangeEvent;
 	import mx.managers.BrowserManager;
@@ -34,6 +35,7 @@ package ro.calin.app
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.core.ContentCache;
+	import spark.core.IViewport;
 	
 	[SkinState("menumiddle")]
 	[SkinState("menutop")]
@@ -222,7 +224,7 @@ package ro.calin.app
 		}
 		
 		protected function menuButtonRollOut(event:MouseEvent):void {
-			if(!rolloutIsAboveObject(event)) {
+			if(!pointerIsAboveObject(event)) {
 				hideCategory();
 			}
 			
@@ -230,7 +232,7 @@ package ro.calin.app
 		}
 		
 		protected function categoryRollOut(event:MouseEvent):void {
-			if(!rolloutIsBelowObject(event)) {
+			if(!pointerIsBelowObject(event)) {
 				hideCategory();
 			}
 		}
@@ -301,21 +303,22 @@ package ro.calin.app
 			invalidateSkinState();
 		}
 		
-		private function rolloutIsAboveObject(event:MouseEvent):Boolean {
+		private function pointerIsAboveObject(event:MouseEvent):Boolean {
 			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
 			return event.stageY < pos.y && event.stageX >= pos.x && event.stageX <= pos.x + (event.target as DisplayObject).width;
 		}
 		
-		private function rolloutIsBelowObject(event:MouseEvent):Boolean {
+		private function pointerIsBelowObject(event:MouseEvent):Boolean {
 			var pos:Point = (event.target as DisplayObject).localToGlobal(new Point(0,0));
 			var width:Number = (event.target as DisplayObject).width;
+			var height:Number = event.target is IViewport? (event.target as IViewport).contentHeight : (event.target as DisplayObject).width;
 			
 			//hack (category viewer extends with description)
 			if(event.target is CategoryViewer) {
 				width = (event.target as CategoryViewer).model.thumbWidth;
 			}
 			
-			return event.stageY > pos.y && event.stageX >= pos.x && event.stageX <= pos.x + width;
+			return event.stageY > pos.y + height && event.stageX >= pos.x && event.stageX <= pos.x + width;
 		}
 		
 		private function categoryRollOver(evt:MouseEvent):void {

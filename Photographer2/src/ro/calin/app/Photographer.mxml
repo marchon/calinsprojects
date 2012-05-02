@@ -173,24 +173,13 @@
 					<model:MenuEntryModel label="info" extra="{App.MENU_TOP}" color="0x82CAFA">
 						<model:entries>
 							<s:ArrayList>
-								<model:MenuEntryModel label="blog" extra="{new URLRequest('http://mariusstoianov.wordpress.com/')}" color="0x000000"/>
+								<model:MenuEntryModel label="facebook page" extra="{new URLRequest('http://www.facebook.com/MariusStoianovPhotography')}" color="0x000000"/>
 								<model:MenuEntryModel label="contact" extra="{contact}" color="0x413839"/>
 								<model:MenuEntryModel label="about" extra="{about}" color="0x595454"/>
-								<model:MenuEntryModel label="friends" extra="{friends}" color="0x736F6E"/>
 							</s:ArrayList>
 						</model:entries>
 					</model:MenuEntryModel>
-					<model:MenuEntryModel label="share" extra="{App.MENU_TOP}" color="0xFAAFBA">
-						<model:entries>
-							<s:ArrayList>
-								<model:MenuEntryModel label="facebook" imageSrc="@Embed(source='assets/fb.gif')" 
-													  extra="{new URLRequest('http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.stoianov.ro%2F')}"
-													  color="0x2222AA"/>
-								<model:MenuEntryModel label="like on facebook" imageSrc="@Embed(source='assets/fbl.png')"
-													  color="0x3333CC"/>
-							</s:ArrayList>
-						</model:entries>
-					</model:MenuEntryModel>
+					<model:MenuEntryModel label="facebook" color="0xFAAFBA" extra="{new URLRequest('http://www.facebook.com/MariusStoianovPhotography')}"/>
 				</s:ArrayList>
 			</model:entries>
 		</model:MenuModel>
@@ -202,10 +191,22 @@
 				</model:pictures>
 			</model:PictureViewerModel>
 			
-			<s:VGroup bottom="10" right="10">
-				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="blue"/>
-				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="blue"/>
-			</s:VGroup>
+			<s:Group height="100%" width="100%">
+				<s:Rect width="287" height="100%" top="35">
+					<s:fill>
+						<s:SolidColor color="black" alpha="0.4"/>
+					</s:fill>
+				</s:Rect>
+				<s:VGroup top="80" left="50" fontSize="18" color="white">
+					<s:Label text="contact details:" />
+					<s:Label text="e-mail:" />
+					<s:Label text="marius@stoianov.ro" buttonMode="true" click="navigateToURL(new URLRequest('mailto:marius@stoianov.ro'), '_blank')"/>
+					<s:Label text="marius.stoianov@gmail.com" buttonMode="true" click="navigateToURL(new URLRequest('mailto:marius.stoianov@gmail.com'), '_blank')"/>
+					<s:Label text="telephone:" />
+					<s:Label text="+40742053730" />
+					<s:Label text="+40724762439" />
+				</s:VGroup>
+			</s:Group>
 		</fx:Array>
 		
 		<fx:Array id="about">
@@ -215,23 +216,19 @@
 				</model:pictures>
 			</model:PictureViewerModel>
 			
-			<s:VGroup bottom="10" right="10">
-				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="blue"/>
-				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="blue"/>
-			</s:VGroup>
-		</fx:Array>
-		
-		<fx:Array id="friends">
-			<model:PictureViewerModel>
-				<model:pictures>
-					<fx:String>static/friends.jpg</fx:String>
-				</model:pictures>
-			</model:PictureViewerModel>
-			
-			<s:VGroup bottom="60" right="40">
-				<s:Label text="mata" buttonMode="true" click="navigateToURL(new URLRequest('http://mata.com'))" fontSize="20" color="black" fontWeight="bold"/>
-				<s:Label text="tactu" buttonMode="true" click="navigateToURL(new URLRequest('http://tactu.com'))" fontSize="20" color="black" fontWeight="bold"/>
-			</s:VGroup>
+			<s:Group height="287" width="100%" top="35">
+				<s:Rect height="100%" width="100%">
+					<s:fill>
+						<s:SolidColor color="black" alpha="0.4"/>
+					</s:fill>
+				</s:Rect>
+				<s:VGroup verticalCenter="0" horizontalCenter="0" fontSize="16" color="white">
+					<s:Label width="800" textAlign="justify">
+						<s:text>Marius Stoianov, 25 de ani in iunie nascut in Bucuresti. In copilarie eram pasionat de desen, in special designul auto urmat de arhitectura, mai cochetam cu muzica electronica insa am ales sa continui ce nu a terminat tatal meu si anume fotografia. astfel am urmat cursurile facultatii de cinematografie si televiziune din cadrul universitatii media pro la sectia de imagine unde am dus la alt nivel fotografia  odata cu invatarea unor tehnici de iluminare. am inceput fotografia acum 6 ani dar aveam atractia inca de cand aveam voie sa "pun mana" pe aparatul tatalui meu. Am inceput cu fotografie de strada. Ca hobby-uri inca mai am desenul, colectionarea a diverse nimicuri si … un pic evident: fotografia! Nu pot sa spun anume pe cine admir in domeniul fotografiei (admir munca multora dar nu pot spune ca admir persoana) insa in domeniul mai general al imaginii as putea spune ca il admir pe Liviu Marghidan, profesorul si mentorul nostru din timpul facultatii. Desi eu nu ma axez numai pe un anumit gen de fotografie pot spune ca ultima sedinta foto cu portretele in apa as vrea sa o transform intr-o serie pe viitor. Experienta Fratelli cred ca se poate rezuma prin o mare familie care se distreaza in fiecare saptamana intr-un loc cu gust ramanand apoi cu amintiri frumoase in memorie dar si pentru totdeauna prin fotografiile noastre.
+						</s:text>
+					</s:Label>
+				</s:VGroup>
+			</s:Group>
 		</fx:Array>
 		
 		<s:Fade id="pvFade" target="{progressBar}" duration="1200" alphaFrom="0" alphaTo="1"/>

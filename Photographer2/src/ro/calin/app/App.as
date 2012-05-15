@@ -4,6 +4,7 @@ package ro.calin.app
 	import flash.display.DisplayObject;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.external.ExternalInterface;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
@@ -109,6 +110,24 @@ package ro.calin.app
 			setStyle("skinClass", AppSkin);
 		}
 		
+		override protected function attachSkin() : void {
+			super.attachSkin(); //calls partAdded() below for each skinpart
+			
+			BrowserManager.getInstance().init("");
+			
+			var o:Object = URLUtil.stringToObject(decode(BrowserManager.getInstance().fragment));
+			
+			if(o.hasOwnProperty("s") && o.hasOwnProperty("p")) 
+			{
+				currentSkinState = MENU_BOTTOM;
+				showPictures(pictureLists[o["s"]], parseInt(o["p"]));
+				currentPictureList = o["s"];
+				menu.changeMenuState(menuModel.entries.getItemAt(0) as MenuEntryModel); //assumes gallery is at 0
+			} else {
+				pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_FIRST);	
+			}
+		}
+		
 		override protected function partAdded(partName:String, instance:Object) : void { 
 			super.partAdded(partName, instance);
 			
@@ -128,7 +147,6 @@ package ro.calin.app
 			if(instance == pictureViewer) {
 				pictureViewer.registerModel(WALLPAPERS, wallpapers);
 				pictureViewer.setActiveModel(WALLPAPERS);
-				pictureViewer.slide(PictureViewer.DIR_DOWN, PictureViewer.MODE_FIRST);
 			}
 			
 			if(instance == leftButton) {
@@ -365,25 +383,6 @@ package ro.calin.app
 				leftButton.visible = rightButton.visible = model.pictures.length > 1;
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
 			});
-		}
-		
-		override protected function attachSkin() : void {
-			super.attachSkin();
-			
-			BrowserManager.getInstance().init("");
-			loadPictureFromUrl();
-		}
-		
-		private function loadPictureFromUrl(): void {
-			var o:Object = URLUtil.stringToObject(decode(BrowserManager.getInstance().fragment));
-			
-			if(o.hasOwnProperty("s") && o.hasOwnProperty("p")) 
-			{
-				changeCurrentState(MENU_BOTTOM);
-				showPictures(pictureLists[o["s"]], parseInt(o["p"]));
-				currentPictureList = o["s"];
-				menu.changeMenuState(menuModel.entries.getItemAt(0) as MenuEntryModel); //assumes gallery is at 0
-			}
 		}
 		
 		private function saveCurrentPictureToUrl(subcategory:String, pos:int) : void {

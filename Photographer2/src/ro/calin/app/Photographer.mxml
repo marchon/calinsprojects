@@ -155,7 +155,7 @@
 	<s:applicationComplete>
 		<![CDATA[
 			configService.send();
-			SWFProfiler.init(stage, this);
+//			SWFProfiler.init(stage, this);
 		]]>
 	</s:applicationComplete>
 	

@@ -1,6 +1,7 @@
 package ro.calin.component
 {
 	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	
 	import mx.events.EffectEvent;
 	
@@ -137,7 +138,7 @@ package ro.calin.component
 		 */
 		public function slide(direction:int, mode:int):void {
 			if(_currentModel == null || _moveAnim.isPlaying) return;
-			
+
 			switch(direction) {
 				case DIR_UP:
 					_outsidePicture.x = 0;

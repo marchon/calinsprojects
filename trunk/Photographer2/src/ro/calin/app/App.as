@@ -227,13 +227,14 @@ package ro.calin.app
 				//reset scroll position to bottom
 				categoryViewer.verticalScrollPosition = actuallHeight - viewHeight;
 				
-				if(cm != categoryViewer.model) {
+				//needed to remove this to fix fullscreen bug
+//				if(cm != categoryViewer.model) {
 					//set the height of the strip (max is screen height)
 					categoryViewer.height = viewHeight;
 					
 					//move it above the corresponding menu item
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1; //hardcoded adjustment(because of scaling)
-				}
+//				}
 				
 				categoryViewer.model = cm;
 				categoryViewer.highlightAll = true;

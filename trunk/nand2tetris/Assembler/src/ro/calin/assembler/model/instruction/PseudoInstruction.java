@@ -25,9 +25,12 @@ public class PseudoInstruction implements Instruction {
         this.labelName = labelName;
     }
 
-    @Override
-    public String getMachineCode() {
-        return null;
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
     }
 
     @Override

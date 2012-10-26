@@ -4,13 +4,13 @@ import ro.calin.assembler.model.Instruction;
 import ro.calin.assembler.model.InstructionBuilder;
 
 public class CInstruction implements Instruction {
-    
+
     public static class Builder implements InstructionBuilder<CInstruction> {
 
         @Override
         public boolean matches(String code) {
-            //TODO: check for actual correctness?
-            return code.contains("=") || code.contains(";"); 
+            // TODO: check for actual correctness?
+            return code.contains("=") || code.contains(";");
         }
 
         @Override
@@ -18,23 +18,23 @@ public class CInstruction implements Instruction {
             String dest = null;
             String comp = null;
             String jump = null;
-            
+
             String[] splitStr = code.split("=");
             int indexToSplit = 0;
-            
-            if(splitStr.length == 2) {
+
+            if (splitStr.length == 2) {
                 dest = splitStr[0];
                 indexToSplit = 1;
             }
-            
+
             splitStr = splitStr[indexToSplit].split(";");
-            
+
             comp = splitStr[0];
-            
-            if(splitStr.length == 2) {
+
+            if (splitStr.length == 2) {
                 jump = splitStr[1];
             }
-            
+
             return new CInstruction(dest, comp, jump);
         }
     }
@@ -49,11 +49,29 @@ public class CInstruction implements Instruction {
         this.comp = comp;
         this.jump = jump;
     }
-    
-    @Override
-    public String getMachineCode() {
-        // TODO Auto-generated method stub
-        return null;
+
+    public String getDest() {
+        return dest;
+    }
+
+    public void setDest(String dest) {
+        this.dest = dest;
+    }
+
+    public String getComp() {
+        return comp;
+    }
+
+    public void setComp(String comp) {
+        this.comp = comp;
+    }
+
+    public String getJump() {
+        return jump;
+    }
+
+    public void setJump(String jump) {
+        this.jump = jump;
     }
 
     @Override

@@ -1,19 +1,21 @@
 package ro.calin.assembler.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 import ro.calin.assembler.model.Instruction;
 import ro.calin.assembler.model.InstructionBuilder;
-import ro.calin.assembler.model.instruction.CInstruction;
-import ro.calin.assembler.model.instruction.PseudoInstruction;
+import ro.calin.assembler.model.exception.NotAValidInstructionException;
 
 public class InstructionParserImpl implements InstructionParser {
 
-    private List<InstructionBuilder<?>> instructionTypes = new ArrayList<InstructionBuilder<?>>();
+    private List<InstructionBuilder<?>> instructionTypes;
 
-    public InstructionParserImpl() {
-        instructionTypes.add(new PseudoInstruction.Builder());
-        instructionTypes.add(new CInstruction.Builder());
+    public InstructionParserImpl(List<InstructionBuilder<?>> instructionTypes) {
+//        instructionTypes.add(new PseudoInstruction.Builder());
+//        instructionTypes.add(new CInstruction.Builder());
+//        instructionTypes.add(new AInstructionWithConstant.Builder());
+//        instructionTypes.add(new AInstructionWithSymbol.Builder());
+        
+        this.instructionTypes = instructionTypes;
     }
 
     @Override
@@ -23,10 +25,6 @@ public class InstructionParserImpl implements InstructionParser {
                 return builder.build(code);
             }
         }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new InstructionParserImpl().parseInstruction("M=A+D"));
+        throw new NotAValidInstructionException(code);
     }
 }

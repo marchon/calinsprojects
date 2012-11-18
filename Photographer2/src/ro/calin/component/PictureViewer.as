@@ -132,13 +132,7 @@ package ro.calin.component
 			_currentPicIndex = 0;
 		}
 		
-		/**
-		 * Slide pic to NEXT, PREVIOUS, or RANDOM in this current picture list, 
-		 * in one of the four directions.
-		 */
-		public function slide(direction:int, mode:int):void {
-			if(_currentModel == null || _moveAnim.isPlaying) return;
-
+		private function updateDirection(direction:int) : void {
 			switch(direction) {
 				case DIR_UP:
 					_outsidePicture.x = 0;
@@ -161,6 +155,16 @@ package ro.calin.component
 					_moveAnim.xBy = this.width;
 					break;
 			}
+		}
+		
+		/**
+		 * Slide pic to NEXT, PREVIOUS, or RANDOM in this current picture list, 
+		 * in one of the four directions.
+		 */
+		public function slide(direction:int, mode:int):void {
+			if(_currentModel == null || _moveAnim.isPlaying) return;
+
+			updateDirection(direction);
 			
 			switch(mode) {
 				case MODE_NEXT:
@@ -181,10 +185,16 @@ package ro.calin.component
 				case MODE_FIRST:
 					_currentPicIndex = 0;
 					break;
-				default:
-					if(mode < 0) _currentPicIndex = (-mode) % _currentModel.pictures.length;
 			}
 			
+			performSlide();
+		}
+		
+		
+		public function slideToPosition(direction:int, position:int):void {
+			if(_currentModel == null || _moveAnim.isPlaying) return;
+			updateDirection(direction);
+			_currentPicIndex = position % _currentModel.pictures.length;
 			performSlide();
 		}
 		

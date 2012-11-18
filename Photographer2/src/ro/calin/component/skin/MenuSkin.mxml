@@ -71,5 +71,5 @@
 	<s:Label fontSize="12" top="4" right="20" text="&lt;/fullscreen on / off &gt;" color="white" buttonMode="true" 
 			 click="toggleFullScreen()"/>
 	<s:Label fontSize="12" bottom="4" right="20" text="&lt;/contact_developer&gt;" color="white" buttonMode="true" 
-			 click="{navigateToURL(new URLRequest('mailto:calin014@gmail.com'), '_blank')}"/>
+			 click="{navigateToURL(new URLRequest('mailto:calin.avasilcai@gmail.com'), '_blank')}"/>
 </s:Skin>

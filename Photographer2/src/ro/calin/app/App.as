@@ -218,6 +218,7 @@ package ro.calin.app
 		}
 		
 		protected function menuItemHover(event:MenuEvent):void {
+			trace("mih")
 			//extra stores the model for the cagegory, otherwise it's not a category
 			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
@@ -231,6 +232,7 @@ package ro.calin.app
 //				if(cm != categoryViewer.model) {
 					//set the height of the strip (max is screen height)
 					categoryViewer.height = viewHeight;
+					trace("vh: ", viewHeight)
 					
 					//move it above the corresponding menu item
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1; //hardcoded adjustment(because of scaling)
@@ -380,7 +382,11 @@ package ro.calin.app
 			var _inline:Function;
 			progressBar.addEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline = function(event:LoadingEvent) : void {
 				pictureViewer.setActiveModel(SUBCATEGORY_PIC_LIST);
-				pictureViewer.slide(PictureViewer.DIR_UP, isNaN(pos)?PictureViewer.MODE_FIRST : -pos); //neg means position
+				if(isNaN(pos)) {
+					pictureViewer.slide(PictureViewer.DIR_UP, PictureViewer.MODE_FIRST);
+				} else {
+					pictureViewer.slideToPosition(PictureViewer.DIR_UP, pos);
+				}
 				leftButton.visible = rightButton.visible = model.pictures.length > 1;
 				progressBar.removeEventListener(LoadingEvent.PRIORITY_LOAD_COMPLETE, _inline);
 			});

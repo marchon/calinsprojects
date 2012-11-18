@@ -16,7 +16,10 @@
 			
 			protected function effectEndHandler(event:EffectEvent):void
 			{
-				if(categoryViewer.alpha == 0) categoryViewer.visible = false;
+				if(categoryViewer.alpha == 0) {
+					categoryViewer.visible = false;
+//					categoryViewer.height = 0;
+				}
 			}
 			
 		]]>

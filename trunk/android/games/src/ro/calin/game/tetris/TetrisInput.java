@@ -13,6 +13,6 @@ public interface TetrisInput {
     boolean slideLeft();
     boolean slideRight();
     boolean fallDown();
-    boolean rotateLeft();
-    boolean rotateRight();
+    boolean rotateClockwise();
+    boolean rotateAntiClockwise();
 }

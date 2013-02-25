@@ -21,6 +21,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         this.canvas = canvas;
 
         canvas.drawPlayArea();
+        canvas.drawNextPieceArea();
     }
 
     @Override

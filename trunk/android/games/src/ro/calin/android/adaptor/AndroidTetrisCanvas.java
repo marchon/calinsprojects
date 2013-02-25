@@ -13,6 +13,8 @@ import ro.calin.game.tetris.TetrisCanvas;
  * To change this template use File | Settings | File Templates.
  */
 public class AndroidTetrisCanvas implements TetrisCanvas {
+    public static int BRICK_SIDE_SIZE = 50;
+
     private final Paint paint;
     private final Canvas canvas;
 
@@ -44,7 +46,10 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
 
     @Override
     public void drawPlayArea() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.STROKE);
+
+        canvas.drawRect(10, 10, 10 + BRICK_SIDE_SIZE * Const.PLAY_AREA_WIDTH - 1, 10 + BRICK_SIDE_SIZE * Const.PLAY_AREA_HEIGHT - 1, paint);
     }
 
     @Override
@@ -64,7 +69,8 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
 
     @Override
     public void drawBrickInPlayArea(int x, int y) {
-        //To change body of implemented methods use File | Settings | File Templates.
+//        clearScreen(0xff000000);
+//        drawRect(x * BRICK_SIDE_SIZE, y * BRICK_SIDE_SIZE, BRICK_SIDE_SIZE, BRICK_SIDE_SIZE, 0xffffffff);
     }
 
     @Override

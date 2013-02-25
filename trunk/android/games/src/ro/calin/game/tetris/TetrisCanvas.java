@@ -5,7 +5,7 @@ package ro.calin.game.tetris;
  *
  * It must expose the following:
  * <ul>
- *     <li>a 30 x 70 bricks play area</li>
+ *     <li>a 10 x 18 bricks play area</li>
  *     <li>a 4 x 4 bricks next piece area</li>
  *     <li>a place where to draw the score</li>
  *     <li>a place where to draw the level</li>
@@ -13,6 +13,13 @@ package ro.calin.game.tetris;
  *
  */
 public interface TetrisCanvas {
+    public static class Const {
+        public static int PLAY_AREA_WIDTH = 10;
+        public static int PLAY_AREA_HEIGHT = 18;
+        public static int NEXT_PIECE_AREA_WIDTH = 4;
+        public static int NEXT_PIECE_AREA_HEIGHT = 4;
+    }
+
     void drawScore(int score);
     void drawLevel(int level);
 

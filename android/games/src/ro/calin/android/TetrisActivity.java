@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
@@ -29,18 +30,13 @@ public class TetrisActivity extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        final int height = dm.heightPixels;
+        final int width = dm.widthPixels;
 
-        int frameBufferWidth = isPortrait ? 800: 1280;
-        int frameBufferHeight = isPortrait ? 1280: 800;
-
-        Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth,
-                frameBufferHeight, Bitmap.Config.RGB_565);
-
-//        float scaleX = (float) frameBufferWidth
-//                / getWindowManager().getDefaultDisplay().getWidth();
-//        float scaleY = (float) frameBufferHeight
-//                / getWindowManager().getDefaultDisplay().getHeight();
+        Bitmap frameBuffer = Bitmap.createBitmap(width,
+                height, Bitmap.Config.RGB_565);
 
         view = new AndroidFastRenderView(this, frameBuffer, new TetrisGame());
 

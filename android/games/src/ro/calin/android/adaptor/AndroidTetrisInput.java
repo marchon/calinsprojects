@@ -1,5 +1,6 @@
 package ro.calin.android.adaptor;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import ro.calin.game.tetris.TetrisInput;
@@ -15,8 +16,21 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
     private boolean leftPushed;
     private boolean rightPushed;
     private boolean downPused;
+    private boolean rotateClockwise;
 
-    private float x1, x2, y1, y2, dx, dy;
+
+    private float startX;
+    private float prevX;
+    private float startY;
+    private float prevY;
+    private int count;
+
+    private static enum State {
+        INIT, RIGHT_DOWN, LEFT_DOWN, LEFT_UP, RIGHT_UP, END
+    }
+
+    private State clockwiseRotationState;
+    private int clockwiseTransitionCount;
 
     @Override
     public boolean slideLeft() {
@@ -46,41 +60,86 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
     }
 
     @Override
-    public boolean rotateLeft() {
+    public boolean rotateClockwise() {
+        if(rotateClockwise) {
+            rotateClockwise = false;
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean rotateRight() {
+    public boolean rotateAntiClockwise() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction()) {
-            case (MotionEvent.ACTION_DOWN):
-                x1 = event.getX();
-                y1 = event.getY();
+            case MotionEvent.ACTION_DOWN:
+                count = 1;
+                startX = prevX = event.getX();
+                startY = prevY = event.getY();
+                clockwiseRotationState = State.INIT;
+                clockwiseTransitionCount = 0;
                 break;
-            case (MotionEvent.ACTION_UP): {
-                x2 = event.getX();
-                y2 = event.getY();
-                dx = x2 - x1;
-                dy = y2 - y1;
+            case MotionEvent.ACTION_MOVE:
+                float x = event.getX();
+                float y = event.getY();
+                count ++;
+                processClockwiseAction(x, y);
 
-                // Use dx and dy to determine the direction
-                if (Math.abs(dx) > Math.abs(dy)) {
-                    if (dx > 0) rightPushed = true;
-                    else leftPushed = true;
-                } else {
-                    if (dy > 0) downPused = true;
-                    else {
-                    }
-                    ;
+                prevX = x;
+                prevY = y;
+
+                if(clockwiseTransitionCount >= 3 && clockwiseRotationState != State.END) {
+                    rotateClockwise = true;
+                    clockwiseRotationState = State.END;
                 }
-            }
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("TTT", "Events: " + count);
+                Log.d("TTT", "State: " + clockwiseRotationState);
+                break;
         }
 
         return true;
+    }
+
+    private void processClockwiseAction(float x, float y) {
+        switch (clockwiseRotationState) {
+            case INIT:
+                if(x > prevX && y > prevY) changeState(State.RIGHT_DOWN);
+                if(x > prevX && y < prevY) changeState(State.RIGHT_UP);
+                if(x < prevX && y < prevY) changeState(State.LEFT_UP);
+                if(x < prevX && y > prevY) changeState(State.LEFT_DOWN);
+//                else clockwiseRotationState = State.END;
+                break;
+            case RIGHT_DOWN:
+                if(x >= prevX && y >= prevY);
+                else if(x < prevX && y >= prevY) changeState(State.LEFT_DOWN);
+                else clockwiseRotationState = State.END;
+                break;
+            case LEFT_DOWN:
+                if(x <= prevX && y >= prevY);
+                else if(x <= prevX && y < prevY) changeState(State.LEFT_UP);
+                else clockwiseRotationState = State.END;
+                break;
+            case LEFT_UP:
+                if(x <= prevX && y <= prevY);
+                else if(x > prevX && y <= prevY) changeState(State.RIGHT_UP);
+                else clockwiseRotationState = State.END;
+                break;
+            case RIGHT_UP:
+                if(x >= prevX && y <= prevY);
+                else if(x >= prevX && y > prevY) changeState(State.RIGHT_DOWN);
+                else clockwiseRotationState = State.END;
+                break;
+        }
+    }
+
+    private void changeState(State state) {
+        clockwiseRotationState = state;
+        clockwiseTransitionCount ++;
     }
 }

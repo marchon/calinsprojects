@@ -1,5 +1,6 @@
 package ro.calin.game.tetris;
 
+import android.util.Log;
 import ro.calin.game.Game;
 
 /**
@@ -29,6 +30,10 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         if(input.slideLeft()) x -= 1;
         if(input.slideRight()) x += 1;
         if (input.fallDown()) y += 5;
+
+        if(input.rotateClockwise()) {
+            Log.d("TTT", "ROTATEEEEE!!!!!");
+        }
     }
 
     @Override

@@ -142,4 +142,11 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
         clockwiseRotationState = state;
         clockwiseTransitionCount ++;
     }
+
+    //TODO: use this interface
+    private interface GestureDetector {
+        void start(float x, float y);
+        void process(float x, float y);
+        boolean isDetected();
+    }
 }

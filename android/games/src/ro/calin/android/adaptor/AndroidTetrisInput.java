@@ -15,7 +15,6 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
     private boolean leftPushed;
     private boolean rightPushed;
     private boolean downPused;
-    private boolean rotatePushed;
 
     private float x1, x2, y1, y2, dx, dy;
 
@@ -48,10 +47,6 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
 
     @Override
     public boolean rotateLeft() {
-        if(rotatePushed) {
-            rotatePushed = false;
-            return true;
-        }
         return false;
     }
 

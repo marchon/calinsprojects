@@ -12,21 +12,27 @@ import ro.calin.game.Game;
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     private TetrisInput input;
     private TetrisCanvas canvas;
+    private int x = 0;
+    private int y = 0;
 
     @Override
     public void init(TetrisInput input, TetrisCanvas canvas) {
         this.input = input;
         this.canvas = canvas;
+
+        canvas.drawPlayArea();
     }
 
     @Override
     public void update(float deltaTime) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if(input.slideLeft()) x -= 1;
+        if(input.slideRight()) x += 1;
+        if (input.fallDown()) y += 5;
     }
 
     @Override
     public void draw() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        canvas.drawBrickInPlayArea(x, y);
     }
 
     @Override

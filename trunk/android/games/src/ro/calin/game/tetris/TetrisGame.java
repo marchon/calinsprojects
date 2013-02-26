@@ -27,15 +27,21 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     @Override
     public void update(float deltaTime) {
-        if(input.slideLeft()) x -= 1;
-        if(input.slideRight()) x += 1;
-        if (input.fallDown()) y += 5;
+        if (input.slideLeft()) {
+            Log.d("TTT", "slideLeft!!!!!");
+        }
+        if (input.slideRight()) {
+            Log.d("TTT", "slideRight!!!!!");
+        }
+        if (input.fallDown()) {
+            Log.d("TTT", "fallDown!!!!!");
+        }
 
-        if(input.rotateClockwise()) {
+        if (input.rotateClockwise()) {
             Log.d("TTT", "rotateClockwise!!!!!");
         }
 
-        if(input.rotateCounterClockwise()) {
+        if (input.rotateCounterClockwise()) {
             Log.d("TTT", "rotateCounterClockwise!!!!!");
         }
     }

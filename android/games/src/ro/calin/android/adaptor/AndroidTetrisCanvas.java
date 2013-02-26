@@ -68,9 +68,9 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
         int x2 = canvas.getWidth() - 55;
         int y2 = canvas.getHeight() - 55;
 
-        Log.d("TTT", "" + x1 + ", " + y1 + ", " + x2 + ", " + y2);
+        Log.d("TTT", "" + canvas.getWidth() + ", " + canvas.getHeight());
 
-        canvas.drawRect(x1, y1, x2, y2, paint);
+        canvas.drawRect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1, paint);
     }
 
     @Override

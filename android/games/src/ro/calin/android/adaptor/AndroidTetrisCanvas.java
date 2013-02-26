@@ -37,12 +37,18 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
 
     @Override
     public void drawScore(int score) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(30);
+        canvas.drawText("Score: " +  score, 10, 30, paint);
     }
 
     @Override
     public void drawLevel(int level) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(30);
+        canvas.drawText("Level: " +  level, 10, 60, paint);
     }
 
     @Override

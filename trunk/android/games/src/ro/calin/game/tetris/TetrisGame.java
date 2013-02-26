@@ -13,8 +13,9 @@ import ro.calin.game.Game;
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     private TetrisInput input;
     private TetrisCanvas canvas;
-    private int x = 0;
-    private int y = 0;
+
+    private int level = 1;
+    private int score = 0;
 
     @Override
     public void init(TetrisInput input, TetrisCanvas canvas) {
@@ -48,7 +49,26 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     @Override
     public void draw() {
-        canvas.drawBrickInPlayArea(x, y);
+        drawInPlayArea();
+        drawInNextArea();
+        drawScore();
+        drawLevel();
+    }
+
+    private void drawLevel() {
+        canvas.drawLevel(level);
+    }
+
+    private void drawScore() {
+        canvas.drawScore(score);
+    }
+
+    private void drawInNextArea() {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private void drawInPlayArea() {
+        //To change body of created methods use File | Settings | File Templates.
     }
 
     @Override

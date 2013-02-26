@@ -82,6 +82,7 @@ public class TetrisActivity extends Activity
             running = true;
             renderThread = new Thread(this);
             renderThread.start();
+            game.resume();
         }
 
         public void run() {
@@ -118,6 +119,7 @@ public class TetrisActivity extends Activity
                     // retry
                 }
             }
+            game.pause();
         }
 
 

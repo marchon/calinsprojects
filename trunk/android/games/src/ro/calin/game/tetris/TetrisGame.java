@@ -32,7 +32,11 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         if (input.fallDown()) y += 5;
 
         if(input.rotateClockwise()) {
-            Log.d("TTT", "ROTATEEEEE!!!!!");
+            Log.d("TTT", "rotateClockwise!!!!!");
+        }
+
+        if(input.rotateCounterClockwise()) {
+            Log.d("TTT", "rotateCounterClockwise!!!!!");
         }
     }
 

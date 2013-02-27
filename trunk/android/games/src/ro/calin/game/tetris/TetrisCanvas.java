@@ -13,6 +13,7 @@ package ro.calin.game.tetris;
  *
  */
 public interface TetrisCanvas {
+
     public static class Const {
         public static int PLAY_AREA_WIDTH = 10;
         public static int PLAY_AREA_HEIGHT = 18;
@@ -20,14 +21,12 @@ public interface TetrisCanvas {
         public static int NEXT_PIECE_AREA_HEIGHT = 4;
     }
 
+    void clearScreen();
     void drawScore(int score);
     void drawLevel(int level);
 
     void drawPlayArea();
     void drawNextPieceArea();
-
-    void clearRegionInPlayArea(int x, int y, int width, int height);
-    void clearRegionInNextPieceArea(int x, int y, int width, int height);
 
     void drawBrickInPlayArea(int x, int y);
     void drawBrickInNextPieceArea(int x, int y);

@@ -14,23 +14,29 @@ import ro.calin.game.tetris.TetrisCanvas;
  * To change this template use File | Settings | File Templates.
  */
 public class AndroidTetrisCanvas implements TetrisCanvas {
-    public static int BRICK_SIDE_SIZE = 50;
-
     private final Paint paint;
     private final Canvas canvas;
+
+    private final int brickWidth;
+    private final int brickHeight;
+    public static final String TEXT = "Next: ";
+    private int smallBrickWidth;
+    private final int smallBrickHeight;
 
     public AndroidTetrisCanvas(Bitmap frameBuffer) {
         this.paint = new Paint();
         this.canvas = new Canvas(frameBuffer);
+
+        brickWidth = canvas.getWidth() / Const.PLAY_AREA_WIDTH;
+        brickHeight = canvas.getHeight() / Const.PLAY_AREA_HEIGHT;
+        smallBrickWidth = brickWidth / 3;
+        smallBrickHeight = brickHeight / 3;
+
+        paint.setTextSize(30);
     }
 
-    private void drawRect(int x, int y, int width, int height, int color) {
-        paint.setColor(color);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
-    }
-
-    private void clearScreen(int color) {
+    public void clearScreen() {
+        int color = 0xff000000;
         canvas.drawRGB((color & 0xff0000) >> 16, (color & 0xff00) >> 8,
                 (color & 0xff));
     }
@@ -53,50 +59,33 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
 
     @Override
     public void drawPlayArea() {
-        paint.setColor(0xffffffff);
-        paint.setStyle(Paint.Style.STROKE);
-
-        int x1 = 10;
-        int y1 = canvas.getHeight() - 11 - BRICK_SIDE_SIZE * Const.PLAY_AREA_HEIGHT + 1;
-        int x2 = 10 + BRICK_SIDE_SIZE * Const.PLAY_AREA_WIDTH - 1;
-        int y2 = canvas.getHeight() - 11;
-
-//        canvas.drawRect(x1, y1, x2, y2, paint);
     }
 
     @Override
     public void drawNextPieceArea() {
+
         paint.setColor(0xffffffff);
-        paint.setStyle(Paint.Style.STROKE);
-
-        int x1 = canvas.getWidth() - (55 + BRICK_SIDE_SIZE * Const.NEXT_PIECE_AREA_WIDTH);
-        int y1 = canvas.getHeight() - (55 + BRICK_SIDE_SIZE * Const.NEXT_PIECE_AREA_HEIGHT);
-        int x2 = canvas.getWidth() - 55;
-        int y2 = canvas.getHeight() - 55;
-
-        Log.d("TTT", "" + canvas.getWidth() + ", " + canvas.getHeight());
-
-        canvas.drawRect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1, paint);
-    }
-
-    @Override
-    public void clearRegionInPlayArea(int x, int y, int width, int height) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void clearRegionInNextPieceArea(int x, int y, int width, int height) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(30);
+        canvas.drawText(TEXT, canvas.getWidth() - 10 - brickWidth * 2, 30, paint);
     }
 
     @Override
     public void drawBrickInPlayArea(int x, int y) {
-//        clearScreen(0xff000000);
-//        drawRect(x * BRICK_SIDE_SIZE, y * BRICK_SIDE_SIZE, BRICK_SIDE_SIZE, BRICK_SIDE_SIZE, 0xffffffff);
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(x * brickWidth, y * brickHeight, + (x + 1) * brickWidth - 1, (y + 1) * brickHeight - 1, paint);
     }
 
     @Override
     public void drawBrickInNextPieceArea(int x, int y) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
+        float startx = canvas.getWidth() - 10 - smallBrickWidth * Const.NEXT_PIECE_AREA_WIDTH;
+        float starty = 60;
+
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(startx + x * smallBrickWidth, starty + y * smallBrickHeight,
+                startx + (x + 1) * smallBrickWidth - 1, starty + (y + 1) * smallBrickHeight - 1, paint);
     }
 }

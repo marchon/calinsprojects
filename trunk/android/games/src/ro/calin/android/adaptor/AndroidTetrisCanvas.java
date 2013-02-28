@@ -3,7 +3,6 @@ package ro.calin.android.adaptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import ro.calin.game.tetris.TetrisCanvas;
 
 /**
@@ -19,7 +18,7 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
 
     private final int brickWidth;
     private final int brickHeight;
-    public static final String TEXT = "Next: ";
+    public static final String NEXT = "Next: ";
     private int smallBrickWidth;
     private final int smallBrickHeight;
 
@@ -67,25 +66,25 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
         paint.setColor(0xffffffff);
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(30);
-        canvas.drawText(TEXT, canvas.getWidth() - 10 - brickWidth * 2, 30, paint);
+        canvas.drawText(NEXT, canvas.getWidth() - brickWidth * 2, 30, paint);
     }
 
     @Override
-    public void drawBrickInPlayArea(int x, int y) {
+    public void drawBrickInPlayArea(int line, int col) {
         paint.setColor(0xffffffff);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(x * brickWidth, y * brickHeight, + (x + 1) * brickWidth - 1, (y + 1) * brickHeight - 1, paint);
+        canvas.drawRect(col * brickWidth, line * brickHeight, + (col + 1) * brickWidth - 1, (line + 1) * brickHeight - 1, paint);
     }
 
     @Override
-    public void drawBrickInNextPieceArea(int x, int y) {
+    public void drawBrickInNextPieceArea(int line, int col) {
 
         float startx = canvas.getWidth() - 10 - smallBrickWidth * Const.NEXT_PIECE_AREA_WIDTH;
-        float starty = 60;
+        float starty = 40;
 
         paint.setColor(0xffffffff);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(startx + x * smallBrickWidth, starty + y * smallBrickHeight,
-                startx + (x + 1) * smallBrickWidth - 1, starty + (y + 1) * smallBrickHeight - 1, paint);
+        canvas.drawRect(startx + col * smallBrickWidth, starty + line * smallBrickHeight,
+                startx + (col + 1) * smallBrickWidth - 1, starty + (line + 1) * smallBrickHeight - 1, paint);
     }
 }

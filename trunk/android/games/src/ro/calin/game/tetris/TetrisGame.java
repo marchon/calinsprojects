@@ -9,56 +9,165 @@ import ro.calin.game.Game;
  */
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
+    private static final int FALL_TIME = 1000;
+    private static byte[][][] pieces = {
+            {
+                {0,1},
+                {0,1},
+                {1,1}
+            },
+            {
+                {1},
+                {1},
+                {1},
+                {1}
+            },
+            {
+                {0,1,0},
+                {1,1,1}
+            }
+    };
     private TetrisInput input;
     private TetrisCanvas canvas;
 
-    private byte[][] game = new byte[TetrisCanvas.Const.PLAY_AREA_WIDTH][TetrisCanvas.Const.PLAY_AREA_HEIGHT];
-
-    private static byte[][][] pieces = {
-            {
-                {0,0,0,0},
-                {0,0,1,0},
-                {0,0,1,1},
-                {0,1,1,0},
-            }
-    };
-
+    private byte[][] board = new byte[TetrisCanvas.Const.PLAY_AREA_HEIGHT][TetrisCanvas.Const.PLAY_AREA_WIDTH];
+    private byte[][] nextPiece;
     private byte[][] currentPiece;
-
-
+    private int currentPieceLine;
+    private int currentPieceCol;
+    private long lastFallTime;
     private int level = 1;
     private int score = 0;
+    private boolean fastFallDown;
 
     @Override
     public void init(TetrisInput input, TetrisCanvas canvas) {
         this.input = input;
         this.canvas = canvas;
-        currentPiece = pieces[0];
 
-        for (int i = 0; i < TetrisCanvas.Const.NEXT_PIECE_AREA_WIDTH; i++) {
-            for (int j = 0; j < TetrisCanvas.Const.NEXT_PIECE_AREA_HEIGHT; j++) {
-                game[4 + i][j] = currentPiece[i][j];
-            }
-        }
+        nextPiece = generateRandomPiece();
+        prepareCurrentPiece();
+    }
+
+    private byte[][] generateRandomPiece() {
+        return pieces[((int) (Math.random() * pieces.length))];
     }
 
     @Override
     public void update(float deltaTime) {
-        if (input.slideLeft()) {
-            Log.d("TTT", "slideLeft!!!!!");
+        boolean pieceMoved = false;
+
+        if(!fastFallDown) {
+            if (input.slideLeft()) {
+                slideLeftIfPossible();
+                pieceMoved = true;
+            }
+            else if (input.slideRight()) {
+                slideRightIfPossible();
+                pieceMoved = true;
+            }
+            else if (input.fallDown()) {
+                fastFallDown = true;
+            }
+            else if (input.rotateClockwise()) {
+                rotateClockwiseIfPossible();
+                pieceMoved = true;
+            }
+            else if (input.rotateCounterClockwise()) {
+                rotateCounterClockwiseIfPossible();
+                pieceMoved = true;
+            }
         }
-        else if (input.slideRight()) {
-            Log.d("TTT", "slideRight!!!!!");
+
+        if(fallOneLineIfNeeded()) pieceMoved = true;
+
+        if(pieceMoved) {
+            if (pieceHitTheGround() || nextPositionWillOverlap()) {
+                saveCurrentPieceToBoard();
+                deleteCompleteRows();
+                if(!topIsReached()) {
+                    prepareCurrentPiece();
+                } else {
+                    endGame();
+                }
+            }
         }
-        else if (input.fallDown()) {
-            Log.d("TTT", "fallDown!!!!!");
+    }
+
+    private void rotateCounterClockwiseIfPossible() {
+        Log.d("TTT", "rotateCounterClockwise!!!!!");
+    }
+
+    private void rotateClockwiseIfPossible() {
+        Log.d("TTT", "rotateClockwise!!!!!");
+    }
+
+    private void endGame() {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private boolean topIsReached() {
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private void slideRightIfPossible() {
+        currentPieceCol++;
+    }
+
+    private void slideLeftIfPossible() {
+        currentPieceCol--;
+    }
+
+    private boolean fallOneLineIfNeeded() {
+        final long currentTime = System.currentTimeMillis();
+        long fallInterval = fastFallDown? 20 : FALL_TIME / level;
+        if (currentTime - lastFallTime > fallInterval) {
+            currentPieceLine++;
+            lastFallTime = currentTime;
+            return true;
         }
-        else if (input.rotateClockwise()) {
-            Log.d("TTT", "rotateClockwise!!!!!");
+        return false;
+    }
+
+    private void deleteCompleteRows() {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private boolean nextPositionWillOverlap() {
+        return pieceOvelaps(currentPiece, currentPieceLine + 1, currentPieceCol);
+    }
+
+    private void saveCurrentPieceToBoard() {
+        for (int line = 0; line < currentPiece.length; line++) {
+            for (int col = 0; col < currentPiece[line].length; col++) {
+                if (currentPiece[line][col] == 1) {
+                    board[currentPieceLine + line][currentPieceCol + col] = currentPiece[line][col];
+                }
+            }
         }
-        else if (input.rotateCounterClockwise()) {
-            Log.d("TTT", "rotateCounterClockwise!!!!!");
+    }
+
+    private void prepareCurrentPiece() {
+        currentPiece = nextPiece;
+        nextPiece = generateRandomPiece();
+        currentPieceLine = 0;
+        currentPieceCol = 4;
+        fastFallDown = false;
+    }
+
+    private boolean pieceHitTheGround() {
+        return currentPieceLine + currentPiece.length == board.length;
+    }
+
+    private boolean pieceOvelaps(byte[][] piece, int line, int col) {
+        for (int l = 0; l < piece.length; l++) {
+            for (int c = 0; c < piece[l].length; c++) {
+                if (piece[l][c] != 0 && board[line + l][col + c] != 0) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     @Override
@@ -84,22 +193,28 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void drawInNextArea() {
-        for (int i = 0; i < TetrisCanvas.Const.NEXT_PIECE_AREA_WIDTH; i++) {
-            for (int j = 0; j < TetrisCanvas.Const.NEXT_PIECE_AREA_HEIGHT; j++) {
-                if (currentPiece[i][j] != 0) {
-                    //i is line -> y
-                    //j is column -> x => need to reverse
-                    canvas.drawBrickInNextPieceArea(j, i);
+        for (int line = 0; line < nextPiece.length; line++) {
+            for (int col = 0; col < nextPiece[line].length; col++) {
+                if (nextPiece[line][col] != 0) {
+                    canvas.drawBrickInNextPieceArea(line, col);
                 }
             }
         }
     }
 
     private void drawInPlayArea() {
-        for (int i = 0; i < TetrisCanvas.Const.PLAY_AREA_WIDTH; i++) {
-            for (int j = 0; j < TetrisCanvas.Const.PLAY_AREA_HEIGHT; j++) {
-                if (game[i][j] != 0) {
-                    canvas.drawBrickInPlayArea(j, i);
+        for (int line = 0; line < board.length; line++) {
+            for (int col = 0; col < board[line].length; col++) {
+                if (board[line][col] != 0) {
+                    canvas.drawBrickInPlayArea(line, col);
+                }
+            }
+        }
+
+        for (int line = 0; line < currentPiece.length; line++) {
+            for (int col = 0; col < currentPiece[line].length; col++) {
+                if (currentPiece[line][col] != 0) {
+                    canvas.drawBrickInPlayArea(currentPieceLine + line, currentPieceCol + col);
                 }
             }
         }

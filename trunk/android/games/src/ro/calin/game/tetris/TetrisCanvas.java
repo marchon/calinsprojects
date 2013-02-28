@@ -28,6 +28,6 @@ public interface TetrisCanvas {
     void drawPlayArea();
     void drawNextPieceArea();
 
-    void drawBrickInPlayArea(int x, int y);
-    void drawBrickInNextPieceArea(int x, int y);
+    void drawBrickInPlayArea(int line, int col);
+    void drawBrickInNextPieceArea(int line, int col);
 }

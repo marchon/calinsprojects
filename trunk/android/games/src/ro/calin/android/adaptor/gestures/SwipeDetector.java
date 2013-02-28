@@ -8,8 +8,8 @@ package ro.calin.android.adaptor.gestures;
 * To change this template use File | Settings | File Templates.
 */
 public abstract class SwipeDetector implements GestureDetector {
-    protected static int MAX_DEV = 30;
-    protected static int MIN_DIST = 110;
+    protected static int MAX_DEV = 24;
+    protected static int MIN_DIST = 90;
 
     protected float startX;
     protected float startY;
@@ -50,7 +50,7 @@ public abstract class SwipeDetector implements GestureDetector {
         return detected;
     }
 
-    public static class SwipeLeftDetector extends SwipeDetector {
+    public static class Left extends SwipeDetector {
         @Override
         protected boolean swipeDetectedCondition(float x, float y) {
             return startX - x >= MIN_DIST;
@@ -62,7 +62,7 @@ public abstract class SwipeDetector implements GestureDetector {
         }
     }
 
-    public static class SwipeRightDetector extends SwipeDetector {
+    public static class Right extends SwipeDetector {
         @Override
         protected boolean swipeDetectedCondition(float x, float y) {
             return x - startX >= MIN_DIST;
@@ -74,7 +74,7 @@ public abstract class SwipeDetector implements GestureDetector {
         }
     }
 
-    public static class SwipeDownDetector extends SwipeDetector {
+    public static class Down extends SwipeDetector {
         @Override
         protected boolean swipeDetectedCondition(float x, float y) {
             return y - startY >= MIN_DIST;

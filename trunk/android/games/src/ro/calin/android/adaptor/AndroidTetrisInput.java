@@ -24,11 +24,11 @@ public class AndroidTetrisInput implements TetrisInput, View.OnTouchListener {
     private boolean gestureDetected;
 
     private GestureDetector[] detectors = {
-            new SwipeDetector.SwipeLeftDetector(),
-            new SwipeDetector.SwipeRightDetector(),
-            new SwipeDetector.SwipeDownDetector(),
-            new RotationDetector.ClockwiseRotationDetector(),
-            new RotationDetector.CounterClockwiseRotationDetector()};
+            new SwipeDetector.Left(),
+            new SwipeDetector.Right(),
+            new SwipeDetector.Down(),
+            new RotationDetector.Clockwise(),
+            new RotationDetector.CounterClockwise()};
 
     private volatile boolean[] gestureFlags = {false, false, false, false, false};
 

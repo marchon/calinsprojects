@@ -9,9 +9,13 @@ package ro.calin.android.adaptor.gestures;
 */
 public abstract class RotationDetector implements GestureDetector {
     public static final int SUFFICIENT_TRANSITION_NUMBER = 3;
+    public static final int MIN_DIST = 70;
+
     protected float prevX;
     protected float prevY;
     private boolean detected;
+
+    private float currentDistance;
 
     protected static enum State {
         INIT, RIGHT_DOWN, LEFT_DOWN, LEFT_UP, RIGHT_UP, END
@@ -26,6 +30,7 @@ public abstract class RotationDetector implements GestureDetector {
         prevY = y;
         rotationState = State.INIT;
         transitionCount = 0;
+        currentDistance = .0f;
         detected = false;
     }
 
@@ -34,11 +39,16 @@ public abstract class RotationDetector implements GestureDetector {
         if(detected) return;
 
         makeTransition(x, y);
+        currentDistance += dist(x, y, prevX, prevY);
 
         prevX = x;
         prevY = y;
 
-        detected = transitionCount >= SUFFICIENT_TRANSITION_NUMBER;
+        detected = transitionCount >= SUFFICIENT_TRANSITION_NUMBER && currentDistance >= MIN_DIST;
+    }
+
+    private float dist(float a1, float b1, float a2, float b2) {
+        return (float) Math.sqrt(Math.abs(a2 - a1) + Math.abs(b2 - b1));
     }
 
     protected abstract void makeTransition(float x, float y);
@@ -53,7 +63,7 @@ public abstract class RotationDetector implements GestureDetector {
         return detected;
     }
 
-    public static class ClockwiseRotationDetector extends RotationDetector {
+    public static class Clockwise extends RotationDetector {
         @Override
         protected void makeTransition(float x, float y) {
             switch (rotationState) {
@@ -87,7 +97,7 @@ public abstract class RotationDetector implements GestureDetector {
         }
     }
 
-    public static class CounterClockwiseRotationDetector extends RotationDetector {
+    public static class CounterClockwise extends RotationDetector {
         @Override
         protected void makeTransition(float x, float y) {
             switch (rotationState) {

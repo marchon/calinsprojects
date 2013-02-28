@@ -10,29 +10,36 @@ import ro.calin.game.Game;
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     private static final int FALL_TIME = 1000;
-    private static byte[][][] pieces = {
+    private static byte[][][][] pieces = {
             {
-                {0,1},
-                {0,1},
-                {1,1}
+                {
+                        {0,1},
+                        {0,1},
+                        {1,1}
+                },
+                {
+                        {1,0,0},
+                        {1,1,1}
+                }
             },
-            {
+            {{
                 {1},
                 {1},
                 {1},
                 {1}
-            },
-            {
+            }},
+            {{
                 {0,1,0},
                 {1,1,1}
-            }
+            }}
     };
     private TetrisInput input;
     private TetrisCanvas canvas;
 
     private byte[][] board = new byte[TetrisCanvas.Const.PLAY_AREA_HEIGHT][TetrisCanvas.Const.PLAY_AREA_WIDTH];
-    private byte[][] nextPiece;
-    private byte[][] currentPiece;
+    private byte[][][] nextPiece;
+    private byte[][][] currentPiece;
+    private int currentOrientationIndex = 0;
     private int currentPieceLine;
     private int currentPieceCol;
     private long lastFallTime;
@@ -49,7 +56,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         prepareCurrentPiece();
     }
 
-    private byte[][] generateRandomPiece() {
+    private byte[][][] generateRandomPiece() {
         return pieces[((int) (Math.random() * pieces.length))];
     }
 
@@ -134,14 +141,15 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private boolean nextPositionWillOverlap() {
-        return pieceOvelaps(currentPiece, currentPieceLine + 1, currentPieceCol);
+        return pieceOvelaps(currentPiece[currentOrientationIndex], currentPieceLine + 1, currentPieceCol);
     }
 
     private void saveCurrentPieceToBoard() {
-        for (int line = 0; line < currentPiece.length; line++) {
-            for (int col = 0; col < currentPiece[line].length; col++) {
-                if (currentPiece[line][col] == 1) {
-                    board[currentPieceLine + line][currentPieceCol + col] = currentPiece[line][col];
+        byte[][] piece = currentPiece[currentOrientationIndex];
+        for (int line = 0; line < piece.length; line++) {
+            for (int col = 0; col < piece[line].length; col++) {
+                if (piece[line][col] == 1) {
+                    board[currentPieceLine + line][currentPieceCol + col] = piece[line][col];
                 }
             }
         }
@@ -156,7 +164,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private boolean pieceHitTheGround() {
-        return currentPieceLine + currentPiece.length == board.length;
+        return currentPieceLine + currentPiece[currentOrientationIndex].length == board.length;
     }
 
     private boolean pieceOvelaps(byte[][] piece, int line, int col) {
@@ -172,6 +180,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     @Override
     public void draw() {
+        //TODO: if updated!!!
         canvas.clearScreen();
 
         canvas.drawPlayArea();
@@ -193,9 +202,10 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void drawInNextArea() {
-        for (int line = 0; line < nextPiece.length; line++) {
-            for (int col = 0; col < nextPiece[line].length; col++) {
-                if (nextPiece[line][col] != 0) {
+        byte[][] piece = nextPiece[currentOrientationIndex];
+        for (int line = 0; line < piece.length; line++) {
+            for (int col = 0; col < piece[line].length; col++) {
+                if (piece[line][col] != 0) {
                     canvas.drawBrickInNextPieceArea(line, col);
                 }
             }
@@ -211,9 +221,10 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
             }
         }
 
-        for (int line = 0; line < currentPiece.length; line++) {
-            for (int col = 0; col < currentPiece[line].length; col++) {
-                if (currentPiece[line][col] != 0) {
+        byte[][] piece = currentPiece[currentOrientationIndex];
+        for (int line = 0; line < piece.length; line++) {
+            for (int col = 0; col < piece[line].length; col++) {
+                if (piece[line][col] != 0) {
                     canvas.drawBrickInPlayArea(currentPieceLine + line, currentPieceCol + col);
                 }
             }

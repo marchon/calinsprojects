@@ -1,6 +1,5 @@
 package ro.calin.game.tetris;
 
-import android.util.Log;
 import ro.calin.game.Game;
 
 /**
@@ -10,59 +9,43 @@ import ro.calin.game.Game;
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     private static final int FALL_TIME = 1000;
-    private static byte[][][][] pieces = {
-            {
-                {
-                        {0,1},
-                        {0,1},
-                        {1,1}
-                },
-                {
-                        {1,0,0},
-                        {1,1,1}
-                }
-            },
-            {{
-                {1},
-                {1},
-                {1},
-                {1}
-            }},
-            {{
-                {0,1,0},
-                {1,1,1}
-            }}
-    };
+
     private TetrisInput input;
     private TetrisCanvas canvas;
 
     private byte[][] board = new byte[TetrisCanvas.Const.PLAY_AREA_HEIGHT][TetrisCanvas.Const.PLAY_AREA_WIDTH];
     private byte[][][] nextPiece;
+    private int nextOrientationIndex;
     private byte[][][] currentPiece;
-    private int currentOrientationIndex = 0;
+    private int currentOrientationIndex;
     private int currentPieceLine;
     private int currentPieceCol;
     private long lastFallTime;
     private int level = 1;
     private int score = 0;
     private boolean fastFallDown;
+    private boolean pieceMoved;
+    private int heghtestLine = 0;
 
     @Override
     public void init(TetrisInput input, TetrisCanvas canvas) {
         this.input = input;
         this.canvas = canvas;
 
-        nextPiece = generateRandomPiece();
+        heghtestLine = board.length;
+
+        chooseRandomPiece();
         prepareCurrentPiece();
     }
 
-    private byte[][][] generateRandomPiece() {
-        return pieces[((int) (Math.random() * pieces.length))];
+    private void chooseRandomPiece() {
+        nextPiece = TetrisPieces.PIECES[((int) (Math.random() * TetrisPieces.PIECES.length))];
+        nextOrientationIndex = (int) (Math.random() * nextPiece.length);
     }
 
     @Override
     public void update(float deltaTime) {
-        boolean pieceMoved = false;
+        pieceMoved = false;
 
         if(!fastFallDown) {
             if (input.slideLeft()) {
@@ -102,11 +85,13 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void rotateCounterClockwiseIfPossible() {
-        Log.d("TTT", "rotateCounterClockwise!!!!!");
+        currentOrientationIndex --;
+        if(currentOrientationIndex == -1) currentOrientationIndex = currentPiece.length - 1;
     }
 
     private void rotateClockwiseIfPossible() {
-        Log.d("TTT", "rotateClockwise!!!!!");
+        currentOrientationIndex ++;
+        if(currentOrientationIndex == currentPiece.length) currentOrientationIndex = 0;
     }
 
     private void endGame() {
@@ -137,7 +122,30 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void deleteCompleteRows() {
-        //To change body of created methods use File | Settings | File Templates.
+        byte[][] piece = currentPiece[currentOrientationIndex];
+        for (int line = 0; line < piece.length; line++) {
+            boolean isRowFull = true;
+            for(int col = 0; col < board[0].length; col ++) {
+                if(board[currentPieceLine + line][col] == 0) {
+                    isRowFull = false;
+                    break;
+                }
+            }
+            if(isRowFull) {
+                deleteRow(currentPieceLine + line);
+            }
+        }
+    }
+
+    private void deleteRow(int row) {
+        if(heghtestLine - 1 < row) {
+            for(int line = row; line > heghtestLine - 1; line--) {
+                for(int col = 0; col < board[line].length; col++) {
+                    board[line][col] = board[line - 1][col];
+                }
+            }
+        }
+        heghtestLine ++;
     }
 
     private boolean nextPositionWillOverlap() {
@@ -153,14 +161,20 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
                 }
             }
         }
+        if(heghtestLine > currentPieceLine) {
+            heghtestLine = currentPieceLine;
+        }
     }
 
     private void prepareCurrentPiece() {
         currentPiece = nextPiece;
-        nextPiece = generateRandomPiece();
         currentPieceLine = 0;
-        currentPieceCol = 4;
+        currentPieceCol = 4; //TODO: try to center
+        currentOrientationIndex = nextOrientationIndex;
+
         fastFallDown = false;
+
+        chooseRandomPiece();
     }
 
     private boolean pieceHitTheGround() {
@@ -170,7 +184,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     private boolean pieceOvelaps(byte[][] piece, int line, int col) {
         for (int l = 0; l < piece.length; l++) {
             for (int c = 0; c < piece[l].length; c++) {
-                if (piece[l][c] != 0 && board[line + l][col + c] != 0) {
+                if (piece[l][c] != 0 && board[line + l][col + c] != 0) {   //TODO: NPE!!!!!!!!!!!!!!!
                     return true;
                 }
             }
@@ -180,17 +194,18 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     @Override
     public void draw() {
-        //TODO: if updated!!!
-        canvas.clearScreen();
+        if(pieceMoved) {
+            canvas.clearScreen();
 
-        canvas.drawPlayArea();
-        drawInPlayArea();
+            canvas.drawPlayArea();
+            drawInPlayArea();
 
-        canvas.drawNextPieceArea();
-        drawInNextArea();
+            canvas.drawNextPieceArea();
+            drawInNextArea();
 
-        drawScore();
-        drawLevel();
+            drawScore();
+            drawLevel();
+        }
     }
 
     private void drawLevel() {
@@ -202,7 +217,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void drawInNextArea() {
-        byte[][] piece = nextPiece[currentOrientationIndex];
+        byte[][] piece = nextPiece[nextOrientationIndex];
         for (int line = 0; line < piece.length; line++) {
             for (int col = 0; col < piece[line].length; col++) {
                 if (piece[line][col] != 0) {

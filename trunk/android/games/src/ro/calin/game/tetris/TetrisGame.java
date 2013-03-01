@@ -9,6 +9,7 @@ import ro.calin.game.Game;
 public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     private static final int FALL_TIME = 1000;
+    public static final int SCORE_INTERVAL_FOR_LEVEL_INCREASE = 10;
 
     private TetrisInput input;
     private TetrisCanvas canvas;
@@ -85,13 +86,23 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void rotateCounterClockwiseIfPossible() {
-        currentOrientationIndex --;
-        if(currentOrientationIndex == -1) currentOrientationIndex = currentPiece.length - 1;
+        int oi = currentOrientationIndex - 1;
+        if(oi == -1) oi = currentPiece.length - 1;
+
+        if(currentPieceCol + currentPiece[oi][0].length < board[0].length &&
+                !pieceOvelaps(currentPiece[oi], currentPieceLine, currentPieceCol)) {
+            currentOrientationIndex = oi;
+        }
     }
 
     private void rotateClockwiseIfPossible() {
-        currentOrientationIndex ++;
-        if(currentOrientationIndex == currentPiece.length) currentOrientationIndex = 0;
+        int oi = currentOrientationIndex + 1;
+        if(oi == currentPiece.length) oi = 0;
+
+        if(currentPieceCol + currentPiece[oi][0].length < board[0].length&&
+                !pieceOvelaps(currentPiece[oi], currentPieceLine, currentPieceCol)) {
+            currentOrientationIndex = oi;
+        }
     }
 
     private void endGame() {
@@ -103,11 +114,17 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void slideRightIfPossible() {
-        currentPieceCol++;
+        if(currentPieceCol + currentPiece[currentOrientationIndex][0].length < board[0].length &&
+                !pieceOvelaps(currentPiece[currentOrientationIndex], currentPieceLine, currentPieceCol + 1)) {
+            currentPieceCol++;
+        }
     }
 
     private void slideLeftIfPossible() {
-        currentPieceCol--;
+        if(currentPieceCol > 0 &&
+                !pieceOvelaps(currentPiece[currentOrientationIndex], currentPieceLine, currentPieceCol - 1)) {
+            currentPieceCol--;
+        }
     }
 
     private boolean fallOneLineIfNeeded() {
@@ -133,7 +150,15 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
             }
             if(isRowFull) {
                 deleteRow(currentPieceLine + line);
+                increaseScore();
             }
+        }
+    }
+
+    private void increaseScore() {
+        score ++;
+        if(score % SCORE_INTERVAL_FOR_LEVEL_INCREASE == 0) {
+            level ++;
         }
     }
 

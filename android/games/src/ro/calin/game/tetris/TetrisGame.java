@@ -76,10 +76,9 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
             if (pieceHitTheGround() || nextPositionWillOverlap()) {
                 saveCurrentPieceToBoard();
                 deleteCompleteRows();
-                if(!topIsReached()) {
-                    prepareCurrentPiece();
-                } else {
-                    endGame();
+                prepareCurrentPiece();
+                if(firstPositionOverlaps()) {
+                    restartGame();
                 }
             }
         }
@@ -105,12 +104,15 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         }
     }
 
-    private void endGame() {
-        //To change body of created methods use File | Settings | File Templates.
+    private void restartGame() {
+        board = new byte[TetrisCanvas.Const.PLAY_AREA_HEIGHT][TetrisCanvas.Const.PLAY_AREA_WIDTH];
+        score = 0;
+        level = 1;
+        prepareCurrentPiece();
     }
 
-    private boolean topIsReached() {
-        return false;  //To change body of created methods use File | Settings | File Templates.
+    private boolean firstPositionOverlaps() {
+        return pieceOvelaps(currentPiece[currentOrientationIndex], currentPieceLine, currentPieceCol);
     }
 
     private void slideRightIfPossible() {

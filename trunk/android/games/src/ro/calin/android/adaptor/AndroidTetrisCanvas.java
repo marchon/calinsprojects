@@ -3,6 +3,7 @@ package ro.calin.android.adaptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import ro.calin.android.AndroidGameCanvas;
 import ro.calin.game.tetris.TetrisCanvas;
 
 /**
@@ -12,7 +13,7 @@ import ro.calin.game.tetris.TetrisCanvas;
  * Time: 17:01
  * To change this template use File | Settings | File Templates.
  */
-public class AndroidTetrisCanvas implements TetrisCanvas {
+public class AndroidTetrisCanvas implements TetrisCanvas, AndroidGameCanvas {
     private final Paint paint;
     private final Canvas canvas;
 
@@ -21,10 +22,12 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
     public static final String NEXT = "Next: ";
     private int smallBrickWidth;
     private final int smallBrickHeight;
+    private final Bitmap frameBuffer;
 
     public AndroidTetrisCanvas(Bitmap frameBuffer) {
         this.paint = new Paint();
         this.canvas = new Canvas(frameBuffer);
+        this.frameBuffer = frameBuffer;
 
         brickWidth = canvas.getWidth() / Const.PLAY_AREA_WIDTH;
         brickHeight = canvas.getHeight() / Const.PLAY_AREA_HEIGHT;
@@ -86,5 +89,10 @@ public class AndroidTetrisCanvas implements TetrisCanvas {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(startx + col * smallBrickWidth, starty + line * smallBrickHeight,
                 startx + (col + 1) * smallBrickWidth - 1, starty + (line + 1) * smallBrickHeight - 1, paint);
+    }
+
+    @Override
+    public Bitmap getFrameBuffer() {
+        return frameBuffer;
     }
 }

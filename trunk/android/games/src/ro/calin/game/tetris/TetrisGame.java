@@ -16,8 +16,8 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
 
     private byte[][] board = new byte[TetrisCanvas.Const.PLAY_AREA_HEIGHT][TetrisCanvas.Const.PLAY_AREA_WIDTH];
     private byte[][][] nextPiece;
-    private int nextOrientationIndex;
     private byte[][][] currentPiece;
+    private int nextOrientationIndex;
     private int currentOrientationIndex;
     private int currentPieceLine;
     private int currentPieceCol;
@@ -26,22 +26,17 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     private int score = 0;
     private boolean fastFallDown;
     private boolean pieceMoved;
-    private int heghtestLine = 0;
+    private int highestLine = 0;
 
     @Override
     public void init(TetrisInput input, TetrisCanvas canvas) {
         this.input = input;
         this.canvas = canvas;
 
-        heghtestLine = board.length;
+        highestLine = board.length;
 
         chooseRandomPiece();
         prepareCurrentPiece();
-    }
-
-    private void chooseRandomPiece() {
-        nextPiece = TetrisPieces.PIECES[((int) (Math.random() * TetrisPieces.PIECES.length))];
-        nextOrientationIndex = (int) (Math.random() * nextPiece.length);
     }
 
     @Override
@@ -82,6 +77,35 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
                 }
             }
         }
+    }
+
+    @Override
+    public void draw() {
+        if(pieceMoved) {
+            canvas.clearScreen();
+
+            canvas.drawPlayArea();
+            drawBoard();
+
+            canvas.drawNextPieceArea();
+            drawNextPiece();
+
+            drawScore();
+            drawLevel();
+        }
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    private void chooseRandomPiece() {
+        nextPiece = TetrisPieces.PIECES[((int) (Math.random() * TetrisPieces.PIECES.length))];
+        nextOrientationIndex = (int) (Math.random() * nextPiece.length);
     }
 
     private void rotateCounterClockwiseIfPossible() {
@@ -165,14 +189,14 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     }
 
     private void deleteRow(int row) {
-        if(heghtestLine - 1 < row) {
-            for(int line = row; line > heghtestLine - 1; line--) {
+        if(highestLine - 1 < row) {
+            for(int line = row; line > highestLine - 1; line--) {
                 for(int col = 0; col < board[line].length; col++) {
                     board[line][col] = board[line - 1][col];
                 }
             }
         }
-        heghtestLine ++;
+        highestLine++;
     }
 
     private boolean nextPositionWillOverlap() {
@@ -188,8 +212,8 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
                 }
             }
         }
-        if(heghtestLine > currentPieceLine) {
-            heghtestLine = currentPieceLine;
+        if(highestLine > currentPieceLine) {
+            highestLine = currentPieceLine;
         }
     }
 
@@ -211,28 +235,12 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
     private boolean pieceOvelaps(byte[][] piece, int line, int col) {
         for (int l = 0; l < piece.length; l++) {
             for (int c = 0; c < piece[l].length; c++) {
-                if (piece[l][c] != 0 && board[line + l][col + c] != 0) {   //TODO: NPE!!!!!!!!!!!!!!!
+                if (piece[l][c] != 0 && board[line + l][col + c] != 0) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    @Override
-    public void draw() {
-        if(pieceMoved) {
-            canvas.clearScreen();
-
-            canvas.drawPlayArea();
-            drawInPlayArea();
-
-            canvas.drawNextPieceArea();
-            drawInNextArea();
-
-            drawScore();
-            drawLevel();
-        }
     }
 
     private void drawLevel() {
@@ -243,7 +251,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         canvas.drawScore(score);
     }
 
-    private void drawInNextArea() {
+    private void drawNextPiece() {
         byte[][] piece = nextPiece[nextOrientationIndex];
         for (int line = 0; line < piece.length; line++) {
             for (int col = 0; col < piece[line].length; col++) {
@@ -254,7 +262,7 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         }
     }
 
-    private void drawInPlayArea() {
+    private void drawBoard() {
         for (int line = 0; line < board.length; line++) {
             for (int col = 0; col < board[line].length; col++) {
                 if (board[line][col] != 0) {
@@ -273,13 +281,5 @@ public class TetrisGame implements Game<TetrisInput, TetrisCanvas> {
         }
     }
 
-    @Override
-    public void pause() {
-        // To change body of implemented methods use File | Settings | File Templates.
-    }
 
-    @Override
-    public void resume() {
-        // To change body of implemented methods use File | Settings | File Templates.
-    }
 }

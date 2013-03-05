@@ -16,14 +16,11 @@ import ro.calin.android.adaptor.AndroidTetrisInput;
 import ro.calin.game.Game;
 import ro.calin.game.tetris.TetrisGame;
 
-public class TetrisActivity extends Activity
-{
-    private AndroidFastRenderView view;
+public class TetrisActivity extends Activity {
+    private AndroidGameView<AndroidTetrisInput, AndroidTetrisCanvas> view;
 
-    /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -38,9 +35,13 @@ public class TetrisActivity extends Activity
         Bitmap frameBuffer = Bitmap.createBitmap(width,
                 height, Bitmap.Config.RGB_565);
 
-        view = new AndroidFastRenderView(this, frameBuffer, new TetrisGame());
+        TetrisGame tetrisGame = new TetrisGame();
+        AndroidTetrisCanvas canvas = new AndroidTetrisCanvas(frameBuffer);
+        AndroidTetrisInput input = new AndroidTetrisInput();
+        view = new AndroidGameView(this, tetrisGame, input, canvas);
 
-        setContentView(view);
+        view.setOnTouchListener(input);
+        this.setContentView(view);
     }
 
     @Override
@@ -53,75 +54,5 @@ public class TetrisActivity extends Activity
     public void onPause() {
         super.onPause();
         view.pause();
-    }
-
-    public static class AndroidFastRenderView extends SurfaceView implements Runnable {
-        Thread renderThread = null;
-        volatile boolean running = false;
-        private final Bitmap framebuffer;
-        private final SurfaceHolder holder;
-        private final Game game;
-        private AndroidTetrisInput tetrisInput;
-        private AndroidTetrisCanvas tetrisCanvas;
-
-        public AndroidFastRenderView(Activity activity, Bitmap framebuffer, Game game) {
-            super(activity);
-            this.framebuffer = framebuffer;
-            this.game = game;
-            this.holder = getHolder();
-
-            tetrisInput = new AndroidTetrisInput();
-            tetrisCanvas = new AndroidTetrisCanvas(framebuffer);
-
-            game.init(tetrisInput, tetrisCanvas);
-
-            this.setOnTouchListener(tetrisInput);
-        }
-
-        public void resume() {
-            running = true;
-            renderThread = new Thread(this);
-            renderThread.start();
-            game.resume();
-        }
-
-        public void run() {
-            Rect dstRect = new Rect();
-            long startTime = System.nanoTime();
-            while(running) {
-                if(!holder.getSurface().isValid())
-                    continue;
-
-                float deltaTime = (System.nanoTime() - startTime) / 10000000.000f;
-                startTime = System.nanoTime();
-
-                if (deltaTime > 3.15){
-                    deltaTime = (float) 3.15;
-                }
-
-                game.update(deltaTime);
-                game.draw();
-
-                Canvas canvas = holder.lockCanvas();
-                canvas.getClipBounds(dstRect);
-                canvas.drawBitmap(framebuffer, null, dstRect, null);
-                holder.unlockCanvasAndPost(canvas);
-            }
-        }
-
-        public void pause() {
-            running = false;
-            while(true) {
-                try {
-                    renderThread.join();
-                    break;
-                } catch (InterruptedException e) {
-                    // retry
-                }
-            }
-            game.pause();
-        }
-
-
     }
 }

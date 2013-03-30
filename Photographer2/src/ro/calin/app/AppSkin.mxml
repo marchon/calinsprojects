@@ -18,7 +18,6 @@
 			{
 				if(categoryViewer.alpha == 0) {
 					categoryViewer.visible = false;
-//					categoryViewer.height = 0;
 				}
 			}
 			

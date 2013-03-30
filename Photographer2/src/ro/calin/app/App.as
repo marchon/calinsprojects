@@ -208,7 +208,7 @@ package ro.calin.app
 			else if(event.entry.extra is Array) {
 				var arr:Array = event.entry.extra as Array;
 				showPictures(arr[0] as PictureViewerModel);
-				externalContentGroup.addElement(arr[1] as IVisualElement);
+				if(arr.length == 2) externalContentGroup.addElement(arr[1] as IVisualElement);
 			}
 			else if(event.entry.extra is PictureViewerModel) {
 				showPictures(event.entry.extra as PictureViewerModel);
@@ -218,7 +218,6 @@ package ro.calin.app
 		}
 		
 		protected function menuItemHover(event:MenuEvent):void {
-			trace("mih")
 			//extra stores the model for the cagegory, otherwise it's not a category
 			if(event.entry.extra is CategoryViewerModel) {
 				var cm:CategoryViewerModel = event.entry.extra as CategoryViewerModel;
@@ -232,7 +231,7 @@ package ro.calin.app
 //				if(cm != categoryViewer.model) {
 					//set the height of the strip (max is screen height)
 					categoryViewer.height = viewHeight;
-					trace("vh: ", viewHeight)
+					
 					
 					//move it above the corresponding menu item
 					categoryViewer.x = menu.logo.width + menu.model.buttonWidth * (cm.extra as Number) - 1; //hardcoded adjustment(because of scaling)

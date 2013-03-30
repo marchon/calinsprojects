@@ -173,7 +173,7 @@
 					<model:MenuEntryModel label="info" extra="{App.MENU_TOP}" color="0x82CAFA">
 						<model:entries>
 							<s:ArrayList>
-								<model:MenuEntryModel label="facebook page" extra="{new URLRequest('http://www.facebook.com/MariusStoianovPhotography')}" color="0x000000"/>
+								<model:MenuEntryModel label="studio" extra="{studio}" color="0x000000"/>
 								<model:MenuEntryModel label="contact" extra="{contact}" color="0x413839"/>
 								<model:MenuEntryModel label="about" extra="{about}" color="0x595454"/>
 							</s:ArrayList>
@@ -183,6 +183,17 @@
 				</s:ArrayList>
 			</model:entries>
 		</model:MenuModel>
+		
+		<fx:Array id="studio">
+			<model:PictureViewerModel>
+				<model:pictures>
+					<fx:String>static/studio1.jpg</fx:String>
+					<fx:String>static/studio2.jpg</fx:String>
+					<fx:String>static/studio3.jpg</fx:String>
+					<fx:String>static/studio4.jpg</fx:String>
+				</model:pictures>
+			</model:PictureViewerModel>
+		</fx:Array>
 		
 		<fx:Array id="contact">
 			<model:PictureViewerModel>

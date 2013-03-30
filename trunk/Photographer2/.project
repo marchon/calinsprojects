@@ -19,7 +19,7 @@
 		<link>
 			<name>bin-debug</name>
 			<type>2</type>
-			<location>E:/07_servers/wamp/www/Photographer2-debug</location>
+			<location>E:/tools/wamp/www/Photographer2-debug</location>
 		</link>
 	</linkedResources>
 </projectDescription>

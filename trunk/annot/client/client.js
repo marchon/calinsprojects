@@ -55,15 +55,20 @@ $(document).ready(function() {
 
 							details.children('.edit').click(function(){
 								annot.addClass("editable")
-									.draggable({ containment: img })
-									.resizable({resize: function(){details.css({marginLeft: annot.width() + 5})}}); 
-								cancelEdit = details.children('.cancel')
+									.draggable({ containment: img, cancel: ".details" })
+									.resizable({ containment: img, resize: function(){details.css({marginLeft: annot.width() + 5})}}); 
+								cancelEdit = details.children('.cancel');
+								
+								details.find("h4").editable({lineBreaks : false, closeOnEnter: true, toggleFontSize: false, event : 'click'});
+								details.find("p").editable({toggleFontSize: false, event : 'click'});
 							});
 							details.children('.cancel, .accept').click(function(){
 								annot.removeClass("editable").draggable("destroy").resizable("destroy");
+								details.find('h4, p').editable("destroy");
 								cancelEdit = null;
 							});
 							details.children('.cancel').click(function(){
+								//bug.
 								console.log(model)
 								annot.css({top: model.top, left: model.left, width: model.width, height: model.height});
 								details.css({marginLeft: model.width + 5, width: model.textWidth});

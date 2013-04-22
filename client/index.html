@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script src="client.js"></script>
+	<link rel="stylesheet" type="text/css" href="client.css" media="screen" />
+</head>
+<body class="unselectable">
+
+<div id="upload">
+	<form action="/pics" method="post" enctype="multipart/form-data">
+		Name: <input type="text" name="name"><br>
+		File: <input type="file" name="image"><br>
+		<input type="submit" value="Upload">
+		<input type="button" class="cancel" value="Cancel">
+	</form>
+</div>
+	
+
+<div class="left col">
+	<div class="header row">
+		<button id="new" type="button">New</button>
+	</div>
+	<div id="list" class="body row scroll">
+		<ul class="listview">
+			<script type="text/template" id="picTemplate">
+				<li><p>{0}</p><img src="{1}"/></li>
+			</script>
+		</ul>
+	</div>
+	<div class="footer row">
+		Icons go here
+	</div>
+</div>
+<div class="right col">
+	<div class="header row">
+		View or edit something
+	</div>
+	<div id="img" class="body row scroll">		
+		<script type="text/template" id="annotationTemplate">
+			<div class="annotation">
+				<div class="details">
+					<div class="edit"/>
+					<div class="cancel"/>
+					<div class="accept"/>
+					<ul class="selectable">
+					</ul>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="detailsTemplate">
+			<li>
+				<h4>{0}</h4>
+				<p>{1}</p>
+			</li>
+		</script>
+	</div>
+	<div class="footer row">
+		Some status text here
+	</div>
+</div>
+
+</body>
+</html>
+

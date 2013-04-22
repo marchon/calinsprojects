@@ -1,0 +1,160 @@
+/* Generic pane rules */
+body, * { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; }
+.page { left: 0; right: 0; top: 0; bottom: 0; }
+.row, .col, .page { overflow: hidden; position: absolute; }
+.row { left: 0; right: 0; }
+.col { top: 0; bottom: 0; }
+.scroll { overflow: auto; -webkit-overflow-scrolling: touch; }
+.fill, .pane { position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100% }
+.pane { display: none; }
+
+/* Pane configuration */
+.left.col { width: 130px; }
+.right.col { left: 130px; right: 0; }
+.header.row { height: 75px; line-height: 75px; }
+.body.row { top: 75px; bottom: 50px; }
+.footer.row { height: 50px; bottom: 0; line-height: 50px; }
+
+/* Very rough, 5-minute effort at iOS-like styles. I'm sure you can do better... */
+
+body { font-family: 'Helvetica Neue', Arial, Sans-Serif; }
+.header, .footer {
+    color: #eee; background: #696f77; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); padding: 0 0.5em;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#696f77), color-stop(100%,#28343b));
+    background: -webkit-linear-gradient(top, #696f77 0%,#28343b 100%); background: -ms-linear-gradient(top, #696f77 0%,#28343b 100%); 
+}
+.header { font-size: 1.4em; }
+.body, .pane { background: #ddd }
+.right.col { border-left: 1px solid black; }
+.right.col .body { padding: 0 1em; }
+.listview { padding: 0; margin: 0; font-weight: bold; color: #444; }
+.listview li { list-style-type: none; background: #eee; padding: 1em; border-top: 1px solid #aaa; border-bottom: 1px solid #fff; cursor: pointer; }
+.listview li.selected { background-color: #37F; color: White; }
+            
+.listview.inset { margin: 1em 0; }
+.listview.inset li { background: white; border: 2px solid #aaa; border-bottom-width: 0; }
+.listview.inset li:first-child { border-radius: 1em 1em 0em 0em }
+.listview.inset li:last-child { border-radius: 0em 0em 1em 1em; border-bottom-width: 2px; }
+            
+.tiles { overflow-y: hidden; }
+.tiles > ul { width: 1175px; }
+.tiles ul { margin: 0; padding: 0; white-space: nowrap; }
+.tiles li { list-style-type: none; display: inline-block; background-color: #080; width:150px; height: 150px; padding: 1em; color: White; margin: 5px; font-weight: bold; zoom:1; *display: inline; }
+
+button { display: block; border: 2px solid #aaa; line-height: normal; background-color: White; border-radius: 8px; margin: 8px 0; cursor: pointer; padding: 5px 20px; font-weight: bold; color: #333; }
+
+.unselectable {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.selectable {
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+
+div#upload {
+	display: none;
+	position: fixed;
+	margin: auto;
+	background: gray;
+	z-index: 1000;
+}
+
+div#list ul li img {
+	width: 100%;	
+}
+
+div#list ul li {
+	cursor:pointer;
+}
+
+
+div.annotation {
+	position: absolute;
+	cursor: pointer;
+	border: 1px none black;
+	min-width: 50px;
+	min-height: 50px;
+	background-image:url('icons/annot.png');
+	background-repeat:no-repeat;
+	background-position:right top; 
+}
+
+div.annotation.editable {
+	cursor: crosshair;
+}
+
+div.annotation div.details {
+	cursor: auto;
+	display: none;
+	min-width: 100px;
+}
+
+div.annotation div.details div {
+	cursor: pointer;
+	float: right;
+	width: 20px;
+	height: 20px;	
+}
+
+div.annotation div.details div.edit {
+	background-image:url('icons/edit.png');
+	background-repeat:no-repeat;
+}
+div.annotation.editable div.details div.edit {
+	display: none;
+}
+
+div.annotation div.details div.accept {
+	background-image:url('icons/accept.png');
+	background-repeat:no-repeat;
+	display: none;
+}
+
+div.annotation div.details div.cancel {
+	background-image:url('icons/cancel.png');
+	background-repeat:no-repeat;
+	display:none;
+}
+div.annotation.editable div.details div.accept,
+div.annotation.editable div.details div.cancel {
+	display: block;
+}
+
+div.annotation div.details ul {	
+	list-style: none;
+	padding-top: 26px;
+	padding-left: 5px;	
+	background-color: grey;
+}
+
+div.annotation div.details ul li p {
+	padding-top: 3px;
+	padding-bottom: 6px;
+	padding-left: 20px;
+}
+
+div.annotation.hover {
+	border: 1px solid black;
+}
+
+div.annotation.click {
+	border: 2px solid black;
+}
+
+div.annotation.click div.details {
+	display: block;
+}
+
+.ui-state-disabled {
+	opacity: 1;
+}

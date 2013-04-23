@@ -5,10 +5,7 @@
 		"width": 100,
 		"height": 100,
 		"textWidth": 200,
-		"text": {
-			"Description": "bla bla bla bla bla",
-			"Content":"test"
-		}
+		"text": "this is a test bla bla"
 	},
 	
 	{
@@ -17,15 +14,6 @@
 		"width": 200,
 		"height": 300,
 		"textWidth": 300,
-		"text": {
-			"Description": "bla bla bla bla bla",
-			"Content":"test",
-			"Test1": "bla bla bla bla bla asdas sd sd",
-			"test2":"test",
-			"Description": "bla bla bla bla bla sd asd fasd fasd fasdf asdf asd fasdf asdf asd fasdf asdf asdf asdfasdf asdf asdf sadf as",
-			"Content":"test",
-			"Test1": "bla bla bla bla bla af asd fasdf asdf asdf asdf asdf asdf asdfsdas sd sd",
-			"test2":"<a href=\"http://google.com\">google</a>"
-		}
+		"text": "bla bla bla bla bla <a href=\"http://google.com\">google</a>"
 	}
 ]

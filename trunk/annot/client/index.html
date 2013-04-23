@@ -9,7 +9,7 @@
 	<script src="client.js"></script>
 	<link rel="stylesheet" type="text/css" href="client.css" media="screen" />
 </head>
-<body class="unselectable">
+<body>
 
 <div id="upload">
 	<form action="/pics" method="post" enctype="multipart/form-data">
@@ -23,7 +23,7 @@
 
 <div class="left col">
 	<div class="header row">
-		<button id="new" type="button">New</button>
+		<button id="new" class="btn" type="button">New</button>
 	</div>
 	<div id="list" class="body row scroll">
 		<ul class="listview">
@@ -44,19 +44,12 @@
 		<script type="text/template" id="annotationTemplate">
 			<div class="annotation">
 				<div class="details">
-					<div class="edit"/>
-					<div class="cancel"/>
-					<div class="accept"/>
-					<ul class="selectable">
-					</ul>
+					<button class="edit"></button>
+					<button class="cancel"></button>
+					<button class="accept"></button>
+					<div class="content"></div>
 				</div>
 			</div>
-		</script>
-		<script type="text/template" id="detailsTemplate">
-			<li>
-				<h4>{0}</h4>
-				<p>{1}</p>
-			</li>
 		</script>
 	</div>
 	<div class="footer row">

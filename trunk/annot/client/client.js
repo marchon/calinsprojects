@@ -17,7 +17,6 @@ $(document).ready(function () {
 
     var picTemplate = $('#picTemplate').html().trim();
     var annotationTemplate = $('#annotationTemplate').html().trim();
-    var detailsTemplate = $('#detailsTemplate').html().trim();
 
 
     var selected = null;
@@ -32,6 +31,7 @@ $(document).ready(function () {
             cancelEdit.click();
         }
     });
+
     function addPicToList(pic) {
         var path = 'pics/{0}/img.jpg'.format(pic);
         var annot = 'pics/{0}/annot.json'.format(pic);
@@ -56,53 +56,60 @@ $(document).ready(function () {
                                 }, function () {
                                     $(this).removeClass("hover")
                                 })
-                                .click(function () {
+                                .click(function (e) {
                                     if (!clicked) {
                                         clicked = $(this).addClass("click").css({zIndex:1000});
-                                        return false
+                                        e.stopPropagation();
                                     }
                                 });
 
                             imgContainer.append(annot);
                             var details = annot.children('div.details')
                                 .css({marginLeft:model.width + 5, width:model.textWidth})
-                                .click(function () {
-                                    return false
-                                });
+                                .click(function(e){e.stopPropagation()});
+
+                            var content = details.children('div.content');
 
                             details.children('.edit').click(function () {
+                                cancelEdit = details.children('.cancel');
+
                                 annot.addClass("editable")
                                     .draggable({ containment:img, cancel:".details" })
                                     .resizable({ containment:img, resize:function () {
                                         details.css({marginLeft:annot.width() + 5})
                                     }});
-                                cancelEdit = details.children('.cancel');
 
-                                details.find("h4").editable({lineBreaks:false, closeOnEnter:true, toggleFontSize:false, event:'click'});
-                                details.find("p").editable({toggleFontSize:false, event:'click'});
+                                details.resizable({ containment:img, handles: "e"});
+
+                                content.editable({toggleFontSize:false}).editable("open");
+                                content.keyup(function(e) {
+                                    if (e.keyCode == 27) {
+                                        $(this).editable("close");
+                                    }
+                                });
                             });
+
                             details.children('.cancel, .accept').click(function () {
                                 annot.removeClass("editable").draggable("destroy").resizable("destroy");
-                                details.find('h4, p').editable("destroy");
+                                details.resizable("destroy");
+                                content.editable("destroy");
                                 cancelEdit = null;
                             });
                             details.children('.cancel').click(function () {
-
                                 annot.css({top:model.top, left:model.left, width:model.width, height:model.height});
                                 details.css({marginLeft:model.width + 5, width:model.textWidth});
+                                content.html(model.text);
                             });
                             details.children('.accept').click(function () {
                                 //save changes
                                 model = {
                                     top:annot.css('top').int(), left:annot.css('left').int(), width:annot.width(), height:annot.height(),
-                                    textWidth : details.width()
+                                    textWidth : details.width(), text: content.html()
                                 }
+                                console.log(model);
                             });
 
-                            var list = details.children('ul');
-                            $.each(model.text, function (heading, content) {
-                                list.append($(detailsTemplate.format(heading, content)));
-                            });
+                            content.html(model.text);
                         });
                     });
                 })

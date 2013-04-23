@@ -41,25 +41,7 @@ body { font-family: 'Helvetica Neue', Arial, Sans-Serif; }
 .tiles ul { margin: 0; padding: 0; white-space: nowrap; }
 .tiles li { list-style-type: none; display: inline-block; background-color: #080; width:150px; height: 150px; padding: 1em; color: White; margin: 5px; font-weight: bold; zoom:1; *display: inline; }
 
-button { display: block; border: 2px solid #aaa; line-height: normal; background-color: White; border-radius: 8px; margin: 8px 0; cursor: pointer; padding: 5px 20px; font-weight: bold; color: #333; }
-
-.unselectable {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-.selectable {
-	-webkit-touch-callout: text;
-	-webkit-user-select: text;
-	-khtml-user-select: text;
-	-moz-user-select: text;
-	-ms-user-select: text;
-	user-select: text;
-}
+button.btn { display: block; border: 2px solid #aaa; line-height: normal; background-color: White; border-radius: 8px; margin: 8px 0; cursor: pointer; padding: 5px 20px; font-weight: bold; color: #333; }
 
 div#upload {
 	display: none;
@@ -77,16 +59,13 @@ div#list ul li {
 	cursor:pointer;
 }
 
-
 div.annotation {
 	position: absolute;
 	cursor: pointer;
 	border: 1px none black;
 	min-width: 50px;
 	min-height: 50px;
-	background-image:url('icons/annot.png');
-	background-repeat:no-repeat;
-	background-position:right top; 
+    background: url('icons/annot.png') no-repeat right top;
 }
 
 div.annotation.editable {
@@ -99,48 +78,42 @@ div.annotation div.details {
 	min-width: 100px;
 }
 
-div.annotation div.details div {
-	cursor: pointer;
+div.annotation div.details button {
+    border: none;
+    background: transparent no-repeat;
+    cursor: pointer;
 	float: right;
 	width: 20px;
-	height: 20px;	
+	height: 20px;
+    display:none;
 }
 
-div.annotation div.details div.edit {
+div.annotation div.details button.edit {
 	background-image:url('icons/edit.png');
-	background-repeat:no-repeat;
-}
-div.annotation.editable div.details div.edit {
-	display: none;
+    display: block;
 }
 
-div.annotation div.details div.accept {
+div.annotation div.details button.accept {
 	background-image:url('icons/accept.png');
-	background-repeat:no-repeat;
-	display: none;
 }
 
-div.annotation div.details div.cancel {
+div.annotation div.details button.cancel {
 	background-image:url('icons/cancel.png');
-	background-repeat:no-repeat;
-	display:none;
 }
-div.annotation.editable div.details div.accept,
-div.annotation.editable div.details div.cancel {
+
+div.annotation.editable div.details button.edit {
+    display: none;
+}
+
+div.annotation.editable div.details button.accept,
+div.annotation.editable div.details button.cancel {
 	display: block;
 }
 
-div.annotation div.details ul {	
-	list-style: none;
+div.annotation div.details div.content {
 	padding-top: 26px;
 	padding-left: 5px;	
 	background-color: grey;
-}
-
-div.annotation div.details ul li p {
-	padding-top: 3px;
-	padding-bottom: 6px;
-	padding-left: 20px;
 }
 
 div.annotation.hover {

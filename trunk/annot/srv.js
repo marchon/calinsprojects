@@ -5,8 +5,14 @@ var app = express();
 var clientfolder = __dirname + '/client';
 var datafolder = __dirname + '/data';
 
-function writeAnnotation(name, json, cb) {
-	fs.writeFile(datafolder + "/" + name + "/annot.json", json, cb);
+String.prototype.int = function () {
+    var i = parseInt(this);
+    if(isNaN(i)) throw new Error();
+    return i
+}
+
+function writeAnnotation(name, annotation, cb) {
+	fs.writeFile(datafolder + "/" + name + "/annot.json", JSON.stringify(annotation), cb);
 }
 
 app.configure(function(){
@@ -27,7 +33,7 @@ app.post("/pics", function(req, res) {
 		//TODO: assert jpg, handle errors
 		fs.mkdir(path, function() {		
 			fs.writeFile(path + "/img.jpg", data, function (err) {
-				if(!err) writeAnnotation(req.body.name, "[]", function (err) {
+				if(!err) writeAnnotation(req.body.name, [], function (err) {
 					if(!err) res.send(200);
 					else res.send(500);
 				});
@@ -37,13 +43,30 @@ app.post("/pics", function(req, res) {
 	});
 });
 
-app.put("/pics/:name", function(req, res) {
-	console.log(req.body)
-	writeAnnotation(req.params.name, JSON.stringify(req.body), function (err) {
-		if(!err) res.send(200);
-		else res.send(500);
-	});
+
+app.post("/pics/:name/annot", function(req, res) {
 });
+app.put("/pics/:name/annot/:uid", function(req, res) {
+    fs.readFile(datafolder + "/" + req.params.name + "/annot.json", function (err, data) {
+        if(!err) {
+            var annotations = JSON.parse(data);
+            try {
+                annotations[req.params.uid.int()] = req.body;
+            } catch (err) {
+                res.send(400);
+            }
+            writeAnnotation(req.params.name, annotations, function (err) {
+                console.log("errr: " + err)
+                if(!err) res.send(200);
+                else res.send(500);
+            });
+        }
+        else res.send(500);
+    });
+});
+app.delete("/pics/:name/annot/:id", function(req, res) {
+});
+
 
 app.delete("/pics/:name", function(req, res) {
 	var path = datafolder + '/' + req.params.name

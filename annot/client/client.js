@@ -19,46 +19,50 @@ $(document).ready(function () {
     var annotationTemplate = $('#annotationTemplate').html().trim();
 
 
-    var selected = null;
-    var clicked = null;
-    var cancelEdit = null;
+    var selectedImage = null;
+    var clickedAnnotation = null;
+    var cancelButton = null;
     $(document).click(function () {
-        if (clicked) {
-            clicked.removeClass("click").css({zIndex:100});
-            clicked = null;
+        if(cancelButton && !confirm("Revert all changes?")) return;
+
+        if (clickedAnnotation) {
+            clickedAnnotation.removeClass("click").css({zIndex:100});
+            clickedAnnotation = null;
         }
-        if (cancelEdit) {
-            cancelEdit.click();
+        if (cancelButton) {
+            cancelButton.click();
         }
     });
 
     function addPicToList(pic) {
-        var path = 'pics/{0}/img.jpg'.format(pic);
-        var annot = 'pics/{0}/annot.json'.format(pic);
+        var imageUrl = 'pics/{0}/img.jpg'.format(pic);
+        var annotListUrl = 'pics/{0}/annot.json'.format(pic);
+        var annotUrl = 'pics/{0}/annot/{1}';
 
         list.append(
-            $(picTemplate.format(pic, path))
+            $(picTemplate.format(pic, imageUrl))
                 .click(function () {
-                    if (selected) selected.removeClass("selected");
-                    selected = $(this).addClass("selected");
+                    if (selectedImage) selectedImage.removeClass("selected");
+                    selectedImage = $(this).addClass("selected");
 
-                    $.getJSON(annot, function (data) {
+                    $.getJSON(annotListUrl, function (data) {
                         imgContainer.empty();
-                        var img = $(new Image()).attr('src', path);
+                        var img = $(new Image()).attr('src', imageUrl);
                         imgContainer.append(img);
 
                         $.each(data, function (idx, model) {
+                            console.log(model)
                             var annot = $(annotationTemplate)
                                 .css({top:model.top, left:model.left, width:model.width, height:model.height})
                                 .css({zIndex:100})
                                 .hover(function () {
-                                    if (!clicked) $(this).addClass("hover")
+                                    if (!clickedAnnotation) $(this).addClass("hover")
                                 }, function () {
                                     $(this).removeClass("hover")
                                 })
                                 .click(function (e) {
-                                    if (!clicked) {
-                                        clicked = $(this).addClass("click").css({zIndex:1000});
+                                    if (!clickedAnnotation) {
+                                        clickedAnnotation = $(this).addClass("click").css({zIndex:1000});
                                         e.stopPropagation();
                                     }
                                 });
@@ -71,7 +75,7 @@ $(document).ready(function () {
                             var content = details.children('div.content');
 
                             details.children('.edit').click(function () {
-                                cancelEdit = details.children('.cancel');
+                                cancelButton = details.children('.cancel');
 
                                 annot.addClass("editable")
                                     .draggable({ containment:img, cancel:".details" })
@@ -93,7 +97,7 @@ $(document).ready(function () {
                                 annot.removeClass("editable").draggable("destroy").resizable("destroy");
                                 details.resizable("destroy");
                                 content.editable("destroy");
-                                cancelEdit = null;
+                                cancelButton = null;
                             });
                             details.children('.cancel').click(function () {
                                 annot.css({top:model.top, left:model.left, width:model.width, height:model.height});
@@ -103,10 +107,23 @@ $(document).ready(function () {
                             details.children('.accept').click(function () {
                                 //save changes
                                 model = {
-                                    top:annot.css('top').int(), left:annot.css('left').int(), width:annot.width(), height:annot.height(),
+                                    top:annot.css('top').int(), left:annot.css('left').int(),
+                                    width:annot.width(), height:annot.height(),
                                     textWidth : details.width(), text: content.html()
                                 }
                                 console.log(model);
+
+                                console.log(idx);
+                                $.ajax({
+                                    url: annotUrl.format(pic, idx),
+                                    type: "PUT",
+                                    data: JSON.stringify(model),
+                                    contentType: "application/json"
+                                }).done(function( msg ) {
+                                    console.log( "Data Saved: " + msg );
+                                }).fail(function( msg ) {
+                                    console.log( "Data Saved: " + msg );
+                                });
                             });
 
                             content.html(model.text);

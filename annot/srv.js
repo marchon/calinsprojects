@@ -45,6 +45,22 @@ app.post("/pics", function(req, res) {
 
 
 app.post("/pics/:name/annot", function(req, res) {
+    fs.readFile(datafolder + "/" + req.params.name + "/annot.json", function (err, data) {
+        if(!err) {
+            var annotations = JSON.parse(data);
+            try {
+                console.log(req.body);
+                annotations.push(req.body);
+            } catch (err) {
+                res.send(400);
+            }
+            writeAnnotation(req.params.name, annotations, function (err) {
+                if(!err) res.send(200, {uid: annotations.length - 1});
+                else res.send(500);
+            });
+        }
+        else res.send(500);
+    });
 });
 app.put("/pics/:name/annot/:uid", function(req, res) {
     fs.readFile(datafolder + "/" + req.params.name + "/annot.json", function (err, data) {
@@ -56,7 +72,6 @@ app.put("/pics/:name/annot/:uid", function(req, res) {
                 res.send(400);
             }
             writeAnnotation(req.params.name, annotations, function (err) {
-                console.log("errr: " + err)
                 if(!err) res.send(200);
                 else res.send(500);
             });

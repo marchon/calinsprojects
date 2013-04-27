@@ -79,6 +79,7 @@ $(document).ready(function () {
         list.append(
             $(picTemplate.format(imgName, imageUrl))
                 .click(function () {
+					if ($(this).hasClass("selected")) return; //return if already selected
                     if (selectedImage) selectedImage.removeClass("selected");
                     selectedImage = $(this).addClass("selected");
 

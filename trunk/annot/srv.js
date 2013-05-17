@@ -45,6 +45,12 @@ app.post("/pics", function(req, res) {
 
 
 app.post("/pics/:name/annot", function(req, res) {
+    if (/<script.*>.*<\/script>/igm.exec(JSON.stringify(req.body)) != null) {
+        console.log("JS TEXT!!!");
+        res.send(400);
+        return;
+    }
+
     fs.readFile(datafolder + "/" + req.params.name + "/annot.json", function (err, data) {
         if(!err) {
             var annotations = JSON.parse(data);
@@ -63,6 +69,12 @@ app.post("/pics/:name/annot", function(req, res) {
     });
 });
 app.put("/pics/:name/annot/:uid", function(req, res) {
+    if (/<script.*>.*<\/script>/igm.exec(JSON.stringify(req.body)) != null) {
+        console.log("JS TEXT!!!");
+        res.send(400);
+        return;
+    }
+
     fs.readFile(datafolder + "/" + req.params.name + "/annot.json", function (err, data) {
         if(!err) {
             var annotations = JSON.parse(data);

@@ -23,6 +23,9 @@ $(document).ready(function () {
     var clickedAnnotation = null;
     var cancelButton = null;
 
+    var richEditor = new nicEditor();
+    richEditor.setPanel('nicPanel');
+
     $('#uploadBtn').click(function () {
         formContainer.show()
     });
@@ -60,8 +63,8 @@ $(document).ready(function () {
         annot.find(".edit").click();
     });
 
-    $(document).click(function () {
-        if(cancelButton && !confirm("Revert all changes?")) return;
+    var revert = function () {
+        if(cancelButton && !confirm("Revert all changes?")) return false;
 
         if (clickedAnnotation) {
             clickedAnnotation.removeClass("click").css({zIndex:100});
@@ -70,7 +73,11 @@ $(document).ready(function () {
         if (cancelButton) {
             cancelButton.click();
         }
-    });
+
+        return true;
+    }
+
+    $("div#img").click(revert);
 
     function prepareImage(imgName) {
         var imageUrl = 'pics/{0}/img.jpg'.format(imgName);
@@ -79,6 +86,7 @@ $(document).ready(function () {
         list.append(
             $(picTemplate.format(imgName, imageUrl))
                 .click(function () {
+                    if(!revert()) return;
 					if ($(this).hasClass("selected")) return; //return if already selected
                     if (selectedImage) selectedImage.removeClass("selected");
                     selectedImage = $(this).addClass("selected");
@@ -135,18 +143,13 @@ $(document).ready(function () {
 
             details.resizable({ containment:img, handles: "e"});
 
-            content.editable({toggleFontSize:false}).editable("open");
-            content.keyup(function(e) {
-                if (e.keyCode == 27) {
-                    $(this).editable("close");
-                }
-            });
+            richEditor.addInstance(content[0])
         });
 
         details.children('.cancel, .accept').click(function () {
             annot.removeClass("editable").draggable("destroy").resizable("destroy");
             details.resizable("destroy");
-            content.editable("destroy");
+            richEditor.removeInstance(content[0])
             cancelButton = null;
         });
         var reset = function () {

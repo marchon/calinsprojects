@@ -114,22 +114,23 @@ $(document).ready(function () {
                     e.stopPropagation();
                 }
             });
-
-        imgContainer.append(annot);
         var details = annot.children('div.details')
             .css({marginLeft:model.width + 5, width:model.textWidth})
             .click(function(e){e.stopPropagation()});
 
         var content = details.children('div.content');
+        content.html(model.text);
+
+        imgContainer.append(annot);
 
         details.children('.edit').click(function (e) {
             e.stopPropagation();
             cancelButton = details.children('.cancel');
 
             annot.addClass("editable")
-                .draggable({ containment:img, cancel:".details" })
-                .resizable({ containment:img, resize:function () {
-                    details.css({marginLeft:annot.width() + 5})
+                .draggable({ containment: img, cancel: ".details" })
+                .resizable({ containment: img, resize: function () {
+                    details.css({marginLeft: annot.width() + 5})
                 }});
 
             details.resizable({ containment:img, handles: "e"});
@@ -148,37 +149,43 @@ $(document).ready(function () {
             content.editable("destroy");
             cancelButton = null;
         });
-        details.children('.cancel').click(function () {
-            annot.css({top:model.top, left:model.left, width:model.width, height:model.height});
-            details.css({marginLeft:model.width + 5, width:model.textWidth});
+        var reset = function () {
+            annot.css({top: model.top, left: model.left, width: model.width, height: model.height});
+            details.css({marginLeft: model.width + 5, width: model.textWidth});
             content.html(model.text);
-        });
+        };
+        details.children('.cancel').click(reset);
 
         details.children('.accept').click(function () {
+            var text = content.html();
+            if (/<script.*>.*<\/script>/igm.exec(text) != null) {
+                reset();
+                alert("No js biatch!!!");
+                return;
+            }
+
             //save changes
             model = {
                 top:annot.css('top').int(), left:annot.css('left').int(),
                 width:annot.width(), height:annot.height(),
                 textWidth : details.width(), text: content.html()
             }
-            console.log(model);
-            console.log(uid);
+
+            var furl = annotUrl.format(imgName, uid != null ? uid : "");
+            console.log("Creating/updating annotation: ", furl);
             $.ajax({
-                url: annotUrl.format(imgName, uid?uid:""),
-                type: uid?"PUT":"POST",
+                url: furl,
+                type: uid != null ? "PUT" : "POST",
                 data: JSON.stringify(model),
                 contentType: "application/json"
             }).done(function (msg) {
-                console.log(uid)
                 if(uid == null) uid = msg.uid;
-                console.log(uid)
-                console.log("Data Saved: " + msg);
+                console.log("Created/updated annotation: ", furl);
             }).fail(function (msg) {
-                console.log("Data Saved: " + msg);
+                console.log("Error creating/updating annotation: ", furl, msg);
             });
         });
 
-        content.html(model.text);
         return annot;
     }
 })

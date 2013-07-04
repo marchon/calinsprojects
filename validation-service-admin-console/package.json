@@ -1,0 +1,10 @@
+{
+  "name": "validation-service-admin-console",
+  "description": "validation-service-admin-console",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "restler": "2.0.1"
+  }
+}

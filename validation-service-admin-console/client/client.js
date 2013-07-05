@@ -3,9 +3,6 @@ $(function(){
     	editor.setTheme("ace/theme/monokai");
     	editor.getSession().setMode("ace/mode/javascript");*/
 
-var source   = $("#entry-template").html();
-var template = Handlebars.compile(source);
-var context = {title: "My New Post", body: "This is my first post!"}
-var html    = template(context);
-$("body").append(html);
+	var docListTemplate = Handlebars.compile($("#document-list-template").html());
+	$("body").append(docListTemplate({"names": ["ca/updateContacts", "it/updateContacts"]}));
 });

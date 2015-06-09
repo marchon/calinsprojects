@@ -15,7 +15,7 @@ using System.Xml.Linq;
 /// </summary>
 public class Errors
 {
-    public static string UPLOAD_ERROR_PREFIX = "Sorry. An error ocured: ";
+    public static string UPLOAD_ERROR_PREFIX = "Sorry. An error occurred: ";
     public static string UPLOAD_ERROR_FORMAT = "Picture format error!";
     public static string UPLOAD_ERROR_SERVER = "Server internal error. Please try again...";
 }
